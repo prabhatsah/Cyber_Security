@@ -10,8 +10,10 @@ import SpecializedAIAgents from './SpecializedAIAgents';
 import type { ScanResult } from '../lib/scanner';
 import type { PortScanResult } from '../lib/portScanner';
 import type { ComplianceScanResult } from './ComplianceScanModal';
+import CyberSecurityComponents from './CyberSecurityComponents';
 
 export function Scans() {
+  const [activeTab, setActiveTab] = useState<'cyberSecurity' | 'specializedAIAgents'>('cyberSecurity');
   const [showQuickScan, setShowQuickScan] = useState(false);
   const [showPortScan, setShowPortScan] = useState(false);
   const [showComplianceScan, setShowComplianceScan] = useState(false);
@@ -97,10 +99,37 @@ export function Scans() {
       </div>
 
       {/* AI Security Agents Section */}
-      <div className="mt-8">
+      {/* <div className="mt-8">
         <h2 className="text-lg font-medium text-gray-900 mb-4">Specialized AI Security Agents</h2>
         <SpecializedAIAgents />
+      </div> */}
+      {/* Tab Navigation */}
+      <div className="flex space-x-4 border-b mb-6">
+        <button
+          className={`py-2 px-4 font-medium ${activeTab === 'cyberSecurity' ? 'border-b-2 border-blue-500 text-blue-500' : 'text-gray-600'}`}
+          onClick={() => setActiveTab('cyberSecurity')}
+        >
+          Cyber Security Components
+        </button>
+        <button
+          className={`py-2 px-4 font-medium ${activeTab === 'specializedAIAgents' ? 'border-b-2 border-blue-500 text-blue-500' : 'text-gray-600'}`}
+          onClick={() => setActiveTab('specializedAIAgents')}
+        >
+          Specialized AI Agents
+        </button>
       </div>
+      {activeTab === 'cyberSecurity' ? (<div>
+            {/* Specialized AI Agents */}
+            <h2 className="text-lg font-medium text-gray-900 mb-4">Specialized AI Security Agents</h2>
+            <CyberSecurityComponents />
+          </div>)
+      : (
+          <div>
+            {/* Specialized AI Agents */}
+            <h2 className="text-lg font-medium text-gray-900 mb-4">Specialized AI Security Agents</h2>
+            <SpecializedAIAgents />
+          </div>
+        )}
 
       {showQuickScan && (
         <ScanModal
