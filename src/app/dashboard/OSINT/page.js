@@ -5,7 +5,6 @@ import Widgets from "./Widgets";
 import GraphView from "./GraphView";
 import MapView from "./MapView";
 import DetailsTable from "./DetailsTable";
-import Filters from "./Filters";
 
 export default function TheHarvesterDashboard() {
   const [query, setQuery] = useState("");
@@ -32,7 +31,6 @@ export default function TheHarvesterDashboard() {
       {data && (
         <div className="space-y-8">
           <Widgets data={data} />
-          <Filters data={data} />
           <GraphView data={data} />
           <MapView data={data} />
           <DetailsTable data={data} />
