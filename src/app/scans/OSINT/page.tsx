@@ -73,7 +73,7 @@ export default function TheHarvesterDashboard() {
   // Define the fetchData function with proper typing
   const fetchData = async (searchType: string): Promise<void> => {
     try {
-      const response = await fetch(`/api/theharvester?query=${query}&type=${searchType}`);
+      const response = await fetch(`/api/OSINT/theharvester?query=${query}&type=${searchType}`);
       const result: ApiResponse = await response.json();
 
       if (result.error) throw new Error(result.error);
