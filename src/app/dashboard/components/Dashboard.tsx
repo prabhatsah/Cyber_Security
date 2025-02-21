@@ -445,7 +445,7 @@
 
 
 export default function Dashboard() {
-  return (
-    <h1>Data coming soon ...</h1>
-  )
-}
+    return (
+      <h1>Data coming soon...</h1>
+    )
+  }
