@@ -21,7 +21,7 @@ export async function GET(req) {
     try {
         // Set working directory using cwd option
         //const command = `python "${theHarvesterPath}" -d ${query} -l ${limit} -b all -f output.json -n`;
-        const command = `python "${theHarvesterPath}" -d ${query} -b bing -l 10 -f output.json -n`;
+        const command = `python "${theHarvesterPath}" -d ${query} -b all -l 10 -f output.json -n`;
 
         const { stdout, stderr } = await execPromise(command, { cwd: theHarvesterFolder });
 
