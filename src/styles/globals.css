@@ -3,6 +3,10 @@
   \********************************************************************************************************************************************************************************************************************************************************************/
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 *,
 ::before,
 ::after {
@@ -519,7 +523,7 @@ video {
 :root {
   --primary: #1a73e8;
   --primary-hover: #1a73e8;
-  --secondary: 0 0% 96.1%;
+  --secondary: #f1f3f4;
   --success: #10b981;
   --error: #ef4444;
   --warning: #f59e0b;
@@ -1385,7 +1389,7 @@ body {
   border-color: rgb(209 213 219 / var(--tw-border-opacity, 1));
 }
 .border-primary {
-  border-color: hsl(var(--primary));
+  border-color: var(--primary);
 }
 .border-transparent {
   border-color: transparent;
@@ -1453,7 +1457,7 @@ body {
   background-color: rgb(255 247 237 / var(--tw-bg-opacity, 1));
 }
 .bg-primary {
-  background-color: hsl(var(--primary));
+  background-color: var(--primary);
 }
 .bg-primary\/10 {
   background-color: hsl(var(--primary) / 0.1);
@@ -1481,7 +1485,7 @@ body {
   background-color: rgb(220 38 38 / var(--tw-bg-opacity, 1));
 }
 .bg-secondary {
-  background-color: hsl(var(--secondary));
+  background-color: var(--secondary);
 }
 .bg-white {
   --tw-bg-opacity: 1;
@@ -1743,7 +1747,7 @@ body {
   color: rgb(154 52 18 / var(--tw-text-opacity, 1));
 }
 .text-primary {
-  color: hsl(var(--primary));
+  color: var(--primary);
 }
 .text-purple-600 {
   --tw-text-opacity: 1;
@@ -1945,7 +1949,7 @@ body {
 }
 
 .focus\:border-primary:focus {
-  border-color: hsl(var(--primary));
+  border-color: var(--primary);
 }
 
 .focus\:placeholder-gray-400:focus::-moz-placeholder {
@@ -2001,7 +2005,7 @@ body {
 }
 
 .focus\:ring-primary:focus {
-  --tw-ring-color: hsl(var(--primary));
+  --tw-ring-color: var(--primary);
 }
 
 .focus\:ring-offset-2:focus {
@@ -2208,4 +2212,15 @@ body {
 .__className_d65c78 {
   font-family: "Inter", "Inter Fallback";
   font-style: normal;
+}
+/*---break---*/
+/* @layer base {} */
+/*---break---*/
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }

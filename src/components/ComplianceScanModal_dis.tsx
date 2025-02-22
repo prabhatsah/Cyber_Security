@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Shield, XCircle, Loader2, CheckCircle2, AlertTriangle, AlertOctagon, Book, List } from 'lucide-react';
-import ComplianceAIAgents from './ComplianceAIAgents';
+import ComplianceAIAgents from './ComplianceAIAgents_dis';
 
 interface ComplianceScanModalProps {
   onClose: () => void;

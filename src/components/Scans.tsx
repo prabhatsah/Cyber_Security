@@ -2,15 +2,15 @@
 
 import { useState } from "react";
 import { Plus, Shield, Network, Upload, Book } from "lucide-react";
-import ScanModal from "./ScanModal";
-import PortScanModal from "./PortScanModal";
-import ComplianceScanModal from "./ComplianceScanModal";
+import ScanModal from "./ScanModal_dis";
+import PortScanModal from "./PortScanModal_dis";
+import ComplianceScanModal from "./ComplianceScanModal_dis";
 import AssetListUpload from "./AssetListUpload";
-import SpecializedAIAgents from "./SpecializedAIAgents";
+import SpecializedAIAgents from "./SpecializedAIAgents_dis";
 import type { ScanResult } from "../lib/scanner";
 import type { PortScanResult } from "../lib/portScanner";
-import type { ComplianceScanResult } from "./ComplianceScanModal";
-import CyberSecurityComponents from "./CyberSecurityComponents";
+import type { ComplianceScanResult } from "./ComplianceScanModal_dis";
+import CyberSecurityComponents from "./CyberSecurityComponents_dis";
 
 export function Scans() {
   const [activeTab, setActiveTab] = useState<
