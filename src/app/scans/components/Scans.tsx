@@ -54,13 +54,14 @@ export function Scans() {
 
   return (
     <div>
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center mb-5">
         <div>
           <h1 className="text-2xl font-semibold text-primary">
             Security Scans
           </h1>
           <p className="mt-1 text-sm text-gray-500">
-            Manage security assessments with specialized AI agents
+            Manage security assessments with Cyber Security Components &
+            specialized AI agents
           </p>
         </div>
         <div className="flex space-x-3">
@@ -95,13 +96,6 @@ export function Scans() {
           </button>
         </div>
       </div>
-
-      {/* AI Security Agents Section */}
-      {/* <div className="mt-8">
-        <h2 className="text-lg font-medium text-gray-900 mb-4">Specialized AI Security Agents</h2>
-        <SpecializedAIAgents />
-      </div> */}
-      {/* Tab Navigation */}
       <div className="flex space-x-4 border-b mb-6">
         <button
           className={`py-2 px-4 font-medium ${
