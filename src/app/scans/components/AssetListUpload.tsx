@@ -1,9 +1,18 @@
-import { useState } from 'react';
-import { Upload, FileText, AlertTriangle, CheckCircle2, X, List, Eye, HelpCircle } from 'lucide-react';
+import { useState } from "react";
+import {
+  Upload,
+  FileText,
+  AlertTriangle,
+  CheckCircle2,
+  X,
+  List,
+  Eye,
+  HelpCircle,
+} from "lucide-react";
 
 interface Asset {
   id: string;
-  type: 'host' | 'service' | 'application' | 'database';
+  type: "host" | "service" | "application" | "database";
   name: string;
   identifier: string; // IP, URL, or unique identifier
   metadata: Record<string, any>;
@@ -37,12 +46,12 @@ const formatSpecs = {
     ]
   }
 ]`,
-    description: 'JSON array of assets with required fields'
+    description: "JSON array of assets with required fields",
   },
   csv: {
     example: `name,hostname,ip,mac,os,port,service,version
 Web Server,web01.example.com,192.168.1.100,00:11:22:33:44:55,Ubuntu 22.04,80,http,nginx/1.18.0`,
-    description: 'CSV with headers and values'
+    description: "CSV with headers and values",
   },
   xml: {
     example: `<?xml version="1.0" encoding="UTF-8"?>
@@ -63,20 +72,22 @@ Web Server,web01.example.com,192.168.1.100,00:11:22:33:44:55,Ubuntu 22.04,80,htt
     </services>
   </asset>
 </assets>`,
-    description: 'XML document with asset elements'
-  }
+    description: "XML document with asset elements",
+  },
 };
 
 const requiredFields = {
-  host: ['name/hostname', 'ip/url'],
-  service: ['name', 'port', 'protocol'],
-  application: ['name', 'version'],
-  database: ['name', 'type', 'version']
+  host: ["name/hostname", "ip/url"],
+  service: ["name", "port", "protocol"],
+  application: ["name", "version"],
+  database: ["name", "type", "version"],
 };
 
 export default function AssetListUpload() {
   const [isDragging, setIsDragging] = useState(false);
-  const [parsedAssets, setParsedAssets] = useState<ParsedAssetList | null>(null);
+  const [parsedAssets, setParsedAssets] = useState<ParsedAssetList | null>(
+    null
+  );
   const [error, setError] = useState<string | null>(null);
   const [showPreview, setShowPreview] = useState(false);
   const [showFormatHelp, setShowFormatHelp] = useState(false);
@@ -91,50 +102,56 @@ export default function AssetListUpload() {
     setIsDragging(false);
   };
 
-  const parseAssetList = async (content: string, fileName: string): Promise<ParsedAssetList> => {
+  const parseAssetList = async (
+    content: string,
+    fileName: string
+  ): Promise<ParsedAssetList> => {
     try {
       // Detect format based on content or file extension
-      const format = fileName.toLowerCase().endsWith('.json') ? 'json' : 
-                    fileName.toLowerCase().endsWith('.xml') ? 'xml' : 
-                    fileName.toLowerCase().endsWith('.csv') ? 'csv' : 
-                    'unknown';
+      const format = fileName.toLowerCase().endsWith(".json")
+        ? "json"
+        : fileName.toLowerCase().endsWith(".xml")
+        ? "xml"
+        : fileName.toLowerCase().endsWith(".csv")
+        ? "csv"
+        : "unknown";
 
       let assets: Asset[] = [];
 
-      if (format === 'json') {
+      if (format === "json") {
         const parsed = JSON.parse(content);
         // Handle different JSON formats (Nmap, Qualys, etc.)
         if (Array.isArray(parsed)) {
-          assets = parsed.map(item => ({
+          assets = parsed.map((item) => ({
             id: crypto.randomUUID(),
             type: detectAssetType(item),
-            name: item.name || item.hostname || item.host || '',
-            identifier: item.ip || item.url || item.id || '',
+            name: item.name || item.hostname || item.host || "",
+            identifier: item.ip || item.url || item.id || "",
             metadata: item,
             source: fileName,
-            discoveredAt: new Date()
+            discoveredAt: new Date(),
           }));
         }
-      } else if (format === 'csv') {
+      } else if (format === "csv") {
         // Parse CSV content
-        const lines = content.split('\n');
-        const headers = lines[0].split(',');
-        
-        assets = lines.slice(1).map(line => {
-          const values = line.split(',');
+        const lines = content.split("\n");
+        const headers = lines[0].split(",");
+
+        assets = lines.slice(1).map((line) => {
+          const values = line.split(",");
           const item = headers.reduce((acc, header, index) => {
-            acc[header.trim()] = values[index]?.trim() || '';
+            acc[header.trim()] = values[index]?.trim() || "";
             return acc;
           }, {} as Record<string, string>);
 
           return {
             id: crypto.randomUUID(),
             type: detectAssetType(item),
-            name: item.name || item.hostname || item.host || '',
-            identifier: item.ip || item.url || item.id || '',
+            name: item.name || item.hostname || item.host || "",
+            identifier: item.ip || item.url || item.id || "",
             metadata: item,
             source: fileName,
-            discoveredAt: new Date()
+            discoveredAt: new Date(),
           };
         });
       }
@@ -149,20 +166,23 @@ export default function AssetListUpload() {
           types: assets.reduce((acc, asset) => {
             acc[asset.type] = (acc[asset.type] || 0) + 1;
             return acc;
-          }, {} as Record<string, number>)
-        }
+          }, {} as Record<string, number>),
+        },
       };
     } catch (error) {
-      throw new Error('Failed to parse asset list. Please check the file format.');
+      throw new Error(
+        "Failed to parse asset list. Please check the file format."
+      );
     }
   };
 
-  const detectAssetType = (item: Record<string, any>): Asset['type'] => {
-    if (item.ip || item.mac || item.hostname) return 'host';
-    if (item.port || item.service || item.protocol) return 'service';
-    if (item.application || item.version || item.technology) return 'application';
-    if (item.database || item.dbms || item.schema) return 'database';
-    return 'host';
+  const detectAssetType = (item: Record<string, any>): Asset["type"] => {
+    if (item.ip || item.mac || item.hostname) return "host";
+    if (item.port || item.service || item.protocol) return "service";
+    if (item.application || item.version || item.technology)
+      return "application";
+    if (item.database || item.dbms || item.schema) return "database";
+    return "host";
   };
 
   const handleDrop = async (e: React.DragEvent) => {
@@ -178,7 +198,9 @@ export default function AssetListUpload() {
       const parsed = await parseAssetList(content, file.name);
       setParsedAssets(parsed);
     } catch (error) {
-      setError(error instanceof Error ? error.message : 'Failed to process file');
+      setError(
+        error instanceof Error ? error.message : "Failed to process file"
+      );
     }
   };
 
@@ -192,20 +214,38 @@ export default function AssetListUpload() {
       const parsed = await parseAssetList(content, file.name);
       setParsedAssets(parsed);
     } catch (error) {
-      setError(error instanceof Error ? error.message : 'Failed to process file');
+      setError(
+        error instanceof Error ? error.message : "Failed to process file"
+      );
     }
   };
 
-  const getAssetTypeIcon = (type: Asset['type']) => {
+  const getAssetTypeIcon = (type: Asset["type"]) => {
     switch (type) {
-      case 'host':
-        return <div className="p-1 bg-blue-50 rounded"><FileText className="h-4 w-4 text-blue-600" /></div>;
-      case 'service':
-        return <div className="p-1 bg-green-50 rounded"><FileText className="h-4 w-4 text-green-600" /></div>;
-      case 'application':
-        return <div className="p-1 bg-purple-50 rounded"><FileText className="h-4 w-4 text-purple-600" /></div>;
-      case 'database':
-        return <div className="p-1 bg-orange-50 rounded"><FileText className="h-4 w-4 text-orange-600" /></div>;
+      case "host":
+        return (
+          <div className="p-1 bg-blue-50 rounded">
+            <FileText className="h-4 w-4 text-blue-600" />
+          </div>
+        );
+      case "service":
+        return (
+          <div className="p-1 bg-green-50 rounded">
+            <FileText className="h-4 w-4 text-green-600" />
+          </div>
+        );
+      case "application":
+        return (
+          <div className="p-1 bg-purple-50 rounded">
+            <FileText className="h-4 w-4 text-purple-600" />
+          </div>
+        );
+      case "database":
+        return (
+          <div className="p-1 bg-orange-50 rounded">
+            <FileText className="h-4 w-4 text-orange-600" />
+          </div>
+        );
     }
   };
 
@@ -226,7 +266,9 @@ export default function AssetListUpload() {
       {showFormatHelp && (
         <div className="bg-gray-50 p-4 rounded-lg space-y-4">
           <div className="flex justify-between items-center">
-            <h3 className="text-lg font-medium text-gray-900">File Format Requirements</h3>
+            <h3 className="text-lg font-medium text-gray-900">
+              File Format Requirements
+            </h3>
             <button
               onClick={() => setShowFormatHelp(false)}
               className="text-gray-400 hover:text-gray-500"
@@ -238,14 +280,21 @@ export default function AssetListUpload() {
           <div className="space-y-6">
             {/* Required Fields */}
             <div>
-              <h4 className="text-sm font-medium text-gray-900 mb-2">Required Fields by Asset Type</h4>
+              <h4 className="text-sm font-medium text-gray-900 mb-2">
+                Required Fields by Asset Type
+              </h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {Object.entries(requiredFields).map(([type, fields]) => (
                   <div key={type} className="bg-white p-3 rounded border">
-                    <h5 className="text-sm font-medium text-gray-900 capitalize mb-2">{type}</h5>
+                    <h5 className="text-sm font-medium text-gray-900 capitalize mb-2">
+                      {type}
+                    </h5>
                     <ul className="space-y-1">
                       {fields.map((field) => (
-                        <li key={field} className="text-sm text-gray-600 flex items-center">
+                        <li
+                          key={field}
+                          className="text-sm text-gray-600 flex items-center"
+                        >
                           <span className="w-1.5 h-1.5 rounded-full bg-primary/60 mr-2" />
                           {field}
                         </li>
@@ -258,12 +307,18 @@ export default function AssetListUpload() {
 
             {/* Format Examples */}
             <div className="space-y-4">
-              <h4 className="text-sm font-medium text-gray-900">Format Examples</h4>
-              
+              <h4 className="text-sm font-medium text-gray-900">
+                Format Examples
+              </h4>
+
               {Object.entries(formatSpecs).map(([format, spec]) => (
                 <div key={format} className="bg-white p-4 rounded border">
-                  <h5 className="text-sm font-medium text-gray-900 uppercase mb-2">{format} Format</h5>
-                  <p className="text-sm text-gray-600 mb-2">{spec.description}</p>
+                  <h5 className="text-sm font-medium text-gray-900 uppercase mb-2">
+                    {format} Format
+                  </h5>
+                  <p className="text-sm text-gray-600 mb-2">
+                    {spec.description}
+                  </p>
                   <pre className="bg-gray-50 p-3 rounded text-xs overflow-x-auto">
                     {spec.example}
                   </pre>
@@ -276,11 +331,13 @@ export default function AssetListUpload() {
               <ul className="space-y-2 text-sm text-blue-800">
                 <li className="flex items-start">
                   <span className="w-1.5 h-1.5 rounded-full bg-blue-500 mr-2 mt-1.5" />
-                  Each asset must have a unique identifier (IP, URL, or custom ID)
+                  Each asset must have a unique identifier (IP, URL, or custom
+                  ID)
                 </li>
                 <li className="flex items-start">
                   <span className="w-1.5 h-1.5 rounded-full bg-blue-500 mr-2 mt-1.5" />
-                  Dates should be in ISO format (YYYY-MM-DD or YYYY-MM-DDTHH:mm:ss)
+                  Dates should be in ISO format (YYYY-MM-DD or
+                  YYYY-MM-DDTHH:mm:ss)
                 </li>
                 <li className="flex items-start">
                   <span className="w-1.5 h-1.5 rounded-full bg-blue-500 mr-2 mt-1.5" />
@@ -288,7 +345,8 @@ export default function AssetListUpload() {
                 </li>
                 <li className="flex items-start">
                   <span className="w-1.5 h-1.5 rounded-full bg-blue-500 mr-2 mt-1.5" />
-                  For CSV files, use comma as delimiter and quote strings containing commas
+                  For CSV files, use comma as delimiter and quote strings
+                  containing commas
                 </li>
               </ul>
             </div>
@@ -302,11 +360,15 @@ export default function AssetListUpload() {
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
         className={`border-2 border-dashed rounded-lg p-8 text-center ${
-          isDragging ? 'border-primary bg-primary/5' : 'border-gray-300'
+          isDragging ? "border-primary bg-primary/5" : "border-gray-300"
         }`}
       >
         <div className="flex flex-col items-center">
-          <Upload className={`h-10 w-10 mb-4 ${isDragging ? 'text-primary' : 'text-gray-400'}`} />
+          <Upload
+            className={`h-10 w-10 mb-4 ${
+              isDragging ? "text-primary" : "text-gray-400"
+            }`}
+          />
           <p className="text-sm text-gray-600 mb-2">
             Drag and drop your asset list file here, or
           </p>
@@ -346,7 +408,9 @@ export default function AssetListUpload() {
           <div className="p-4 border-b border-gray-200">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-lg font-medium text-gray-900">Asset List Summary</h3>
+                <h3 className="text-lg font-medium text-gray-900">
+                  Asset List Summary
+                </h3>
                 <p className="mt-1 text-sm text-gray-500">
                   Source: {parsedAssets.source} ({parsedAssets.format})
                 </p>
@@ -361,7 +425,7 @@ export default function AssetListUpload() {
                   ) : (
                     <Eye className="h-4 w-4 mr-2" />
                   )}
-                  {showPreview ? 'Close Preview' : 'Preview Assets'}
+                  {showPreview ? "Close Preview" : "Preview Assets"}
                 </button>
                 <button className="btn-primary">
                   <List className="h-4 w-4 mr-2" />
@@ -382,19 +446,21 @@ export default function AssetListUpload() {
                   {parsedAssets.metadata.totalAssets}
                 </p>
               </div>
-              {Object.entries(parsedAssets.metadata.types).map(([type, count]) => (
-                <div key={type} className="bg-gray-50 p-4 rounded-lg">
-                  <div className="flex items-center">
-                    {getAssetTypeIcon(type as Asset['type'])}
-                    <span className="ml-2 text-sm font-medium text-gray-900 capitalize">
-                      {type}s
-                    </span>
+              {Object.entries(parsedAssets.metadata.types).map(
+                ([type, count]) => (
+                  <div key={type} className="bg-gray-50 p-4 rounded-lg">
+                    <div className="flex items-center">
+                      {getAssetTypeIcon(type as Asset["type"])}
+                      <span className="ml-2 text-sm font-medium text-gray-900 capitalize">
+                        {type}s
+                      </span>
+                    </div>
+                    <p className="mt-2 text-2xl font-semibold text-gray-900">
+                      {count}
+                    </p>
                   </div>
-                  <p className="mt-2 text-2xl font-semibold text-gray-900">
-                    {count}
-                  </p>
-                </div>
-              ))}
+                )
+              )}
             </div>
           </div>
 
