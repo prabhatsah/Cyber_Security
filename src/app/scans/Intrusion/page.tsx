@@ -1,5 +1,5 @@
 'use client';
-
+import { useEffect } from 'react';
 import { DashboardHeader } from '@/components/dashboard-header';
 import { PacketDetails } from '@/components/packet-details';
 import { PacketStats } from '@/components/packet-stats';
@@ -8,7 +8,7 @@ import { VulnerabilityAlert } from '@/components/vulnerability-alert';
 import { PacketFilter } from '@/components/packet-filter';
 import { useState } from 'react';
 
-const packetData = {
+/* const packetData = {
   count: 2,
   packets: [
     {
@@ -123,14 +123,51 @@ const packetData = {
     }
   ]
 };
-
+ */
 export default function Home() {
   const [filters, setFilters] = useState({});
+  const [packetData, setPackets] = useState({ packets: [] });
+  useEffect(() => {
+    //const data = JSON.parse(data);
+    //setPackets(data.packets);
+    async function getPackets() {
+      // In a real application, you would fetch the packets from an API
+      const response = await fetch('http://localhost:5000/api/capture');
+      const data = await response.json();
+      console.log('Fetched packets:', data);
+      setPackets(data);
+      console.log('Fetching packets...');
+    }
+    getPackets();
+  }, []);
   
   const handleFilter = (newFilters: any) => {
     setFilters(newFilters);
     // In a real application, you would filter the packets based on these criteria
     console.log('Applying filters:', newFilters);
+    async function getPackets() {
+      // In a real application, you would fetch the packets from an API
+      let requiredData: { interface?: string; protocol?: string } = {};
+      if(newFilters.interface){
+        requiredData['interface'] = newFilters.interface;
+      }
+      if(newFilters.protocol){
+        requiredData['protocol'] = newFilters.protocol;
+      }
+      const response = await fetch('http://localhost:5000/api/capture',{
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(requiredData)
+      });
+      
+      const data = await response.json();
+      console.log('Fetched packets:', data);
+      setPackets(data);
+      console.log('Fetching packets...');
+    }
+    getPackets();
   };
 
   return (
@@ -140,10 +177,10 @@ export default function Home() {
         <PacketStats />
         <PacketFilter onFilter={handleFilter} />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <PacketTable />
+          <PacketTable packets={packetData.packets} />
           <VulnerabilityAlert />
         </div>
-        <PacketDetails packets={packetData.packets} />
+        {/* <PacketDetails packets={packetData.packets} /> */}
       </main>
     </div>
   );

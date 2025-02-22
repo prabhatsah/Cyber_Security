@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/table';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-const packets = [
+/* const packets = [
   {
     id: '1',
     timestamp: '2024-03-26 10:15:23',
@@ -35,9 +35,23 @@ const packets = [
     protocol: 'ICMP',
     status: 'Critical',
   },
-];
+]; */
 
-export function PacketTable() {
+interface Packet {
+  id: string;
+  timestamp: string;
+  src_addr: string;
+  dst_addr: string;
+  protocol: string;
+  severity: string;
+}
+
+interface PacketDetailsProps {
+  packets: Packet[];
+}
+/* export function PacketTable(packets: Packet[]) { */
+export function PacketTable({ packets }: PacketDetailsProps){
+  console.log("Packets => ",packets);
   return (
     <Card className="col-span-2">
       <CardHeader>
@@ -55,23 +69,23 @@ export function PacketTable() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {packets.map((packet) => (
+            {packets && packets.length && packets.map((packet) => (
               <TableRow key={packet.id}>
                 <TableCell>{packet.timestamp}</TableCell>
-                <TableCell>{packet.source}</TableCell>
-                <TableCell>{packet.destination}</TableCell>
+                <TableCell>{packet.src_addr}</TableCell>
+                <TableCell>{packet.dst_addr}</TableCell>
                 <TableCell>{packet.protocol}</TableCell>
                 <TableCell>
                   <span
                     className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                      packet.status === 'Safe'
+                      packet.severity === 'safe'
                         ? 'bg-green-100 text-green-800'
-                        : packet.status === 'Warning'
+                        : packet.severity === 'warning'
                         ? 'bg-yellow-100 text-yellow-800'
                         : 'bg-red-100 text-red-800'
                     }`}
                   >
-                    {packet.status}
+                    {packet.severity}
                   </span>
                 </TableCell>
               </TableRow>

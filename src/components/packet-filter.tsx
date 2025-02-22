@@ -8,8 +8,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Filter, RefreshCcw } from 'lucide-react';
 
 const interfaces = [
-  { id: 'eth0', name: 'Ethernet' },
-  { id: 'wlan0', name: 'Wi-Fi' },
+  { id: 'Ethernet', name: 'Ethernet' },
+  { id: 'Wi-Fi', name: 'Wi-Fi' },
   { id: 'docker0', name: 'Docker Bridge' },
   { id: 'lo', name: 'Loopback' },
 ];
