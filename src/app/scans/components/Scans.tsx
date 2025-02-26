@@ -1,7 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, Shield, Network, Upload, Book } from "lucide-react";
+import {
+  Plus,
+  Shield,
+  Network,
+  Upload,
+  Book,
+  Activity,
+  ShieldEllipsis,
+} from "lucide-react";
 import ScanModal from "./ScanModal";
 import PortScanModal from "./PortScanModal";
 import ComplianceScanModal from "./ComplianceScanModal";
@@ -11,6 +19,7 @@ import type { ScanResult } from "@/lib/scanner";
 import type { PortScanResult } from "@/lib/portScanner";
 import type { ComplianceScanResult } from "./ComplianceScanModal";
 import CyberSecurityComponents from "./CyberSecurityComponents";
+import useGlobalLoading from "@/lib/useGlobalLoading";
 
 export function Scans() {
   const [activeTab, setActiveTab] = useState<
@@ -52,10 +61,34 @@ export function Scans() {
     setShowComplianceScan(false);
   };
 
+  // if (true) {
+  //   return (
+  //     <div className="flex items-center justify-center min-h-[50vh] animate-pulse duration-1000 text-primary ">
+  //       <ShieldEllipsis className="h-12 w-12  " />
+  //       <p className="text-2xl ml-2">Loading ...</p>
+  //     </div>
+  //   );
+  // }
+
+  const { withLoading } = useGlobalLoading();
+  const loadSpinner = async () => {
+    await withLoading(async () => {
+      // Simulate an API call
+      await new Promise((resolve) => setTimeout(resolve, 123000));
+      console.log("Data fetched successfully!");
+    });
+  };
+
   return (
     <div>
       <div className="flex justify-between items-center mb-5">
         <div>
+          <button
+            className={`py-2 px-4 font-medium `}
+            onClick={() => loadSpinner()}
+          >
+            Load spinner
+          </button>
           <h1 className="text-2xl font-semibold text-primary">
             Security Scans
           </h1>

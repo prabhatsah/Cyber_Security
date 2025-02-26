@@ -7,9 +7,9 @@ const GenericBreadcrumb = () => {
 
   return (
     <nav aria-label="breadcrumb">
-      <ul className="flex items-center space-x-2 text-gray-600 text-sm">
+      <ul className="flex items-center space-x-1 text-gray-600 text-sm">
         {items.map((item, index) => (
-          <li key={index} className="flex items-center space-x-2 ">
+          <li key={index} className="flex items-center space-x-1 ">
             {item.href ? (
               <a href={item.href} className="">
                 {item.label}
