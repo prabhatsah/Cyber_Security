@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useIsFetching, useQuery } from "@tanstack/react-query";
 import {
   AlertTriangle,
   AlertCircle,
@@ -11,6 +11,7 @@ import {
   Shield,
   Globe,
   Target,
+  ShieldEllipsis,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import type { Database } from "@/lib/database.types";
@@ -36,6 +37,8 @@ import {
   startOfDay,
   endOfDay,
 } from "date-fns";
+import useGlobalLoading from "@/lib/useGlobalLoading";
+import { useEffect } from "react";
 
 ChartJS.register(
   CategoryScale,
@@ -55,6 +58,8 @@ type VulnerabilityScan =
 type ScanTarget = Database["public"]["Tables"]["scan_targets"]["Row"];
 
 export default function Dashboard() {
+  const { showLoading, hideLoading } = useGlobalLoading();
+
   // Fetch all necessary data in parallel
   const { data: recentScans, isLoading: scansLoading } = useQuery({
     queryKey: ["recent-scans"],
@@ -101,8 +106,6 @@ export default function Dashboard() {
       return data as ScanTarget[];
     },
   });
-
-  const isLoading = scansLoading || findingsLoading || targetsLoading;
 
   // Process findings data
   const findingsBySeverity =
@@ -268,13 +271,27 @@ export default function Dashboard() {
     },
   ];
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <Activity className="h-8 w-8 text-primary animate-spin" />
-      </div>
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <div className="flex items-center justify-center min-h-[400px] animate-pulse duration-1000">
+  //       <ShieldEllipsis className="h-12 w-12  " />
+  //       <p className="text-2xl ml-2">Loading ...</p>
+  //     </div>
+  //   );
+  // }
+
+  const isFetching = useIsFetching();
+  useEffect(() => {
+    if (isFetching > 0) {
+      setTimeout(() => {
+        showLoading();
+      }, 0);
+    } else {
+      setTimeout(() => {
+        hideLoading();
+      }, 0);
+    }
+  }, [isFetching, showLoading, hideLoading]);
 
   return (
     <div>

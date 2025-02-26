@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   AlertTriangle,
   Bot,
@@ -16,6 +16,8 @@ import {
   Workflow,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useIsFetching } from "@tanstack/react-query";
+import useGlobalLoading from "@/lib/useGlobalLoading";
 
 interface AIAgent {
   id: string;
