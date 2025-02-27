@@ -525,8 +525,9 @@ video {
   --primary-hover: #1a73e8;
   --secondary: #f1f3f4;
   --success: #10b981;
-  --error: #ef4444;
-  --warning: #f59e0b;
+  --error: #fb2c36;
+  --critical: #82181a;
+  --warning: #fd9a00;
   --background: 0 0% 100%;
   --foreground: 0 0% 3.9%;
   --card: 0 0% 100%;
