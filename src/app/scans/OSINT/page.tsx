@@ -55,17 +55,7 @@ import Layout from "@/components/Layout";
 import useGlobalLoading from "@/lib/useGlobalLoading";
 import { useIsFetching } from "@tanstack/react-query";
 import { useBreadcrumb } from "@/contexts/BreadcrumbContext";
-
-// Define interfaces for the data structure
-interface HarvesterData {
-  // Replace these with actual keys from your API response
-  [key: string]: any;
-}
-
-interface ApiResponse {
-  data: HarvesterData;
-  error?: string;
-}
+import { ApiResponse, HarvesterData } from "./components/type";
 
 export default function TheHarvesterDashboard() {
   const [query, setQuery] = useState<string>(""); // Specify string type for query
@@ -83,9 +73,16 @@ export default function TheHarvesterDashboard() {
   // Define the fetchData function with proper typing
   const fetchData = async (searchType: string): Promise<void> => {
     try {
+      // const response = await fetch(
+      //   `/api/OSINT/theharvester?query=${query}&type=${searchType}`
+      // );
+
       const response = await fetch(
-        `/api/OSINT/theharvester?query=${query}&type=${searchType}`
+        //`/api/OSINT/theharvester?query=${query}&type=${searchType}`
+        // `/api/OSINT/virusTotal?domain=http://malware.wicar.org`
+        `/api/OSINT/virusTotal?domain=amazon.com`
       );
+
       const result: ApiResponse = await response.json();
 
       if (result.error) throw new Error(result.error);
@@ -101,18 +98,18 @@ export default function TheHarvesterDashboard() {
 
   return (
     <Layout>
-      <div className="min-h-[90vh] ">
+      <div className="">
         <p className="font-bold text-gray-600">OSINT & Threat Intelligence</p>
         <SearchBar query={query} setQuery={setQuery} fetchData={fetchData} />
         {error && <p className="text-red-600 text-center">{error}</p>}
 
-        <Widgets />
+        {/* <Widgets /> */}
         {data && (
           <div className="space-y-8">
-            {/* <Widgets data={data} /> */}
-            <GraphView data={data} />
+            <Widgets widgetData={data} />
+            {/* <GraphView data={data} />
             <MapView data={data} />
-            <DetailsTable data={data} />
+            <DetailsTable data={data} /> */}
           </div>
         )}
       </div>
