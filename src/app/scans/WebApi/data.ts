@@ -2420,12 +2420,12 @@ const severity = [
   {
     severity: "critical",
     count: 0,
-    borderColor: "bg-green-800",
+    borderColor: "bg-red-900",
   },
   {
     severity: "high",
     count: 0,
-    borderColor: "bg-green-800",
+    borderColor: "bg-red-500",
   },
   {
     severity: "medium",
@@ -2435,15 +2435,17 @@ const severity = [
   {
     severity: "low",
     count: 0,
-    borderColor: "bg-red-500",
+    borderColor: "bg-green-800",
   },
   {
     severity: "info",
     count: 0,
-    borderColor: "bg-green-800",
+    borderColor: "bg-blue-600",
   },
 ];
 
+let alertsCount = 0;
+data.forEach((eachData) => (alertsCount += eachData.scan_findings.length));
 for (let i = 0; i < data[0].scan_findings.length; i++) {
   for (let j = 0; j < severity.length; j++) {
     if (severity[j]["severity"] === data[0].scan_findings[i]["severity"]) {
@@ -2517,4 +2519,4 @@ const tableData: Array<{
   },
 ];
 
-export { data, severity, tableData };
+export { data, severity, tableData, alertsCount };

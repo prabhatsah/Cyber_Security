@@ -5,13 +5,9 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/accordion";
+} from "@/components/Accordion";
 
-import {
-  RiAddCircleFill,
-  RiArrowLeftRightLine,
-  RiCheckboxMultipleFill,
-} from "@remixicon/react";
+import { RiCheckboxMultipleFill } from "@remixicon/react";
 
 import { Badge } from "@/components/Badge";
 import {
@@ -24,11 +20,11 @@ import {
   TableRow,
 } from "@/components/Table";
 import Layout from "@/components/Layout";
-import { data, severity, tableData } from "./data";
+import { data, severity, tableData, alertsCount } from "./data";
 
 console.log(severity);
 
-function classNames(...classes) {
+function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
@@ -72,7 +68,7 @@ const data1 = [
   },
 ];
 
-const currencyFormatter = (number) => {
+const currencyFormatter = (number: number) => {
   return "$" + Intl.NumberFormat("us").format(number).toString();
 };
 
@@ -97,8 +93,15 @@ export default function Dashboard() {
                       category="count"
                       index="severity"
                       showTooltip={false}
+                      showLabel={false}
                       className="h-24 hide-donut-center"
-                      colors={["red-900", "red-500", "yellow-500", "green-800"]}
+                      colors={[
+                        "red-900",
+                        "red-500",
+                        "yellow-500",
+                        "green-800",
+                        "blue-600",
+                      ]}
                     />
                     <div className="flex flex-wrap justify-center gap-4 mt-2">
                       <span
@@ -106,10 +109,10 @@ export default function Dashboard() {
               bg-tremor-background py-1 pl-2.5 pr-1 ring-1 ring-inset ring-tremor-ring"
                       >
                         <span className="text-sm font-semibold text-gray-700">
-                          Reputation
+                          Alerts
                         </span>
                         <span className="rounded-md text-sm bg-red-100 px-2  text-red-900 font-bold ">
-                          -56
+                          {alertsCount}
                         </span>
                       </span>
                     </div>
@@ -121,7 +124,7 @@ export default function Dashboard() {
                     <p className="text-xs">Summary of Alerts</p>
                     <ul
                       role="list"
-                      className="space-y-1 grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2"
+                      className="space-y-1 grid grid-cols-1 sm:grid-cols-3 gap-4 mt-2"
                     >
                       {severity.map((item) => (
                         <li key={item.severity} className="flex space-x-3">
@@ -223,7 +226,14 @@ export default function Dashboard() {
                       <TableCell>
                         <Badge
                           variant={
-                            item.status === "Inactive" ? "warning" : "default"
+                            item.severity === "critical" ||
+                            item.severity === "high"
+                              ? "error"
+                              : item.severity === "medium"
+                              ? "warning"
+                              : item.severity === "low"
+                              ? "success"
+                              : "default"
                           }
                         >
                           {item.severity}
