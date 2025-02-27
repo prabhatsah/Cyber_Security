@@ -70,25 +70,19 @@ export function Scans() {
   //   );
   // }
 
-  const { withLoading } = useGlobalLoading();
-  const loadSpinner = async () => {
-    await withLoading(async () => {
-      // Simulate an API call
-      await new Promise((resolve) => setTimeout(resolve, 123000));
-      console.log("Data fetched successfully!");
-    });
-  };
+  // const { withLoading } = useGlobalLoading();
+  // const loadSpinner = async () => {
+  //   await withLoading(async () => {
+  //     // Simulate an API call
+  //     await new Promise((resolve) => setTimeout(resolve, 123000));
+  //     console.log("Data fetched successfully!");
+  //   });
+  // };
 
   return (
     <div>
       <div className="flex justify-between items-center mb-5">
         <div>
-          <button
-            className={`py-2 px-4 font-medium `}
-            onClick={() => loadSpinner()}
-          >
-            Load spinner
-          </button>
           <h1 className="text-2xl font-semibold text-primary">
             Security Scans
           </h1>

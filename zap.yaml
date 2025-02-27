@@ -1,21 +1,22 @@
+
 env:
   contexts:
-    - name: "WicarScan"
+    - name: "DynamicScan"
       urls:
-        - "http://malware.wicar.org/"
+        - "http://example.com"
       includePaths:
-        - "http://malware.wicar.org/.*"
+        - "http://example.com/.*"
 
 jobs:
   - type: "spider"
     parameters:
-      context: "WicarScan"
+      context: "DynamicScan"
       maxDepth: 0
       maxChildren: 10
 
   - type: "activeScan"
     parameters:
-      context: "WicarScan"
+      context: "DynamicScan"
       policy: "Default"
 
   - type: "report"

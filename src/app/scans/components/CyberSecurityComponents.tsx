@@ -26,6 +26,7 @@ interface AIAgent {
   icon: typeof BrainCircuit;
   expertise: string[];
   description: string;
+  route: string;
 }
 
 interface ScanSchedule {
@@ -52,6 +53,7 @@ const comps: AIAgent[] = [
     ],
     description:
       "Vulnerability scanning is the process of systematically scanning systems, networks, and applications to identify security weaknesses. It helps organizations detect and address potential threats before they can be exploited by attackers.",
+    route: "/scans/vulnerabilityScan",
   },
   {
     id: "pen-test",
@@ -67,6 +69,7 @@ const comps: AIAgent[] = [
     ],
     description:
       "Simulating real-world attacks to identify and exploit security weaknesses, helping organizations strengthen their defenses.",
+    route: "/scans/penTest",
   },
   {
     id: "network-intrusion-detection",
@@ -82,6 +85,7 @@ const comps: AIAgent[] = [
     ],
     description:
       "Monitoring and analyzing network traffic to detect and prevent security threats.",
+    route: "/scans/networkIntrusion",
   },
   {
     id: "web-api-security",
@@ -97,6 +101,7 @@ const comps: AIAgent[] = [
     ],
     description:
       "Ensuring security of web applications and APIs against vulnerabilities and attacks.",
+    route: "/scans/webApi",
   },
   {
     id: "cloud-container-security",
@@ -112,6 +117,7 @@ const comps: AIAgent[] = [
     ],
     description:
       "Securing cloud environments and containerized applications from threats and misconfigurations.",
+    route: "/scans/cloudContainer",
   },
   {
     id: "endpoint-malware-analysis",
@@ -127,6 +133,7 @@ const comps: AIAgent[] = [
     ],
     description:
       "Protecting endpoints from malware and analyzing threats for prevention and mitigation.",
+    route: "/scans/endpointMalware",
   },
   {
     id: "active-directory-security",
@@ -142,6 +149,7 @@ const comps: AIAgent[] = [
     ],
     description:
       "Securing Active Directory environments against privilege escalation and unauthorized access.",
+    route: "/scans/activeDirectory",
   },
   {
     id: "osint-threat-intelligence",
@@ -157,6 +165,7 @@ const comps: AIAgent[] = [
     ],
     description:
       "Gathering and analyzing intelligence to identify emerging cyber threats and attack vectors.",
+    route: "/scans/OSINT",
   },
   {
     id: "soar-security-automation",
@@ -172,6 +181,7 @@ const comps: AIAgent[] = [
     ],
     description:
       "Automating security operations to improve response time and efficiency in threat management.",
+    route: "/scans/SOAR",
   },
   {
     id: "ai-driven-security-analysis",
@@ -187,13 +197,15 @@ const comps: AIAgent[] = [
     ],
     description:
       "Leveraging AI and machine learning to enhance security analysis and threat detection.",
+    route: "/scans/aiDrivenAnalysis",
   },
 ];
 
 export default function CyberSecurityComponents() {
   const router = useRouter();
-  const handleClick = () => {
-    router.push("/scans/OSINT");
+
+  const handleClick = (route: string) => {
+    router.push(route);
   };
 
   const [selectedAgent, setSelectedAgent] = useState<AIAgent | null>(null);
@@ -282,7 +294,7 @@ export default function CyberSecurityComponents() {
                 Start Scan
               </button> */}
               <button
-                onClick={() => handleClick()}
+                onClick={() => handleClick(agent.route)}
                 className="flex-1 btn-primary"
               >
                 <Play className="h-4 w-4 mr-2" />
