@@ -83,6 +83,7 @@ module.exports = {
           foreground: "var(--secondary-foreground)",
         },
         success: "var(--success)",
+        critical: "var(--critical)",
         error: "var(--error)",
         warning: "var(--warning)",
         background: "hsl(var(--background))",
