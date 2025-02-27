@@ -1,0 +1,25 @@
+env:
+  contexts:
+    - name: "WicarScan"
+      urls:
+        - "http://malware.wicar.org/"
+      includePaths:
+        - "http://malware.wicar.org/.*"
+
+jobs:
+  - type: "spider"
+    parameters:
+      context: "WicarScan"
+      maxDepth: 0
+      maxChildren: 10
+
+  - type: "activeScan"
+    parameters:
+      context: "WicarScan"
+      policy: "Default"
+
+  - type: "report"
+    parameters:
+      template: "traditional-json-plus"
+      reportDir: "/zap/wrk/"
+      reportFile: "zap-report.json"
