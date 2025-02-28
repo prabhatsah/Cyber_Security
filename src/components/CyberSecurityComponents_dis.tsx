@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { AlertTriangle, Bot, BrainCircuit, Calendar, Clock, GlobeLock, Play, ScanSearch, Search, ServerCog, ShieldAlert, ShieldCheck, Users, Workflow } from 'lucide-react';
+import {useRouter } from 'next/Navigation';
 
 interface AIAgent {
   id: string;
@@ -168,6 +169,7 @@ export default function CyberSecurityComponents() {
   const [selectedAgent, setSelectedAgent] = useState<AIAgent | null>(null);
   const [schedules, setSchedules] = useState<ScanSchedule[]>([]);
   const [showScheduleForm, setShowScheduleForm] = useState(false);
+  const router = useRouter();
   const [newSchedule, setNewSchedule] = useState({
     frequency: 'once' as const,
     nextRun: new Date()
@@ -188,7 +190,7 @@ export default function CyberSecurityComponents() {
   };
 
   const handleStartScan = (agentId: string) => {
-    const schedule: ScanSchedule = {
+    /* const schedule: ScanSchedule = {
       id: crypto.randomUUID(),
       agentId,
       frequency: 'once',
@@ -196,7 +198,8 @@ export default function CyberSecurityComponents() {
       status: 'running'
     };
 
-    setSchedules(prev => [...prev, schedule]);
+    setSchedules(prev => [...prev, schedule]); */
+    router.push('/scans/Intrusion');
   };
 
   return (
