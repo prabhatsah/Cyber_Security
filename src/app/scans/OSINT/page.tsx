@@ -80,13 +80,15 @@ export default function TheHarvesterDashboard() {
       const response = await fetch(
         //`/api/OSINT/theharvester?query=${query}&type=${searchType}`
         // `/api/OSINT/virusTotal?domain=http://malware.wicar.org`
-        `/api/OSINT/virusTotal?domain=amazon.com`
+        // `/api/OSINT/virusTotal?domain=amazon.com`
+        `/api/OSINT/virusTotal?domain=${query}`
       );
 
       const result: ApiResponse = await response.json();
 
       if (result.error) throw new Error(result.error);
       setData(result.data);
+      setError(null);
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);
@@ -106,7 +108,7 @@ export default function TheHarvesterDashboard() {
         {/* <Widgets /> */}
         {data && (
           <div className="space-y-8">
-            <Widgets widgetData={data} />
+            <Widgets widgetData={data} queryUrl={query} />
             {/* <GraphView data={data} />
             <MapView data={data} />
             <DetailsTable data={data} /> */}
