@@ -1,0 +1,25 @@
+env:
+  contexts:
+    - name: "DynamicScan"
+      urls:
+        - "${ZAP_TARGET_URL}"
+      includePaths:
+        - "${ZAP_TARGET_URL}/.*"
+
+jobs:
+  - type: "spider"
+    parameters:
+      context: "DynamicScan"
+      maxDepth: 0
+      maxChildren: 10
+
+  - type: "activeScan"
+    parameters:
+      context: "DynamicScan"
+      policy: "Default"
+
+  - type: "report"
+    parameters:
+      template: "traditional-json-plus"
+      reportDir: "/zap/wrk/"
+      reportFile: "zap-report.json"

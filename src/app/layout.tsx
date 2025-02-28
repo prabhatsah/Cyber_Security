@@ -1,13 +1,16 @@
-import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-import { Providers } from './providers';
-import '../styles/globals.css';
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import { Providers } from "./providers";
+import "../styles/globals.css";
+import { BreadcrumbProvider } from "@/contexts/BreadcrumbContext";
+import { LoadingProvider } from "@/contexts/LoadingContext";
+import GlobalLoadingSpinner from "@/components/GlobalLoadingSpinner";
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'SecureGuard - Security Platform',
-  description: 'Advanced security monitoring and compliance platform',
+  title: "SecureGuard - Security Platform",
+  description: "Advanced security monitoring and compliance platform",
 };
 
 export default function RootLayout({
@@ -18,7 +21,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Providers>{children}</Providers>
+        <LoadingProvider>
+          <GlobalLoadingSpinner />
+          <BreadcrumbProvider>
+            <Providers>{children}</Providers>
+          </BreadcrumbProvider>
+        </LoadingProvider>
       </body>
     </html>
   );

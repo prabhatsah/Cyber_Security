@@ -1,16 +1,25 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, Shield, Network, Upload, Book } from "lucide-react";
-import ScanModal from "./ScanModal_dis";
-import PortScanModal from "./PortScanModal_dis";
-import ComplianceScanModal from "./ComplianceScanModal_dis";
+import {
+  Plus,
+  Shield,
+  Network,
+  Upload,
+  Book,
+  Activity,
+  ShieldEllipsis,
+} from "lucide-react";
+import ScanModal from "./ScanModal";
+import PortScanModal from "./PortScanModal";
+import ComplianceScanModal from "./ComplianceScanModal";
 import AssetListUpload from "./AssetListUpload";
-import SpecializedAIAgents from "./SpecializedAIAgents_dis";
-import type { ScanResult } from "../lib/scanner";
-import type { PortScanResult } from "../lib/portScanner";
-import type { ComplianceScanResult } from "./ComplianceScanModal_dis";
-import CyberSecurityComponents from "./CyberSecurityComponents_dis";
+import SpecializedAIAgents from "./SpecializedAIAgents";
+import type { ScanResult } from "@/lib/scanner";
+import type { PortScanResult } from "@/lib/portScanner";
+import type { ComplianceScanResult } from "./ComplianceScanModal";
+import CyberSecurityComponents from "./CyberSecurityComponents";
+import useGlobalLoading from "@/lib/useGlobalLoading";
 
 export function Scans() {
   const [activeTab, setActiveTab] = useState<
@@ -52,15 +61,34 @@ export function Scans() {
     setShowComplianceScan(false);
   };
 
+  // if (true) {
+  //   return (
+  //     <div className="flex items-center justify-center min-h-[50vh] animate-pulse duration-1000 text-primary ">
+  //       <ShieldEllipsis className="h-12 w-12  " />
+  //       <p className="text-2xl ml-2">Loading ...</p>
+  //     </div>
+  //   );
+  // }
+
+  // const { withLoading } = useGlobalLoading();
+  // const loadSpinner = async () => {
+  //   await withLoading(async () => {
+  //     // Simulate an API call
+  //     await new Promise((resolve) => setTimeout(resolve, 123000));
+  //     console.log("Data fetched successfully!");
+  //   });
+  // };
+
   return (
     <div>
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center mb-5">
         <div>
           <h1 className="text-2xl font-semibold text-primary">
             Security Scans
           </h1>
           <p className="mt-1 text-sm text-gray-500">
-            Manage security assessments with specialized AI agents
+            Manage security assessments with Cyber Security Components &
+            specialized AI agents
           </p>
         </div>
         <div className="flex space-x-3">
@@ -95,13 +123,6 @@ export function Scans() {
           </button>
         </div>
       </div>
-
-      {/* AI Security Agents Section */}
-      {/* <div className="mt-8">
-        <h2 className="text-lg font-medium text-gray-900 mb-4">Specialized AI Security Agents</h2>
-        <SpecializedAIAgents />
-      </div> */}
-      {/* Tab Navigation */}
       <div className="flex space-x-4 border-b mb-6">
         <button
           className={`py-2 px-4 font-medium ${
