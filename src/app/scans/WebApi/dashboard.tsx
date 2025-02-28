@@ -166,19 +166,16 @@ export default function Dashboard({ _data }) {
             </p>
           </Card>
         </div>
-
-        <div className="my-4">
-          <div>
-            <h3 className="font-semibold text-gray-900 dark:text-gray-50">
-              Alerts
-            </h3>
-          </div>
-          <TableRoot className="mt-8">
+        <div className="w-full mt-8">
+          <h1 className="text-md font-semibold text-gray-900 dark:text-gray-50">
+            Alerts
+          </h1>
+          <TableRoot className="mt-3">
             <Table>
               <TableHead>
                 <TableRow>
                   {/* <TableHeaderCell>Id</TableHeaderCell> */}
-                  <TableHeaderCell>Alert</TableHeaderCell>
+                  <TableHeaderCell>Name</TableHeaderCell>
                   <TableHeaderCell>Risk Level</TableHeaderCell>
                   <TableHeaderCell>Instances</TableHeaderCell>
                 </TableRow>
@@ -214,7 +211,7 @@ export default function Dashboard({ _data }) {
 
         <div className="w-full mt-8">
           <h1 className="text-md font-semibold text-gray-900 dark:text-gray-50">
-            Alert Detail
+            Alert Details
           </h1>
           <Accordion type="multiple" className="mt-3 ">
             {_data.site[0].alerts.map((dataItem) => (
@@ -224,21 +221,36 @@ export default function Dashboard({ _data }) {
                     <RiAlertLine
                       className={`size-4 ${
                         ristCodeVsDesc[dataItem.riskcode] === "critical"
-                          ? "text-red-800"
+                          ? "text-red-900"
                           : ristCodeVsDesc[dataItem.riskcode] === "high"
-                          ? "text-red-600"
+                          ? "text-red-900"
                           : ristCodeVsDesc[dataItem.riskcode] === "medium"
-                          ? "text-warning"
+                          ? "text-yellow-900"
                           : ristCodeVsDesc[dataItem.riskcode] === "low"
-                          ? "text-gray-400"
-                          : "text-green-400"
+                          ? "text-emerald-900"
+                          : "text-blue-900"
                       }`}
                     />
                     {dataItem.alert}
+                    <Badge
+                      variant={
+                        ristCodeVsDesc[dataItem.riskcode] === "critical" ||
+                        ristCodeVsDesc[dataItem.riskcode] === "high"
+                          ? "error"
+                          : ristCodeVsDesc[dataItem.riskcode] === "medium"
+                          ? "warning"
+                          : ristCodeVsDesc[dataItem.riskcode] === "low"
+                          ? "success"
+                          : "default"
+                      }
+                    >
+                      {ristCodeVsDesc[dataItem.riskcode]}
+                    </Badge>
                   </span>
                 </AccordionTrigger>
                 <AccordionContent className="pl-6">
-                  <div dangerouslySetInnerHTML={{ __html: dataItem.desc }} />
+                  <p>{removePTags(dataItem.desc)}</p>
+
                   {dataItem.instances.map((instance) => (
                     <AccordionItem value={instance.id} key={instance.id}>
                       <AccordionTrigger>
@@ -248,30 +260,77 @@ export default function Dashboard({ _data }) {
                         </span>
                       </AccordionTrigger>
                       <AccordionContent className="pl-6">
-                        <p>Method: {instance.method}</p>
-                        <p>Paramer: {instance.param}</p>
-                        <p>Attack: {instance.attack}</p>
-                        <p>Evidence: {instance.evidence}</p>
+                        <p>
+                          <span className="text-sm text-gray-900 font-semibold">
+                            Method:
+                          </span>{" "}
+                          {instance.method}
+                        </p>
+                        <p className="mt-1">
+                          <span className="text-sm text-gray-900 font-semibold">
+                            Parameter:
+                          </span>{" "}
+                          {instance.param}
+                        </p>
+                        <p className="mt-1">
+                          <span className="text-sm text-gray-900 font-semibold">
+                            Attack:
+                          </span>{" "}
+                          {instance.attack}
+                        </p>
+                        <p className="mt-1">
+                          <span className="text-sm text-gray-900 font-semibold">
+                            Evidence:
+                          </span>{" "}
+                          {instance.evidence}
+                        </p>
                       </AccordionContent>
                     </AccordionItem>
                   ))}
-                  <p className="mt-2">Instances: {dataItem.count}</p>
                   <p className="mt-2">
-                    Solution: {removePTags(dataItem.solution)}
+                    <span className="text-sm text-gray-900 font-semibold">
+                      Instances:
+                    </span>{" "}
+                    {dataItem.count}
                   </p>
                   <p className="mt-2">
-                    <p>Reference:</p>
-                    <ul>
+                    <span className="text-sm text-gray-900 font-semibold">
+                      Solution:
+                    </span>{" "}
+                    {removePTags(dataItem.solution)}
+                  </p>
+                  <p className="flex mt-2">
+                    <p className="text-sm text-gray-900 font-semibold">
+                      Reference:
+                    </p>
+                    <ul className="ml-1">
                       {extractTextFromPTags(dataItem.reference).map(
                         (reference, index) => (
-                          <li key={index}>{reference}</li>
+                          <li key={index} className="mb-1">
+                            {reference}
+                          </li>
                         )
                       )}
                     </ul>
                   </p>
-                  <p className="mt-2">CWE Id: {dataItem["cweid"]}</p>
-                  <p className="mt-2">WASC Id: {dataItem["wascid"]}</p>
-                  <p className="mt-2">Plugin Id: {dataItem["pluginid"]}</p>
+                  <p className="mt-2">
+                    <span className="text-sm text-gray-900 font-semibold">
+                      CWE Id:
+                    </span>{" "}
+                    {dataItem["cweid"]}
+                  </p>
+                  <p className="mt-2">
+                    <span className="text-sm text-gray-900 font-semibold">
+                      WASC Id:
+                    </span>{" "}
+                    {dataItem["wascid"]}
+                  </p>
+                  <p className="mt-2">
+                    <span className="text-sm text-gray-900 font-semibold">
+                      Plugin Id:
+                    </span>{" "}
+                    {dataItem["pluginid"]}
+                  </p>
                 </AccordionContent>
               </AccordionItem>
             ))}
