@@ -1,11 +1,10 @@
-
 env:
   contexts:
     - name: "DynamicScan"
       urls:
-        - "http://example.com"
+        - "${ZAP_TARGET_URL}"
       includePaths:
-        - "http://example.com/.*"
+        - "${ZAP_TARGET_URL}/.*"
 
 jobs:
   - type: "spider"
