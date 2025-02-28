@@ -7,7 +7,7 @@ import {
   AccordionTrigger,
 } from "@/components/Accordion";
 
-import { RiCheckboxMultipleFill } from "@remixicon/react";
+import { RiAlertLine, RiCheckboxMultipleFill, RiLink } from "@remixicon/react";
 
 import { Badge } from "@/components/Badge";
 import {
@@ -27,34 +27,6 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-const _severity = [
-  {
-    severity: "critical",
-    count: 0,
-    borderColor: "bg-red-900",
-  },
-  {
-    severity: "high",
-    count: 0,
-    borderColor: "bg-red-500",
-  },
-  {
-    severity: "medium",
-    count: 0,
-    borderColor: "bg-yellow-500",
-  },
-  {
-    severity: "low",
-    count: 0,
-    borderColor: "bg-green-800",
-  },
-  {
-    severity: "info",
-    count: 0,
-    borderColor: "bg-blue-600",
-  },
-];
-
 const ristCodeVsDesc = {
   0: "info",
   1: "low",
@@ -63,20 +35,62 @@ const ristCodeVsDesc = {
   4: "critical",
 };
 
+function removePTags(htmlString) {
+  return htmlString.replace(/<\/?p>/g, "");
+}
+
+function extractTextFromPTags(htmlString) {
+  const matches = htmlString.match(/<p>(.*?)<\/p>/gs); // Use 's' flag to match multi-line content
+  return matches ? matches.map((p) => p.replace(/<\/?p>/g, "")) : [];
+}
+
 export default function Dashboard({ _data }) {
-  let _alertsCount = _data.site[0].alerts.length;
+  const _severity = [
+    {
+      severity: "critical",
+      count: 0,
+      borderColor: "bg-red-900",
+    },
+    {
+      severity: "high",
+      count: 0,
+      borderColor: "bg-red-500",
+    },
+    {
+      severity: "medium",
+      count: 0,
+      borderColor: "bg-yellow-500",
+    },
+    {
+      severity: "low",
+      count: 0,
+      borderColor: "bg-green-800",
+    },
+    {
+      severity: "info",
+      count: 0,
+      borderColor: "bg-blue-600",
+    },
+  ];
+
+  const _alertsCount = _data.site[0].alerts.length;
 
   for (let i = 0; i < _data.site[0].alerts.length; i++) {
     for (let j = 0; j < _severity.length; j++) {
-      if (_severity[j]["severity"] === _data.site[0].alerts[i]["severity"]) {
+      if (
+        _severity[j]["severity"] ===
+        ristCodeVsDesc[_data.site[0].alerts[i]["riskcode"]]
+      ) {
         _severity[j]["count"] += 1;
       }
     }
   }
 
+  console.log("----------- _severity");
+  console.log(_severity);
+
   return (
-    <div className="min-h-[90vh] ">
-      <p className="font-bold text-gray-600">Web and Api Security</p>
+    <div className="min-h-[90vh]">
       <section className="my-4">
         <div className="grid grid-cols-4 gap-5">
           <Card className="col-span-1 rounded-md ">
@@ -158,16 +172,12 @@ export default function Dashboard({ _data }) {
             <h3 className="font-semibold text-gray-900 dark:text-gray-50">
               Alerts
             </h3>
-            <p className="mt-1 text-sm leading-6 text-gray-600 dark:text-gray-400">
-              For each step: result (Pass/Fail) - risk (of highest alert(s) for
-              the step, if any).
-            </p>
           </div>
           <TableRoot className="mt-8">
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableHeaderCell>Id</TableHeaderCell>
+                  {/* <TableHeaderCell>Id</TableHeaderCell> */}
                   <TableHeaderCell>Alert</TableHeaderCell>
                   <TableHeaderCell>Risk Level</TableHeaderCell>
                   <TableHeaderCell>Instances</TableHeaderCell>
@@ -176,17 +186,17 @@ export default function Dashboard({ _data }) {
               <TableBody>
                 {_data.site[0].alerts.map((item) => (
                   <TableRow key={item.pluginid}>
-                    <TableCell>{item.pluginid}</TableCell>
+                    {/* <TableCell>{item.pluginid}</TableCell> */}
                     <TableCell>{item.alert}</TableCell>
                     <TableCell>
                       <Badge
                         variant={
-                          item.severity === "critical" ||
-                          item.severity === "high"
+                          ristCodeVsDesc[item.riskcode] === "critical" ||
+                          ristCodeVsDesc[item.riskcode] === "high"
                             ? "error"
-                            : item.severity === "medium"
+                            : ristCodeVsDesc[item.riskcode] === "medium"
                             ? "warning"
-                            : item.severity === "low"
+                            : ristCodeVsDesc[item.riskcode] === "low"
                             ? "success"
                             : "default"
                         }
@@ -211,21 +221,33 @@ export default function Dashboard({ _data }) {
               <AccordionItem value={dataItem.pluginid} key={dataItem.pluginid}>
                 <AccordionTrigger>
                   <span className="flex items-center gap-2 h-8">
-                    <RiCheckboxMultipleFill className="size-4 text-blue-500" />
+                    <RiAlertLine
+                      className={`size-4 ${
+                        ristCodeVsDesc[dataItem.riskcode] === "critical"
+                          ? "text-red-800"
+                          : ristCodeVsDesc[dataItem.riskcode] === "high"
+                          ? "text-red-600"
+                          : ristCodeVsDesc[dataItem.riskcode] === "medium"
+                          ? "text-warning"
+                          : ristCodeVsDesc[dataItem.riskcode] === "low"
+                          ? "text-gray-400"
+                          : "text-green-400"
+                      }`}
+                    />
                     {dataItem.alert}
                   </span>
                 </AccordionTrigger>
-                <AccordionContent>
+                <AccordionContent className="pl-6">
                   <div dangerouslySetInnerHTML={{ __html: dataItem.desc }} />
                   {dataItem.instances.map((instance) => (
                     <AccordionItem value={instance.id} key={instance.id}>
                       <AccordionTrigger>
                         <span className="flex items-center gap-2 h-8">
-                          <RiCheckboxMultipleFill className="size-4 text-blue-500" />
+                          <RiLink className="size-4 text-blue-500" />
                           {instance.uri}
                         </span>
                       </AccordionTrigger>
-                      <AccordionContent>
+                      <AccordionContent className="pl-6">
                         <p>Method: {instance.method}</p>
                         <p>Paramer: {instance.param}</p>
                         <p>Attack: {instance.attack}</p>
@@ -233,22 +255,23 @@ export default function Dashboard({ _data }) {
                       </AccordionContent>
                     </AccordionItem>
                   ))}
-                  <p>Instances: {dataItem.count}</p>
-                  <p>
-                    Solution:
-                    <div
-                      dangerouslySetInnerHTML={{ __html: dataItem.solution }}
-                    />
+                  <p className="mt-2">Instances: {dataItem.count}</p>
+                  <p className="mt-2">
+                    Solution: {removePTags(dataItem.solution)}
                   </p>
-                  <p>
-                    Reference:
-                    <div
-                      dangerouslySetInnerHTML={{ __html: dataItem.reference }}
-                    />
+                  <p className="mt-2">
+                    <p>Reference:</p>
+                    <ul>
+                      {extractTextFromPTags(dataItem.reference).map(
+                        (reference, index) => (
+                          <li key={index}>{reference}</li>
+                        )
+                      )}
+                    </ul>
                   </p>
-                  <p>CWE Id: {dataItem["cweid"]}</p>
-                  <p>WASC Id: {dataItem["wascid"]}</p>
-                  <p>Plugin Id: {dataItem["pluginid"]}</p>
+                  <p className="mt-2">CWE Id: {dataItem["cweid"]}</p>
+                  <p className="mt-2">WASC Id: {dataItem["wascid"]}</p>
+                  <p className="mt-2">Plugin Id: {dataItem["pluginid"]}</p>
                 </AccordionContent>
               </AccordionItem>
             ))}
