@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 export interface HarvesterData {
   [key: string]: any;
 }
@@ -11,6 +13,22 @@ export interface WidgetDataItem {
   name: string;
   amount: number;
   borderColor: string;
+}
+
+export interface VoteMsg {
+  cssVariant: string;
+  iconHTML: ReactNode;
+  fraction: string;
+  flagText: string;
+}
+
+export interface LastHttpsCertificate {
+  validFrom: string;
+  validTill: string;
+  size: number;
+  version: string;
+  publicKeyAlgorithm: string;
+  issuer: Array<string>;
 }
 
 export interface DataItem {
@@ -40,6 +58,13 @@ export interface LastDnsRecords {
   retry?: number;
   expire?: number;
   minimum?: number;
+}
+
+export interface WhoisData {
+  admin: Record<string, string>;
+  registrar: Record<string, string>;
+  domain: Record<string, string>;
+  nameServers: string[];
 }
 
 export interface WidgetData {
