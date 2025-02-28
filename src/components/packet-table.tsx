@@ -9,6 +9,8 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useState } from 'react';
+import { PacketModal } from './packet-modal';
 
 /* const packets = [
   {
@@ -51,8 +53,29 @@ interface PacketDetailsProps {
 }
 /* export function PacketTable(packets: Packet[]) { */
 export function PacketTable({ packets }: PacketDetailsProps){
+
+  const [selectedRow, setSelectedRow] = useState(null);
+  const [selectedPacket, setSelectedPacket] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  
+
+  const handleRowClick = (packet) => {
+    setSelectedRow(packet.id);
+    setSelectedPacket({
+      timestamp: packet.timestamp,
+      length: packet.length,
+      layers: packet.layers
+    });
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
   console.log("Packets => ",packets);
   return (
+    <>
     <Card className="col-span-2">
       <CardHeader>
         <CardTitle>Recent Network Activity</CardTitle>
@@ -70,7 +93,11 @@ export function PacketTable({ packets }: PacketDetailsProps){
           </TableHeader>
           <TableBody>
             {packets && packets.length && packets.map((packet) => (
-              <TableRow key={packet.id}>
+              <TableRow 
+                key={packet.id}
+                onClick={() => handleRowClick(packet)}
+                className="cursor-pointer hover:bg-muted/50"
+                >
                 <TableCell>{packet.timestamp}</TableCell>
                 <TableCell>{packet.src_addr}</TableCell>
                 <TableCell>{packet.dst_addr}</TableCell>
@@ -94,5 +121,11 @@ export function PacketTable({ packets }: PacketDetailsProps){
         </Table>
       </CardContent>
     </Card>
+    <PacketModal 
+      isOpen={isModalOpen} 
+      onClose={handleCloseModal} 
+      packet={selectedPacket} 
+     />
+   </>
   );
 }

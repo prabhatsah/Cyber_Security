@@ -12,7 +12,7 @@ import type { PortScanResult } from '../lib/portScanner';
 import type { ComplianceScanResult } from './ComplianceScanModal';
 import CyberSecurityComponents from './CyberSecurityComponents';
 
-export function Scans() {
+export function   Scans() {
   const [activeTab, setActiveTab] = useState<'cyberSecurity' | 'specializedAIAgents'>('cyberSecurity');
   const [showQuickScan, setShowQuickScan] = useState(false);
   const [showPortScan, setShowPortScan] = useState(false);
