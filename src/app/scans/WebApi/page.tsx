@@ -68,7 +68,12 @@ export default function WebApi() {
         throw new Error(`Failed to fetch: ${response.statusText}`);
       }
 
+      console.log("------------------- response");
+      console.log(response);
+
       const result = await response.json();
+
+      console.log(result);
 
       if (result.error) {
         throw new Error(result.error);
@@ -95,11 +100,12 @@ export default function WebApi() {
     // </Layout>
     <Layout>
       <div className="">
-        <p className="font-bold text-gray-600">OSINT & Threat Intelligence</p>
+        <p className="font-bold text-gray-600">Web & Api Security</p>
         <SearchBar query={query} setQuery={setQuery} fetchData={fetchData} />
         {error && <p className="text-red-600 text-center">{error}</p>}
 
-        {data ? <Dashboard /> : <div>No data available</div>}
+        {data ? <Dashboard _data={data} /> : <div>No data available</div>}
+        {/* <Dashboard _data={data} /> */}
       </div>
     </Layout>
   );
