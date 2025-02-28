@@ -7,6 +7,8 @@ import { PacketTable } from '@/components/packet-table';
 import { VulnerabilityAlert } from '@/components/vulnerability-alert';
 import { PacketFilter } from '@/components/packet-filter';
 import { useState } from 'react';
+import Layout from '@/components/Layout';
+import { useBreadcrumb } from '@/contexts/BreadcrumbContext';
 
 /* const packetData = {
   count: 2,
@@ -127,7 +129,7 @@ import { useState } from 'react';
 export default function Home() {
   const [filters, setFilters] = useState({});
   const [packetData, setPackets] = useState({ packets: [] });
-  useEffect(() => {
+  /* useEffect(() => {
     //const data = JSON.parse(data);
     //setPackets(data.packets);
     async function getPackets() {
@@ -139,7 +141,15 @@ export default function Home() {
       console.log('Fetching packets...');
     }
     getPackets();
-  }, []);
+  }, []); */
+
+  const { setItems } = useBreadcrumb();
+    useEffect(() => {
+      setItems([
+        { label: "Scans", href: "/scans" },
+        { label: "Network & Intrusion Detection", href: "/scans/networkIntrusion" },
+      ]);
+    }, []);
   
   const handleFilter = (newFilters: any) => {
     setFilters(newFilters);
@@ -147,13 +157,28 @@ export default function Home() {
     console.log('Applying filters:', newFilters);
     async function getPackets() {
       // In a real application, you would fetch the packets from an API
-      let requiredData: { interface?: string; protocol?: string } = {};
+      let requiredData: { interface?: string; protocol?: string ; source_ip?: string, destination_ip?: string} = {};
       if(newFilters.interface){
         requiredData['interface'] = newFilters.interface;
       }
       if(newFilters.protocol){
         requiredData['protocol'] = newFilters.protocol;
       }
+
+     /*  if(newFilters.time){
+        requiredData['time'] = newFilters.time;
+      }
+      if(newFilters.severity){
+        requiredData['severity'] = newFilters.severity;
+      } */
+
+      if(newFilters.sourceIp){
+        requiredData['source_ip'] = newFilters.sourceIp;
+      }
+      if(newFilters.destinationIp){
+        requiredData['destination_ip'] = newFilters.destinationIp;
+      }
+
       const response = await fetch('http://localhost:5000/api/capture',{
         method: 'POST',
         headers: {
@@ -171,6 +196,7 @@ export default function Home() {
   };
 
   return (
+    <Layout>
     <div className="min-h-screen bg-background">
       <DashboardHeader />
       <main className="container mx-auto p-6 space-y-6">
@@ -183,5 +209,6 @@ export default function Home() {
         {/* <PacketDetails packets={packetData.packets} /> */}
       </main>
     </div>
+    </Layout>
   );
 }

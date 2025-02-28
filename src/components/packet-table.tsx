@@ -92,7 +92,7 @@ export function PacketTable({ packets }: PacketDetailsProps){
             </TableRow>
           </TableHeader>
           <TableBody>
-            {packets && packets.length && packets.map((packet) => (
+            {packets && packets.length ? packets.map((packet) => (
               <TableRow 
                 key={packet.id}
                 onClick={() => handleRowClick(packet)}
@@ -116,7 +116,12 @@ export function PacketTable({ packets }: PacketDetailsProps){
                   </span>
                 </TableCell>
               </TableRow>
-            ))}
+            )) : (
+
+              <TableRow>
+                <TableCell colSpan={5}>No packets found</TableCell>
+              </TableRow>
+            )}
           </TableBody>
         </Table>
       </CardContent>
