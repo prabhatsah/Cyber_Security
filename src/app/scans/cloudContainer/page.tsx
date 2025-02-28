@@ -4,6 +4,7 @@ import Layout from "@/components/Layout";
 import Dashboard from "./dashboard";
 import { useEffect, useState } from "react";
 import { useBreadcrumb } from "@/contexts/BreadcrumbContext";
+import PastScans from "@/components/PastScans";
 
 interface CloudContainerData {
   [key: string]: any;
@@ -63,6 +64,9 @@ export default function CloudContainerDashboard() {
   return (
     <Layout>
       {data ? <Dashboard data={data} /> : <div>No data available</div>}
+      <div>
+        <PastScans />
+      </div>
     </Layout>
   );
 }

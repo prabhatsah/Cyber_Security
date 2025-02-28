@@ -298,7 +298,7 @@ export default function CyberSecurityComponents() {
                 className="flex-1 btn-primary"
               >
                 <Play className="h-4 w-4 mr-2" />
-                Start Scan
+                Proceed
               </button>
               <button
                 onClick={() => {

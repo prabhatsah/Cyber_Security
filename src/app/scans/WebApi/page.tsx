@@ -23,6 +23,7 @@ import Dashboard from "./dashboard";
 import { useEffect, useState } from "react";
 import { useBreadcrumb } from "@/contexts/BreadcrumbContext";
 import SearchBar from "./SearchBar";
+import PastScans from "@/components/PastScans";
 
 interface webApiData {
   [key: string]: any;
@@ -104,8 +105,10 @@ export default function WebApi() {
         <SearchBar query={query} setQuery={setQuery} fetchData={fetchData} />
         {error && <p className="text-red-600 text-center">{error}</p>}
 
-        {data ? <Dashboard _data={data} /> : <div>No data available</div>}
-        {/* <Dashboard _data={data} /> */}
+        {data && <Dashboard _data={data} />}
+        <div>
+          <PastScans />
+        </div>
       </div>
     </Layout>
   );
