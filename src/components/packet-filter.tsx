@@ -14,7 +14,7 @@ const interfaces = [
   { id: 'lo', name: 'Loopback' },
 ];
 
-const protocols = ['All', 'TCP', 'UDP', 'HTTP', 'HTTPS', 'ICMP'];
+const protocols = ['All', 'tcp', 'udp', 'http', 'https', 'icmp'];
 
 export function PacketFilter({ onFilter }: { onFilter: (filters: any) => void }) {
   const [sourceIp, setSourceIp] = useState('');
