@@ -24,7 +24,7 @@ export default function Sidebar() {
 
   return (
     <div className="hidden lg:flex lg:flex-shrink-0">
-      <div className="flex flex-col w-64 bg-secondary">
+      <div className="flex flex-col w-64 bg-gray-50">
         <div
           className="flex flex-col flex-grow pt-5 pb-4 overflow-y-auto  border-r 
         border-gray-200 "
@@ -41,7 +41,8 @@ export default function Sidebar() {
                 key={item.name}
                 href={item.href}
                 className={`group flex items-center px-3 py-3 text-sm font-medium rounded-md transition-colors ${
-                  pathname === item.href
+                  //pathname === item.href
+                  pathname.includes(item.href)
                     ? "bg-primary text-white"
                     : "text-gray-600 hover:bg-gray-300 hover:text-gray-900"
                 }`}
