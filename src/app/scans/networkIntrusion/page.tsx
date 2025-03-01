@@ -1,14 +1,14 @@
-'use client';
-import { useEffect } from 'react';
-import { DashboardHeader } from '@/components/dashboard-header';
-import { PacketDetails } from '@/components/packet-details';
-import { PacketStats } from '@/components/packet-stats';
-import { PacketTable } from '@/components/packet-table';
-import { VulnerabilityAlert } from '@/components/vulnerability-alert';
-import { PacketFilter } from '@/components/packet-filter';
-import { useState } from 'react';
-import Layout from '@/components/Layout';
-import { useBreadcrumb } from '@/contexts/BreadcrumbContext';
+"use client";
+import { useEffect } from "react";
+import { DashboardHeader } from "@/components/dashboard-header";
+import { PacketDetails } from "@/components/packet-details";
+import { PacketStats } from "@/components/packet-stats";
+import { PacketTable } from "@/components/packet-table";
+import { VulnerabilityAlert } from "@/components/vulnerability-alert";
+import { PacketFilter } from "@/components/packet-filter";
+import { useState } from "react";
+import Layout from "@/components/Layout";
+import { useBreadcrumb } from "@/contexts/BreadcrumbContext";
 
 /* const packetData = {
   count: 2,
@@ -144,71 +144,79 @@ export default function Home() {
   }, []); */
 
   const { setItems } = useBreadcrumb();
-    useEffect(() => {
-      setItems([
-        { label: "Scans", href: "/scans" },
-        { label: "Network & Intrusion Detection", href: "/scans/networkIntrusion" },
-      ]);
-    }, []);
-  
+  useEffect(() => {
+    setItems([
+      { label: "Scans", href: "/scans" },
+      {
+        label: "Network & Intrusion Detection",
+        href: "/scans/networkIntrusion",
+      },
+    ]);
+  }, []);
+
   const handleFilter = (newFilters: any) => {
     setFilters(newFilters);
     // In a real application, you would filter the packets based on these criteria
-    console.log('Applying filters:', newFilters);
+    console.log("Applying filters:", newFilters);
     async function getPackets() {
       // In a real application, you would fetch the packets from an API
-      let requiredData: { interface?: string; protocol?: string ; source_ip?: string, destination_ip?: string} = {};
-      if(newFilters.interface){
-        requiredData['interface'] = newFilters.interface;
+      let requiredData: {
+        interface?: string;
+        protocol?: string;
+        source_ip?: string;
+        destination_ip?: string;
+      } = {};
+      if (newFilters.interface) {
+        requiredData["interface"] = newFilters.interface;
       }
-      if(newFilters.protocol){
-        requiredData['protocol'] = newFilters.protocol;
+      if (newFilters.protocol) {
+        requiredData["protocol"] = newFilters.protocol;
       }
 
-     /*  if(newFilters.time){
+      /*  if(newFilters.time){
         requiredData['time'] = newFilters.time;
       }
       if(newFilters.severity){
         requiredData['severity'] = newFilters.severity;
       } */
 
-      if(newFilters.sourceIp){
-        requiredData['source_ip'] = newFilters.sourceIp;
+      if (newFilters.sourceIp) {
+        requiredData["source_ip"] = newFilters.sourceIp;
       }
-      if(newFilters.destinationIp){
-        requiredData['destination_ip'] = newFilters.destinationIp;
+      if (newFilters.destinationIp) {
+        requiredData["destination_ip"] = newFilters.destinationIp;
       }
 
-      const response = await fetch('http://localhost:5000/api/capture',{
-        method: 'POST',
+      const response = await fetch("http://localhost:5000/api/capture", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(requiredData)
+        body: JSON.stringify(requiredData),
       });
-      
+
       const data = await response.json();
-      console.log('Fetched packets:', data);
+      console.log("Fetched packets:", data);
       setPackets(data);
-      console.log('Fetching packets...');
+      console.log("Fetching packets...");
     }
     getPackets();
   };
 
   return (
     <Layout>
-    <div className="min-h-screen bg-background">
-      <DashboardHeader />
-      <main className="container mx-auto p-6 space-y-6">
-        <PacketStats />
-        <PacketFilter onFilter={handleFilter} />
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <PacketTable packets={packetData.packets} />
-          <VulnerabilityAlert />
-        </div>
-        {/* <PacketDetails packets={packetData.packets} /> */}
-      </main>
-    </div>
+      <div className="min-h-screen bg-background">
+        {/* <DashboardHeader /> */}
+        <main className=" space-y-6">
+          <PacketStats />
+          <PacketFilter onFilter={handleFilter} />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <PacketTable packets={packetData.packets} />
+            <VulnerabilityAlert />
+          </div>
+          {/* <PacketDetails packets={packetData.packets} /> */}
+        </main>
+      </div>
     </Layout>
   );
 }
