@@ -109,7 +109,7 @@ export function PacketFilter({ onFilter }: { onFilter: (filters: any) => void })
         <div className="mt-4 flex justify-end">
           <Button onClick={handleFilter}>
             <Filter className="h-4 w-4 mr-2" />
-            Apply Filters
+            Apply Filters & Scan
           </Button>
         </div>
       </CardContent>

@@ -11,6 +11,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useState } from 'react';
 import { PacketModal } from './packet-modal';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 /* const packets = [
   {
@@ -57,6 +58,27 @@ export function PacketTable({ packets }: PacketDetailsProps){
   const [selectedRow, setSelectedRow] = useState(null);
   const [selectedPacket, setSelectedPacket] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+   // Format timestamp to YYYY-MM-DD HH:mm:ss
+   const formatTimestamp = (timestamp: string): string => {
+    try {
+      const date = new Date(timestamp);
+      
+      // Format to local timezone using Intl.DateTimeFormat
+      return new Intl.DateTimeFormat('en-US', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+      }).format(date).replace(',', '').replace(/(\d+)\/(\d+)\/(\d+)/, '$3-$1-$2');
+    } catch (error) {
+      console.error("Error formatting timestamp:", error);
+      return timestamp; // Return original if parsing fails
+    }
+  };
   
 
   const handleRowClick = (packet) => {
@@ -81,16 +103,20 @@ export function PacketTable({ packets }: PacketDetailsProps){
         <CardTitle>Recent Network Activity</CardTitle>
       </CardHeader>
       <CardContent>
+      <div className="border rounded-md">
+      <Table>
+        <TableHeader className="sticky top-0 z-10 bg-background">
+          <TableRow>
+            <TableHead className="w-[180px]">Timestamp</TableHead>
+            <TableHead  className="w-[150px]">Source</TableHead>
+            <TableHead className="w-[150px]">Destination</TableHead>
+            <TableHead className="w-[100px]">Protocol</TableHead>
+            <TableHead className="w-[100px]">Status</TableHead>
+          </TableRow>
+        </TableHeader>
+      </Table>
+      <ScrollArea className="h-[250px]">
         <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Timestamp</TableHead>
-              <TableHead>Source</TableHead>
-              <TableHead>Destination</TableHead>
-              <TableHead>Protocol</TableHead>
-              <TableHead>Status</TableHead>
-            </TableRow>
-          </TableHeader>
           <TableBody>
             {packets && packets.length ? packets.map((packet) => (
               <TableRow 
@@ -98,11 +124,11 @@ export function PacketTable({ packets }: PacketDetailsProps){
                 onClick={() => handleRowClick(packet)}
                 className="cursor-pointer hover:bg-muted/50"
                 >
-                <TableCell>{packet.timestamp}</TableCell>
-                <TableCell>{packet.src_addr}</TableCell>
-                <TableCell>{packet.dst_addr}</TableCell>
-                <TableCell>{packet.protocol}</TableCell>
-                <TableCell>
+                <TableCell className="w-[180px]" >{formatTimestamp(packet.timestamp)}</TableCell>
+                <TableCell className="w-[180px]" >{packet.src_addr}</TableCell>
+                <TableCell className="w-[180px]">{packet.dst_addr}</TableCell>
+                <TableCell className="w-[180px]">{packet.protocol}</TableCell>
+                <TableCell className="w-[180px]">
                   <span
                     className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                       packet.severity === 'safe'
@@ -124,6 +150,8 @@ export function PacketTable({ packets }: PacketDetailsProps){
             )}
           </TableBody>
         </Table>
+        </ScrollArea>
+      </div>
       </CardContent>
     </Card>
     <PacketModal 
