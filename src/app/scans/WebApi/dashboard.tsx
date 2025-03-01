@@ -7,7 +7,7 @@ import {
   AccordionTrigger,
 } from "@/components/Accordion";
 
-import { RiCheckboxMultipleFill } from "@remixicon/react";
+import { RiAlertLine, RiCheckboxMultipleFill, RiLink } from "@remixicon/react";
 
 import { Badge } from "@/components/Badge";
 import {
@@ -27,34 +27,6 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-const _severity = [
-  {
-    severity: "critical",
-    count: 0,
-    borderColor: "bg-red-900",
-  },
-  {
-    severity: "high",
-    count: 0,
-    borderColor: "bg-red-500",
-  },
-  {
-    severity: "medium",
-    count: 0,
-    borderColor: "bg-yellow-500",
-  },
-  {
-    severity: "low",
-    count: 0,
-    borderColor: "bg-green-800",
-  },
-  {
-    severity: "info",
-    count: 0,
-    borderColor: "bg-blue-600",
-  },
-];
-
 const ristCodeVsDesc = {
   0: "info",
   1: "low",
@@ -63,20 +35,62 @@ const ristCodeVsDesc = {
   4: "critical",
 };
 
+function removePTags(htmlString) {
+  return htmlString.replace(/<\/?p>/g, "");
+}
+
+function extractTextFromPTags(htmlString) {
+  const matches = htmlString.match(/<p>(.*?)<\/p>/gs); // Use 's' flag to match multi-line content
+  return matches ? matches.map((p) => p.replace(/<\/?p>/g, "")) : [];
+}
+
 export default function Dashboard({ _data }) {
-  let _alertsCount = _data.site[0].alerts.length;
+  const _severity = [
+    {
+      severity: "critical",
+      count: 0,
+      borderColor: "bg-red-900",
+    },
+    {
+      severity: "high",
+      count: 0,
+      borderColor: "bg-red-500",
+    },
+    {
+      severity: "medium",
+      count: 0,
+      borderColor: "bg-yellow-500",
+    },
+    {
+      severity: "low",
+      count: 0,
+      borderColor: "bg-green-800",
+    },
+    {
+      severity: "info",
+      count: 0,
+      borderColor: "bg-blue-600",
+    },
+  ];
+
+  const _alertsCount = _data.site[0].alerts.length;
 
   for (let i = 0; i < _data.site[0].alerts.length; i++) {
     for (let j = 0; j < _severity.length; j++) {
-      if (_severity[j]["severity"] === _data.site[0].alerts[i]["severity"]) {
+      if (
+        _severity[j]["severity"] ===
+        ristCodeVsDesc[_data.site[0].alerts[i]["riskcode"]]
+      ) {
         _severity[j]["count"] += 1;
       }
     }
   }
 
+  console.log("----------- _severity");
+  console.log(_severity);
+
   return (
-    <div className="min-h-[90vh] ">
-      <p className="font-bold text-gray-600">Web and Api Security</p>
+    <div className="min-h-[90vh]">
       <section className="my-4">
         <div className="grid grid-cols-4 gap-5">
           <Card className="col-span-1 rounded-md ">
@@ -152,23 +166,16 @@ export default function Dashboard({ _data }) {
             </p>
           </Card>
         </div>
-
-        <div className="my-4">
-          <div>
-            <h3 className="font-semibold text-gray-900 dark:text-gray-50">
-              Alerts
-            </h3>
-            <p className="mt-1 text-sm leading-6 text-gray-600 dark:text-gray-400">
-              For each step: result (Pass/Fail) - risk (of highest alert(s) for
-              the step, if any).
-            </p>
-          </div>
-          <TableRoot className="mt-8">
+        <div className="w-full mt-8">
+          <h1 className="text-md font-semibold text-gray-900 dark:text-gray-50">
+            Alerts
+          </h1>
+          <TableRoot className="mt-3">
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableHeaderCell>Id</TableHeaderCell>
-                  <TableHeaderCell>Alert</TableHeaderCell>
+                  {/* <TableHeaderCell>Id</TableHeaderCell> */}
+                  <TableHeaderCell>Name</TableHeaderCell>
                   <TableHeaderCell>Risk Level</TableHeaderCell>
                   <TableHeaderCell>Instances</TableHeaderCell>
                 </TableRow>
@@ -176,17 +183,17 @@ export default function Dashboard({ _data }) {
               <TableBody>
                 {_data.site[0].alerts.map((item) => (
                   <TableRow key={item.pluginid}>
-                    <TableCell>{item.pluginid}</TableCell>
+                    {/* <TableCell>{item.pluginid}</TableCell> */}
                     <TableCell>{item.alert}</TableCell>
                     <TableCell>
                       <Badge
                         variant={
-                          item.severity === "critical" ||
-                          item.severity === "high"
+                          ristCodeVsDesc[item.riskcode] === "critical" ||
+                          ristCodeVsDesc[item.riskcode] === "high"
                             ? "error"
-                            : item.severity === "medium"
+                            : ristCodeVsDesc[item.riskcode] === "medium"
                             ? "warning"
-                            : item.severity === "low"
+                            : ristCodeVsDesc[item.riskcode] === "low"
                             ? "success"
                             : "default"
                         }
@@ -204,51 +211,126 @@ export default function Dashboard({ _data }) {
 
         <div className="w-full mt-8">
           <h1 className="text-md font-semibold text-gray-900 dark:text-gray-50">
-            Alert Detail
+            Alert Details
           </h1>
           <Accordion type="multiple" className="mt-3 ">
             {_data.site[0].alerts.map((dataItem) => (
               <AccordionItem value={dataItem.pluginid} key={dataItem.pluginid}>
                 <AccordionTrigger>
                   <span className="flex items-center gap-2 h-8">
-                    <RiCheckboxMultipleFill className="size-4 text-blue-500" />
+                    <RiAlertLine
+                      className={`size-4 ${
+                        ristCodeVsDesc[dataItem.riskcode] === "critical"
+                          ? "text-red-900"
+                          : ristCodeVsDesc[dataItem.riskcode] === "high"
+                          ? "text-red-900"
+                          : ristCodeVsDesc[dataItem.riskcode] === "medium"
+                          ? "text-yellow-900"
+                          : ristCodeVsDesc[dataItem.riskcode] === "low"
+                          ? "text-emerald-900"
+                          : "text-blue-900"
+                      }`}
+                    />
                     {dataItem.alert}
+                    <Badge
+                      variant={
+                        ristCodeVsDesc[dataItem.riskcode] === "critical" ||
+                        ristCodeVsDesc[dataItem.riskcode] === "high"
+                          ? "error"
+                          : ristCodeVsDesc[dataItem.riskcode] === "medium"
+                          ? "warning"
+                          : ristCodeVsDesc[dataItem.riskcode] === "low"
+                          ? "success"
+                          : "default"
+                      }
+                    >
+                      {ristCodeVsDesc[dataItem.riskcode]}
+                    </Badge>
                   </span>
                 </AccordionTrigger>
-                <AccordionContent>
-                  <div dangerouslySetInnerHTML={{ __html: dataItem.desc }} />
+                <AccordionContent className="pl-6">
+                  <p>{removePTags(dataItem.desc)}</p>
+
                   {dataItem.instances.map((instance) => (
                     <AccordionItem value={instance.id} key={instance.id}>
                       <AccordionTrigger>
                         <span className="flex items-center gap-2 h-8">
-                          <RiCheckboxMultipleFill className="size-4 text-blue-500" />
+                          <RiLink className="size-4 text-blue-500" />
                           {instance.uri}
                         </span>
                       </AccordionTrigger>
-                      <AccordionContent>
-                        <p>Method: {instance.method}</p>
-                        <p>Paramer: {instance.param}</p>
-                        <p>Attack: {instance.attack}</p>
-                        <p>Evidence: {instance.evidence}</p>
+                      <AccordionContent className="pl-6">
+                        <p>
+                          <span className="text-sm text-gray-900 font-semibold">
+                            Method:
+                          </span>{" "}
+                          {instance.method}
+                        </p>
+                        <p className="mt-1">
+                          <span className="text-sm text-gray-900 font-semibold">
+                            Parameter:
+                          </span>{" "}
+                          {instance.param}
+                        </p>
+                        <p className="mt-1">
+                          <span className="text-sm text-gray-900 font-semibold">
+                            Attack:
+                          </span>{" "}
+                          {instance.attack}
+                        </p>
+                        <p className="mt-1">
+                          <span className="text-sm text-gray-900 font-semibold">
+                            Evidence:
+                          </span>{" "}
+                          {instance.evidence}
+                        </p>
                       </AccordionContent>
                     </AccordionItem>
                   ))}
-                  <p>Instances: {dataItem.count}</p>
-                  <p>
-                    Solution:
-                    <div
-                      dangerouslySetInnerHTML={{ __html: dataItem.solution }}
-                    />
+                  <p className="mt-2">
+                    <span className="text-sm text-gray-900 font-semibold">
+                      Instances:
+                    </span>{" "}
+                    {dataItem.count}
                   </p>
-                  <p>
-                    Reference:
-                    <div
-                      dangerouslySetInnerHTML={{ __html: dataItem.reference }}
-                    />
+                  <p className="mt-2">
+                    <span className="text-sm text-gray-900 font-semibold">
+                      Solution:
+                    </span>{" "}
+                    {removePTags(dataItem.solution)}
                   </p>
-                  <p>CWE Id: {dataItem["cweid"]}</p>
-                  <p>WASC Id: {dataItem["wascid"]}</p>
-                  <p>Plugin Id: {dataItem["pluginid"]}</p>
+                  <p className="flex mt-2">
+                    <p className="text-sm text-gray-900 font-semibold">
+                      Reference:
+                    </p>
+                    <ul className="ml-1">
+                      {extractTextFromPTags(dataItem.reference).map(
+                        (reference, index) => (
+                          <li key={index} className="mb-1">
+                            {reference}
+                          </li>
+                        )
+                      )}
+                    </ul>
+                  </p>
+                  <p className="mt-2">
+                    <span className="text-sm text-gray-900 font-semibold">
+                      CWE Id:
+                    </span>{" "}
+                    {dataItem["cweid"]}
+                  </p>
+                  <p className="mt-2">
+                    <span className="text-sm text-gray-900 font-semibold">
+                      WASC Id:
+                    </span>{" "}
+                    {dataItem["wascid"]}
+                  </p>
+                  <p className="mt-2">
+                    <span className="text-sm text-gray-900 font-semibold">
+                      Plugin Id:
+                    </span>{" "}
+                    {dataItem["pluginid"]}
+                  </p>
                 </AccordionContent>
               </AccordionItem>
             ))}

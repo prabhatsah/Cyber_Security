@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { Shield } from 'lucide-react';
+import { Shield } from "lucide-react";
 
 export function DashboardHeader() {
   return (
@@ -11,7 +11,9 @@ export function DashboardHeader() {
             <Shield className="h-8 w-8 text-primary" />
             <div>
               <h1 className="text-2xl font-bold">AI-IDS</h1>
-              <p className="text-sm text-muted-foreground">Intrusion Detection System</p>
+              <p className="text-sm text-muted-foreground">
+                Intrusion Detection System
+              </p>
             </div>
           </div>
           <div className="flex items-center space-x-4">
