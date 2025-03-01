@@ -1,26 +1,36 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Filter, RefreshCcw } from 'lucide-react';
+import { useState } from "react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Filter, RefreshCcw } from "lucide-react";
 
 const interfaces = [
-  { id: 'Ethernet', name: 'Ethernet' },
-  { id: 'Wi-Fi', name: 'Wi-Fi' },
-  { id: 'docker0', name: 'Docker Bridge' },
-  { id: 'lo', name: 'Loopback' },
+  { id: "Ethernet", name: "Ethernet" },
+  { id: "Wi-Fi", name: "Wi-Fi" },
+  { id: "docker0", name: "Docker Bridge" },
+  { id: "lo", name: "Loopback" },
 ];
 
-const protocols = ['All', 'tcp', 'udp', 'http', 'https', 'icmp'];
+const protocols = ["All", "tcp", "udp", "http", "https", "icmp"];
 
-export function PacketFilter({ onFilter }: { onFilter: (filters: any) => void }) {
-  const [sourceIp, setSourceIp] = useState('');
-  const [destinationIp, setDestinationIp] = useState('');
-  const [selectedInterface, setSelectedInterface] = useState('');
-  const [selectedProtocol, setSelectedProtocol] = useState('All');
+export function PacketFilter({
+  onFilter,
+}: {
+  onFilter: (filters: any) => void;
+}) {
+  const [sourceIp, setSourceIp] = useState("");
+  const [destinationIp, setDestinationIp] = useState("");
+  const [selectedInterface, setSelectedInterface] = useState("");
+  const [selectedProtocol, setSelectedProtocol] = useState("All");
 
   const handleFilter = () => {
     onFilter({
@@ -32,10 +42,10 @@ export function PacketFilter({ onFilter }: { onFilter: (filters: any) => void })
   };
 
   const handleReset = () => {
-    setSourceIp('');
-    setDestinationIp('');
-    setSelectedInterface('');
-    setSelectedProtocol('All');
+    setSourceIp("");
+    setDestinationIp("");
+    setSelectedInterface("");
+    setSelectedProtocol("All");
     onFilter({});
   };
 
@@ -57,7 +67,10 @@ export function PacketFilter({ onFilter }: { onFilter: (filters: any) => void })
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="space-y-2">
             <label className="text-sm font-medium">Interface</label>
-            <Select value={selectedInterface} onValueChange={setSelectedInterface}>
+            <Select
+              value={selectedInterface}
+              onValueChange={setSelectedInterface}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Select interface" />
               </SelectTrigger>
@@ -73,7 +86,10 @@ export function PacketFilter({ onFilter }: { onFilter: (filters: any) => void })
 
           <div className="space-y-2">
             <label className="text-sm font-medium">Protocol</label>
-            <Select value={selectedProtocol} onValueChange={setSelectedProtocol}>
+            <Select
+              value={selectedProtocol}
+              onValueChange={setSelectedProtocol}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Select protocol" />
               </SelectTrigger>
@@ -107,7 +123,7 @@ export function PacketFilter({ onFilter }: { onFilter: (filters: any) => void })
         </div>
 
         <div className="mt-4 flex justify-end">
-          <Button onClick={handleFilter}>
+          <button onClick={handleFilter} className="btn-primary">
             <Filter className="h-4 w-4 mr-2" />
             Apply Filters & Scan
           </Button>
