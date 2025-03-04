@@ -74,7 +74,7 @@ export default function PastScans() {
           Past Scans
         </h3>
         <p className="text-tremor-default text-tremor-content dark:text-dark-tremor-content">
-          Breifly analyze of past scans
+          Briefly analyze past scans
         </p>
       </div>
 
