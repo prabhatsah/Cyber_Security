@@ -9,6 +9,10 @@ export function cx(...args: ClassValue[]) {
 
 // Tremor Raw focusInput [v0.0.1]
 
+export function cn(...inputs: (string | undefined | boolean)[]) {
+  return twMerge(clsx(inputs));
+}
+
 export const focusInput = [
   // base
   "focus:ring-2",
