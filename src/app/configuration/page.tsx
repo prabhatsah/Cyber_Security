@@ -1,9 +1,9 @@
 "use client";
 
-import { Scans } from "@/app/scans/components/Scans";
 import Layout from "@/components/Layout";
 import { useBreadcrumb } from "@/contexts/BreadcrumbContext";
 import { useEffect } from "react";
+import ConfigDashboard from "./components/ConfigDashboard";
 
 export default function ScansPage() {
   const { setItems } = useBreadcrumb();
@@ -13,7 +13,7 @@ export default function ScansPage() {
 
   return (
     <Layout>
-      <Scans />
+      <ConfigDashboard />
     </Layout>
   );
 }
