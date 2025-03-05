@@ -4,7 +4,7 @@ import { Card, Title, Text, Button, Select, SelectItem } from "@tremor/react";
 
 export default function ConfigDashboard() {
   return (
-    <div className="space-y-8 p-8">
+    <div className="flex-grow">
       {/* Cloud Service Configuration */}
       <Card>
         <Title>Cloud Service Configuration</Title>
