@@ -9,7 +9,6 @@ import {
   Settings,
   Shield,
   Activity,
-  PackageCheck,
 } from "lucide-react";
 
 const navigation = [
@@ -17,7 +16,6 @@ const navigation = [
   { name: "Scans", href: "/scans", icon: Scan },
   { name: "Reports", href: "/reports", icon: FileText },
   { name: "Audit Log", href: "/audit", icon: Activity },
-  { name: "Configuration", href: "/configuration", icon: PackageCheck },
   { name: "Settings", href: "/settings", icon: Settings },
 ];
 
@@ -26,14 +24,14 @@ export default function Sidebar() {
 
   return (
     <div className="hidden lg:flex lg:flex-shrink-0">
-      <div className="flex flex-col w-64 bg-gray-50 dark:bg-gray-900">
+      <div className="flex flex-col w-64 bg-secondary">
         <div
           className="flex flex-col flex-grow pt-5 pb-4 overflow-y-auto  border-r 
         border-gray-200 "
         >
           <div className="flex items-center flex-shrink-0 px-4">
             <Shield className="h-8 w-8 text-primary" />
-            <h1 className="ml-2 text-xl font-semibold text-gray-900 dark:text-white">
+            <h1 className="ml-2 text-xl font-semibold text-gray-900">
               SecureGuard
             </h1>
           </div>
@@ -43,8 +41,7 @@ export default function Sidebar() {
                 key={item.name}
                 href={item.href}
                 className={`group flex items-center px-3 py-3 text-sm font-medium rounded-md transition-colors ${
-                  //pathname === item.href
-                  pathname.includes(item.href)
+                  pathname === item.href
                     ? "bg-primary text-white"
                     : "text-gray-600 hover:bg-gray-300 hover:text-gray-900"
                 }`}
