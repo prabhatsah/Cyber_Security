@@ -9,6 +9,7 @@ import {
   Settings,
   Shield,
   Activity,
+  PackageCheck,
 } from "lucide-react";
 
 const navigation = [
@@ -16,6 +17,7 @@ const navigation = [
   { name: "Scans", href: "/scans", icon: Scan },
   { name: "Reports", href: "/reports", icon: FileText },
   { name: "Audit Log", href: "/audit", icon: Activity },
+  { name: "Configuration", href: "/configuration", icon: PackageCheck },
   { name: "Settings", href: "/settings", icon: Settings },
 ];
 
