@@ -50,6 +50,30 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
     jsonString = jsonString.replace(/\"\/bin\/sh\"/g, "");
     return JSON.stringify(JSON.parse(jsonString), null, 2);
   }
+
+
+  useEffect(() => {
+    fetchData("databases"); // Fetch databases on component mount
+  }, []);
+  
+  const fetchData = async (type: "tables" | "databases") => {
+    try {
+      const res = await fetch(`/api/dbApi?type=${type}`, { method: "GET" });
+      const data = await res.json();
+      
+      if (type === "tables") {
+        console.log("Tables:", data.tables);
+      } else if (type === "databases") {
+        console.log("Databases:", data.databases);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+  
+  
+  
+  
   
   useEffect(() => {
     console.log(fileSystemResult);

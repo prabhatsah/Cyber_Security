@@ -571,11 +571,7 @@ video {
   --primary: #1a73e8;
   --primary-hover: #1a73e8;
   --secondary: #f1f3f4;
-<<<<<<< HEAD
   --success: #32a24c;
-=======
-  --success: #10b981;
->>>>>>> 3d57b04dc3353739809f78ba0e73aad4f0e477a2
   --error: #fb2c36;
   --critical: #82181a;
   --warning: #fd9a00;
@@ -2547,10 +2543,6 @@ body {
   font-family: "Inter", "Inter Fallback";
   font-style: normal;
 }
-<<<<<<< HEAD
-
-=======
->>>>>>> 3d57b04dc3353739809f78ba0e73aad4f0e477a2
 /*---break---*/
 /* @layer base {} */
 /*---break---*/
@@ -2558,15 +2550,8 @@ body {
   * {
     @apply border-border outline-ring/50;
   }
-<<<<<<< HEAD
 
   body {
     @apply bg-background text-foreground;
   }
 }
-=======
-  body {
-    @apply bg-background text-foreground;
-  }
-}
->>>>>>> 3d57b04dc3353739809f78ba0e73aad4f0e477a2

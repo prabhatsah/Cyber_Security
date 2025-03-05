@@ -1,27 +1,6 @@
 "use client";
 
 import Layout from "@/components/Layout";
-<<<<<<< HEAD
-import Dashboard from "./dashboard";
-import { useEffect, useState } from "react";
-import { useBreadcrumb } from "@/contexts/BreadcrumbContext";
-
-interface CloudContainerData {
-  [key: string]: any;
-}
-
-interface ApiResponse {
-  data: CloudContainerData;
-  error?: string;
-}
-
-export default function CloudContainerDashboard() {
-  const [data, setData] = useState<CloudContainerData | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
-
-  const { setItems } = useBreadcrumb();
-=======
 import Tabs from "@/components/Tabs";
 import { useEffect, useState } from "react";
 import { useBreadcrumb } from "@/contexts/BreadcrumbContext";
@@ -32,52 +11,11 @@ export default function GeneralDashboard() {
   const [activeTab, setActiveTab] = useState<"Cloud" | "Containers">("Cloud");
   const { setItems } = useBreadcrumb();
 
->>>>>>> 3d57b04dc3353739809f78ba0e73aad4f0e477a2
   useEffect(() => {
     setItems([
       { label: "Scans", href: "/scans" },
       { label: "Cloud & Container Security", href: "/scans/cloudContainer" },
     ]);
-<<<<<<< HEAD
-  }, []);
-
-  // Fetch data on component mount
-  useEffect(() => {
-    const fetchData = async (): Promise<void> => {
-      setLoading(true);
-      try {
-        const response = await fetch(`/api/cloud-container/scout?query=gcp`);
-
-        if (!response.ok) {
-          throw new Error(`Error: ${response.statusText}`);
-        }
-
-        const result: ApiResponse = await response.json();
-
-        if (result.error) throw new Error(result.error);
-        setData(result.data); // Set fetched data
-      } catch (err) {
-        if (err instanceof Error) {
-          setError(err.message); // Handle error
-        } else {
-          setError("An unknown error occurred");
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  // Handle loading, error, and display data
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
-
-  return (
-    <Layout>
-      {data ? <Dashboard data={data} /> : <div>No data available</div>}
-=======
   }, [activeTab]);
 
   const tabs = [
@@ -94,7 +32,6 @@ export default function GeneralDashboard() {
   return (
     <Layout>
       <Tabs tabs={tabs} />
->>>>>>> 3d57b04dc3353739809f78ba0e73aad4f0e477a2
     </Layout>
   );
 }
