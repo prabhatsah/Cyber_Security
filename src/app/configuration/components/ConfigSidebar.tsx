@@ -27,12 +27,9 @@ export default function ConfigSidebar() {
   return (
     <>
       <div className="lg:flex lg:flex-shrink-0">
-        <div className="flex flex-col w-64 bg-gray-50 dark:bg-gray-900">
-          <div
-            className="flex flex-col flex-grow overflow-y-auto  border-r 
-        border-gray-200 "
-          >
-            <nav className="p-2">
+        <div className="flex flex-col w-64">
+          <div className="flex flex-col flex-grow overflow-y-auto border-gray-500 dark:border-gray-800 bg-white dark:bg-gray-950">
+            <nav className="flex-1 p-2 space-y-1">
               {navigation.map((item) => (
                 <Link
                   key={item.name}
