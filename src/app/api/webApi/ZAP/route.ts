@@ -106,7 +106,11 @@ export async function POST(req: Request) {
     const reportPath = path.join(projectRoot, "zap-report.json");
 
     // Run the ZAP scan
+<<<<<<< HEAD
     const zapCommand = `docker run --rm -e ZAP_TARGET_URL="${url}" -v "${projectRoot}:/zap/wrk/:rw" -t zaproxy/zap-stable zap.sh -cmd -autorun /zap/wrk/zap.yaml`;
+=======
+    const zapCommand = `docker run --rm -v "${projectRoot}:/zap/wrk/:rw" -t zaproxy/zap-stable zap.sh -cmd -autorun /zap/wrk/zap.yaml`;
+>>>>>>> 3d57b04dc3353739809f78ba0e73aad4f0e477a2
 
     return new Promise<NextResponse>((resolve) => {
       exec(zapCommand, async (error, stdout, stderr) => {

@@ -56,7 +56,10 @@ import useGlobalLoading from "@/lib/useGlobalLoading";
 import { useIsFetching } from "@tanstack/react-query";
 import { useBreadcrumb } from "@/contexts/BreadcrumbContext";
 import { ApiResponse, HarvesterData } from "./components/type";
+<<<<<<< HEAD
 import PastScans from "@/components/PastScans";
+=======
+>>>>>>> 3d57b04dc3353739809f78ba0e73aad4f0e477a2
 
 export default function TheHarvesterDashboard() {
   const [query, setQuery] = useState<string>(""); // Specify string type for query
@@ -81,8 +84,12 @@ export default function TheHarvesterDashboard() {
       const response = await fetch(
         //`/api/OSINT/theharvester?query=${query}&type=${searchType}`
         // `/api/OSINT/virusTotal?domain=http://malware.wicar.org`
+<<<<<<< HEAD
         // `/api/OSINT/virusTotal?domain=amazon.com`
         `/api/OSINT/virusTotal?domain=${query}`
+=======
+        `/api/OSINT/virusTotal?domain=amazon.com`
+>>>>>>> 3d57b04dc3353739809f78ba0e73aad4f0e477a2
       );
 
       const result: ApiResponse = await response.json();
@@ -106,9 +113,16 @@ export default function TheHarvesterDashboard() {
         <SearchBar query={query} setQuery={setQuery} fetchData={fetchData} />
         {error && <p className="text-red-600 text-center">{error}</p>}
 
+        {/* <Widgets /> */}
         {data && (
           <div className="space-y-8">
             <Widgets widgetData={data} />
+<<<<<<< HEAD
+=======
+            {/* <GraphView data={data} />
+            <MapView data={data} />
+            <DetailsTable data={data} /> */}
+>>>>>>> 3d57b04dc3353739809f78ba0e73aad4f0e477a2
           </div>
         )}
 

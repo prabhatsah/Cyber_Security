@@ -1,5 +1,8 @@
+<<<<<<< HEAD
 import { ReactNode } from "react";
 
+=======
+>>>>>>> 3d57b04dc3353739809f78ba0e73aad4f0e477a2
 export interface HarvesterData {
   [key: string]: any;
 }
@@ -15,6 +18,7 @@ export interface WidgetDataItem {
   borderColor: string;
 }
 
+<<<<<<< HEAD
 export interface VoteMsg {
   cssVariant: string;
   iconHTML: ReactNode;
@@ -31,6 +35,8 @@ export interface LastHttpsCertificate {
   issuer: Array<string>;
 }
 
+=======
+>>>>>>> 3d57b04dc3353739809f78ba0e73aad4f0e477a2
 export interface DataItem {
   title: string;
   description: string;
@@ -60,6 +66,7 @@ export interface LastDnsRecords {
   minimum?: number;
 }
 
+<<<<<<< HEAD
 export interface WhoisData {
   admin: Record<string, string>;
   registrar: Record<string, string>;
@@ -67,6 +74,8 @@ export interface WhoisData {
   nameServers: string[];
 }
 
+=======
+>>>>>>> 3d57b04dc3353739809f78ba0e73aad4f0e477a2
 export interface WidgetData {
   data: {
     id: string;

@@ -68,6 +68,7 @@ export default function WebApi() {
         throw new Error(`Failed to fetch: ${response.statusText}`);
       }
 
+<<<<<<< HEAD
       console.log("------------------- response");
       console.log(response);
 
@@ -75,6 +76,10 @@ export default function WebApi() {
 
       console.log(result);
 
+=======
+      const result = await response.json();
+
+>>>>>>> 3d57b04dc3353739809f78ba0e73aad4f0e477a2
       if (result.error) {
         throw new Error(result.error);
       }
@@ -100,12 +105,20 @@ export default function WebApi() {
     // </Layout>
     <Layout>
       <div className="">
+<<<<<<< HEAD
         <p className="font-bold text-gray-600">Web & Api Security</p>
         <SearchBar query={query} setQuery={setQuery} fetchData={fetchData} />
         {error && <p className="text-red-600 text-center">{error}</p>}
 
         {data ? <Dashboard _data={data} /> : <div>No data available</div>}
         {/* <Dashboard _data={data} /> */}
+=======
+        <p className="font-bold text-gray-600">OSINT & Threat Intelligence</p>
+        <SearchBar query={query} setQuery={setQuery} fetchData={fetchData} />
+        {error && <p className="text-red-600 text-center">{error}</p>}
+
+        {data ? <Dashboard /> : <div>No data available</div>}
+>>>>>>> 3d57b04dc3353739809f78ba0e73aad4f0e477a2
       </div>
     </Layout>
   );

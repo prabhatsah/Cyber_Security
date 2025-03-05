@@ -1,8 +1,7 @@
 "use client";
 
 import Layout from "@/components/Layout";
-<<<<<<< HEAD
-import Dashboard from "./dashboard";
+import Dashboard from "../dashboard";
 import { useEffect, useState } from "react";
 import { useBreadcrumb } from "@/contexts/BreadcrumbContext";
 
@@ -15,31 +14,11 @@ interface ApiResponse {
   error?: string;
 }
 
-export default function CloudContainerDashboard() {
+export default function CloudDashboard() {
   const [data, setData] = useState<CloudContainerData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const { setItems } = useBreadcrumb();
-=======
-import Tabs from "@/components/Tabs";
-import { useEffect, useState } from "react";
-import { useBreadcrumb } from "@/contexts/BreadcrumbContext";
-import CloudDashboard from "./cloud/page";
-import ContainerDashboard from "./containers/page";
-
-export default function GeneralDashboard() {
-  const [activeTab, setActiveTab] = useState<"Cloud" | "Containers">("Cloud");
-  const { setItems } = useBreadcrumb();
-
->>>>>>> 3d57b04dc3353739809f78ba0e73aad4f0e477a2
-  useEffect(() => {
-    setItems([
-      { label: "Scans", href: "/scans" },
-      { label: "Cloud & Container Security", href: "/scans/cloudContainer" },
-    ]);
-<<<<<<< HEAD
-  }, []);
 
   // Fetch data on component mount
   useEffect(() => {
@@ -75,26 +54,8 @@ export default function GeneralDashboard() {
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <Layout>
+    <>
       {data ? <Dashboard data={data} /> : <div>No data available</div>}
-=======
-  }, [activeTab]);
-
-  const tabs = [
-    {
-      label: "Cloud",
-      content: <CloudDashboard />,
-    },
-    {
-      label: "Container",
-      content: <ContainerDashboard />,
-    },
-  ];
-
-  return (
-    <Layout>
-      <Tabs tabs={tabs} />
->>>>>>> 3d57b04dc3353739809f78ba0e73aad4f0e477a2
-    </Layout>
+    </>
   );
 }

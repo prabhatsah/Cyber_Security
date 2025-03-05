@@ -1,10 +1,20 @@
+<<<<<<< HEAD
+=======
+
+>>>>>>> 3d57b04dc3353739809f78ba0e73aad4f0e477a2
 env:
   contexts:
     - name: "DynamicScan"
       urls:
+<<<<<<< HEAD
         - "${ZAP_TARGET_URL}"
       includePaths:
         - "${ZAP_TARGET_URL}/.*"
+=======
+        - "http://example.com"
+      includePaths:
+        - "http://example.com/.*"
+>>>>>>> 3d57b04dc3353739809f78ba0e73aad4f0e477a2
 
 jobs:
   - type: "spider"
