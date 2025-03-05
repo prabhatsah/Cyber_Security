@@ -26,11 +26,8 @@ export default function Sidebar() {
 
   return (
     <div className="hidden lg:flex lg:flex-shrink-0">
-      <div className="flex flex-col w-64 bg-gray-50 dark:bg-gray-900">
-        <div
-          className="flex flex-col flex-grow pt-5 pb-4 overflow-y-auto  border-r 
-        border-gray-200 "
-        >
+      <div className="flex flex-col w-64">
+        <div className="flex flex-col flex-grow pt-5 pb-4 overflow-y-auto border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950">
           <div className="flex items-center flex-shrink-0 px-4">
             <Shield className="h-8 w-8 text-primary" />
             <h1 className="ml-2 text-xl font-semibold text-gray-900 dark:text-white">
