@@ -35,7 +35,6 @@ export default function ConfigSidebar() {
                   key={item.name}
                   href={item.href}
                   className={`group flex items-center px-3 py-3 text-sm font-medium rounded-md transition-colors ${
-                    //pathname === item.href
                     pathname.includes(item.href)
                       ? "bg-primary text-white"
                       : "text-gray-600 hover:bg-gray-300 hover:text-gray-900"
