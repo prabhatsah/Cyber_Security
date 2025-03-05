@@ -1,15 +1,39 @@
 "use client";
-import { Bell } from "lucide-react";
+import { Bell, Sun, Moon } from "lucide-react";
 import GenericBreadcrumb from "./GenericBreadcrumb";
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 
 export default function Navbar() {
+  const [darkMode, setDarkMode] = useState(false);
+
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [darkMode]);
+
   return (
-    <header className=" border-b border-gray-200">
-      <div className="flex justify-between items-center py-2 px-6 ">
+    <header className="border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
+      <div className="flex justify-between items-center py-2 px-6">
         <div className="sticky top-0 z-10 py-2 px-4">
           <GenericBreadcrumb />
         </div>
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-4 relative">
+          {/* Dark Mode Toggle */}
+          <motion.button
+            onClick={() => setDarkMode(!darkMode)}
+            className="p-2 rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 focus:outline-none"
+            whileTap={{ scale: 0.9 }}
+          >
+            {darkMode ? (
+              <Sun className="h-5 w-5 text-gray-800 dark:text-gray-200" />
+            ) : (
+              <Moon className="h-5 w-5 text-gray-800 dark:text-gray-200" />
+            )}
+          </motion.button>
           <button
             type="button"
             className="p-2 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary relative"
@@ -18,6 +42,7 @@ export default function Navbar() {
             <Bell className="h-6 w-6" aria-hidden="true" />
             <span className="absolute top-0 right-0 block h-2 w-2 rounded-full bg-error transform translate-x-1/2 -translate-y-1/2"></span>
           </button>
+
           <div className="relative">
             <div className="flex items-center">
               <img
@@ -26,10 +51,12 @@ export default function Navbar() {
                 alt=""
               />
               <div className="hidden md:flex flex-col ml-3">
-                <span className="text-sm font-medium text-gray-700">
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-200">
                   Demo User
                 </span>
-                <span className="text-xs text-gray-500">Administrator</span>
+                <span className="text-xs text-gray-500 dark:text-gray-400">
+                  Administrator
+                </span>
               </div>
             </div>
           </div>
