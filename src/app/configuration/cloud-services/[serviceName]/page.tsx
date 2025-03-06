@@ -136,8 +136,8 @@ export default async function CloudServiceDetails({
 }: {
   params: Promise<{ serviceName: string }>;
 }) {
-  const incomingServiceName = (await params).serviceName;
-  const serviceNameArray = incomingServiceName.split("-");
+  const serviceNameInUrl = (await params).serviceName;
+  const serviceNameArray = serviceNameInUrl.split("-");
   let serviceName = "";
   serviceNameArray.forEach((eachPart) => {
     serviceName +=
@@ -161,7 +161,7 @@ export default async function CloudServiceDetails({
           </div>
           <AddConfigurationBtnWithFormDialog
             btnText="Add Configuration"
-            serviceName={serviceName}
+            serviceNameInUrl={serviceNameInUrl}
           />
         </div>
         <Divider className="my-4" />
