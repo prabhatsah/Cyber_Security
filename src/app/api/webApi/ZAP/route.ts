@@ -87,6 +87,28 @@
 //   }
 // }
 
+// const zapArgs = [
+//   "run",
+//   "--rm",
+//   "-e",
+//   `ZAP_TARGET_URL=${url}`,
+//   "-v",
+//   `${projectRoot}:/zap/wrk/:rw`,
+//   "--memory=8g",
+//   "--cpus=4",
+//   "--ulimit",
+//   "nofile=65535:65535",
+//   "--network=host",
+//   "-t",
+//   "zaproxy/zap-stable",
+//   "zap.sh",
+//   "-cmd",
+//   "-autorun",
+//   "/zap/wrk/zap.yaml",
+// ];
+
+// const zapCommand = `docker ${zapArgs.join(" ")}`;
+
 import { NextResponse } from "next/server";
 import { exec } from "child_process";
 import fs from "fs/promises";
@@ -106,9 +128,8 @@ export async function POST(req: Request) {
     const reportPath = path.join(projectRoot, "zap-report.json");
 
     // Run the ZAP scan
-    //const zapCommand = `docker run --rm -e ZAP_TARGET_URL="${url}" -v "${projectRoot}:/zap/wrk/:rw" -t zaproxy/zap-stable zap.sh -cmd -autorun /zap/wrk/zap.yaml`;
-    //const zapCommand = `docker run --rm  -e ZAP_TARGET_URL="${url}"  -v "${projectRoot}:/zap/wrk/:rw"  -v "${projectRoot}/zap_session:/zap/session" -t zaproxy/zap-stable zap.sh -cmd -autorun /zap/wrk/zap.yaml -session /zap/session/zap_session.session`;
-    const zapCommand = `docker run --rm -e ZAP_TARGET_URL="${url}" -v "${projectRoot}:/zap/wrk/:rw" -v "${projectRoot}/zap_session:/zap/session" -t zaproxy/zap-stable zap.sh -cmd -autorun /zap/wrk/zap.yaml`;
+    // const zapCommand = `docker run --rm -e ZAP_TARGET_URL="${url}" -v "${projectRoot}:/zap/wrk/:rw" -t zaproxy/zap-stable zap.sh -cmd -autorun /zap/wrk/zap.yaml`;
+    const zapCommand = `docker run --rm -e ZAP_TARGET_URL="${url}" -v "${projectRoot}:/zap/wrk/:rw" -t zaproxy/zap-stable zap.sh -cmd -autorun /zap/wrk/zap.yaml > zap.log 2>&1`;
 
     return new Promise<NextResponse>((resolve) => {
       exec(zapCommand, async (error, stdout, stderr) => {
