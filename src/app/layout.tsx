@@ -24,7 +24,9 @@ export default function RootLayout({
         <LoadingProvider>
           <GlobalLoadingSpinner />
           <BreadcrumbProvider>
-            <Providers>{children}</Providers>
+            <Providers>
+              <Layout>{children}</Layout>
+            </Providers>
           </BreadcrumbProvider>
         </LoadingProvider>
       </body>
