@@ -17,6 +17,8 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import VulnerabilitiesStats from './stats';
 import CustomPieChart from './vulnerabilitiesPie';
 import { Maximize, Minimize } from "lucide-react";
+import * as api from "@/utils/api"
+
 
 type CommandKey = keyof typeof dockerCommands;
 
@@ -40,7 +42,7 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
   const [imageFiles,setImageFiles] = useState<string | null>(null);
   const [fileSystemResult, setfileSystemResult] = useState<Record<string, any>>({});
   const [isFullScreen, setIsFullScreen] = useState(false);
-
+  const [tableResult,setTableResult] = useState<any>();
     const toggleFullScreen = () => {
       setIsFullScreen(!isFullScreen);
     };
@@ -51,111 +53,114 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
     return JSON.stringify(JSON.parse(jsonString), null, 2);
   }
 
-
   useEffect(() => {
-    fetchData("databases"); // Fetch databases on component mount
-  }, []);
+    console.log(tableResult);
+  }, [tableResult]);
   
-  const fetchData = async (type: "tables" | "databases") => {
-    try {
-      const res = await fetch(`/api/dbApi?type=${type}`, { method: "GET" });
-      const data = await res.json();
+  function creatingTable(){
+    const name ="container";
+
+    const columnArr : Record<string,string>[] = [{column : "id", dataType : "Serial", constraints : "PRIMARY KEY"},
+      {column : "name", dataType : "VARCHAR(100)", constraints : "NOT NULL"},
+      {column : "email", dataType : "VARCHAR(255)", constraints : "UNIQUE NOT NULL"},
+      {column : "password", dataType : "TEXT", constraints : "NOT NULL"},
+      {column : "created_at", dataType : "TIMESTAMP",  defaultValue : "CURRENT_TIMESTAMP"}
+    ]
+
+      const valuesArr : Record<string,any>[] = [{column : "id"},
+        {column : "name", value : ["Zane Whitaker","Elara Finch","Kai Montgomery"]},
+        {column : "email", value : ["zane.whitaker@example.com","elara.finch@example.com","kai.montgomery@example.com"]},
+        {column : "password", value : ["Xv9@pLz#3mQ","!Tg7zY&2wKd","Rq5*Bn$8vXt"]},
+        {column : "created_at", value : ['DEFAULT','DEFAULT','DEFAULT']}]
       
-      if (type === "tables") {
-        console.log("Tables:", data.tables);
-      } else if (type === "databases") {
-        console.log("Databases:", data.databases);
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
+      return api.showTables();
+  }
+
   
-  
-  
-  
+
   
   useEffect(() => {
     console.log(fileSystemResult);
   }, [fileSystemResult]);
 
   const runCommand = async (commandKey: CommandKey, params: Record<string, string> = {},itemId: string | null = null, flag : number = 0) => {
+    creatingTable().then(setTableResult)
     let data:any ;
-    try {
-      setLoading(commandKey);
-      setError(null);
-      setScanningItem(itemId);
-      const response = await fetch("/api/run-docker", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ commandKey, params }),
-      });
-      if (response.ok) {
-        data = await response.json();
+    // try {
+    //   setLoading(commandKey);
+    //   setError(null);
+    //   setScanningItem(itemId);
+    //   const response = await fetch("/api/run-docker", {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify({ commandKey, params }),
+    //   });
+    //   if (response.ok) {
+    //     data = await response.json();
         
-        const severity = new Map<string, number>([
-          ["LOW", 0],
-          ["MEDIUM", 0],
-          ["HIGH", 0],
-          ["CRITICAL", 0]
-          ]);
+    //     const severity = new Map<string, number>([
+    //       ["LOW", 0],
+    //       ["MEDIUM", 0],
+    //       ["HIGH", 0],
+    //       ["CRITICAL", 0]
+    //       ]);
 
-        if(flag == 1){
-          const formattedString = cleanAndFormatJson(data.output);
-          let finalResult : any ;
-          finalResult = JSON.parse(formattedString);
-          console.log(finalResult)
-          setOutputScan(finalResult)
-          setScanResults((prevResults) => ({ ...prevResults, [itemId!]: finalResult?.Results ?? finalResult}));
-          console.log(scanResults)
-          let vul : any;
-          if(finalResult && finalResult.Results && finalResult.Results.length>0){
-            console.log("Entering vul");
-              setLatestResult(finalResult.Results[0]);
-              if(finalResult.Results[0].Vulnerabilities && finalResult.Results[0].Vulnerabilities.length>0){
-                vul = finalResult.Results[0].Vulnerabilities;
-                for(let i =0 ; i< vul.length ;i++){
-                      if(!severity.has(vul[i].Severity))
-                        severity.set(vul[i].Severity,1);
-                    else{
-                      let  count : number = severity.get(vul[i].Severity) || 0;
-                      severity.set(vul[i].Severity,count+1);
-                    }
-                }
-                      console.log(severity);
-            }
-            const severityArray = Array.from(severity, ([severity, count]) => ({
-              severity,
-              count,
-            }));
-            setCurrSeverity(severityArray);
-            console.log(currSeverity)
+    //     if(flag == 1){
+    //       const formattedString = cleanAndFormatJson(data.output);
+    //       let finalResult : any ;
+    //       finalResult = JSON.parse(formattedString);
+    //       console.log(finalResult)
+    //       setOutputScan(finalResult)
+    //       setScanResults((prevResults) => ({ ...prevResults, [itemId!]: finalResult?.Results ?? finalResult}));
+    //       console.log(scanResults)
+    //       let vul : any;
+    //       if(finalResult && finalResult.Results && finalResult.Results.length>0){
+    //         console.log("Entering vul");
+    //           setLatestResult(finalResult.Results[0]);
+    //           if(finalResult.Results[0].Vulnerabilities && finalResult.Results[0].Vulnerabilities.length>0){
+    //             vul = finalResult.Results[0].Vulnerabilities;
+    //             for(let i =0 ; i< vul.length ;i++){
+    //                   if(!severity.has(vul[i].Severity))
+    //                     severity.set(vul[i].Severity,1);
+    //                 else{
+    //                   let  count : number = severity.get(vul[i].Severity) || 0;
+    //                   severity.set(vul[i].Severity,count+1);
+    //                 }
+    //             }
+    //                   console.log(severity);
+    //         }
+    //         const severityArray = Array.from(severity, ([severity, count]) => ({
+    //           severity,
+    //           count,
+    //         }));
+    //         setCurrSeverity(severityArray);
+    //         console.log(currSeverity)
 
-          }
+    //       }
   
-          }
-        else if(flag == 2){
-        const formattedString = cleanAndFormatJson(data.output);
-          let finalResult : any ;
-          finalResult = JSON.parse(formattedString);
-          finalResult['fileName'] = itemId;
-          setfileSystemResult(finalResult);
-      }
-      else{
-        const parsedData = data.output.trim().split('\n') .map((line : any) => JSON.parse(line)) ;
-        console.log(parsedData)
-        setImageScan(0)
-        setOutput(parsedData)
-        setScanResults((prevResults) => ({ ...prevResults, [itemId!]: parsedData}));
-      }
-      }
-    } catch (err) {
-      setError("Failed to execute command");
-    } finally {
-      setLoading(null);
-    };
+    //       }
+    //     else if(flag == 2){
+    //     const formattedString = cleanAndFormatJson(data.output);
+    //       let finalResult : any ;
+    //       finalResult = JSON.parse(formattedString);
+    //       finalResult['fileName'] = itemId;
+    //       setfileSystemResult(finalResult);
+    //   }
+    //   else{
+    //     const parsedData = data.output.trim().split('\n') .map((line : any) => JSON.parse(line)) ;
+    //     console.log(parsedData)
+    //     setImageScan(0)
+    //     setOutput(parsedData)
+    //     setScanResults((prevResults) => ({ ...prevResults, [itemId!]: parsedData}));
+    //   }
+    //   }
+    // } catch (err) {
+    //   setError("Failed to execute command");
+    // } finally {
+    //   setLoading(null);
+    // };
      
 }
 
