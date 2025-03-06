@@ -34,11 +34,13 @@ export default function ConfigSidebar() {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`group flex items-center px-3 py-3 text-sm font-medium rounded-md transition-colors ${
-                    pathname.includes(item.href)
-                      ? "bg-primary text-white"
-                      : "text-gray-600 hover:bg-gray-300 hover:text-gray-900"
-                  }`}
+                  className={`flex items-center gap-x-2.5 text-sm font-medium px-3 py-2 rounded-md
+                    ${
+                      pathname.includes(item.href)
+                        ? "bg-primary text-gray-50"
+                        : "text-gray-700 dark:text-gray-400 hover:bg-gray-100 hover:text-gray-900 hover:dark:text-gray-50 hover:dark:bg-gray-800"
+                    }
+                    `}
                 >
                   <item.icon
                     className="mr-3 h-5 w-5 flex-shrink-0"
