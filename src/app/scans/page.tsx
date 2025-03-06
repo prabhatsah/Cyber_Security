@@ -11,9 +11,5 @@ export default function ScansPage() {
     setItems([{ label: "Scans", href: "/scans" }]);
   }, []);
 
-  return (
-    <Layout>
-      <Scans />
-    </Layout>
-  );
+  return <Scans />;
 }
