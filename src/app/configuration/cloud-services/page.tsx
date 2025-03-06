@@ -81,13 +81,17 @@ export default function CloudServicesConfig() {
                hover:dark:bg-dark-tremor-background-muted"
             >
               <div className="flex items-center space-x-3">
-                <span className="flex size-12 shrink-0 items-center 
+                <span
+                  className="flex size-12 shrink-0 items-center 
                 justify-center text-primary rounded-md border 
-                border-tremor-border p-1 dark:border-dark-tremor-border">
+                border-tremor-border p-1 dark:border-dark-tremor-border"
+                >
                   <item.icon className="size-5" aria-hidden={true} />
                 </span>
-                <dt className="text-tremor-default font-medium 
-                text-tremor-content-strong dark:text-dark-tremor-content-strong">
+                <dt
+                  className="text-tremor-default font-medium 
+                text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                >
                   <a href={item.href} className="focus:outline-none">
                     {/* Extend link to entire card */}
                     <span className="absolute inset-0" aria-hidden={true} />
@@ -97,8 +101,10 @@ export default function CloudServicesConfig() {
               </div>
               <div className="mt-4 flex flex-1 flex-col">
                 <div className="flex-1">
-                  <dd className="text-tremor-default leading-6 
-                  text-tremor-content dark:text-dark-tremor-content">
+                  <dd
+                    className="text-sm leading-6 
+                  text-tremor-content dark:text-gray-400"
+                  >
                     {item.description}
                   </dd>
                 </div>

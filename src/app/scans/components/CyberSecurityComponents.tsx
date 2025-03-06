@@ -266,9 +266,13 @@ export default function CyberSecurityComponents() {
                   </h3>
                   <p className="text-sm text-gray-500">{agent.role}</p>
                 </div> */}
-                <dt
+                {/* <dt
                   className="text-tremor-default font-medium 
                 text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                > */}
+                <dt
+                  className="text-tremor-default font-medium 
+                text-tremor-content-strong dark:text-widget-dark-mainHeader"
                 >
                   <a className="focus:outline-none">
                     {/* Extend link to entire card */}
