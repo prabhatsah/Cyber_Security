@@ -1,20 +1,23 @@
 "use client";
 
 import { createContext, useContext, useState, ReactNode } from "react";
-
-interface ConfigurationContextType {
-  configurationData: Record<string, any>;
-  setConfigurationData: (data: Record<string, any>) => void;
-}
+import { ConfigurationContextType, ConfigurationData } from "./type";
 
 const ConfigurationContext = createContext<
   ConfigurationContextType | undefined
 >(undefined);
 
 export function ConfigurationProvider({ children }: { children: ReactNode }) {
-  const [configurationData, setConfigurationData] = useState<
-    Record<string, any>
-  >({});
+  const defaultConfigData = {
+    "amazon-web-services": [],
+    "microsoft-azure": [],
+    "google-cloud-platform": [],
+    "ibm-cloud": [],
+    "oracle-cloud-infrastructure": [],
+    "alibaba-cloud": [],
+  };
+  const [configurationData, setConfigurationData] =
+    useState<ConfigurationData>(defaultConfigData);
 
   return (
     <ConfigurationContext.Provider

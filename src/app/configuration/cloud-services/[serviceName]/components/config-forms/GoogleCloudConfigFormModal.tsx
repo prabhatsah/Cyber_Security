@@ -1,5 +1,4 @@
 import { Input } from "@/components/Input";
-import { Label } from "@/components/ui/label";
 import { RiCloseLine, RiGoogleFill } from "@remixicon/react";
 import {
   Dialog,
@@ -9,15 +8,25 @@ import {
   SelectItem,
 } from "@tremor/react";
 
-export default function CloudConfigurationFormModal({
-  serviceName,
+export default function GoogleCloudConfigFormModal({
+  serviceNameInUrl,
   isFormModalOpen,
   onClose,
 }: {
-  serviceName: string;
+  serviceNameInUrl: string;
   isFormModalOpen: boolean;
   onClose: () => void;
 }) {
+  const serviceNameArray = serviceNameInUrl.split("-");
+  let serviceName = "";
+  serviceNameArray.forEach((eachPart) => {
+    serviceName +=
+      eachPart.substring(0, 1).toUpperCase() +
+      eachPart.substring(1, eachPart.length) +
+      " ";
+  });
+  serviceName.trim();
+
   return (
     <>
       <Dialog
@@ -68,7 +77,7 @@ export default function CloudConfigurationFormModal({
                       Description:
                     </h4>
                     <p className="mt-1 text-tremor-default leading-6 text-tremor-content dark:text-dark-tremor-content">
-                      Google Cloud Infrastructure delivers scalable, secure, and
+                      Google Cloud Platform delivers scalable, secure, and
                       high-performance cloud services.
                     </p>
                     <h4 className="mt-6 text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">
