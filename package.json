@@ -52,6 +52,7 @@
     "date-fns": "^3.6.0",
     "embla-carousel-react": "^8.5.2",
     "framer-motion": "^12.4.7",
+    "googleapis": "^146.0.0",
     "input-otp": "^1.4.2",
     "jspdf": "^3.0.0",
     "lucide-react": "^0.475.0",

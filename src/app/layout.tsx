@@ -5,6 +5,7 @@ import "../styles/globals.css";
 import { BreadcrumbProvider } from "@/contexts/BreadcrumbContext";
 import { LoadingProvider } from "@/contexts/LoadingContext";
 import GlobalLoadingSpinner from "@/components/GlobalLoadingSpinner";
+import Layout from "@/components/Layout";
 
 const inter = Inter({ subsets: ["latin"] });
 
