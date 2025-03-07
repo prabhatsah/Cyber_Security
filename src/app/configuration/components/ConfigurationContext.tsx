@@ -8,7 +8,7 @@ const ConfigurationContext = createContext<
 >(undefined);
 
 export function ConfigurationProvider({ children }: { children: ReactNode }) {
-  const defaultConfigData = {
+  const defaultConfigData: ConfigurationData = {
     "amazon-web-services": [],
     "microsoft-azure": [],
     "google-cloud-platform": [],
