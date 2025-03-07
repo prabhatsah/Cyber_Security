@@ -18,7 +18,8 @@ import { useState } from "react";
 import { testGoogleCloudConnection } from "../apis/googleCloud";
 import { Button } from "@/components/Button";
 import { format } from "date-fns";
-import { useConfiguration } from "@/app/configuration/components/ConfigurationContext";
+// import { useConfiguration } from "@/app/configuration/components/ConfigurationContext";
+import { createTable } from "./cloudConfigDataHandler";
 
 export default function GoogleCloudConfigFormModal({
   serviceNameInUrl,
@@ -39,7 +40,7 @@ export default function GoogleCloudConfigFormModal({
   });
   serviceName.trim();
 
-  const { setConfigurationData } = useConfiguration();
+  // const { setConfigurationData } = useConfiguration();
 
   const [formData, setFormData] = useState({
     configurationName: "",
@@ -140,6 +141,9 @@ export default function GoogleCloudConfigFormModal({
     //   };
     //   return updatedConfigData;
     // });
+
+    //creating table
+    createTable();
 
     handleClose();
   };

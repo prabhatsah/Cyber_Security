@@ -1,7 +1,7 @@
 import { RiFileEditLine } from "@remixicon/react";
 import { Card, Divider } from "@tremor/react";
 import AddConfigurationBtnWithFormDialog from "./components/AddConfigurationBtnWithFormDialog";
-import { useConfiguration } from "../../components/ConfigurationContext";
+//import { useConfiguration } from "../../components/ConfigurationContext";
 
 const data = [
   {
@@ -148,9 +148,9 @@ export default async function CloudServiceDetails({
   });
   serviceName.trim();
 
-  const { configurationData, setConfigurationData } = useConfiguration();
-  const selectedServiceConfigList: Array<Record<string, any>> =
-    configurationData[serviceNameInUrl];
+  //const { configurationData, setConfigurationData } = useConfiguration();
+  // const selectedServiceConfigList: Array<Record<string, any>> =
+  //   configurationData[serviceNameInUrl];
 
   return (
     <>
