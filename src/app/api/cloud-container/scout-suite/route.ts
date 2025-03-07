@@ -1,62 +1,68 @@
 import { NextRequest, NextResponse } from "next/server";
-import { exec } from "child_process"; // To run Scout Suite commands
-import path from "path"; // For file path manipulation
-import fs from "fs"; // To handle file system operations
 
-// Function to execute the Scout Suite scan command
-const executeScan = (cloudProvider: string, credentials: any) => {
-  return new Promise((resolve, reject) => {
-    const scanCommand = getScanCommand(cloudProvider, credentials);
+// Function to call Scout Suite API with correct parameters based on the cloud provider
+const callScoutApi = async (cloudProvider: string, credentials: any) => {
+  const apiUrl = "http://127.0.0.1:5000/run-scout"; // URL for Scout Suite API
 
-    exec(scanCommand, (error, stdout, stderr) => {
-      if (error || stderr) {
-        reject(error || stderr);
-      } else {
-        resolve(stdout);
-      }
+  try {
+    // Modify the payload based on the cloud provider
+    let requestBody;
+
+    if (cloudProvider === "gcp") {
+      requestBody = {
+        cloudProvider,
+        credentials: {
+          projectId: credentials.projectId,
+          serviceAccountKey: credentials.serviceAccountKey, // GCP specific
+          region: credentials.region, // Optional, GCP specific
+        },
+      };
+    } else if (cloudProvider === "aws") {
+      requestBody = {
+        cloudProvider,
+        credentials: {
+          awsAccessKey: credentials.awsAccessKey,
+          awsSecretKey: credentials.awsSecretKey,
+        },
+      };
+    } else if (cloudProvider === "azure") {
+      requestBody = {
+        cloudProvider,
+        credentials: {
+          azureClientId: credentials.azureClientId,
+          azureClientSecret: credentials.azureClientSecret,
+          azureTenantId: credentials.azureTenantId,
+        },
+      };
+    } else {
+      throw new Error("Unsupported cloud provider");
+    }
+
+    // Make API request to start the scan
+    const response = await fetch(apiUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(requestBody),
     });
-  });
-};
 
-// Function to get the scan command based on cloud provider
-const getScanCommand = (cloudProvider: string, credentials: any): string => {
-  const credentialsFilePath = saveCredentialsToFile(cloudProvider, credentials);
-
-  if (cloudProvider === "gcp") {
-    return `scout scan --gcp-project-id=${credentials.projectId} --gcp-service-account-key=${credentialsFilePath}`;
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.error || "Failed to initiate scan via API");
+    }
+    return data; // Return the result from Scout API
+  } catch (error) {
+    throw new Error(error.message || "Error connecting to Scout API");
   }
-
-  if (cloudProvider === "aws") {
-    return `scout scan --aws-access-key=${credentials.awsAccessKey} --aws-secret-key=${credentials.awsSecretKey}`;
-  }
-
-  if (cloudProvider === "azure") {
-    return `scout scan --azure-client-id=${credentials.azureClientId} --azure-client-secret=${credentials.azureClientSecret} --azure-tenant-id=${credentials.azureTenantId}`;
-  }
-
-  return ""; // Default empty command for unsupported providers
-};
-
-// Function to save credentials to a temporary file (like JSON) for Scout Suite CLI usage
-const saveCredentialsToFile = (
-  cloudProvider: string,
-  credentials: any
-): string => {
-  const tempFilePath = path.join(
-    __dirname,
-    `temp-credentials-${cloudProvider}.json`
-  );
-
-  // Write the credentials to a temporary file
-  fs.writeFileSync(tempFilePath, JSON.stringify(credentials), "utf8");
-
-  return tempFilePath;
 };
 
 // API route handler
 export async function POST(req: NextRequest) {
   try {
     const { cloudProvider, credentials } = await req.json();
+    console.log("cloudProvider - " + cloudProvider);
+    console.log("credentials - " + credentials.serviceAccountKey.type);
 
     // Validate the cloud provider and credentials
     if (!cloudProvider || !credentials) {
@@ -66,8 +72,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Execute the scan command for the specific cloud provider
-    const result = await executeScan(cloudProvider, credentials);
+    // Call Scout Suite API to start the scan
+    const result = await callScoutApi(cloudProvider, credentials);
 
     // Respond with the scan results
     return NextResponse.json({
