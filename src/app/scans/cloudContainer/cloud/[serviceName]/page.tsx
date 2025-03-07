@@ -1,7 +1,5 @@
 import { RiFileEditLine } from "@remixicon/react";
 import { Card, Divider } from "@tremor/react";
-import AddConfigurationBtnWithFormDialog from "./components/AddConfigurationBtnWithFormDialog";
-import { useConfiguration } from "../../components/ConfigurationContext";
 
 const data = [
   {
@@ -151,19 +149,13 @@ export default async function CloudServiceDetails({
   return (
     <>
       <div className="px-6 py-3 flex flex-col flex-grow gap-3">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <h3 className="text-tremor-default font-medium text-primary">
-              {serviceName} Configurations
-            </h3>
-            <span className="inline-flex size-7 items-center justify-center rounded-full bg-tremor-background-subtle text-tremor-label font-medium text-tremor-content-strong dark:bg-dark-tremor-background-subtle dark:text-dark-tremor-content-strong">
-              {data.length}
-            </span>
-          </div>
-          <AddConfigurationBtnWithFormDialog
-            btnText="Add Configuration"
-            serviceNameInUrl={serviceNameInUrl}
-          />
+        <div className="flex items-center space-x-2">
+          <h3 className="text-tremor-default font-medium text-primary">
+            {serviceName} Configurations
+          </h3>
+          <span className="inline-flex size-7 items-center justify-center rounded-full bg-tremor-background-subtle text-tremor-label font-medium text-tremor-content-strong dark:bg-dark-tremor-background-subtle dark:text-dark-tremor-content-strong">
+            {data.length}
+          </span>
         </div>
         <Divider className="my-4" />
         <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
