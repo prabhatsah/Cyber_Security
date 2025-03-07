@@ -18,7 +18,6 @@
 
 "use client";
 
-import Layout from "@/components/Layout";
 import Dashboard from "./dashboard";
 import { useEffect, useState } from "react";
 import { useBreadcrumb } from "@/contexts/BreadcrumbContext";
@@ -96,20 +95,15 @@ export default function WebApi() {
   if (error) return <div>Error: {error}</div>;
 
   return (
-    // <Layout>
-    //   {data ? <Dashboard data={data} /> : <div>No data available</div>}
-    // </Layout>
-    <Layout>
-      <div className="">
-        <p className="font-bold text-gray-600">Web & Api Security</p>
-        <SearchBar query={query} setQuery={setQuery} fetchData={fetchData} />
-        {error && <p className="text-red-600 text-center">{error}</p>}
+    <div className="">
+      <p className="font-bold text-gray-600">Web & Api Security</p>
+      <SearchBar query={query} setQuery={setQuery} fetchData={fetchData} />
+      {error && <p className="text-red-600 text-center">{error}</p>}
 
-        {data && <Dashboard _data={data} />}
-        <div>
-          <PastScans />
-        </div>
+      {data && <Dashboard _data={data} />}
+      <div>
+        <PastScans />
       </div>
-    </Layout>
+    </div>
   );
 }

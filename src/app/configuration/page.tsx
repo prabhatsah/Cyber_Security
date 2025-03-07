@@ -1,19 +1,15 @@
 "use client";
 
-import { Scans } from "@/app/scans/components/Scans";
-import Layout from "@/components/Layout";
 import { useBreadcrumb } from "@/contexts/BreadcrumbContext";
 import { useEffect } from "react";
+import { redirect } from "next/navigation";
 
-export default function ScansPage() {
+export default function ConfigurationPage() {
   const { setItems } = useBreadcrumb();
+
   useEffect(() => {
-    setItems([{ label: "Scans", href: "/scans" }]);
+    setItems([{ label: "Configuration", href: "/configuration" }]);
   }, []);
 
-  return (
-    <Layout>
-      <Scans />
-    </Layout>
-  );
+  redirect("/configuration/cloud-services");
 }

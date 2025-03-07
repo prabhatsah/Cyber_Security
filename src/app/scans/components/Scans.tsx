@@ -147,18 +147,10 @@ export function Scans() {
       </div>
       {activeTab === "cyberSecurity" ? (
         <div>
-          {/* Specialized AI Agents */}
-          <h2 className="text-lg font-medium text-gray-900 mb-4">
-            Specialized AI Security Agents
-          </h2>
           <CyberSecurityComponents />
         </div>
       ) : (
         <div>
-          {/* Specialized AI Agents */}
-          <h2 className="text-lg font-medium text-gray-900 mb-4">
-            Specialized AI Security Agents
-          </h2>
           <SpecializedAIAgents />
         </div>
       )}

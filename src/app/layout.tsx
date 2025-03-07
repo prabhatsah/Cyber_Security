@@ -5,6 +5,7 @@ import "../styles/globals.css";
 import { BreadcrumbProvider } from "@/contexts/BreadcrumbContext";
 import { LoadingProvider } from "@/contexts/LoadingContext";
 import GlobalLoadingSpinner from "@/components/GlobalLoadingSpinner";
+import Layout from "@/components/Layout";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,7 +25,9 @@ export default function RootLayout({
         <LoadingProvider>
           <GlobalLoadingSpinner />
           <BreadcrumbProvider>
-            <Providers>{children}</Providers>
+            <Providers>
+              <Layout>{children}</Layout>
+            </Providers>
           </BreadcrumbProvider>
         </LoadingProvider>
       </body>
