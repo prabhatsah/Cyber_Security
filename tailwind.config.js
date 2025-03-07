@@ -74,6 +74,25 @@ module.exports = {
             inverted: colors.gray[950],
           },
         },
+        dark: {
+          bgPrimary: "#030712",
+          bgSecondary: "#131a2b",
+          bgTertiary:"#2e3851",
+         },
+        widget: {
+          light: {
+            mainHeader: "#171d2c",
+            mainDesc: "#6b7280",
+            secondaryheader: "#3a3e45",
+            secondaryDesc: "#6b7280",
+          },
+          dark: {
+            mainHeader: "#d4d6d9",
+            mainDesc: "#6b7280",
+            secondaryheader: "#e5e7eb",
+            secondaryDesc: "#6b7280",
+          },
+        },
         primary: {
           DEFAULT: "var(--primary)",
           foreground: "hsl(var(--primary-foreground))",
