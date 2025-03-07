@@ -73,6 +73,17 @@ module.exports = {
             strong: colors.gray[50],
             inverted: colors.gray[950],
           },
+          widget: {
+            mainHeader: colors.red[600],
+          },
+        },
+        widget: {
+          light: {
+            mainHeader: "red",
+          },
+          dark: {
+            mainHeader: "red",
+          },
         },
         dark: {
           bgPrimary: "#030712",

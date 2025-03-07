@@ -16,8 +16,7 @@ import {
   Workflow,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useIsFetching } from "@tanstack/react-query";
-import useGlobalLoading from "@/lib/useGlobalLoading";
+import { Card } from "@tremor/react";
 
 interface AIAgent {
   id: string;
@@ -246,21 +245,42 @@ export default function CyberSecurityComponents() {
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {comps.map((agent) => (
-          <div
+          <Card
             key={agent.id}
-            className="bg-white rounded-lg shadow-sm border p-6"
+            className="relative flex flex-col rounded-lg justify-between
+               hover:bg-tremor-background-muted 
+               hover:dark:bg-dark-tremor-background-muted"
           >
             <div className="flex items-start justify-between">
               <div className="flex items-center space-x-3">
-                <div className="p-2 bg-primary/10 rounded-lg">
-                  <agent.icon className="h-6 w-6 text-primary" />
-                </div>
-                <div>
+                <span
+                  className="flex size-12 shrink-0 items-center 
+                justify-center text-primary rounded-md border 
+                border-tremor-border p-1 dark:border-dark-tremor-border"
+                >
+                  <agent.icon className="" />
+                </span>
+                {/* <div>
                   <h3 className="text-lg font-medium text-primary">
                     {agent.name}
                   </h3>
                   <p className="text-sm text-gray-500">{agent.role}</p>
-                </div>
+                </div> */}
+                {/* <dt
+                  className="text-tremor-default font-medium 
+                text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                > */}
+                <dt
+                  className="text-tremor-default font-medium 
+                text-tremor-content-strong dark:text-widget-dark-mainHeader"
+                >
+                  <a className="focus:outline-none">
+                    {/* Extend link to entire card */}
+                    <span className="absolute inset-0" aria-hidden={true} />
+                    {agent.name}
+                  </a>
+                  <p className="text-sm text-gray-500">{agent.role}</p>
+                </dt>
               </div>
               <button
                 onClick={() => setSelectedAgent(agent)}
@@ -271,12 +291,18 @@ export default function CyberSecurityComponents() {
             </div>
 
             <div className="mt-4">
-              <h4 className="text-sm font-medium text-gray-900">Expertise:</h4>
+              <h4
+                className="text-tremor-default leading-6 
+                  text-tremor-content dark:text-dark-tremor-content-emphasis"
+              >
+                Expertise
+              </h4>
               <ul className="mt-2 space-y-1">
                 {agent.expertise.map((skill, index) => (
                   <li
                     key={index}
-                    className="text-sm text-gray-600 flex items-center"
+                    className="text-sm leading-6 
+                  text-tremor-content dark:text-dark-tremor-content"
                   >
                     <span className="w-1.5 h-1.5 rounded-full bg-primary/60 mr-2" />
                     {skill}
@@ -311,7 +337,7 @@ export default function CyberSecurityComponents() {
                 Schedule
               </button>
             </div>
-          </div>
+          </Card>
         ))}
       </div>
 
