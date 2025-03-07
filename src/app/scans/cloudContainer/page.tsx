@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useBreadcrumb } from "@/contexts/BreadcrumbContext";
 import CloudDashboard from "./cloud/page";
 import ContainerDashboard from "./containers/page";
+import { redirect } from "next/navigation";
 
 export default function GeneralDashboard() {
   const [activeTab, setActiveTab] = useState<"Cloud" | "Containers">("Cloud");
@@ -28,5 +29,6 @@ export default function GeneralDashboard() {
     },
   ];
 
-  return <Tabs tabs={tabs} />;
+  // return <Tabs tabs={tabs} />;
+  redirect("/scans/cloudContainer/cloud");
 }
