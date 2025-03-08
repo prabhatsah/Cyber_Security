@@ -1,4 +1,4 @@
-import CloudContainerSidebar from "./components/CloudContainerSidebar";
+import CloudContainerTabs from "./components/CloudContainerTabs";
 
 export default function RootLayout({
   children,
@@ -7,8 +7,8 @@ export default function RootLayout({
 }) {
   return (
     <>
-      <div className="flex h-full">
-        <CloudContainerSidebar />
+      <div className="flex flex-col h-full">
+        <CloudContainerTabs />
         {children}
       </div>
     </>
