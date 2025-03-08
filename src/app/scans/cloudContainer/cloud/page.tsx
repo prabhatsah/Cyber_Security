@@ -63,8 +63,8 @@ const data = [
 export default function CloudServicesConfig() {
   return (
     <>
-      <div className="px-6 py-3 flex flex-col gap-3">
-        <dl className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 h-fit">
+      <div className="p-6 flex flex-col gap-3">
+        <dl className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 h-fit">
           {data.map((item) => (
             <Card
               key={item.name}
