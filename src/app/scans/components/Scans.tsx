@@ -19,7 +19,6 @@ import type { ScanResult } from "@/lib/scanner";
 import type { PortScanResult } from "@/lib/portScanner";
 import type { ComplianceScanResult } from "./ComplianceScanModal";
 import CyberSecurityComponents from "./CyberSecurityComponents";
-import useGlobalLoading from "@/lib/useGlobalLoading";
 
 export function Scans() {
   const [activeTab, setActiveTab] = useState<

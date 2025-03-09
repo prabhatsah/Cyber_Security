@@ -76,7 +76,7 @@ export default function CloudServicesConfig() {
           {data.map((item) => (
             <Card
               key={item.name}
-              className="relative flex flex-col rounded-lg justify-between
+              className="relative flex flex-col rounded-lg justify-between 
                hover:bg-tremor-background-muted 
                hover:dark:bg-dark-tremor-background-muted"
             >

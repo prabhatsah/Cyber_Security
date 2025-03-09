@@ -1,3 +1,6 @@
+"use client";
+
+import { useBreadcrumb } from "@/contexts/BreadcrumbContext";
 import {
   RiAlibabaCloudFill,
   RiAmazonLine,
@@ -8,6 +11,7 @@ import {
   RiWindowsFill,
 } from "@remixicon/react";
 import { Card } from "@tremor/react";
+import { useEffect } from "react";
 
 const data = [
   {
@@ -61,6 +65,15 @@ const data = [
 ];
 
 export default function CloudServicesConfig() {
+  debugger;
+  const { setItems } = useBreadcrumb();
+  useEffect(() => {
+    setItems([
+      { label: "Scans", href: "/scans" },
+      { label: "Cloud Security", href: "/scans/cloudContainer/cloud" },
+    ]);
+  }, []);
+
   return (
     <>
       <div className="p-6 flex flex-col gap-3">
@@ -68,7 +81,7 @@ export default function CloudServicesConfig() {
           {data.map((item) => (
             <Card
               key={item.name}
-              className="relative flex flex-col rounded-lg justify-between
+              className="cursor-pointer relative flex flex-col rounded-lg justify-between
                hover:bg-tremor-background-muted 
                hover:dark:bg-dark-tremor-background-muted"
             >
