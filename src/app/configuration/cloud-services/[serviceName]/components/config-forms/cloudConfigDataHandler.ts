@@ -17,3 +17,23 @@ export function createTable() {
 
   return api.createTable(name, columnArr);
 }
+
+export function describeTable(name: string) {
+  return api.descTable(name);
+}
+
+export function addCloudEntry(name: string) {
+  const valuesArr: Record<string, any>[] = [
+    { column: "id" },
+    {
+      column: "name",
+      value: ["gcp", "aws", "azure", "ibmCloud", "oracleCloud", "alibabaCloud"],
+    },
+    {
+      column: "data",
+      value: [[], [], [], [], [], []],
+    },
+  ];
+
+  api.addColumn(name, valuesArr);
+}

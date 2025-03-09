@@ -14,12 +14,12 @@ import {
   Select,
   SelectItem,
 } from "@tremor/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { testGoogleCloudConnection } from "../apis/googleCloud";
 import { Button } from "@/components/Button";
 import { format } from "date-fns";
 // import { useConfiguration } from "@/app/configuration/components/ConfigurationContext";
-import { createTable } from "./cloudConfigDataHandler";
+import { createTable, describeTable } from "./cloudConfigDataHandler";
 
 export default function GoogleCloudConfigFormModal({
   serviceNameInUrl,
@@ -39,6 +39,11 @@ export default function GoogleCloudConfigFormModal({
       " ";
   });
   serviceName.trim();
+
+  const [cloudConfigData, setCloudConfigData] = useState<any>();
+  useEffect(() => {
+    console.log(cloudConfigData);
+  }, [cloudConfigData]);
 
   // const { setConfigurationData } = useConfiguration();
 
@@ -143,7 +148,7 @@ export default function GoogleCloudConfigFormModal({
     // });
 
     //creating table
-    createTable();
+    describeTable("cloud-config").then(setCloudConfigData);
 
     handleClose();
   };
@@ -174,7 +179,7 @@ export default function GoogleCloudConfigFormModal({
           <form
             action="#"
             method="POST"
-            onSubmit={isConnected ? handleFormSave : handleTestConnection}
+            onSubmit={!isConnected ? handleFormSave : handleTestConnection}
           >
             <div className="absolute right-0 top-0 pr-3 pt-3">
               <button
