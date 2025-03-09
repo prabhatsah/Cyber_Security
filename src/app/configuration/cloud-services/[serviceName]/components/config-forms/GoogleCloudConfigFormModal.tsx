@@ -136,16 +136,18 @@ export default function GoogleCloudConfigFormModal({
       },
     };
 
-    // setConfigurationData((prevConfigData) => {
-    //   const updatedConfigData = {
-    //     ...prevConfigData,
-    //     "google-cloud-platform": [
-    //       ...prevConfigData["google-cloud-platform"],
-    //       dataToBeSaved,
-    //     ],
-    //   };
-    //   return updatedConfigData;
-    // });
+    setConfigurationData((prevConfigData) => {
+      const updatedConfigData = {
+        ...prevConfigData,
+        "google-cloud-platform": [
+          ...prevConfigData["google-cloud-platform"],
+          dataToBeSaved,
+        ],
+      };
+
+      console.log(updatedConfigData);
+      return updatedConfigData;
+    });
 
     //creating table
     describeTable("cloud-config").then(setCloudConfigData);
