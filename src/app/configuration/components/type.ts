@@ -1,8 +1,8 @@
 export interface GoogleCloudConfig {
-  cloudProvider: "gcp";
+  cloudProvider: string;
   configurationName: string;
   projectId: string;
-  serviceAccountKey: File;
+  serviceAccountKey: File | null;
   region: string | null;
   createdOn: string;
   createdBy: {
