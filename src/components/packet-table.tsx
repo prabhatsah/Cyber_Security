@@ -13,7 +13,7 @@ import { useState } from "react";
 import { PacketModal } from "./packet-modal";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 
-const testpacket = [
+/* const testpacket = [
   {
     id: "1",
     timestamp: "2024-03-26 10:15:23",
@@ -54,7 +54,7 @@ const testpacket = [
     protocol: "TCP",
     severity: "Safe",
   },
-];
+]; */
 
 interface Packet {
   id: string;
@@ -96,8 +96,6 @@ export function PacketTable({ packets }: PacketDetailsProps) {
   };
   
 
-  const handleRowClick = (packet) => {
-
   const handleRowClick = (packet: Packet) => {
     setSelectedRow(packet.id);
     setSelectedPacket({
@@ -112,7 +110,7 @@ export function PacketTable({ packets }: PacketDetailsProps) {
     setIsModalOpen(false);
   };
 
-  console.log("Packets => ", (packets = testpacket));
+  //console.log("Packets => ", (packets = testpacket));
   return (
     <>
       <Card className="col-span-2">
