@@ -2,7 +2,13 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ['images.unsplash.com'],
+    domains: ["images.unsplash.com"],
+  },
+  webpack: (config, { isServer }) => {
+    if (isServer) {
+      config.externals = [...config.externals, "ssh2"];
+    }
+    return config;
   },
   webpack: (config, { isServer }) => {
     if (isServer) {

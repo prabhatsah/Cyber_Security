@@ -13,48 +13,48 @@ import { useState } from "react";
 import { PacketModal } from "./packet-modal";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 
-const testpacket = [
-  {
-    id: "1",
-    timestamp: "2024-03-26 10:15:23",
-    src_addr: "192.168.1.100",
-    dst_addr: "10.0.0.5",
-    protocol: "TCP",
-    severity: "Safe",
-  },
-  {
-    id: "1",
-    timestamp: "2024-03-26 10:15:23",
-    src_addr: "192.168.1.100",
-    dst_addr: "10.0.0.5",
-    protocol: "TCP",
-    severity: "Safe",
-  },
-  {
-    id: "1",
-    timestamp: "2024-03-26 10:15:23",
-    src_addr: "192.168.1.100",
-    dst_addr: "10.0.0.5",
-    protocol: "TCP",
-    severity: "Safe",
-  },
-  {
-    id: "1",
-    timestamp: "2024-03-26 10:15:23",
-    src_addr: "192.168.1.100",
-    dst_addr: "10.0.0.5",
-    protocol: "TCP",
-    severity: "Safe",
-  },
-  {
-    id: "1",
-    timestamp: "2024-03-26 10:15:23",
-    src_addr: "192.168.1.100",
-    dst_addr: "10.0.0.5",
-    protocol: "TCP",
-    severity: "Safe",
-  },
-];
+// const testpacket = [
+//   {
+//     id: "1",
+//     timestamp: "2024-03-26 10:15:23",
+//     src_addr: "192.168.1.100",
+//     dst_addr: "10.0.0.5",
+//     protocol: "TCP",
+//     severity: "Safe",
+//   },
+//   {
+//     id: "1",
+//     timestamp: "2024-03-26 10:15:23",
+//     src_addr: "192.168.1.100",
+//     dst_addr: "10.0.0.5",
+//     protocol: "TCP",
+//     severity: "Safe",
+//   },
+//   {
+//     id: "1",
+//     timestamp: "2024-03-26 10:15:23",
+//     src_addr: "192.168.1.100",
+//     dst_addr: "10.0.0.5",
+//     protocol: "TCP",
+//     severity: "Safe",
+//   },
+//   {
+//     id: "1",
+//     timestamp: "2024-03-26 10:15:23",
+//     src_addr: "192.168.1.100",
+//     dst_addr: "10.0.0.5",
+//     protocol: "TCP",
+//     severity: "Safe",
+//   },
+//   {
+//     id: "1",
+//     timestamp: "2024-03-26 10:15:23",
+//     src_addr: "192.168.1.100",
+//     dst_addr: "10.0.0.5",
+//     protocol: "TCP",
+//     severity: "Safe",
+//   },
+// ];
 
 interface Packet {
   id: string;
@@ -88,7 +88,7 @@ export function PacketTable({ packets }: PacketDetailsProps) {
     setIsModalOpen(false);
   };
 
-  console.log("Packets => ", (packets = testpacket));
+  console.log("Packets => ", packets);
   return (
     <>
       <Card className="col-span-2">

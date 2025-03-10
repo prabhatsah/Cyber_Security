@@ -18,11 +18,11 @@
 
 "use client";
 
-import Layout from "@/components/Layout";
 import Dashboard from "./dashboard";
 import { useEffect, useState } from "react";
 import { useBreadcrumb } from "@/contexts/BreadcrumbContext";
 import SearchBar from "./SearchBar";
+import PastScans from "@/components/PastScans";
 
 interface webApiData {
   [key: string]: any;
@@ -100,6 +100,7 @@ export default function WebApi() {
   if (error) return <div>Error: {error}</div>;
 
   return (
+<<<<<<< HEAD
     // <Layout>
     //   {data ? <Dashboard data={data} /> : <div>No data available</div>}
     // </Layout>
@@ -119,7 +120,17 @@ export default function WebApi() {
 
         {data ? <Dashboard /> : <div>No data available</div>}
 >>>>>>> 3d57b04dc3353739809f78ba0e73aad4f0e477a2
+=======
+    <div className="">
+      <p className="font-bold text-gray-600">Web & Api Security</p>
+      <SearchBar query={query} setQuery={setQuery} fetchData={fetchData} />
+      {error && <p className="text-red-600 text-center">{error}</p>}
+
+      {data && <Dashboard _data={data} />}
+      <div>
+        <PastScans />
+>>>>>>> 6e8b5d8112670bdef3dae83311c4d9454bd64080
       </div>
-    </Layout>
+    </div>
   );
 }

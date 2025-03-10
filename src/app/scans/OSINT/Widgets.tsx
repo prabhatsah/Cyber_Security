@@ -169,7 +169,7 @@ export default function Widgets({ widgetData }: HarvesterData) {
         <InfoWidget queryUrl={queryUrl} widgetData={widgetData} />
       </div>
 
-      <div className="w-full mt-8">
+      <div className="w-full mt-8 ">
         <WhoIs whoisText={widgetData.attributes.whois ?? ""} />
       </div>
 
@@ -177,6 +177,7 @@ export default function Widgets({ widgetData }: HarvesterData) {
         <h2 className="text-md font-semibold text-gray-900 dark:text-gray-50">
           More insights
         </h2>
+<<<<<<< HEAD
 =======
         <Card className="col-span-1 rounded-md">
           <div className="flex flex-col items-center">
@@ -277,6 +278,9 @@ export default function Widgets({ widgetData }: HarvesterData) {
         </h1>
 >>>>>>> 3d57b04dc3353739809f78ba0e73aad4f0e477a2
         <Accordion type="multiple" className="mt-3">
+=======
+        <Accordion type="multiple" className="">
+>>>>>>> 6e8b5d8112670bdef3dae83311c4d9454bd64080
           <AccordionItem value="item-1">
             <AccordionTrigger>
               <span className="flex items-center gap-2 h-8">

@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { FiSearch, FiXCircle } from "react-icons/fi";
 import { Menu } from "@headlessui/react";
+import { LuRefreshCw } from "react-icons/lu";
 
 interface SearchBarProps {
   query: string;
@@ -40,7 +41,7 @@ export default function SearchBar({
         />
 
         {/* Dropdown for search type */}
-        <Menu as="div" className="relative inline-block text-left">
+        {/* <Menu as="div" className="relative inline-block text-left">
           <Menu.Button className="px-4 py-2 bg-blue-600 text-white rounded-lg">
             {searchType.toUpperCase()}
           </Menu.Button>
@@ -61,7 +62,7 @@ export default function SearchBar({
             ))}
           </Menu.Items>
         </Menu>
-        {/* Clear Button */}
+        
         {query && (
           <button
             onClick={handleClear}
@@ -69,22 +70,24 @@ export default function SearchBar({
           >
             <FiXCircle size={24} />
           </button>
-        )}
+        )} */}
 
         {/* Search Button */}
         <button
           onClick={handleSearch}
-          disabled={isLoading || !query}
+          // disabled={isLoading || !query}
           className={`flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg ${
-            isLoading ? "opacity-50 cursor-not-allowed" : ""
+            isLoading ? "cursor-not-allowed" : ""
           }`}
         >
           {isLoading ? (
-            <span className="animate-spin">🔄</span>
+            <span className="animate-spin">
+              <LuRefreshCw />
+            </span>
           ) : (
             <FiSearch size={20} />
           )}
-          Search
+          {isLoading ? "Scanning ..." : "Scan"}
         </button>
       </div>
     </>

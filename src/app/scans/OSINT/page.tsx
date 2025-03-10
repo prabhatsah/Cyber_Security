@@ -48,12 +48,7 @@
 import { useEffect, useState } from "react";
 import SearchBar from "./SearchBar";
 import Widgets from "./Widgets";
-import GraphView from "./GraphView";
-import MapView from "./MapView";
-import DetailsTable from "./DetailsTable";
 import Layout from "@/components/Layout";
-import useGlobalLoading from "@/lib/useGlobalLoading";
-import { useIsFetching } from "@tanstack/react-query";
 import { useBreadcrumb } from "@/contexts/BreadcrumbContext";
 import { ApiResponse, HarvesterData } from "./components/type";
 <<<<<<< HEAD
@@ -62,9 +57,9 @@ import PastScans from "@/components/PastScans";
 >>>>>>> 3d57b04dc3353739809f78ba0e73aad4f0e477a2
 
 export default function TheHarvesterDashboard() {
-  const [query, setQuery] = useState<string>(""); // Specify string type for query
-  const [data, setData] = useState<HarvesterData | null>(null); // Data can be of type HarvesterData or null
-  const [error, setError] = useState<string | null>(null); // Error can be a string or null
+  const [query, setQuery] = useState<string>("");
+  const [data, setData] = useState<HarvesterData | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const { setItems } = useBreadcrumb();
   useEffect(() => {
@@ -86,10 +81,15 @@ export default function TheHarvesterDashboard() {
         // `/api/OSINT/virusTotal?domain=http://malware.wicar.org`
 <<<<<<< HEAD
         // `/api/OSINT/virusTotal?domain=amazon.com`
+<<<<<<< HEAD
         `/api/OSINT/virusTotal?domain=${query}`
 =======
         `/api/OSINT/virusTotal?domain=amazon.com`
 >>>>>>> 3d57b04dc3353739809f78ba0e73aad4f0e477a2
+=======
+        //`/api/OSINT/virusTotal?domain=${query}`
+        `http://localhost:3000/api/OSINT/virusTotal?query=${query}`
+>>>>>>> 6e8b5d8112670bdef3dae83311c4d9454bd64080
       );
 
       const result: ApiResponse = await response.json();
@@ -116,6 +116,7 @@ export default function TheHarvesterDashboard() {
         {/* <Widgets /> */}
         {data && (
           <div className="space-y-8">
+<<<<<<< HEAD
             <Widgets widgetData={data} />
 <<<<<<< HEAD
 =======
@@ -123,6 +124,9 @@ export default function TheHarvesterDashboard() {
             <MapView data={data} />
             <DetailsTable data={data} /> */}
 >>>>>>> 3d57b04dc3353739809f78ba0e73aad4f0e477a2
+=======
+            <Widgets widgetData={data} queryUrl={query} />
+>>>>>>> 6e8b5d8112670bdef3dae83311c4d9454bd64080
           </div>
         )}
 

@@ -1,22 +1,12 @@
 "use client";
 
-import Layout from "@/components/Layout";
-import Tabs from "@/components/Tabs";
-import { useEffect, useState } from "react";
-import { useBreadcrumb } from "@/contexts/BreadcrumbContext";
+import { useState } from "react";
 import CloudDashboard from "./cloud/page";
 import ContainerDashboard from "./containers/page";
+import { redirect } from "next/navigation";
 
 export default function GeneralDashboard() {
   const [activeTab, setActiveTab] = useState<"Cloud" | "Containers">("Cloud");
-  const { setItems } = useBreadcrumb();
-
-  useEffect(() => {
-    setItems([
-      { label: "Scans", href: "/scans" },
-      { label: "Cloud & Container Security", href: "/scans/cloudContainer" },
-    ]);
-  }, [activeTab]);
 
   const tabs = [
     {
@@ -29,9 +19,6 @@ export default function GeneralDashboard() {
     },
   ];
 
-  return (
-    <Layout>
-      <Tabs tabs={tabs} />
-    </Layout>
-  );
+  // return <Tabs tabs={tabs} />;
+  redirect("/scans/cloudContainer/cloud");
 }

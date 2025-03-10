@@ -24,13 +24,13 @@ export default function InfoWidget({
 
   const last_dns_records: LastDnsRecords[] =
     widgetData.attributes.last_dns_records ?? [];
-  const selectedUrlIPRecords: LastDnsRecords = last_dns_records.filter(
-    (eachRecord: LastDnsRecords) => {
-      if (eachRecord.type === "A") {
-        return eachRecord;
-      }
-    }
-  )[0];
+  const selectedUrlIPRecords: LastDnsRecords = last_dns_records
+    ? last_dns_records.filter((eachRecord: LastDnsRecords) => {
+        if (eachRecord.type === "A") {
+          return eachRecord;
+        }
+      })[0]
+    : "";
 
   const registrar = widgetData.attributes.registrar ?? undefined;
 
@@ -70,29 +70,26 @@ export default function InfoWidget({
       <Card className="col-span-3 rounded-md">
         <div className="flex justify-between">
           <div className="flex gap-5">
-            <h3 className="text-tremor-title font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong">
-              {queryUrl}
-            </h3>
+            <h3 className=" font-semibold text-gray-700 ">{queryUrl}</h3>
             <div className="flex flex-wrap justify-center gap-4">
               {categoriesLabelArray.map((tag) => (
-                <span
-                  key={tag}
-                  className="inline-flex items-center gap-x-1 rounded-md bg-gray-200/50 px-2 text-xs text-gray-700 dark:bg-gray-500/30 dark:text-gray-300"
-                >
+                <span className="inline-flex items-center gap-x-1 rounded-md bg-gray-200/50 px-2 py-1 text-xs font-semibold text-gray-700">
                   {tag}
                 </span>
               ))}
             </div>
           </div>
-          <span className="inline-flex items-center gap-x-1 rounded-md font-semibold bg-success text-stone-100 px-2 text-xs dark:bg-gray-500/30 dark:text-gray-300">
-            {selectedUrlIPRecords.value}
-          </span>
+          {selectedUrlIPRecords && (
+            <span className="inline-flex items-center gap-x-1 rounded-md font-semibold bg-success text-stone-100 px-2 text-xs dark:bg-gray-500/30 dark:text-gray-300">
+              {selectedUrlIPRecords.value}
+            </span>
+          )}
         </div>
         <div className="flex gap-5 mt-2">
           {registrar && (
             <p className="text-sm text-tremor-default leading-6 text-tremor-content dark:text-dark-tremor-content">
               Registrar:&nbsp;
-              <span className="font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong">
+              <span className="font-semibold text-gray-700 text-xs">
                 {registrar}
               </span>
             </p>
@@ -100,10 +97,7 @@ export default function InfoWidget({
         </div>
 
         <div className="mt-3 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-          <div
-            key="totalVotes"
-            className="border-l-2 border-blue-100 py-1 pl-4 dark:border-blue-400/10"
-          >
+          {/* <div key="totalVotes" className=" dark:border-blue-400/10">
             <p className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">
               Total Votes
             </p>
@@ -116,17 +110,12 @@ export default function InfoWidget({
               </Badge>{" "}
               security vendors flagged this URL as {voteMsgObj.flagText}
             </p>
-          </div>
+          </div> */}
 
-          <div
-            key="lastHttpsCertificate"
-            className="col-span-2 border-l-2 border-blue-100 py-1 pl-4 dark:border-blue-400/10"
-          >
-            <p className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">
-              Last HTTPS Certificate
-            </p>
+          <div key="lastHttpsCertificate" className="col-span-2 ">
+            <p className="text-sm font-medium">Last HTTPS Certificate</p>
 
-            <div className="grid grid-cols-2 gap-2 mt-2">
+            <div className="grid grid-cols-2 gap-2 mt-2 text-sm">
               <p className="text-tremor-default leading-6 text-tremor-content dark:text-dark-tremor-content">
                 <strong>Validity:</strong>&nbsp;
                 {`${lastHttpsCertificateObj.validFrom} to ${lastHttpsCertificateObj.validTill}`}
@@ -151,10 +140,7 @@ export default function InfoWidget({
                 </p>
                 <div className="flex flex-wrap justify-start gap-2">
                   {lastHttpsCertificateObj.issuer.map((eachAlternativeName) => (
-                    <span
-                      className="inline-flex items-center gap-x-1 rounded-md bg-gray-200/50 px-2 py-1 text-tremor-label font-semibold text-gray-700
-                dark:bg-gray-500/30 dark:text-gray-300"
-                    >
+                    <span className="inline-flex items-center gap-x-1 rounded-md bg-gray-200/50 px-2 py-1 text-xs font-semibold text-gray-700">
                       {eachAlternativeName}
                     </span>
                   ))}
