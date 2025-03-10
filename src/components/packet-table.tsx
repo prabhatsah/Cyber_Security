@@ -13,48 +13,48 @@ import { useState } from "react";
 import { PacketModal } from "./packet-modal";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 
-// const testpacket = [
-//   {
-//     id: "1",
-//     timestamp: "2024-03-26 10:15:23",
-//     src_addr: "192.168.1.100",
-//     dst_addr: "10.0.0.5",
-//     protocol: "TCP",
-//     severity: "Safe",
-//   },
-//   {
-//     id: "1",
-//     timestamp: "2024-03-26 10:15:23",
-//     src_addr: "192.168.1.100",
-//     dst_addr: "10.0.0.5",
-//     protocol: "TCP",
-//     severity: "Safe",
-//   },
-//   {
-//     id: "1",
-//     timestamp: "2024-03-26 10:15:23",
-//     src_addr: "192.168.1.100",
-//     dst_addr: "10.0.0.5",
-//     protocol: "TCP",
-//     severity: "Safe",
-//   },
-//   {
-//     id: "1",
-//     timestamp: "2024-03-26 10:15:23",
-//     src_addr: "192.168.1.100",
-//     dst_addr: "10.0.0.5",
-//     protocol: "TCP",
-//     severity: "Safe",
-//   },
-//   {
-//     id: "1",
-//     timestamp: "2024-03-26 10:15:23",
-//     src_addr: "192.168.1.100",
-//     dst_addr: "10.0.0.5",
-//     protocol: "TCP",
-//     severity: "Safe",
-//   },
-// ];
+/* const testpacket = [
+  {
+    id: "1",
+    timestamp: "2024-03-26 10:15:23",
+    src_addr: "192.168.1.100",
+    dst_addr: "10.0.0.5",
+    protocol: "TCP",
+    severity: "Safe",
+  },
+  {
+    id: "1",
+    timestamp: "2024-03-26 10:15:23",
+    src_addr: "192.168.1.100",
+    dst_addr: "10.0.0.5",
+    protocol: "TCP",
+    severity: "Safe",
+  },
+  {
+    id: "1",
+    timestamp: "2024-03-26 10:15:23",
+    src_addr: "192.168.1.100",
+    dst_addr: "10.0.0.5",
+    protocol: "TCP",
+    severity: "Safe",
+  },
+  {
+    id: "1",
+    timestamp: "2024-03-26 10:15:23",
+    src_addr: "192.168.1.100",
+    dst_addr: "10.0.0.5",
+    protocol: "TCP",
+    severity: "Safe",
+  },
+  {
+    id: "1",
+    timestamp: "2024-03-26 10:15:23",
+    src_addr: "192.168.1.100",
+    dst_addr: "10.0.0.5",
+    protocol: "TCP",
+    severity: "Safe",
+  },
+]; */
 
 interface Packet {
   id: string;
@@ -74,6 +74,28 @@ export function PacketTable({ packets }: PacketDetailsProps) {
   const [selectedPacket, setSelectedPacket] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+   // Format timestamp to YYYY-MM-DD HH:mm:ss
+   const formatTimestamp = (timestamp: string): string => {
+    try {
+      const date = new Date(timestamp);
+      
+      // Format to local timezone using Intl.DateTimeFormat
+      return new Intl.DateTimeFormat('en-US', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+      }).format(date).replace(',', '').replace(/(\d+)\/(\d+)\/(\d+)/, '$3-$1-$2');
+    } catch (error) {
+      console.error("Error formatting timestamp:", error);
+      return timestamp; // Return original if parsing fails
+    }
+  };
+  
+
   const handleRowClick = (packet: Packet) => {
     setSelectedRow(packet.id);
     setSelectedPacket({
@@ -88,7 +110,7 @@ export function PacketTable({ packets }: PacketDetailsProps) {
     setIsModalOpen(false);
   };
 
-  console.log("Packets => ", packets);
+  //console.log("Packets => ", (packets = testpacket));
   return (
     <>
       <Card className="col-span-2">
