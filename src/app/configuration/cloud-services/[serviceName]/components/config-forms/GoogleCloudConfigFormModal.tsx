@@ -19,7 +19,7 @@ import { testGoogleCloudConnection } from "../apis/googleCloud";
 import { Button } from "@/components/Button";
 import { format } from "date-fns";
 // import { useConfiguration } from "@/app/configuration/components/ConfigurationContext";
-import { createTable, describeTable } from "./cloudConfigDataHandler";
+import { createTable, describeTable } from "../apis/cloudConfigDataHandler";
 
 export default function GoogleCloudConfigFormModal({
   serviceNameInUrl,
@@ -136,18 +136,18 @@ export default function GoogleCloudConfigFormModal({
       },
     };
 
-    setConfigurationData((prevConfigData) => {
-      const updatedConfigData = {
-        ...prevConfigData,
-        "google-cloud-platform": [
-          ...prevConfigData["google-cloud-platform"],
-          dataToBeSaved,
-        ],
-      };
+    // setConfigurationData((prevConfigData) => {
+    //   const updatedConfigData = {
+    //     ...prevConfigData,
+    //     "google-cloud-platform": [
+    //       ...prevConfigData["google-cloud-platform"],
+    //       dataToBeSaved,
+    //     ],
+    //   };
 
-      console.log(updatedConfigData);
-      return updatedConfigData;
-    });
+    //   console.log(updatedConfigData);
+    //   return updatedConfigData;
+    // });
 
     //creating table
     describeTable("cloud-config").then(setCloudConfigData);
