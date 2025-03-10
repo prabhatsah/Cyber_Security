@@ -1,0 +1,8 @@
+{
+    "scanKubeClusters" :  "docker run --rm -v $HOME/.kube:/root/.kube aquasec/trivy k8s cluster --format json",
+    "scanNamespace" : "docker run --rm -v $HOME/.kube:/root/.kube aquasec/trivy k8s --namespace ${NAMESPACE} --format json",
+    "scaKubeDeployement" : "docker run --rm -v $HOME/.kube:/root/.kube aquasec/trivy k8s deployment ${DEPLOYMENT} --format json",
+    "scanService" : "docker run --rm -v $HOME/.kube:/root/.kube aquasec/trivy k8s service ${SERVICE} --format json",
+    "scanPod" : "docker run --rm -v $HOME/.kube:/root/.kube aquasec/trivy k8s pod ${POD} --format json",
+    "scanConfigFiles" : "docker run --rm -v $(pwd):/mnt aquasec/trivy config /mnt --format json"
+}

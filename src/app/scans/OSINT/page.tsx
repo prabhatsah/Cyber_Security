@@ -48,12 +48,7 @@
 import { useEffect, useState } from "react";
 import SearchBar from "./SearchBar";
 import Widgets from "./Widgets";
-import GraphView from "./GraphView";
-import MapView from "./MapView";
-import DetailsTable from "./DetailsTable";
 import Layout from "@/components/Layout";
-import useGlobalLoading from "@/lib/useGlobalLoading";
-import { useIsFetching } from "@tanstack/react-query";
 import { useBreadcrumb } from "@/contexts/BreadcrumbContext";
 import { ApiResponse, HarvesterData } from "./components/type";
 import PastScans from "@/components/PastScans";

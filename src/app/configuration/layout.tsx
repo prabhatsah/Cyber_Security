@@ -10,7 +10,7 @@ export default function RootLayout({
   return (
     <>
       <div className="flex h-full">
-        <ConfigSidebar />
+        {/* <ConfigSidebar /> */}
         <ConfigurationProvider>{children}</ConfigurationProvider>
       </div>
     </>

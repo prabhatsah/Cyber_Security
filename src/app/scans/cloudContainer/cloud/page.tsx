@@ -1,3 +1,6 @@
+"use client";
+
+import { useBreadcrumb } from "@/contexts/BreadcrumbContext";
 import {
   RiAlibabaCloudFill,
   RiAmazonLine,
@@ -8,6 +11,7 @@ import {
   RiWindowsFill,
 } from "@remixicon/react";
 import { Card } from "@tremor/react";
+import { useEffect } from "react";
 
 const data = [
   {
@@ -16,7 +20,7 @@ const data = [
       "AWS CloudFormation is a service that enables infrastructure as code, allowing users to define and provision AWS resources using templates.",
     configurations: 7,
     icon: RiAmazonLine,
-    href: "/configuration/cloud-services/amazon-web-services",
+    href: "/scans/cloudContainer/cloud/amazon-web-services",
   },
   {
     name: "Microsoft Azure",
@@ -24,7 +28,7 @@ const data = [
       "Azure Resource Manager (ARM) is a service that enables infrastructure as code, allowing users to deploy, manage, and organize Azure resources using declarative templates.",
     configurations: 8,
     icon: RiWindowsFill,
-    href: "/configuration/cloud-services/microsoft-azure",
+    href: "/scans/cloudContainer/cloud/microsoft-azure",
   },
   {
     name: "Google Cloud Platform",
@@ -32,7 +36,7 @@ const data = [
       "Google Cloud Deployment Manager is a service that enables infrastructure as code, allowing users to define, deploy, and manage Google Cloud resources using configuration templates.",
     configurations: 17,
     icon: RiGoogleFill,
-    href: "/configuration/cloud-services/google-cloud-platform",
+    href: "/scans/cloudContainer/cloud/google-cloud-platform",
   },
   {
     name: "IBM Cloud",
@@ -40,7 +44,7 @@ const data = [
       "IBM Cloud Schematics enables infrastructure as code, automating the deployment and management of IBM Cloud resources using Terraform.",
     configurations: 6,
     icon: RiCloudLine,
-    href: "/configuration/cloud-services/ibm-cloud",
+    href: "/scans/cloudContainer/cloud/ibm-cloud",
   },
   {
     name: "Oracle Cloud Infrastructure",
@@ -48,7 +52,7 @@ const data = [
       "Oracle Cloud Infrastructure (OCI) Resource Manager enables infrastructure as code, allowing users to automate resource deployment and management using Terraform.",
     configurations: 2,
     icon: RiCloudy2Line,
-    href: "/configuration/cloud-services/oracle-cloud-infrastructure",
+    href: "/scans/cloudContainer/cloud/oracle-cloud-infrastructure",
   },
   {
     name: "Alibaba Cloud",
@@ -56,27 +60,28 @@ const data = [
       "Alibaba Cloud Resource Orchestration Service (ROS) enables infrastructure as code, allowing users to define and manage cloud resources using templates.",
     configurations: 0,
     icon: RiAlibabaCloudFill,
-    href: "/configuration/cloud-services/alibaba-cloud",
+    href: "/scans/cloudContainer/cloud/alibaba-cloud",
   },
 ];
 
 export default function CloudServicesConfig() {
+  debugger;
+  const { setItems } = useBreadcrumb();
+  useEffect(() => {
+    setItems([
+      { label: "Scans", href: "/scans" },
+      { label: "Cloud Security", href: "/scans/cloudContainer/cloud" },
+    ]);
+  }, []);
+
   return (
     <>
-      <div className="px-6 py-3 flex flex-col gap-3">
-        <div className="flex items-center space-x-2">
-          <h2 className="text-2xl font-semibold text-primary">
-            Cloud Services
-          </h2>
-          <span className="inline-flex size-7 items-center justify-center rounded-full bg-tremor-background-subtle text-tremor-label font-medium text-tremor-content-strong dark:bg-dark-tremor-background-subtle dark:text-dark-tremor-content-strong">
-            {data.length}
-          </span>
-        </div>
-        <dl className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 h-fit">
+      <div className="p-6 flex flex-col gap-3">
+        <dl className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 h-fit">
           {data.map((item) => (
             <Card
               key={item.name}
-              className="relative flex flex-col rounded-lg justify-between 
+              className="cursor-pointer relative flex flex-col rounded-lg justify-between
                hover:bg-tremor-background-muted 
                hover:dark:bg-dark-tremor-background-muted"
             >

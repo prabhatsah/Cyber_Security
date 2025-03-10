@@ -1,0 +1,10 @@
+
+{
+    "listDockerContainers" : "docker ps -a --format json",
+    "scanRemoteImg" : "docker run --rm aquasec/trivy image --cache-dir ./trivy_cache ${REMOTE_IMAGE} --format json",
+    "scanLocalImg" : "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image --cache-dir /tmp/trivy_cache ${LOCAL_IMAGE} --format json",
+    "scanFileSystem" : "docker run --rm -v ${FILE_PATH}:/scan aquasec/trivy fs /scan --format json",
+    "showALLImgs" : "docker images -a --format json",
+    "scanPrivateRegistry" : "docker run --rm aquasec/trivy image --username ${USER} --password ${PASSWORD} ${REGISTRY}/${IMAGE}:${TAG} --format json"
+
+}
