@@ -55,11 +55,9 @@ export default function WhoIs({ whoisText }: { whoisText: string }) {
 
   return (
     <>
-      <h2 className="text-md font-semibold text-gray-900 dark:text-gray-50">
-        Who Is
-      </h2>
+      <h2 className="text-md font-semibold text-gray-900 ">Whois Lookup</h2>
 
-      <div className="mt-5 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-2 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3 text-sm border p-4 rounded-md">
         <div key="registrarInfo" className="flex flex-col gap-3">
           <div className="flex items-center gap-2 h-8">
             <div className="w-fit rounded-lg p-2 ring-1 ring-black/5 dark:ring-white/5">
@@ -134,7 +132,7 @@ export default function WhoIs({ whoisText }: { whoisText: string }) {
           <div className="flex flex-wrap justify-start gap-4">
             {whoisData.nameServers.map((eachServer) => (
               <span
-                className="inline-flex items-center gap-x-1 rounded-md bg-gray-200/50 px-2 py-1 text-tremor-label font-semibold text-gray-700
+                className="inline-flex items-center gap-x-1 rounded-md bg-gray-200/50 px-2 py-1 text-xs font-semibold text-gray-700
                 dark:bg-gray-500/30 dark:text-gray-300"
               >
                 {eachServer}

@@ -5,6 +5,7 @@ import "../styles/globals.css";
 import { BreadcrumbProvider } from "@/contexts/BreadcrumbContext";
 import { LoadingProvider } from "@/contexts/LoadingContext";
 import GlobalLoadingSpinner from "@/components/GlobalLoadingSpinner";
+import Layout from "@/components/Layout";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,12 +20,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
+    <html lang="en" data-bs-theme="dark">
+      <body className={`${inter.className} dark:bg-gray-950`}>
         <LoadingProvider>
           <GlobalLoadingSpinner />
           <BreadcrumbProvider>
-            <Providers>{children}</Providers>
+            <Providers>
+              <Layout>{children}</Layout>
+            </Providers>
           </BreadcrumbProvider>
         </LoadingProvider>
       </body>

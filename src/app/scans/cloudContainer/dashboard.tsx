@@ -16,8 +16,6 @@ import {
 } from "@/components/accordion";
 
 import {
-  RiAddCircleFill,
-  RiArrowLeftRightLine,
   RiBuildingFill,
   RiCalendarScheduleFill,
   RiCheckboxMultipleFill,
