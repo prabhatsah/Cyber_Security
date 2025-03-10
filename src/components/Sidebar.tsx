@@ -10,15 +10,39 @@ import {
   Shield,
   Activity,
   PackageCheck,
+  CloudCog,
+  Network,
+  PackageOpen,
 } from "lucide-react";
+import { RiArrowDownSLine } from "@remixicon/react";
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "Scans", href: "/scans", icon: Scan },
   { name: "Reports", href: "/reports", icon: FileText },
   { name: "Audit Log", href: "/audit", icon: Activity },
-  { name: "Configuration", href: "/configuration", icon: PackageCheck },
   { name: "Settings", href: "/settings", icon: Settings },
+  {
+    name: "Configuration",
+    icon: PackageCheck,
+    submenus: [
+      {
+        name: "Cloud Services",
+        href: "/configuration/cloud-services",
+        icon: CloudCog,
+      },
+      {
+        name: "Network Services",
+        href: "/configuration/network-services",
+        icon: Network,
+      },
+      {
+        name: "Container Services",
+        href: "/configuration/container-services",
+        icon: PackageOpen,
+      },
+    ],
+  },
 ];
 
 export default function Sidebar() {
@@ -36,29 +60,54 @@ export default function Sidebar() {
           </div>
           <nav className="mt-8 flex-1 px-2 space-y-1">
             {navigation.map((item) => (
-              <Link
-                key={item.name}
-                href={item.href}
-                className={`flex items-center gap-x-2.5 text-sm font-medium px-3 py-2 rounded-md
-                  ${
-                    pathname.includes(item.href)
-                      ? "bg-primary text-gray-50"
-                      : "text-gray-700 dark:text-gray-400 hover:bg-gray-100 hover:text-gray-900 hover:dark:text-gray-50 hover:dark:bg-gray-800"
-                  }
-                  `}
-                // className={`group flex items-center px-3 py-3 text-sm font-medium rounded-md transition-colors ${
-                //   //pathname === item.href
-                //   pathname.includes(item.href)
-                //     ? "bg-primary text-white"
-                //     : "text-gray-600 hover:bg-gray-300 hover:text-gray-900"
-                // }`}
-              >
-                <item.icon
-                  className="mr-3 h-5 w-5 flex-shrink-0"
-                  aria-hidden="true"
-                />
-                {item.name}
-              </Link>
+              <div key={item.name}>
+                {item.submenus ? (
+                  <details className="group">
+                    <summary className="flex items-center justify-between px-3 py-2 text-sm font-medium rounded-md text-gray-700 dark:text-gray-400 hover:bg-gray-100 hover:text-gray-900 hover:dark:text-gray-50 hover:dark:bg-gray-800 cursor-pointer">
+                      <div className="flex items-center gap-x-2.5">
+                        <item.icon className="mr-3 h-5 w-5 flex-shrink-0" />
+                        {item.name}
+                      </div>
+                      <RiArrowDownSLine className="h-4 w-4 transition-transform group-open:rotate-180" />
+                    </summary>
+                    <div className="ml-8 mt-1 space-y-1">
+                      {item.submenus.map((sub) => (
+                        <Link
+                          key={sub.name}
+                          href={sub.href}
+                          className={`flex items-center gap-x-2.5 px-3 py-2 text-sm rounded-md
+                            ${
+                              pathname.includes(sub.href)
+                                ? "bg-primary text-gray-50"
+                                : "text-gray-700 dark:text-gray-400 hover:bg-gray-100 hover:text-gray-900 hover:dark:text-gray-50 hover:dark:bg-gray-800"
+                            }
+                          `}
+                        >
+                          <sub.icon className="mr-3 h-5 w-5 flex-shrink-0" />
+                          {sub.name}
+                        </Link>
+                      ))}
+                    </div>
+                  </details>
+                ) : (
+                  <Link
+                    href={item.href}
+                    className={`flex items-center gap-x-2.5 text-sm font-medium px-3 py-2 rounded-md
+                      ${
+                        pathname.includes(item.href)
+                          ? "bg-primary text-gray-50"
+                          : "text-gray-700 dark:text-gray-400 hover:bg-gray-100 hover:text-gray-900 hover:dark:text-gray-50 hover:dark:bg-gray-800"
+                      }
+                      `}
+                  >
+                    <item.icon
+                      className="mr-3 h-5 w-5 flex-shrink-0"
+                      aria-hidden="true"
+                    />
+                    {item.name}
+                  </Link>
+                )}
+              </div>
             ))}
           </nav>
           <div className="mt-auto px-4 py-4">
