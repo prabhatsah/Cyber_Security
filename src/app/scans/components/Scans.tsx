@@ -19,7 +19,6 @@ import type { ScanResult } from "@/lib/scanner";
 import type { PortScanResult } from "@/lib/portScanner";
 import type { ComplianceScanResult } from "./ComplianceScanModal";
 import CyberSecurityComponents from "./CyberSecurityComponents";
-import useGlobalLoading from "@/lib/useGlobalLoading";
 
 export function Scans() {
   const [activeTab, setActiveTab] = useState<
@@ -147,18 +146,10 @@ export function Scans() {
       </div>
       {activeTab === "cyberSecurity" ? (
         <div>
-          {/* Specialized AI Agents */}
-          <h2 className="text-lg font-medium text-gray-900 mb-4">
-            Specialized AI Security Agents
-          </h2>
           <CyberSecurityComponents />
         </div>
       ) : (
         <div>
-          {/* Specialized AI Agents */}
-          <h2 className="text-lg font-medium text-gray-900 mb-4">
-            Specialized AI Security Agents
-          </h2>
           <SpecializedAIAgents />
         </div>
       )}

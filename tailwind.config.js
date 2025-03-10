@@ -10,7 +10,7 @@ module.exports = {
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
     "./node_modules/@tremor/**/*.{js,ts,jsx,tsx}",
   ],
-  darkMode: ["class", "class"],
+  darkMode: ["class"],
   theme: {
     extend: {
       colors: {
@@ -72,6 +72,36 @@ module.exports = {
             emphasis: colors.gray[200],
             strong: colors.gray[50],
             inverted: colors.gray[950],
+          },
+          widget: {
+            mainHeader: colors.red[600],
+          },
+        },
+        widget: {
+          light: {
+            mainHeader: "red",
+          },
+          dark: {
+            mainHeader: "red",
+          },
+        },
+        dark: {
+          bgPrimary: "#030712",
+          bgSecondary: "#131a2b",
+          bgTertiary:"#2e3851",
+         },
+        widget: {
+          light: {
+            mainHeader: "#171d2c",
+            mainDesc: "#6b7280",
+            secondaryheader: "#3a3e45",
+            secondaryDesc: "#6b7280",
+          },
+          dark: {
+            mainHeader: "#d4d6d9",
+            mainDesc: "#6b7280",
+            secondaryheader: "#e5e7eb",
+            secondaryDesc: "#6b7280",
           },
         },
         primary: {

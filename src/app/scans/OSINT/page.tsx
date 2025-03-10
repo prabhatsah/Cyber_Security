@@ -48,20 +48,15 @@
 import { useEffect, useState } from "react";
 import SearchBar from "./SearchBar";
 import Widgets from "./Widgets";
-import GraphView from "./GraphView";
-import MapView from "./MapView";
-import DetailsTable from "./DetailsTable";
 import Layout from "@/components/Layout";
-import useGlobalLoading from "@/lib/useGlobalLoading";
-import { useIsFetching } from "@tanstack/react-query";
 import { useBreadcrumb } from "@/contexts/BreadcrumbContext";
 import { ApiResponse, HarvesterData } from "./components/type";
 import PastScans from "@/components/PastScans";
 
 export default function TheHarvesterDashboard() {
-  const [query, setQuery] = useState<string>(""); // Specify string type for query
-  const [data, setData] = useState<HarvesterData | null>(null); // Data can be of type HarvesterData or null
-  const [error, setError] = useState<string | null>(null); // Error can be a string or null
+  const [query, setQuery] = useState<string>("");
+  const [data, setData] = useState<HarvesterData | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const { setItems } = useBreadcrumb();
   useEffect(() => {
@@ -82,7 +77,8 @@ export default function TheHarvesterDashboard() {
         //`/api/OSINT/theharvester?query=${query}&type=${searchType}`
         // `/api/OSINT/virusTotal?domain=http://malware.wicar.org`
         // `/api/OSINT/virusTotal?domain=amazon.com`
-        `/api/OSINT/virusTotal?domain=${query}`
+        //`/api/OSINT/virusTotal?domain=${query}`
+        `http://localhost:3000/api/OSINT/virusTotal?query=${query}`
       );
 
       const result: ApiResponse = await response.json();
@@ -108,7 +104,7 @@ export default function TheHarvesterDashboard() {
 
         {data && (
           <div className="space-y-8">
-            <Widgets widgetData={data} />
+            <Widgets widgetData={data} queryUrl={query} />
           </div>
         )}
 

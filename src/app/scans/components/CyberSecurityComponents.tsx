@@ -16,8 +16,8 @@ import {
   Workflow,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useIsFetching } from "@tanstack/react-query";
-import useGlobalLoading from "@/lib/useGlobalLoading";
+import { Card } from "@tremor/react";
+import { SkeletonCard } from "./Skeleton";
 
 interface AIAgent {
   id: string;
@@ -46,10 +46,8 @@ const comps: AIAgent[] = [
     icon: ScanSearch,
     expertise: [
       "Automated vulnerability scanning",
-      "Risk assessment and prioritization",
-      "Patch management strategies",
-      "Compliance auditing",
-      "Reporting and remediation",
+      "Risk assessment & prioritization",
+      "Patch management strategies & Compliance auditing",
     ],
     description:
       "Vulnerability scanning is the process of systematically scanning systems, networks, and applications to identify security weaknesses. It helps organizations detect and address potential threats before they can be exploited by attackers.",
@@ -61,11 +59,9 @@ const comps: AIAgent[] = [
     role: "Ethical Hacker",
     icon: ShieldAlert,
     expertise: [
-      "Exploiting vulnerabilities",
-      "Red teaming",
-      "Privilege escalation",
-      "Post-exploitation techniques",
-      "Reporting and remediation",
+      "Exploiting vulnerabilities & Red teaming",
+      "Privilege escalation & Post-exploitation techniques",
+      "Reporting & remediation",
     ],
     description:
       "Simulating real-world attacks to identify and exploit security weaknesses, helping organizations strengthen their defenses.",
@@ -78,10 +74,8 @@ const comps: AIAgent[] = [
     icon: ShieldAlert,
     expertise: [
       "Intrusion detection & prevention",
-      "Network traffic monitoring",
-      "Signature-based threat detection",
-      "Anomaly detection",
-      "SIEM integration",
+      "Network traffic monitoring & Anomaly detection",
+      "Signature-based threat detection & SIEM integration",
     ],
     description:
       "Monitoring and analyzing network traffic to detect and prevent security threats.",
@@ -95,9 +89,7 @@ const comps: AIAgent[] = [
     expertise: [
       "Web application firewalls (WAF)",
       "API security best practices",
-      "OWASP Top 10 mitigation",
-      "Authentication & authorization",
-      "Secure coding practices",
+      "Authentication, authorization & Secure coding practices",
     ],
     description:
       "Ensuring security of web applications and APIs against vulnerabilities and attacks.",
@@ -110,10 +102,8 @@ const comps: AIAgent[] = [
     icon: ServerCog,
     expertise: [
       "Cloud security architecture",
-      "Container security best practices",
-      "Kubernetes security",
+      "Container & Kubernetes security best practices",
       "IAM & access controls",
-      "Compliance & governance",
     ],
     description:
       "Securing cloud environments and containerized applications from threats and misconfigurations.",
@@ -126,10 +116,8 @@ const comps: AIAgent[] = [
     icon: ShieldCheck,
     expertise: [
       "Endpoint detection & response (EDR)",
-      "Malware reverse engineering",
-      "Behavioral analysis",
-      "Ransomware protection",
-      "Threat intelligence correlation",
+      "Malware reverse engineering & Threat intelligence correlation",
+      "Behavioral analysis, Ransomware protection",
     ],
     description:
       "Protecting endpoints from malware and analyzing threats for prevention and mitigation.",
@@ -143,9 +131,8 @@ const comps: AIAgent[] = [
     expertise: [
       "AD hardening & auditing",
       "Kerberos authentication security",
-      "Privileged access management",
+      "Privileged access management & Lateral movement detection",
       "Lateral movement detection",
-      "Group policy enforcement",
     ],
     description:
       "Securing Active Directory environments against privilege escalation and unauthorized access.",
@@ -157,11 +144,9 @@ const comps: AIAgent[] = [
     role: "Threat Intelligence Analyst",
     icon: Search,
     expertise: [
-      "Open-source intelligence (OSINT)",
-      "Threat actor profiling",
-      "Dark web monitoring",
+      "Open-source intelligence (OSINT) & Threat actor profiling",
+      "Dark web monitoring ",
       "Threat hunting techniques",
-      "MITRE ATT&CK framework",
     ],
     description:
       "Gathering and analyzing intelligence to identify emerging cyber threats and attack vectors.",
@@ -174,10 +159,8 @@ const comps: AIAgent[] = [
     icon: Workflow,
     expertise: [
       "Incident response automation",
-      "SIEM integration",
-      "Playbook development",
-      "Threat intelligence enrichment",
-      "Security workflow automation",
+      "SIEM integration & Playbook development",
+      "Threat intelligence enrichment & Security workflow automation",
     ],
     description:
       "Automating security operations to improve response time and efficiency in threat management.",
@@ -189,11 +172,9 @@ const comps: AIAgent[] = [
     role: "AI Security Engineer",
     icon: BrainCircuit,
     expertise: [
-      "AI-based anomaly detection",
-      "Automated threat classification",
+      "AI-based anomaly detection & Automated threat classification",
       "AI-powered phishing detection",
-      "Machine learning for cybersecurity",
-      "Behavioral analytics",
+      "Behavioral analytics & Machine learning for cybersecurity",
     ],
     description:
       "Leveraging AI and machine learning to enhance security analysis and threat detection.",
@@ -208,6 +189,7 @@ export default function CyberSecurityComponents() {
     router.push(route);
   };
 
+  const [isLoading, setIsLoading] = useState(true);
   const [selectedAgent, setSelectedAgent] = useState<AIAgent | null>(null);
   const [schedules, setSchedules] = useState<ScanSchedule[]>([]);
   const [showScheduleForm, setShowScheduleForm] = useState(false);
@@ -242,25 +224,48 @@ export default function CyberSecurityComponents() {
     setSchedules((prev) => [...prev, schedule]);
   };
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+
+    // Cleanup the timeout in case the component unmounts before 3 seconds
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) {
+    return <SkeletonCard />;
+  }
+
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {comps.map((agent) => (
-          <div
+          <Card
             key={agent.id}
-            className="bg-white rounded-lg shadow-sm border p-6"
+            className="relative flex flex-col rounded-lg justify-between dark:bg-dark-bgPrimary
+               hover:bg-tremor-background-muted 
+               hover:dark:bg-dark-tremor-background-muted"
           >
             <div className="flex items-start justify-between">
               <div className="flex items-center space-x-3">
-                <div className="p-2 bg-primary/10 rounded-lg">
-                  <agent.icon className="h-6 w-6 text-primary" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-medium text-primary">
+                <span
+                  className="flex size-12 shrink-0 items-center 
+                justify-center text-primary rounded-md border 
+                border-tremor-border p-1 dark:border-dark-tremor-border"
+                >
+                  <agent.icon className="" />
+                </span>
+                <dt
+                  className="text-tremor-default font-medium 
+                text-tremor-content-strong dark:text-widget-dark-mainHeader"
+                >
+                  <a className="focus:outline-none">
+                    <span className="absolute " aria-hidden={true} />
                     {agent.name}
-                  </h3>
+                  </a>
                   <p className="text-sm text-gray-500">{agent.role}</p>
-                </div>
+                </dt>
               </div>
               <button
                 onClick={() => setSelectedAgent(agent)}
@@ -271,12 +276,18 @@ export default function CyberSecurityComponents() {
             </div>
 
             <div className="mt-4">
-              <h4 className="text-sm font-medium text-gray-900">Expertise:</h4>
+              <h4
+                className="text-tremor-default leading-6 
+                  text-tremor-content dark:text-dark-tremor-content-emphasis"
+              >
+                Expertise
+              </h4>
               <ul className="mt-2 space-y-1">
                 {agent.expertise.map((skill, index) => (
                   <li
                     key={index}
-                    className="text-sm text-gray-600 flex items-center"
+                    className="text-sm leading-6 
+                  text-tremor-content dark:text-dark-tremor-content"
                   >
                     <span className="w-1.5 h-1.5 rounded-full bg-primary/60 mr-2" />
                     {skill}
@@ -285,25 +296,18 @@ export default function CyberSecurityComponents() {
               </ul>
             </div>
 
-            <div className="mt-6 flex space-x-3">
-              {/* <button
-                onClick={() => handleStartScan(agent.id)}
-                className="flex-1 btn-primary bg-primary"
-              >
-                <Play className="h-4 w-4 mr-2" />
-                Start Scan
-              </button> */}
+            <div className="mt-6 flex space-x-3" onClick={() => handleClick()}>
               <button
                 onClick={() => handleClick(agent.route)}
                 className="flex-1 btn-primary"
               >
                 <Play className="h-4 w-4 mr-2" />
-                Start Scan
+                Proceed
               </button>
               <button
                 onClick={() => {
                   setSelectedAgent(agent);
-                  setShowScheduleForm(true);
+                  // setShowScheduleForm(true);
                 }}
                 className="flex-1 btn-secondary"
               >
@@ -311,7 +315,7 @@ export default function CyberSecurityComponents() {
                 Schedule
               </button>
             </div>
-          </div>
+          </Card>
         ))}
       </div>
 

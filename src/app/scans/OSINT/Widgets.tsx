@@ -92,7 +92,7 @@ export default function Widgets({
         <InfoWidget queryUrl={queryUrl} widgetData={widgetData} />
       </div>
 
-      <div className="w-full mt-8">
+      <div className="w-full mt-8 ">
         <WhoIs whoisText={widgetData.attributes.whois ?? ""} />
       </div>
 
@@ -100,7 +100,7 @@ export default function Widgets({
         <h2 className="text-md font-semibold text-gray-900 dark:text-gray-50">
           More insights
         </h2>
-        <Accordion type="multiple" className="mt-3">
+        <Accordion type="multiple" className="">
           <AccordionItem value="item-1">
             <AccordionTrigger>
               <span className="flex items-center gap-2 h-8">
