@@ -19,7 +19,12 @@ import { testGoogleCloudConnection } from "../apis/googleCloud";
 import { Button } from "@/components/Button";
 import { format } from "date-fns";
 // import { useConfiguration } from "@/app/configuration/components/ConfigurationContext";
-import { createTable, describeTable } from "../apis/cloudConfigDataHandler";
+import {
+  addNewConfiguration,
+  createTable,
+  describeTable,
+} from "../apis/cloudConfigDataHandler";
+import { GoogleCloudConfig } from "@/app/configuration/components/type";
 
 export default function GoogleCloudConfigFormModal({
   serviceNameInUrl,
@@ -122,7 +127,11 @@ export default function GoogleCloudConfigFormModal({
   const handleFormSave = (event: React.FormEvent) => {
     event.preventDefault();
 
-    const dataToBeSaved = {
+    if (!validateForm()) return;
+
+    const configId = crypto.randomUUID();
+    const dataToBeSaved: GoogleCloudConfig = {
+      configId: configId,
       cloudProvider: "gcp",
       configurationName: formData.configurationName,
       projectId: formData.projectId,
@@ -135,6 +144,8 @@ export default function GoogleCloudConfigFormModal({
         userEmail: "sayan.roy@keross.com",
       },
     };
+
+    addNewConfiguration(dataToBeSaved);
 
     // setConfigurationData((prevConfigData) => {
     //   const updatedConfigData = {
@@ -150,7 +161,7 @@ export default function GoogleCloudConfigFormModal({
     // });
 
     //creating table
-    describeTable("cloud-config").then(setCloudConfigData);
+    // describeTable("cloud-config").then(setCloudConfigData);
 
     handleClose();
   };
