@@ -30,14 +30,14 @@ export default function SearchBar({
 
   return (
     <>
-      <div className="bg-white py-4 rounded-lg flex items-center gap-4 mb-6">
+      <div className="bg-white dark:bg-gray-950 py-4 rounded-lg flex items-center gap-4 mb-6">
         {/* Input Field */}
         <input
           type="text"
           placeholder={`Enter ${searchType}`}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="flex-grow p-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          className="flex-grow dark:bg-gray-950 p-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
         />
 
         {/* Dropdown for search type */}
