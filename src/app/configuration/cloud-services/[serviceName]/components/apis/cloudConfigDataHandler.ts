@@ -47,4 +47,5 @@ export function addCloudEntry() {
 
 export function addNewConfiguration(newConfigData: GoogleCloudConfig) {
   console.log("New Config Data: ", newConfigData);
+  api.updateColumn(name,"data",newConfigData,newConfigData.configId,"google-cloud-platform");
 }

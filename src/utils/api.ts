@@ -163,3 +163,61 @@ export async function createIndex(tableName: string, columnName: string) {
 
   return res.json();
 }
+
+
+export async function updateColumn(
+  tableName: string,
+  columnName: string,
+  data: any,
+  key: string,
+  provider: string
+) {
+  const jsonString = JSON.stringify(data).replace(/"/g, '\\"')
+  const query = `
+    UPDATE "${tableName}"
+    SET "${columnName}" = jsonb_set(
+      COALESCE("${columnName}", '{}'::jsonb),
+      '{${key}}',
+      '${jsonString}'::jsonb,
+      true
+    )
+    WHERE name = '${provider}';
+  `;
+
+  console.log(query);
+
+  const res = await fetch("/api/dbApi", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ query }),
+  });
+
+  return res.json();
+}
+
+
+
+export async function deleteObjectWithKey(key : string , tableName : string , provider : string){
+
+  const query = `
+  UPDATE "${tableName}"
+    SET "data" = "data" - '${key}'
+  WHERE name = '${provider}';`;
+
+  console.log(query);
+
+const res = await fetch("/api/dbApi", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ query }),
+});
+
+return res.json();
+}
+
+
+
+
+
+
+

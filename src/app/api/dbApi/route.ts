@@ -5,7 +5,7 @@ const ssh = new NodeSSH();
 
 export async function POST(req: Request) {
     try {
-      const { query } = await req.json();
+      let { query } = await req.json();
   
       if (!query) {
         return NextResponse.json({ success: false, error: "Query parameter is required" }, { status: 400 });
@@ -16,8 +16,7 @@ export async function POST(req: Request) {
         username: "root",
         password: "QR66&4Zq2#",
       });
-  
-      const val = `PGPASSWORD="postgres" psql -h localhost -U postgres -p 5436 -d cyber_security -c "${query}"`;
+      const val = `PGPASSWORD="postgres" psql -h localhost -U postgres -p 5436 -d cyber_security -c " ${query}" `;
       console.log("net query is====>" + val)
 
       const result = await ssh.execCommand(
