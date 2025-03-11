@@ -8,6 +8,7 @@ import AmazonWebServicesConfigFormModal from "./config-forms/AmazonWebServicesCo
 import IbmCloudConfigFormModal from "./config-forms/IbmCloudConfigFormModal";
 import OracleCloudConfigFormModal from "./config-forms/OracleCloudConfigFormModal";
 import AlibabaCloudConfigFormModal from "./config-forms/AlibabaCloudConfigFormModal";
+import { addCloudEntry, createTable } from "./apis/cloudConfigDataHandler";
 
 const globalFormMap: Record<
   string,

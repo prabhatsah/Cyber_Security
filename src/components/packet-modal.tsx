@@ -87,9 +87,35 @@ export function PacketModal({ isOpen, onClose, packet }: PacketModalProps) {
   const getFlagColor = (flag: boolean) =>
     flag ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100' 
          : 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300';
+  
+  // Safe access helper function
+  const safeGet = (obj: any, path: string, fallback: any = 'N/A') => {
+    try {
+      const pathParts = path.split('.');
+      let result = obj;
+      
+      for (const part of pathParts) {
+        if (result === undefined || result === null) {
+          return fallback;
+        }
+        result = result[part];
+      }
+      
+      return result === undefined || result === null ? fallback : result;
+    } catch (err) {
+      return fallback;
+    }
+  };
 
-  if (!packet) return null;
-  console.log(packet);
+  if (!packet || !isOpen) return null;
+
+  const hasEthernet = packet.layers && packet.layers.ethernet;
+  const hasIP = packet.layers && packet.layers.ip;
+  const hasTCP = packet.layers && packet.layers.tcp;
+  const hasUDP = packet.layers && packet.layers.udp;
+  const hasICMP = packet.layers && packet.layers.icmp;
+  const hasHTTP = packet.layers && packet.layers.http;
+  const hasDNS = packet.layers && packet.layers.dns;
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
@@ -100,7 +126,7 @@ export function PacketModal({ isOpen, onClose, packet }: PacketModalProps) {
             <DialogTitle>Packet Analysis</DialogTitle>
           </div>
           <DialogDescription>
-            Captured at: {packet.timestamp} | Length: {packet.length} bytes
+            Captured at: {safeGet(packet, 'timestamp')} | Length: {safeGet(packet, 'length')} bytes
           </DialogDescription>
         </DialogHeader>
 
@@ -112,81 +138,85 @@ export function PacketModal({ isOpen, onClose, packet }: PacketModalProps) {
             onValueChange={setExpandedSection}
             className="w-full"
           >
-            <AccordionItem value="ethernet">
-              <AccordionTrigger className="hover:no-underline">
-                <div className="flex items-center space-x-2">
-                  <Shield className="h-4 w-4" />
-                  <span>Ethernet Layer</span>
-                </div>
-              </AccordionTrigger>
-              <AccordionContent>
-                <div className="grid gap-2 p-2">
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className="text-sm">
-                      <span className="font-medium">Source MAC:</span>
-                      <div className="font-mono text-xs bg-muted p-1 rounded mt-1">
-                        {packet.layers.ethernet.src_mac}
+            {hasEthernet && (
+              <AccordionItem value="ethernet">
+                <AccordionTrigger className="hover:no-underline">
+                  <div className="flex items-center space-x-2">
+                    <Shield className="h-4 w-4" />
+                    <span>Ethernet Layer</span>
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent>
+                  <div className="grid gap-2 p-2">
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="text-sm">
+                        <span className="font-medium">Source MAC:</span>
+                        <div className="font-mono text-xs bg-muted p-1 rounded mt-1">
+                          {safeGet(packet.layers.ethernet, 'src_mac')}
+                        </div>
                       </div>
-                    </div>
-                    <div className="text-sm">
-                      <span className="font-medium">Destination MAC:</span>
-                      <div className="font-mono text-xs bg-muted p-1 rounded mt-1">
-                        {packet.layers.ethernet.dst_mac}
+                      <div className="text-sm">
+                        <span className="font-medium">Destination MAC:</span>
+                        <div className="font-mono text-xs bg-muted p-1 rounded mt-1">
+                          {safeGet(packet.layers.ethernet, 'dst_mac')}
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </AccordionContent>
-            </AccordionItem>
+                </AccordionContent>
+              </AccordionItem>
+            )}
 
-            <AccordionItem value="ip">
-              <AccordionTrigger className="hover:no-underline">
-                <div className="flex items-center space-x-2">
-                  <Globe className="h-4 w-4" />
-                  <span>IP Layer</span>
-                </div>
-              </AccordionTrigger>
-              <AccordionContent>
-                <div className="grid gap-4 p-2">
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className="text-sm">
-                      <span className="font-medium">Source IP:</span>
-                      <div className="font-mono text-xs bg-muted p-1 rounded mt-1">
-                        {packet.layers.ip.src_ip}
+            {hasIP && (
+              <AccordionItem value="ip">
+                <AccordionTrigger className="hover:no-underline">
+                  <div className="flex items-center space-x-2">
+                    <Globe className="h-4 w-4" />
+                    <span>IP Layer</span>
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent>
+                  <div className="grid gap-4 p-2">
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="text-sm">
+                        <span className="font-medium">Source IP:</span>
+                        <div className="font-mono text-xs bg-muted p-1 rounded mt-1">
+                          {safeGet(packet.layers.ip, 'src_ip')}
+                        </div>
+                      </div>
+                      <div className="text-sm">
+                        <span className="font-medium">Destination IP:</span>
+                        <div className="font-mono text-xs bg-muted p-1 rounded mt-1">
+                          {safeGet(packet.layers.ip, 'dst_ip')}
+                        </div>
                       </div>
                     </div>
-                    <div className="text-sm">
-                      <span className="font-medium">Destination IP:</span>
-                      <div className="font-mono text-xs bg-muted p-1 rounded mt-1">
-                        {packet.layers.ip.dst_ip}
+                    <div className="grid grid-cols-3 gap-2">
+                      <div className="text-sm">
+                        <span className="font-medium">Protocol:</span>
+                        <Badge variant="secondary" className="ml-2">
+                          {safeGet(packet.layers.ip, 'protocol')}
+                        </Badge>
+                      </div>
+                      <div className="text-sm">
+                        <span className="font-medium">TTL:</span>
+                        <Badge variant="secondary" className="ml-2">
+                          {safeGet(packet.layers.ip, 'ttl')}
+                        </Badge>
+                      </div>
+                      <div className="text-sm">
+                        <span className="font-medium">Version:</span>
+                        <Badge variant="secondary" className="ml-2">
+                          IPv{safeGet(packet.layers.ip, 'version')}
+                        </Badge>
                       </div>
                     </div>
                   </div>
-                  <div className="grid grid-cols-3 gap-2">
-                    <div className="text-sm">
-                      <span className="font-medium">Protocol:</span>
-                      <Badge variant="secondary" className="ml-2">
-                        {packet.layers.ip.protocol}
-                      </Badge>
-                    </div>
-                    <div className="text-sm">
-                      <span className="font-medium">TTL:</span>
-                      <Badge variant="secondary" className="ml-2">
-                        {packet.layers.ip.ttl}
-                      </Badge>
-                    </div>
-                    <div className="text-sm">
-                      <span className="font-medium">Version:</span>
-                      <Badge variant="secondary" className="ml-2">
-                        IPv{packet.layers.ip.version}
-                      </Badge>
-                    </div>
-                  </div>
-                </div>
-              </AccordionContent>
-            </AccordionItem>
+                </AccordionContent>
+              </AccordionItem>
+            )}
 
-            {packet.layers.tcp && (
+            {hasTCP && (
               <AccordionItem value="tcp">
                 <AccordionTrigger className="hover:no-underline">
                   <div className="flex items-center space-x-2">
@@ -200,37 +230,39 @@ export function PacketModal({ isOpen, onClose, packet }: PacketModalProps) {
                       <div className="text-sm">
                         <span className="font-medium">Source Port:</span>
                         <Badge variant="secondary" className="ml-2">
-                          {packet.layers.tcp.src_port}
+                          {safeGet(packet.layers.tcp, 'src_port')}
                         </Badge>
                       </div>
                       <div className="text-sm">
                         <span className="font-medium">Destination Port:</span>
                         <Badge variant="secondary" className="ml-2">
-                          {packet.layers.tcp.dst_port}
+                          {safeGet(packet.layers.tcp, 'dst_port')}
                         </Badge>
                       </div>
                     </div>
-                    <div>
-                      <span className="text-sm font-medium">TCP Flags:</span>
-                      <div className="flex flex-wrap gap-2 mt-2">
-                        {Object.entries(packet.layers.tcp.flags).map(([flag, value]) => (
-                          <span
-                            key={flag}
-                            className={`px-2 py-1 rounded text-xs font-medium ${getFlagColor(
-                              value
-                            )}`}
-                          >
-                            {flag}
-                          </span>
-                        ))}
+                    {packet.layers.tcp?.flags && (
+                      <div>
+                        <span className="text-sm font-medium">TCP Flags:</span>
+                        <div className="flex flex-wrap gap-2 mt-2">
+                          {Object.entries(packet.layers.tcp.flags || {}).map(([flag, value]) => (
+                            <span
+                              key={flag}
+                              className={`px-2 py-1 rounded text-xs font-medium ${getFlagColor(
+                                !!value
+                              )}`}
+                            >
+                              {flag}
+                            </span>
+                          ))}
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </div>
                 </AccordionContent>
               </AccordionItem>
             )}
 
-            {packet.layers.udp && (
+            {hasUDP && (
               <AccordionItem value="udp">
                 <AccordionTrigger className="hover:no-underline">
                   <div className="flex items-center space-x-2">
@@ -244,20 +276,20 @@ export function PacketModal({ isOpen, onClose, packet }: PacketModalProps) {
                       <div className="text-sm">
                         <span className="font-medium">Source Port:</span>
                         <Badge variant="secondary" className="ml-2">
-                          {packet.layers.udp.src_port}
+                          {safeGet(packet.layers.udp, 'src_port')}
                         </Badge>
                       </div>
                       <div className="text-sm">
                         <span className="font-medium">Destination Port:</span>
                         <Badge variant="secondary" className="ml-2">
-                          {packet.layers.udp.dst_port}
+                          {safeGet(packet.layers.udp, 'dst_port')}
                         </Badge>
                       </div>
                     </div>
                     <div className="text-sm">
                       <span className="font-medium">Length:</span>
                       <Badge variant="secondary" className="ml-2">
-                        {packet.layers.udp.length}
+                        {safeGet(packet.layers.udp, 'length')}
                       </Badge>
                     </div>
                   </div>
@@ -265,8 +297,9 @@ export function PacketModal({ isOpen, onClose, packet }: PacketModalProps) {
               </AccordionItem>
             )}
 
-            {packet.layers.icmp && (
+            {hasICMP && (
               <AccordionItem value="icmp">
+                {/* ICMP content */}
                 <AccordionTrigger className="hover:no-underline">
                   <div className="flex items-center space-x-2">
                     <Layers className="h-4 w-4" />
@@ -279,13 +312,13 @@ export function PacketModal({ isOpen, onClose, packet }: PacketModalProps) {
                       <div className="text-sm">
                         <span className="font-medium">Type:</span>
                         <Badge variant="secondary" className="ml-2">
-                          {packet.layers.icmp.type}
+                          {safeGet(packet.layers.icmp, 'type')}
                         </Badge>
                       </div>
                       <div className="text-sm">
                         <span className="font-medium">Code:</span>
                         <Badge variant="secondary" className="ml-2">
-                          {packet.layers.icmp.code}
+                          {safeGet(packet.layers.icmp, 'code')}
                         </Badge>
                       </div>
                     </div>
@@ -294,7 +327,7 @@ export function PacketModal({ isOpen, onClose, packet }: PacketModalProps) {
               </AccordionItem>
             )}
 
-            {packet.layers.http && (
+            {hasHTTP && (
               <AccordionItem value="http">
                 <AccordionTrigger className="hover:no-underline">
                   <div className="flex items-center space-x-2">
@@ -304,38 +337,38 @@ export function PacketModal({ isOpen, onClose, packet }: PacketModalProps) {
                 </AccordionTrigger>
                 <AccordionContent>
                   <div className="grid gap-2 p-2">
-                    {packet.layers.http.request_uri && (
+                    {safeGet(packet.layers.http, 'request_uri') !== 'N/A' && (
                       <div className="text-sm">
                         <span className="font-medium">Request URI:</span>
                         <div className="font-mono text-xs bg-muted p-1 rounded mt-1">
-                          {packet.layers.http.request_uri}
+                          {safeGet(packet.layers.http, 'request_uri')}
                         </div>
                       </div>
                     )}
-                    {packet.layers.http.status_code && (
+                    {safeGet(packet.layers.http, 'status_code') !== 'N/A' && (
                       <div className="text-sm">
                         <span className="font-medium">Status Code:</span>
                         <Badge
-                          variant={packet.layers.http.status_code === '200' ? 'default' : 'destructive'}
+                          variant={safeGet(packet.layers.http, 'status_code') === '200' ? 'default' : 'destructive'}
                           className="ml-2"
                         >
-                          {packet.layers.http.status_code}
+                          {safeGet(packet.layers.http, 'status_code')}
                         </Badge>
                       </div>
                     )}
-                    {packet.layers.http.content_type && (
+                    {safeGet(packet.layers.http, 'content_type') !== 'N/A' && (
                       <div className="text-sm">
                         <span className="font-medium">Content Type:</span>
                         <Badge variant="outline" className="ml-2">
-                          {packet.layers.http.content_type}
+                          {safeGet(packet.layers.http, 'content_type')}
                         </Badge>
                       </div>
                     )}
-                    {packet.layers.http.payload && packet.layers.http.payload !== 'N/A' && (
+                    {safeGet(packet.layers.http, 'payload') !== 'N/A' && (
                       <div className="text-sm">
                         <span className="font-medium">Payload:</span>
                         <div className="font-mono text-xs bg-muted p-1 rounded mt-1 break-all">
-                          {packet.layers.http.payload}
+                          {safeGet(packet.layers.http, 'payload')}
                         </div>
                       </div>
                     )}
@@ -344,7 +377,7 @@ export function PacketModal({ isOpen, onClose, packet }: PacketModalProps) {
               </AccordionItem>
             )}
 
-            {packet.layers.dns && (
+            {hasDNS && (
               <AccordionItem value="dns">
                 <AccordionTrigger className="hover:no-underline">
                   <div className="flex items-center space-x-2">
@@ -354,27 +387,27 @@ export function PacketModal({ isOpen, onClose, packet }: PacketModalProps) {
                 </AccordionTrigger>
                 <AccordionContent>
                   <div className="grid gap-2 p-2">
-                    {packet.layers.dns.query && (
+                    {safeGet(packet.layers.dns, 'query') !== 'N/A' && (
                       <div className="text-sm">
                         <span className="font-medium">Query:</span>
                         <div className="font-mono text-xs bg-muted p-1 rounded mt-1">
-                          {packet.layers.dns.query}
+                          {safeGet(packet.layers.dns, 'query')}
                         </div>
                       </div>
                     )}
-                    {packet.layers.dns.type && (
+                    {safeGet(packet.layers.dns, 'type') !== 'N/A' && (
                       <div className="text-sm">
                         <span className="font-medium">Type:</span>
                         <Badge variant="outline" className="ml-2">
-                          {packet.layers.dns.type}
+                          {safeGet(packet.layers.dns, 'type')}
                         </Badge>
                       </div>
                     )}
-                    {packet.layers.dns.class && (
+                    {safeGet(packet.layers.dns, 'class') !== 'N/A' && (
                       <div className="text-sm">
                         <span className="font-medium">Class:</span>
                         <Badge variant="outline" className="ml-2">
-                          {packet.layers.dns.class}
+                          {safeGet(packet.layers.dns, 'class')}
                         </Badge>
                       </div>
                     )}

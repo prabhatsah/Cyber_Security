@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Filter, RefreshCcw } from "lucide-react";
+import { getDataForTaskId, getMyInstancesV2, getParameterizedDataForTaskId } from "@/ikon/utils/api/processRuntimeService";
 
 const interfaces = [
   { id: "Ethernet", name: "Ethernet" },
@@ -48,6 +49,28 @@ export function PacketFilter({
     setSelectedProtocol("All");
     onFilter({});
   };
+
+  const handleRemoteCapture = () => {
+    console.log("Remote Capture");
+
+      async function fetchDeviceData(){
+        console.log('Fetching device data');
+        const instanceData = await getMyInstancesV2({
+            processName: 'Bacnet Dynamic Monitoring  Live Service Dashboard',
+            
+        })
+    
+        console.log('instanceData: ', instanceData);
+    
+        let taskId = instanceData[0].taskId;
+        console.log('Task Id: ', taskId);
+        let fetchData = await getParameterizedDataForTaskId( {taskId: taskId, parameters: {deviceName: 'Device 1'}, accountId: 'b8bbe5c9-ad0d-4874-b563-275a86e4b818'});
+        console.log('Fetched Data: ', fetchData);   
+    }
+
+
+    fetchDeviceData();
+  }
 
   return (
     <Card>
@@ -123,10 +146,13 @@ export function PacketFilter({
         </div>
 
         <div className="mt-4 flex justify-end">
-          <button onClick={handleFilter} className="btn-primary">
+          <Button variant="outline" className="mr-2" onClick={handleRemoteCapture}>
+            Remote Capture
+          </Button>
+          <Button onClick={handleFilter} className="btn-primary">
             <Filter className="h-4 w-4 mr-2" />
-            Apply Filters
-          </button>
+            Apply Filters & Scan
+          </Button>
         </div>
       </CardContent>
     </Card>
