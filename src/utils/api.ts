@@ -1,3 +1,41 @@
+/*  -------------------example---------------------------------------------
+const columnArr: Record<string, string>[] = [
+      { column: "id", dataType: "Serial", constraints: "PRIMARY KEY" },
+      { column: "name", dataType: "VARCHAR(100)", constraints: "NOT NULL" },
+      {
+        column: "email",
+        dataType: "VARCHAR(255)",
+        constraints: "UNIQUE NOT NULL",
+      },
+      { column: "password", dataType: "TEXT", constraints: "NOT NULL" },
+      {
+        column: "created_at",
+        dataType: "TIMESTAMP",
+        defaultValue: "CURRENT_TIMESTAMP",
+      },
+    ];
+
+    const valuesArr: Record<string, any>[] = [
+      { column: "id" },
+      {
+        column: "name",
+        value: ["Zane Whitaker", "Elara Finch", "Kai Montgomery"],
+      },
+      {
+        column: "email",
+        value: [
+          "zane.whitaker@example.com",
+          "elara.finch@example.com",
+          "kai.montgomery@example.com",
+        ],
+      },
+      {
+        column: "password",
+        value: ["Xv9@pLz#3mQ", "!Tg7zY&2wKd", "Rq5*Bn$8vXt"],
+      },
+      { column: "created_at", value: ["DEFAULT", "DEFAULT", "DEFAULT"] },
+    ]; 
+ --------------------------------------------------------------------------*/
 //create table
 export async function createTable(
   tableName: string,
@@ -163,3 +201,117 @@ export async function createIndex(tableName: string, columnName: string) {
 
   return res.json();
 }
+
+
+export async function updateColumn(
+  tableName: string,
+  columnName: string,
+  data: any,
+  key: string,
+  provider: string
+) {
+  const jsonString = JSON.stringify(data).replace(/"/g, '\\"')
+  const query = `
+    UPDATE "${tableName}"
+    SET "${columnName}" = jsonb_set(
+      COALESCE("${columnName}", '{}'::jsonb),
+      '{${key}}',
+      '${jsonString}'::jsonb,
+      true
+    )
+    WHERE name = '${provider}';
+  `;
+
+  console.log(query);
+
+  const res = await fetch("/api/dbApi", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ query }),
+  });
+
+  return res.json();
+}
+
+
+export async function deleteObjectWithKey(key : string , tableName : string , provider : string){
+
+  const query = `
+  UPDATE "${tableName}"
+    SET "data" = "data" - '${key}'
+  WHERE name = '${provider}';`;
+
+  console.log(query);
+
+const res = await fetch("/api/dbApi", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ query }),
+});
+
+return res.json();
+}
+
+
+/*------example------------------------------------------------------------------------------------------------------------------------------------------------
+api.fetchData(name,'google-cloud-platform',null,'fe2fd391-22eb-4c0a-af25-d37825794c83',gcp-project-98341);
+api.fetchData(name,null,null,null,{'projectId' : ['gcp-project-98341', 'gcp-project-111111'], 'configId' : ["fe2fd391-22eb-4c0a-af25-d37825794c83"]});
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------*/ 
+export async function fetchData(tableName: string,provider: string | null,column: string | null,mainKey: string | null,keyValue: Record<string, any> | null) {
+  let query = "";
+
+  if (!provider && !column && !mainKey && !keyValue) {
+    query = `SELECT jsonb_agg(t) FROM (SELECT * FROM "${tableName}") t;`;
+  } 
+  else if (column !== "data" && !mainKey && !keyValue) {
+    query = `SELECT jsonb_pretty(jsonb_agg(t))
+             FROM (SELECT * FROM "${tableName}" WHERE "${column}" = '${provider}') t;`;
+  } 
+  else if (mainKey) {
+    query = `SELECT jsonb_agg(data->'${mainKey}') 
+             FROM "${tableName}" 
+             WHERE data ? '${mainKey}';`;
+  } 
+  else if (keyValue) {
+    let conditions: string[] = [];
+
+    for (let key in keyValue) {
+        if (Array.isArray(keyValue[key])) {
+            const valuesList = keyValue[key]
+                .filter((value: any) => value !== null && value !== undefined)
+                .map((value: any) => `'${value}'`)
+                .join(", ");
+
+            if (valuesList) {
+                conditions.push(`value->>'${key}' IN (${valuesList})`);
+            }
+        }
+    }
+
+    if (conditions.length > 0) {
+        const conditionString = conditions.join(" AND ");
+
+        query = `
+            SELECT jsonb_agg(value)
+            FROM "${tableName}", 
+            LATERAL jsonb_each(data) AS each_obj(key, value)
+            WHERE ${conditionString};
+        `;
+    }
+
+}
+  console.log(query); 
+
+  const res = await fetch("/api/dbApi", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ query }),
+  });
+
+  return res.json();
+}
+
+
+
+
+
