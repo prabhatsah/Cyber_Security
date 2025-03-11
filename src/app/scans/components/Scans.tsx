@@ -122,7 +122,7 @@ export function Scans() {
           </button>
         </div>
       </div>
-      <div className="flex space-x-4 border-b mb-6">
+      <div className="flex space-x-4  mb-6">
         <button
           className={`py-2 px-4 font-medium ${
             activeTab === "cyberSecurity"
