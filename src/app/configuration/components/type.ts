@@ -1,4 +1,5 @@
 export interface GoogleCloudConfig {
+  configId: string;
   cloudProvider: string;
   configurationName: string;
   projectId: string;
