@@ -24,6 +24,7 @@ import VulnerabilitiesStats from "./stats";
 import CustomPieChart from "./vulnerabilitiesPie";
 import { Maximize, Minimize } from "lucide-react";
 import * as api from "@/utils/api";
+import { table } from "console";
 
 type CommandKey = keyof typeof dockerCommands;
 
@@ -59,47 +60,16 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
     return JSON.stringify(JSON.parse(jsonString), null, 2);
   }
 
+
+  useEffect(()=>{
+    console.log(tableResult)
+  },[tableResult])
+
   function creatingTable() {
-    const name = "container";
+    const name = "cloud_config";
 
-    const columnArr: Record<string, string>[] = [
-      { column: "id", dataType: "Serial", constraints: "PRIMARY KEY" },
-      { column: "name", dataType: "VARCHAR(100)", constraints: "NOT NULL" },
-      {
-        column: "email",
-        dataType: "VARCHAR(255)",
-        constraints: "UNIQUE NOT NULL",
-      },
-      { column: "password", dataType: "TEXT", constraints: "NOT NULL" },
-      {
-        column: "created_at",
-        dataType: "TIMESTAMP",
-        defaultValue: "CURRENT_TIMESTAMP",
-      },
-    ];
-
-    const valuesArr: Record<string, any>[] = [
-      { column: "id" },
-      {
-        column: "name",
-        value: ["Zane Whitaker", "Elara Finch", "Kai Montgomery"],
-      },
-      {
-        column: "email",
-        value: [
-          "zane.whitaker@example.com",
-          "elara.finch@example.com",
-          "kai.montgomery@example.com",
-        ],
-      },
-      {
-        column: "password",
-        value: ["Xv9@pLz#3mQ", "!Tg7zY&2wKd", "Rq5*Bn$8vXt"],
-      },
-      { column: "created_at", value: ["DEFAULT", "DEFAULT", "DEFAULT"] },
-    ];
-
-    return api.showTables();
+    //api.fetchData(name,'google-cloud-platform',null,'fe2fd391-22eb-4c0a-af25-d37825794c83',gcp-project-98341);
+    return //api.fetchData(name,null,null,null,{'projectId' : ['gcp-project-98341', 'gcp-project-111111'], 'configId' : ["fe2fd391-22eb-4c0a-af25-d37825794c83"]});
   }
 
   useEffect(() => {
@@ -112,7 +82,8 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
     itemId: string | null = null,
     flag: number = 0
   ) => {
-    let data: any;
+
+    let data: any;    
     try {
       setLoading(commandKey);
       setError(null);
@@ -352,7 +323,7 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
                 </div>
                 <div>
                   <h3 className="text-xl mx-2 font-medium text-primary">
-                    List All Containers
+                    List All Containers(Local)
                   </h3>
                 </div>
               </div>
@@ -534,7 +505,7 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
                 </div>
                 <div>
                   <h3 className="text-xl mx-2 font-medium text-primary">
-                    Scan File System
+                    Scan File System(Local)
                   </h3>
                 </div>
               </div>
