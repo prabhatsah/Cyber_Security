@@ -358,23 +358,23 @@ export async function POST(req) {
     console.log(`Active scan started with ID: ${ascanData.scan}`);
 
     // Step 4: Wait for Active Scan to Complete
-    // while (true) {
-    //   const statusResponse = await fetch(
-    //     `${zapApiUrl}/JSON/ascan/view/status/?scanId=${ascanData.scan}`
-    //   );
-    //   const statusData = await statusResponse.json();
+    while (true) {
+      const statusResponse = await fetch(
+        `${zapApiUrl}/JSON/ascan/view/status/?scanId=${ascanData.scan}`
+      );
+      const statusData = await statusResponse.json();
 
-    //   console.log("-------------------statusData");
-    //   console.log(statusData);
+      console.log("-------------------statusData");
+      console.log(statusData);
 
-    //   if (statusData.status === "100") {
-    //     console.log("Active scan completed.");
-    //     break;
-    //   }
+      if (statusData.status === "100") {
+        console.log("Active scan completed.");
+        break;
+      }34`1  `
 
-    //   console.log("Waiting for Active scan to complete...");
-    //   await new Promise((resolve) => setTimeout(resolve, 5000)); // Wait 5 sec
-    // }
+      console.log("Waiting for Active scan to complete...");
+      await new Promise((resolve) => setTimeout(resolve, 15000)); // Wait 5 sec
+    }
 
     // Step 5: Fetch the Scan Report
     const scanReport = await getZapReport();
