@@ -48,7 +48,6 @@
 import { useEffect, useState } from "react";
 import SearchBar from "./SearchBar";
 import Widgets from "./Widgets";
-import Layout from "@/components/Layout";
 import { useBreadcrumb } from "@/contexts/BreadcrumbContext";
 import { ApiResponse, HarvesterData } from "./components/type";
 import PastScans from "@/components/PastScans";
@@ -96,22 +95,20 @@ export default function TheHarvesterDashboard() {
   };
 
   return (
-    <Layout>
-      <div className="">
-        <p className="font-bold text-gray-600">OSINT & Threat Intelligence</p>
-        <SearchBar query={query} setQuery={setQuery} fetchData={fetchData} />
-        {error && <p className="text-red-600 text-center">{error}</p>}
+    <div className="">
+      <p className="font-bold text-gray-600">OSINT & Threat Intelligence</p>
+      <SearchBar query={query} setQuery={setQuery} fetchData={fetchData} />
+      {error && <p className="text-red-600 text-center">{error}</p>}
 
-        {data && (
-          <div className="space-y-8">
-            <Widgets widgetData={data} queryUrl={query} />
-          </div>
-        )}
-
-        <div>
-          <PastScans />
+      {data && (
+        <div className="space-y-8">
+          <Widgets widgetData={data} queryUrl={query} />
         </div>
+      )}
+
+      <div>
+        <PastScans />
       </div>
-    </Layout>
+    </div>
   );
 }
