@@ -77,7 +77,9 @@ export async function addColumn(
 
   const valuesArr = values
     .filter(({ value }) => value !== undefined && value !== null)
-    .map(({ value }) => value);
+    .map(({ value }) => (value.jsnob ? JSON.stringify(value.data) : value));
+
+  console.log(valuesArr);
 
   const largestArray = valuesArr.reduce(
     (maxArr, currentArr) =>
@@ -86,6 +88,7 @@ export async function addColumn(
   );
 
   let valuesString = "";
+
   for (let i = 0; i < largestArray.length; i++) {
     valuesString += "(";
     for (let j = 0; j < noOfCols; j++) {
@@ -94,6 +97,11 @@ export async function addColumn(
           valuesArr[j][i] != "DEFAULT"
             ? "'" + valuesArr[j][i] + "',"
             : valuesArr[j][i] + ",";
+      else if (typeof valuesArr[j][i] == "object")
+        valuesString +=
+          valuesArr[j][i] != "DEFAULT"
+            ? "'" + JSON.stringify(valuesArr[j][i]) + "',"
+            : JSON.stringify(valuesArr[j][i]) + ",";
       else
         valuesString +=
           valuesArr[j][i] != "DEFAULT"
@@ -103,9 +111,10 @@ export async function addColumn(
     valuesString = valuesString.slice(0, -1);
     valuesString += "),";
   }
-  valuesString = valuesString.slice(0, -1);
+  valuesString = valuesString.slice(0, -1).replace(/'{}'/g, "'{}'::jsonb");
   const query = `INSERT INTO ${tableName} (${columnDefinitions}) VALUES ${valuesString};`;
   console.log(query);
+
   const res = await fetch("/api/dbApi", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -133,6 +142,18 @@ export async function getTableValues(tableName: string) {
                     FROM ${tableName} t;`;
 
   const custonQuery = `SELECT json_agg(json_build_object('id', id,'name', name,'email', email)) FROM ${tableName} WHERE name = 'Alice';`;
+
+  const res = await fetch("/api/dbApi", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ query }),
+  });
+
+  return res.json();
+}
+
+export async function createIndex(tableName: string, columnName: string) {
+  const query = `CREATE UNIQUE INDEX idx_${tableName}_${columnName}_unique ON ${tableName}(${columnName});`;
 
   const res = await fetch("/api/dbApi", {
     method: "POST",

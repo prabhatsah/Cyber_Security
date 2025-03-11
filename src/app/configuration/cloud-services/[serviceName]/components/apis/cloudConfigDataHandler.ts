@@ -1,8 +1,8 @@
+import { GoogleCloudConfig } from "@/app/configuration/components/type";
 import * as api from "@/utils/api";
 
+const name = "cloud_config";
 export function createTable() {
-  const name = "cloud_config";
-
   const columnArr: Record<string, string>[] = [
     {
       column: "id",
@@ -12,7 +12,7 @@ export function createTable() {
     },
     { column: "name", dataType: "VARCHAR(100)", constraints: "NOT NULL" },
 
-    { column: "data", dataType: "jsonb[]" },
+    { column: "data", dataType: "jsonb" },
   ];
 
   return api.createTable(name, columnArr);
@@ -22,18 +22,29 @@ export function describeTable(name: string) {
   return api.descTable(name);
 }
 
-export function addCloudEntry(name: string) {
+export function addCloudEntry() {
   const valuesArr: Record<string, any>[] = [
     { column: "id" },
     {
       column: "name",
-      value: ["gcp", "aws", "azure", "ibmCloud", "oracleCloud", "alibabaCloud"],
+      value: [
+        "amazon-web-services",
+        "microsoft-azure",
+        "google-cloud-platform",
+        "ibm-cloud",
+        "oracle-cloud-infrastructure",
+        "alibaba-cloud",
+      ],
     },
     {
       column: "data",
-      value: [[], [], [], [], [], []],
+      value: [{}, {}, {}, {}, {}, {}],
     },
   ];
 
   api.addColumn(name, valuesArr);
+}
+
+export function addNewConfiguration(newConfigData: GoogleCloudConfig) {
+  console.log("New Config Data: ", newConfigData);
 }

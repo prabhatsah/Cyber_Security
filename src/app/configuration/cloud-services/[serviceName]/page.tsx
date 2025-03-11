@@ -1,4 +1,4 @@
-import { RiFileEditLine } from "@remixicon/react";
+import { RiEdit2Line } from "@remixicon/react";
 import { Card, Divider } from "@tremor/react";
 import AddConfigurationBtnWithFormDialog from "./components/AddConfigurationBtnWithFormDialog";
 //import { useConfiguration } from "../../components/ConfigurationContext";
@@ -209,7 +209,7 @@ export default async function CloudServiceDetails({
                 className="pointer-events-none absolute right-4 top-4 text-tremor-content-subtle group-hover:text-tremor-content dark:text-dark-tremor-content-subtle group-hover:dark:text-dark-tremor-content"
                 aria-hidden={true}
               >
-                <RiFileEditLine className="size-4" aria-hidden={true} />
+                <RiEdit2Line className="size-4" aria-hidden={true} />
               </span>
             </Card>
           ))}
