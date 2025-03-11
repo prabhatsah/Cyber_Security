@@ -56,7 +56,7 @@ export default function WebApi() {
       }
 
       // Send the scan request
-      const response = await fetch("http://localhost:3000/api/webApi/ZAP", {
+      const response = await fetch("http://localhost:3001/api/webApi/ZAP", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
