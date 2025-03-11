@@ -30,7 +30,7 @@ export default function SearchBar({
 
   return (
     <>
-      <div className="bg-white dark:bg-gray-950 py-4 rounded-lg flex items-center gap-4 mb-6">
+      <div className="bg-white   dark:bg-gray-950 py-4 rounded-lg flex items-center gap-4 mb-6">
         {/* Input Field */}
         <input
           type="text"
