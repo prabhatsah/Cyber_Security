@@ -19,7 +19,7 @@ export default function CloudContainerTabs() {
   return (
     <>
       <div className="w-full">
-        <div className="flex border-b border-gray-200 dark:border-gray-800">
+        <div className="flex border-b border-gray-200 dark:border-gray-800 mb-6">
           {navigation.map((item) => (
             <Link
               key={item.name}

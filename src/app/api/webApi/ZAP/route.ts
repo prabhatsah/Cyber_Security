@@ -376,7 +376,11 @@ export async function POST(req) {
       if (statusData.status === "100") {
         console.log("Active scan completed.");
         break;
+<<<<<<< HEAD
+      }34`1  `
+=======
       }
+>>>>>>> 5ece44134ebb0b0b6198bf954bb57782cafd720a
 
       console.log("Waiting for Active scan to complete...");
       await new Promise((resolve) => setTimeout(resolve, 15000)); // Wait 5 sec
