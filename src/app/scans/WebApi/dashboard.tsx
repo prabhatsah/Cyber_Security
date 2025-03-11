@@ -28,11 +28,11 @@ function classNames(...classes: string[]) {
 }
 
 const ristCodeVsDesc = {
-  0: "info",
-  1: "low",
-  2: "medium",
-  3: "high",
-  4: "critical",
+  0: "Info",
+  1: "Low",
+  2: "Medium",
+  3: "High",
+  4: "Critical",
 };
 
 function removePTags(htmlString) {
@@ -47,27 +47,27 @@ function extractTextFromPTags(htmlString) {
 export default function Dashboard({ _data }) {
   const _severity = [
     {
-      severity: "critical",
+      severity: "Critical",
       count: 0,
       borderColor: "bg-red-900",
     },
     {
-      severity: "high",
+      severity: "High",
       count: 0,
       borderColor: "bg-red-500",
     },
     {
-      severity: "medium",
+      severity: "Medium",
       count: 0,
       borderColor: "bg-yellow-500",
     },
     {
-      severity: "low",
+      severity: "Low",
       count: 0,
       borderColor: "bg-green-800",
     },
     {
-      severity: "info",
+      severity: "Info",
       count: 0,
       borderColor: "bg-blue-600",
     },
@@ -188,12 +188,12 @@ export default function Dashboard({ _data }) {
                     <TableCell>
                       <Badge
                         variant={
-                          ristCodeVsDesc[item.riskcode] === "critical" ||
-                          ristCodeVsDesc[item.riskcode] === "high"
+                          ristCodeVsDesc[item.riskcode] === "Critical" ||
+                          ristCodeVsDesc[item.riskcode] === "High"
                             ? "error"
-                            : ristCodeVsDesc[item.riskcode] === "medium"
+                            : ristCodeVsDesc[item.riskcode] === "Medium"
                             ? "warning"
-                            : ristCodeVsDesc[item.riskcode] === "low"
+                            : ristCodeVsDesc[item.riskcode] === "Low"
                             ? "success"
                             : "default"
                         }
@@ -220,13 +220,13 @@ export default function Dashboard({ _data }) {
                   <span className="flex items-center gap-2 h-8">
                     <RiAlertLine
                       className={`size-4 ${
-                        ristCodeVsDesc[dataItem.riskcode] === "critical"
+                        ristCodeVsDesc[dataItem.riskcode] === "Critical"
                           ? "text-red-900"
-                          : ristCodeVsDesc[dataItem.riskcode] === "high"
+                          : ristCodeVsDesc[dataItem.riskcode] === "High"
                           ? "text-red-900"
-                          : ristCodeVsDesc[dataItem.riskcode] === "medium"
+                          : ristCodeVsDesc[dataItem.riskcode] === "Medium"
                           ? "text-yellow-900"
-                          : ristCodeVsDesc[dataItem.riskcode] === "low"
+                          : ristCodeVsDesc[dataItem.riskcode] === "Low"
                           ? "text-emerald-900"
                           : "text-blue-900"
                       }`}
@@ -234,12 +234,12 @@ export default function Dashboard({ _data }) {
                     {dataItem.alert}
                     <Badge
                       variant={
-                        ristCodeVsDesc[dataItem.riskcode] === "critical" ||
-                        ristCodeVsDesc[dataItem.riskcode] === "high"
+                        ristCodeVsDesc[dataItem.riskcode] === "Critical" ||
+                        ristCodeVsDesc[dataItem.riskcode] === "High"
                           ? "error"
-                          : ristCodeVsDesc[dataItem.riskcode] === "medium"
+                          : ristCodeVsDesc[dataItem.riskcode] === "Medium"
                           ? "warning"
-                          : ristCodeVsDesc[dataItem.riskcode] === "low"
+                          : ristCodeVsDesc[dataItem.riskcode] === "Low"
                           ? "success"
                           : "default"
                       }
@@ -249,7 +249,9 @@ export default function Dashboard({ _data }) {
                   </span>
                 </AccordionTrigger>
                 <AccordionContent className="pl-6">
-                  <p>{removePTags(dataItem.desc)}</p>
+                  <p className="dark:text-gray-400">
+                    {removePTags(dataItem.desc)}
+                  </p>
 
                   {dataItem.instances.map((instance) => (
                     <AccordionItem value={instance.id} key={instance.id}>
@@ -260,26 +262,26 @@ export default function Dashboard({ _data }) {
                         </span>
                       </AccordionTrigger>
                       <AccordionContent className="pl-6">
-                        <p>
-                          <span className="text-sm text-gray-900 font-semibold">
+                        <p className="dark:text-gray-400">
+                          <span className="text-sm text-gray-900 font-semibold inline-block w-24 dark:text-gray-50">
                             Method:
                           </span>{" "}
                           {instance.method}
                         </p>
-                        <p className="mt-1">
-                          <span className="text-sm text-gray-900 font-semibold">
+                        <p className="mt-1 dark:text-gray-400">
+                          <span className="text-sm text-gray-900 font-semibold inline-block w-24 dark:text-gray-50">
                             Parameter:
                           </span>{" "}
                           {instance.param}
                         </p>
-                        <p className="mt-1">
-                          <span className="text-sm text-gray-900 font-semibold">
+                        <p className="mt-1 dark:text-gray-400">
+                          <span className="text-sm text-gray-900 font-semibold inline-block w-24 dark:text-gray-50">
                             Attack:
                           </span>{" "}
                           {instance.attack}
                         </p>
-                        <p className="mt-1">
-                          <span className="text-sm text-gray-900 font-semibold">
+                        <p className="mt-1 dark:text-gray-400">
+                          <span className="text-sm text-gray-900 font-semibold inline-block w-24 dark:text-gray-50">
                             Evidence:
                           </span>{" "}
                           {instance.evidence}
@@ -287,20 +289,32 @@ export default function Dashboard({ _data }) {
                       </AccordionContent>
                     </AccordionItem>
                   ))}
-                  <p className="mt-2">
-                    <span className="text-sm text-gray-900 font-semibold">
+                  <p className="mt-2 dark:text-gray-400">
+                    <span className="text-sm text-gray-900 font-semibold inline-block w-24 dark:text-gray-50">
+                      Confidence:
+                    </span>{" "}
+                    {ristCodeVsDesc[dataItem.confidence]}
+                  </p>
+                  <p className="mt-2 dark:text-gray-400">
+                    <span className="text-sm text-gray-900 font-semibold inline-block w-24 dark:text-gray-50">
                       Instances:
                     </span>{" "}
                     {dataItem.count}
                   </p>
-                  <p className="mt-2">
-                    <span className="text-sm text-gray-900 font-semibold">
+                  <p className="mt-2  dark:text-gray-400">
+                    <span className="text-sm text-gray-900 font-semibold inline-block w-24 dark:text-gray-50">
                       Solution:
                     </span>{" "}
                     {removePTags(dataItem.solution)}
                   </p>
-                  <p className="flex mt-2">
-                    <p className="text-sm text-gray-900 font-semibold">
+                  <p className="mt-2  dark:text-gray-400">
+                    <span className="text-sm text-gray-900 font-semibold inline-block w-24 dark:text-gray-50">
+                      Other Info:
+                    </span>{" "}
+                    {removePTags(dataItem.otherinfo)}
+                  </p>
+                  <p className="flex mt-2  dark:text-gray-400">
+                    <p className="text-sm text-gray-900 font-semibold w-24 dark:text-gray-50">
                       Reference:
                     </p>
                     <ul className="ml-1">
@@ -313,20 +327,20 @@ export default function Dashboard({ _data }) {
                       )}
                     </ul>
                   </p>
-                  <p className="mt-2">
-                    <span className="text-sm text-gray-900 font-semibold">
+                  <p className="mt-2 dark:text-gray-400">
+                    <span className="text-sm text-gray-900 font-semibold inline-block w-24 dark:text-gray-50">
                       CWE Id:
                     </span>{" "}
                     {dataItem["cweid"]}
                   </p>
-                  <p className="mt-2">
-                    <span className="text-sm text-gray-900 font-semibold">
+                  <p className="mt-2 dark:text-gray-400">
+                    <span className="text-sm text-gray-900 font-semibold inline-block w-24 dark:text-gray-50">
                       WASC Id:
                     </span>{" "}
                     {dataItem["wascid"]}
                   </p>
-                  <p className="mt-2">
-                    <span className="text-sm text-gray-900 font-semibold">
+                  <p className="mt-2 dark:text-gray-400">
+                    <span className="text-sm text-gray-900 font-semibold inline-block w-24 dark:text-gray-50">
                       Plugin Id:
                     </span>{" "}
                     {dataItem["pluginid"]}
