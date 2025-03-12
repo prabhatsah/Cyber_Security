@@ -202,7 +202,6 @@ export async function createIndex(tableName: string, columnName: string) {
   return res.json();
 }
 
-
 export async function updateColumn(
   tableName: string,
   columnName: string,
@@ -210,7 +209,7 @@ export async function updateColumn(
   key: string,
   provider: string
 ) {
-  const jsonString = JSON.stringify(data).replace(/"/g, '\\"')
+  const jsonString = JSON.stringify(data).replace(/"/g, '\\"');
   const query = `
     UPDATE "${tableName}"
     SET "${columnName}" = jsonb_set(
@@ -233,74 +232,17 @@ export async function updateColumn(
   return res.json();
 }
 
-
-export async function deleteObjectWithKey(key : string , tableName : string , provider : string){
-
+export async function deleteObjectWithKey(
+  key: string,
+  tableName: string,
+  provider: string
+) {
   const query = `
   UPDATE "${tableName}"
     SET "data" = "data" - '${key}'
   WHERE name = '${provider}';`;
 
   console.log(query);
-
-const res = await fetch("/api/dbApi", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ query }),
-});
-
-return res.json();
-}
-
-
-/*------example------------------------------------------------------------------------------------------------------------------------------------------------
-api.fetchData(name,'google-cloud-platform',null,'fe2fd391-22eb-4c0a-af25-d37825794c83',gcp-project-98341);
-api.fetchData(name,null,null,null,{'projectId' : ['gcp-project-98341', 'gcp-project-111111'], 'configId' : ["fe2fd391-22eb-4c0a-af25-d37825794c83"]});
--------------------------------------------------------------------------------------------------------------------------------------------------------------------*/ 
-export async function fetchData(tableName: string,provider: string | null,column: string | null,mainKey: string | null,keyValue: Record<string, any> | null) {
-  let query = "";
-
-  if (!provider && !column && !mainKey && !keyValue) {
-    query = `SELECT jsonb_agg(t) FROM (SELECT * FROM "${tableName}") t;`;
-  } 
-  else if (column !== "data" && !mainKey && !keyValue) {
-    query = `SELECT jsonb_pretty(jsonb_agg(t))
-             FROM (SELECT * FROM "${tableName}" WHERE "${column}" = '${provider}') t;`;
-  } 
-  else if (mainKey) {
-    query = `SELECT jsonb_agg(data->'${mainKey}') 
-             FROM "${tableName}" 
-             WHERE data ? '${mainKey}';`;
-  } 
-  else if (keyValue) {
-    let conditions: string[] = [];
-
-    for (let key in keyValue) {
-        if (Array.isArray(keyValue[key])) {
-            const valuesList = keyValue[key]
-                .filter((value: any) => value !== null && value !== undefined)
-                .map((value: any) => `'${value}'`)
-                .join(", ");
-
-            if (valuesList) {
-                conditions.push(`value->>'${key}' IN (${valuesList})`);
-            }
-        }
-    }
-
-    if (conditions.length > 0) {
-        const conditionString = conditions.join(" AND ");
-
-        query = `
-            SELECT jsonb_agg(value)
-            FROM "${tableName}", 
-            LATERAL jsonb_each(data) AS each_obj(key, value)
-            WHERE ${conditionString};
-        `;
-    }
-
-}
-  console.log(query); 
 
   const res = await fetch("/api/dbApi", {
     method: "POST",
@@ -311,7 +253,66 @@ export async function fetchData(tableName: string,provider: string | null,column
   return res.json();
 }
 
+/*------example------------------------------------------------------------------------------------------------------------------------------------------------
+api.fetchData(name,'google-cloud-platform',null,'fe2fd391-22eb-4c0a-af25-d37825794c83',gcp-project-98341);
+api.fetchData(name,null,null,null,{'projectId' : ['gcp-project-98341', 'gcp-project-111111'], 'configId' : ["fe2fd391-22eb-4c0a-af25-d37825794c83"]});
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+export async function fetchData(
+  tableName: string,
+  provider: string | null,
+  column: string | null,
+  mainKey: string | null,
+  keyValue: Record<string, any> | null
+) {
+  let query = "";
 
+  if (!provider && !column && !mainKey && !keyValue) {
+    query = `SELECT jsonb_agg(t) FROM (SELECT * FROM "${tableName}") t;`;
+  } else if (column !== "data" && !mainKey && !keyValue) {
+    query = `SELECT jsonb_pretty(jsonb_agg(t))
+             FROM (SELECT * FROM "${tableName}" WHERE "${column}" = '${provider}') t;`;
+  } else if (mainKey) {
+    query = `SELECT jsonb_agg(data->'${mainKey}') 
+             FROM "${tableName}" 
+             WHERE data ? '${mainKey}';`;
+  } else if (keyValue) {
+    let conditions: string[] = [];
 
+    for (let key in keyValue) {
+      if (Array.isArray(keyValue[key])) {
+        const valuesList = keyValue[key]
+          .filter((value: any) => value !== null && value !== undefined)
+          .map((value: any) => `'${value}'`)
+          .join(", ");
 
+        if (valuesList) {
+          conditions.push(`value->>'${key}' IN (${valuesList})`);
+        }
+      }
+    }
 
+    if (conditions.length > 0) {
+      const conditionString = conditions.join(" AND ");
+
+      query = `
+            SELECT jsonb_agg(value)
+            FROM "${tableName}", 
+            LATERAL jsonb_each(data) AS each_obj(key, value)
+            WHERE ${conditionString};
+        `;
+    }
+  }
+  console.log(query);
+
+  // Check if running in the server-side (node.js) or client-side (browser)
+  const baseUrl = typeof window === "undefined" ? "http://localhost:3000" : "";
+
+  // Use full URL
+  const res = await fetch(`${baseUrl}/api/dbApi`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ query }),
+  });
+
+  return res.json();
+}
