@@ -76,7 +76,7 @@ export default function SearchBar({
         <button
           onClick={handleSearch}
           // disabled={isLoading || !query}
-          className={`flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg ${
+          className={`flex items-center gap-2 px-4 py-2 btn-primary text-white rounded-lg ${
             isLoading ? "cursor-not-allowed" : ""
           }`}
         >
