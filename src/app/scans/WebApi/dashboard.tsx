@@ -176,7 +176,7 @@ export default function Dashboard({ _data }) {
             </p>
           </Card>
         </div>
-        <div className="w-full mt-8">
+        {/* <div className="w-full mt-8">
           <h1 className="text-md font-semibold text-gray-900 dark:text-gray-50">
             Alerts
           </h1>
@@ -184,7 +184,6 @@ export default function Dashboard({ _data }) {
             <Table>
               <TableHead>
                 <TableRow>
-                  {/* <TableHeaderCell>Id</TableHeaderCell> */}
                   <TableHeaderCell>Name</TableHeaderCell>
                   <TableHeaderCell>Risk Level</TableHeaderCell>
                   <TableHeaderCell>Instances</TableHeaderCell>
@@ -193,7 +192,6 @@ export default function Dashboard({ _data }) {
               <TableBody>
                 {_data.site[0].alerts.map((item) => (
                   <TableRow key={item.pluginid}>
-                    {/* <TableCell>{item.pluginid}</TableCell> */}
                     <TableCell>{item.alert}</TableCell>
                     <TableCell>
                       <Badge
@@ -217,7 +215,7 @@ export default function Dashboard({ _data }) {
               </TableBody>
             </Table>
           </TableRoot>
-        </div>
+        </div> */}
 
         <div className="w-full mt-8">
           <h1 className="text-md font-semibold text-gray-900 dark:text-gray-50">
