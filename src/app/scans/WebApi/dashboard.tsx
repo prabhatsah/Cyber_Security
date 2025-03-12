@@ -44,6 +44,16 @@ function extractTextFromPTags(htmlString) {
   return matches ? matches.map((p) => p.replace(/<\/?p>/g, "")) : [];
 }
 
+const getBadgeVariant = (value) => {
+  return value === "Critical" || value === "High"
+    ? "error"
+    : value === "Medium"
+    ? "warning"
+    : value === "Low"
+    ? "success"
+    : "default";
+};
+
 export default function Dashboard({ _data }) {
   const _severity = [
     {
@@ -246,78 +256,89 @@ export default function Dashboard({ _data }) {
                     >
                       {ristCodeVsDesc[dataItem.riskcode]}
                     </Badge>
+                    <Badge variant="neutral">{dataItem.count}</Badge>
                   </span>
                 </AccordionTrigger>
-                <AccordionContent className="pl-6">
-                  <p className="dark:text-gray-400">
-                    {removePTags(dataItem.desc)}
-                  </p>
-
-                  {dataItem.instances.map((instance) => (
-                    <AccordionItem value={instance.id} key={instance.id}>
-                      <AccordionTrigger>
-                        <span className="flex items-center gap-2 h-8">
-                          <RiLink className="size-4 text-blue-500" />
-                          {instance.uri}
-                        </span>
-                      </AccordionTrigger>
-                      <AccordionContent className="pl-6">
-                        <p className="dark:text-gray-400">
-                          <span className="text-sm text-gray-900 font-semibold inline-block w-24 dark:text-gray-50">
-                            Method:
-                          </span>{" "}
-                          {instance.method}
-                        </p>
-                        <p className="mt-1 dark:text-gray-400">
-                          <span className="text-sm text-gray-900 font-semibold inline-block w-24 dark:text-gray-50">
-                            Parameter:
-                          </span>{" "}
-                          {instance.param}
-                        </p>
-                        <p className="mt-1 dark:text-gray-400">
-                          <span className="text-sm text-gray-900 font-semibold inline-block w-24 dark:text-gray-50">
-                            Attack:
-                          </span>{" "}
-                          {instance.attack}
-                        </p>
-                        <p className="mt-1 dark:text-gray-400">
-                          <span className="text-sm text-gray-900 font-semibold inline-block w-24 dark:text-gray-50">
-                            Evidence:
-                          </span>{" "}
-                          {instance.evidence}
-                        </p>
-                      </AccordionContent>
-                    </AccordionItem>
-                  ))}
-                  <p className="mt-2 dark:text-gray-400">
-                    <span className="text-sm text-gray-900 font-semibold inline-block w-24 dark:text-gray-50">
+                <AccordionContent className="px-6">
+                  {/* <p className="mt-2 flex dark:text-gray-400">
+                    <span className="text-sm text-gray-900 font-semibold w-24 dark:text-gray-50">
+                      Risk:
+                    </span>
+                    <Badge
+                      variant={
+                        ristCodeVsDesc[dataItem.riskcode] === "Critical" ||
+                        ristCodeVsDesc[dataItem.riskcode] === "High"
+                          ? "error"
+                          : ristCodeVsDesc[dataItem.riskcode] === "Medium"
+                          ? "warning"
+                          : ristCodeVsDesc[dataItem.riskcode] === "Low"
+                          ? "success"
+                          : "default"
+                      }
+                    >
+                      {ristCodeVsDesc[dataItem.riskcode]}
+                    </Badge>
+                  </p> */}
+                  {/* <p className="mt-2 flex dark:text-gray-400">
+                    <span className="text-sm text-gray-900 font-semibold w-24 dark:text-gray-50">
                       Confidence:
-                    </span>{" "}
-                    {ristCodeVsDesc[dataItem.confidence]}
-                  </p>
-                  <p className="mt-2 dark:text-gray-400">
-                    <span className="text-sm text-gray-900 font-semibold inline-block w-24 dark:text-gray-50">
+                    </span>
+                    <Badge
+                      variant={
+                        ristCodeVsDesc[dataItem.confidence] === "Critical" ||
+                        ristCodeVsDesc[dataItem.confidence] === "High"
+                          ? "error"
+                          : ristCodeVsDesc[dataItem.confidence] === "Medium"
+                          ? "warning"
+                          : ristCodeVsDesc[dataItem.confidence] === "Low"
+                          ? "success"
+                          : "default"
+                      }
+                    >
+                      {ristCodeVsDesc[dataItem.confidence]}
+                    </Badge>
+                  </p> */}
+                  {/* <p className="mt-2 flex dark:text-gray-400">
+                    <span className="text-sm text-gray-900 font-semibold w-24 dark:text-gray-50">
                       Instances:
-                    </span>{" "}
-                    {dataItem.count}
-                  </p>
-                  <p className="mt-2  dark:text-gray-400">
-                    <span className="text-sm text-gray-900 font-semibold inline-block w-24 dark:text-gray-50">
+                    </span>
+                    <span>{dataItem.count}</span>
+                  </p> */}
+                  {/* <p className="mt-2 flex dark:text-gray-400">
+                    <span className="text-sm text-gray-900 font-semibold w-24 dark:text-gray-50">
+                      CWE Id:
+                    </span>
+                    <span>{dataItem["cweid"]}</span>
+                  </p> */}
+                  {/* <p className="mt-2 flex dark:text-gray-400">
+                    <span className="text-sm text-gray-900 font-semibold w-24 dark:text-gray-50">
+                      WASC Id:
+                    </span>
+                    <span>{dataItem["wascid"]}</span>
+                  </p> */}
+                  {/* <p className="mt-2 flex dark:text-gray-400">
+                    <span className="text-sm text-gray-900 font-semibold w-24 dark:text-gray-50">
+                      Plugin Id:
+                    </span>
+                    <span>{dataItem["pluginid"]}</span>
+                  </p> */}
+                  {/* <p className="mt-2 flex dark:text-gray-400">
+                    <span className="text-sm text-gray-900 font-semibold w-32 dark:text-gray-50">
+                      Description:
+                    </span>
+                    <span>{removePTags(dataItem.desc)}</span>
+                  </p> */}
+                  {/* <p className="mt-2 flex dark:text-gray-400">
+                    <span className="text-sm text-gray-900 font-semibold w-24 dark:text-gray-50">
                       Solution:
-                    </span>{" "}
-                    {removePTags(dataItem.solution)}
-                  </p>
-                  <p className="mt-2  dark:text-gray-400">
-                    <span className="text-sm text-gray-900 font-semibold inline-block w-24 dark:text-gray-50">
-                      Other Info:
-                    </span>{" "}
-                    {removePTags(dataItem.otherinfo)}
-                  </p>
-                  <p className="flex mt-2  dark:text-gray-400">
+                    </span>
+                    <span>{removePTags(dataItem.solution)}</span>
+                  </p> */}
+                  {/* <p className="flex mt-2  dark:text-gray-400">
                     <p className="text-sm text-gray-900 font-semibold w-24 dark:text-gray-50">
                       Reference:
                     </p>
-                    <ul className="ml-1">
+                    <ul className="">
                       {extractTextFromPTags(dataItem.reference).map(
                         (reference, index) => (
                           <li key={index} className="mb-1">
@@ -326,25 +347,150 @@ export default function Dashboard({ _data }) {
                         )
                       )}
                     </ul>
-                  </p>
-                  <p className="mt-2 dark:text-gray-400">
-                    <span className="text-sm text-gray-900 font-semibold inline-block w-24 dark:text-gray-50">
-                      CWE Id:
-                    </span>{" "}
-                    {dataItem["cweid"]}
-                  </p>
-                  <p className="mt-2 dark:text-gray-400">
-                    <span className="text-sm text-gray-900 font-semibold inline-block w-24 dark:text-gray-50">
-                      WASC Id:
-                    </span>{" "}
-                    {dataItem["wascid"]}
-                  </p>
-                  <p className="mt-2 dark:text-gray-400">
-                    <span className="text-sm text-gray-900 font-semibold inline-block w-24 dark:text-gray-50">
-                      Plugin Id:
-                    </span>{" "}
-                    {dataItem["pluginid"]}
-                  </p>
+                  </p> */}
+                  {/* {dataItem.instances.map((instance) => (
+                    <AccordionItem value={instance.id} key={instance.id}>
+                      <AccordionTrigger>
+                        <span className="flex items-center gap-2 h-8">
+                          <RiLink className="size-4 text-blue-500" />
+                          {instance.uri}
+                        </span>
+                      </AccordionTrigger>
+                      <AccordionContent className="px-6">
+                        <p className="flex dark:text-gray-400">
+                          <span className="text-sm text-gray-900 font-semibold w-24 dark:text-gray-50">
+                            Method:
+                          </span>
+                          <span>{instance.method}</span>
+                        </p>
+                        <p className="flex mt-1 dark:text-gray-400">
+                          <span className="text-sm text-gray-900 font-semibold w-24 dark:text-gray-50">
+                            Parameter:
+                          </span>
+                          <span>{instance.param}</span>
+                        </p>
+                        <p className="flex mt-1 dark:text-gray-400">
+                          <span className="text-sm text-gray-900 font-semibold w-24 dark:text-gray-50">
+                            Attack:
+                          </span>
+                          <span>{instance.attack}</span>
+                        </p>
+                        <p className="flex mt-1 dark:text-gray-400">
+                          <span className="text-sm text-gray-900 font-semibold w-24 dark:text-gray-50">
+                            Evidence:
+                          </span>
+                          <span>{instance.evidence}</span>
+                        </p>
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))} */}
+
+                  <div className="mt-2 dark:text-gray-400">
+                    {/* Risk & Confidence */}
+                    {[
+                      {
+                        label: "Risk:",
+                        value: ristCodeVsDesc[dataItem.riskcode],
+                      },
+                      {
+                        label: "Confidence:",
+                        value: ristCodeVsDesc[dataItem.confidence],
+                      },
+                    ].map((item, index) => (
+                      <p
+                        key={index}
+                        className="flex gap-2 mb-2
+                      "
+                      >
+                        <span className="text-sm text-gray-900 font-semibold w-32 flex-shrink-0 dark:text-gray-50">
+                          {item.label}
+                        </span>
+                        <Badge variant={getBadgeVariant(item.value)}>
+                          {item.value}
+                        </Badge>
+                      </p>
+                    ))}
+
+                    {/* Other Info */}
+                    {[
+                      { label: "Instances:", value: dataItem.count },
+                      { label: "CWE Id:", value: dataItem.cweid },
+                      { label: "WASC Id:", value: dataItem.wascid },
+                      { label: "Plugin Id:", value: dataItem.pluginid },
+                    ].map((item, index) => (
+                      <p key={index} className="flex gap-2 mb-2">
+                        <span className="text-sm text-gray-900 font-semibold w-32 flex-shrink-0 dark:text-gray-50">
+                          {item.label}
+                        </span>
+                        <span>{item.value}</span>
+                      </p>
+                    ))}
+
+                    {/* Description & Solution */}
+                    {[
+                      {
+                        label: "Description:",
+                        value: removePTags(dataItem.desc),
+                      },
+                      {
+                        label: "Solution:",
+                        value: removePTags(dataItem.solution),
+                      },
+                    ].map((item, index) => (
+                      <p key={index} className="flex gap-2 mb-2">
+                        <span className="text-sm text-gray-900 font-semibold w-32 flex-shrink-0 dark:text-gray-50">
+                          {item.label}
+                        </span>
+                        <div className="flex-grow">{item.value}</div>
+                      </p>
+                    ))}
+
+                    {/* Reference List */}
+                    <div className="flex gap-2 mt-2">
+                      <span className="text-sm text-gray-900 font-semibold w-32 flex-shrink-0 dark:text-gray-50">
+                        Reference:
+                      </span>
+                      <ul className="flex-grow list-disc pl-5">
+                        {extractTextFromPTags(dataItem.reference).map(
+                          (reference, index) => (
+                            <li key={index} className="mb-1">
+                              {reference}
+                            </li>
+                          )
+                        )}
+                      </ul>
+                    </div>
+
+                    {/* Instances (Accordion) */}
+                    {dataItem.instances.map((instance) => (
+                      <AccordionItem value={instance.id} key={instance.id}>
+                        <AccordionTrigger>
+                          <span className="flex items-center gap-2 h-8">
+                            <RiLink className="size-4 text-blue-500" />
+                            {instance.uri}
+                          </span>
+                        </AccordionTrigger>
+                        <AccordionContent className="px-6">
+                          {[
+                            { label: "Method:", value: instance.method },
+                            { label: "Parameter:", value: instance.param },
+                            { label: "Attack:", value: instance.attack },
+                            { label: "Evidence:", value: instance.evidence },
+                          ].map((item, index) => (
+                            <p
+                              key={index}
+                              className="flex mt-1 dark:text-gray-400"
+                            >
+                              <span className="text-sm text-gray-900 font-semibold w-32 flex-shrink-0 dark:text-gray-50">
+                                {item.label}
+                              </span>
+                              <span>{item.value}</span>
+                            </p>
+                          ))}
+                        </AccordionContent>
+                      </AccordionItem>
+                    ))}
+                  </div>
                 </AccordionContent>
               </AccordionItem>
             ))}
