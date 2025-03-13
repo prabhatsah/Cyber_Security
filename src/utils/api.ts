@@ -37,6 +37,13 @@ const columnArr: Record<string, string>[] = [
     ]; 
  --------------------------------------------------------------------------*/
 //create table
+
+import { tableData } from "@/app/scans/WebApi/data";
+
+
+const baseUrl = typeof window === "undefined" ? "http://localhost:3000" : "";
+
+
 export async function createTable(
   tableName: string,
   columns: Record<string, string>[]
@@ -53,7 +60,7 @@ export async function createTable(
   const query = `CREATE TABLE IF NOT EXISTS  ${tableName} (${columnDefinitions});`;
   console.log("query - " + query);
 
-  const res = await fetch("/api/dbApi", {
+  const res = await fetch(`${baseUrl}/api/dbApi`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ query }),
@@ -71,11 +78,11 @@ export async function descTable(tableName: string) {
                             WHERE table_name = '${tableName}'
                             ) AS columns_info;
                             `;
-  const res = await fetch("/api/dbApi", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ query }),
-  });
+                            const res = await fetch(`${baseUrl}/api/dbApi`, {
+                              method: "POST",
+                              headers: { "Content-Type": "application/json" },
+                              body: JSON.stringify({ query }),
+                            });
 
   return res.json();
 }
@@ -88,11 +95,11 @@ export async function showTables() {
                     FROM information_schema.tables 
                     WHERE table_schema = 'public'
                     ) AS tables_info;`;
-  const res = await fetch("/api/dbApi", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ query }),
-  });
+                    const res = await fetch(`${baseUrl}/api/dbApi`, {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ query }),
+                    });
 
   return res.json();
 }
@@ -153,7 +160,7 @@ export async function addColumn(
   const query = `INSERT INTO ${tableName} (${columnDefinitions}) VALUES ${valuesString};`;
   console.log(query);
 
-  const res = await fetch("/api/dbApi", {
+  const res = await fetch(`${baseUrl}/api/dbApi`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ query }),
@@ -165,7 +172,7 @@ export async function addColumn(
 //delete table
 export async function deleteTable(tableName: string) {
   const query = `DROP TABLE IF EXISTS ${tableName};`;
-  const res = await fetch("/api/dbApi", {
+  const res = await fetch(`${baseUrl}/api/dbApi`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ query }),
@@ -181,7 +188,7 @@ export async function getTableValues(tableName: string) {
 
   const custonQuery = `SELECT json_agg(json_build_object('id', id,'name', name,'email', email)) FROM ${tableName} WHERE name = 'Alice';`;
 
-  const res = await fetch("/api/dbApi", {
+  const res = await fetch(`${baseUrl}/api/dbApi`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ query }),
@@ -193,7 +200,7 @@ export async function getTableValues(tableName: string) {
 export async function createIndex(tableName: string, columnName: string) {
   const query = `CREATE UNIQUE INDEX idx_${tableName}_${columnName}_unique ON ${tableName}(${columnName});`;
 
-  const res = await fetch("/api/dbApi", {
+  const res = await fetch(`${baseUrl}/api/dbApi`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ query }),
@@ -223,7 +230,7 @@ export async function updateColumn(
 
   console.log(query);
 
-  const res = await fetch("/api/dbApi", {
+  const res = await fetch(`${baseUrl}/api/dbApi`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ query }),
@@ -244,7 +251,7 @@ export async function deleteObjectWithKey(
 
   console.log(query);
 
-  const res = await fetch("/api/dbApi", {
+  const res = await fetch(`${baseUrl}/api/dbApi`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ query }),
@@ -303,11 +310,28 @@ export async function fetchData(
     }
   }
   console.log(query);
+  const res = await fetch(`${baseUrl}/api/dbApi`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ query }),
+  });
 
-  // Check if running in the server-side (node.js) or client-side (browser)
-  const baseUrl = typeof window === "undefined" ? "http://localhost:3000" : "";
+  return res.json();
+}
 
-  // Use full URL
+export async function deleteConfigWithKey(tableName : string , key : string , value : string){
+  let query : string ="";
+  if(key && value){
+    query = `UPDATE ${tableName}
+              SET data = data - key
+              FROM (
+                  SELECT key
+                  FROM ${tableName}, jsonb_each(data)                    //data ---> columnName fixed
+                  WHERE value->>'${key}' = '${value}'
+              ) subquery`
+  }
+
+  console.log(query)
   const res = await fetch(`${baseUrl}/api/dbApi`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
