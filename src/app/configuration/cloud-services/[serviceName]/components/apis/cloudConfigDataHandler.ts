@@ -2,6 +2,7 @@ import { GoogleCloudConfig } from "@/app/configuration/components/type";
 import * as api from "@/utils/api";
 
 const name = "cloud_config";
+
 export function createTable() {
   const columnArr: Record<string, string>[] = [
     {
