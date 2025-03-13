@@ -9,6 +9,7 @@ export default function Home() {
   useEffect(() => {
     setItems([{ label: "Dashboard", href: "/dashboard" }]);
   }, []);
+
   redirect("/dashboard");
 
   // return (
