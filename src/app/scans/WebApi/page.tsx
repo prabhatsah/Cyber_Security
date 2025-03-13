@@ -96,7 +96,9 @@ export default function WebApi() {
 
   return (
     <div className="">
-      <p className="font-bold text-gray-600">Web & Api Security</p>
+      <p className="font-bold text-gray-600 dark:text-gray-400">
+        Web & Api Security
+      </p>
       <SearchBar query={query} setQuery={setQuery} fetchData={fetchData} />
       {error && <p className="text-red-600 text-center">{error}</p>}
 
