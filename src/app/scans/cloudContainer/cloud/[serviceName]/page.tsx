@@ -150,7 +150,7 @@ export default function CloudServiceDetails({
       },
     ]);
   }, []);
-  debugger;
+
   const serviceNameInUrl = params.serviceName;
   const serviceNameArray = serviceNameInUrl.split("-");
   let serviceName = "";

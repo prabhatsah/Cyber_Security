@@ -3776,7 +3776,7 @@ const data = {
   },
 };
 
-export default function Dashboard({ data }) {
+export default function Dashboard() {
   const services = data.services;
 
   //Columns for the "Resource Counts" DataTable.

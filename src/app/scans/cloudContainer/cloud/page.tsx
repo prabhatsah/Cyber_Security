@@ -65,7 +65,6 @@ const data = [
 ];
 
 export default function CloudServicesConfig() {
-  debugger;
   const { setItems } = useBreadcrumb();
   useEffect(() => {
     setItems([
