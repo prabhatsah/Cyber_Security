@@ -7,20 +7,22 @@ interface SearchBarProps {
   query: string;
   setQuery: (query: string) => void;
   fetchData: (searchType: string) => Promise<void>;
+  isLoading: boolean;
 }
 
 export default function SearchBar({
   query,
   setQuery,
   fetchData,
+  isLoading,
 }: SearchBarProps) {
   const [searchType, setSearchType] = useState<string>("domain"); // Default search type
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  // const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleSearch = async () => {
-    setIsLoading(true);
+    // setIsLoading(true);
     await fetchData(searchType);
-    setIsLoading(false);
+    // setIsLoading(false);
   };
 
   const handleClear = () => {
