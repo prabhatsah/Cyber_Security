@@ -1,5 +1,16 @@
-import { useState } from 'react';
-import { Network, Server, Database, Code, Calendar, Play, Bot, Clock, AlertTriangle } from 'lucide-react';
+import { useState } from "react";
+import {
+  Network,
+  Server,
+  Database,
+  Code,
+  Calendar,
+  Play,
+  Bot,
+  Clock,
+  AlertTriangle,
+} from "lucide-react";
+import { Card } from "@tremor/react";
 
 interface AIAgent {
   id: string;
@@ -13,83 +24,88 @@ interface AIAgent {
 interface ScanSchedule {
   id: string;
   agentId: string;
-  frequency: 'once' | 'daily' | 'weekly' | 'monthly';
+  frequency: "once" | "daily" | "weekly" | "monthly";
   nextRun: Date;
   lastRun?: Date;
-  status: 'pending' | 'running' | 'completed' | 'failed';
+  status: "pending" | "running" | "completed" | "failed";
 }
 
 const agents: AIAgent[] = [
   {
-    id: 'net-eng',
-    name: 'NetGuard',
-    role: 'Network Security Engineer',
+    id: "net-eng",
+    name: "NetGuard",
+    role: "Network Security Engineer",
     icon: Network,
     expertise: [
-      'Network vulnerability assessment',
-      'Firewall configuration',
-      'IDS/IPS management',
-      'Network segmentation',
-      'Traffic analysis'
+      "Network vulnerability assessment",
+      "Firewall configuration",
+      "IDS/IPS management",
+      "Network segmentation",
+      "Traffic analysis",
     ],
-    description: 'Specializes in network security, focusing on infrastructure vulnerabilities and network-based threats.'
+    description:
+      "Specializes in network security, focusing on infrastructure vulnerabilities and network-based threats.",
   },
   {
-    id: 'win-admin',
-    name: 'WinSecure',
-    role: 'Windows System Administrator',
+    id: "win-admin",
+    name: "WinSecure",
+    role: "Windows System Administrator",
     icon: Server,
     expertise: [
-      'Windows Server security',
-      'Active Directory',
-      'Group Policy',
-      'Windows updates',
-      'Endpoint protection'
+      "Windows Server security",
+      "Active Directory",
+      "Group Policy",
+      "Windows updates",
+      "Endpoint protection",
     ],
-    description: 'Expert in Windows system security, focusing on server hardening and endpoint protection.'
+    description:
+      "Expert in Windows system security, focusing on server hardening and endpoint protection.",
   },
   {
-    id: 'linux-admin',
-    name: 'LinuxGuard',
-    role: 'Linux System Administrator',
+    id: "linux-admin",
+    name: "LinuxGuard",
+    role: "Linux System Administrator",
     icon: Server,
     expertise: [
-      'Linux system hardening',
-      'SELinux/AppArmor',
-      'Service security',
-      'Access controls',
-      'System auditing'
+      "Linux system hardening",
+      "SELinux/AppArmor",
+      "Service security",
+      "Access controls",
+      "System auditing",
     ],
-    description: 'Specializes in Linux system security, focusing on system hardening and security controls.'
+    description:
+      "Specializes in Linux system security, focusing on system hardening and security controls.",
   },
   {
-    id: 'db-admin',
-    name: 'DataGuard',
-    role: 'Database Administrator',
+    id: "db-admin",
+    name: "DataGuard",
+    role: "Database Administrator",
     icon: Database,
     expertise: [
-      'Database security',
-      'Access control',
-      'Data encryption',
-      'Audit logging',
-      'Backup security'
+      "Database security",
+      "Access control",
+      "Data encryption",
+      "Audit logging",
+      "Backup security",
     ],
-    description: 'Expert in database security, focusing on data protection and secure database configuration.'
+    description:
+      "Expert in database security, focusing on data protection and secure database configuration.",
   },
   {
-    id: 'app-eng',
-    name: 'AppSecure',
-    role: 'Application Security Engineer',
+    id: "app-eng",
+    name: "AppSecure",
+    role: "Application Security Engineer",
     icon: Code,
     expertise: [
-      'Application vulnerabilities',
-      'Code security review',
-      'API security',
-      'Web security',
-      'Security testing'
+      "Application vulnerabilities",
+      "Code security review",
+      "API security",
+      "Web security",
+      "Security testing",
     ],
-    description: 'Specializes in application security, focusing on code-level vulnerabilities and secure development.'
-  }
+    description:
+      "Specializes in application security, focusing on code-level vulnerabilities and secure development.",
+  },
 ];
 
 export default function SpecializedAIAgents() {
@@ -97,8 +113,8 @@ export default function SpecializedAIAgents() {
   const [schedules, setSchedules] = useState<ScanSchedule[]>([]);
   const [showScheduleForm, setShowScheduleForm] = useState(false);
   const [newSchedule, setNewSchedule] = useState({
-    frequency: 'once' as const,
-    nextRun: new Date()
+    frequency: "once" as const,
+    nextRun: new Date(),
   });
 
   const handleScheduleScan = (agentId: string) => {
@@ -107,38 +123,43 @@ export default function SpecializedAIAgents() {
       agentId,
       frequency: newSchedule.frequency,
       nextRun: newSchedule.nextRun,
-      status: 'pending'
+      status: "pending",
     };
 
-    setSchedules(prev => [...prev, schedule]);
+    setSchedules((prev) => [...prev, schedule]);
     setShowScheduleForm(false);
-    setNewSchedule({ frequency: 'once', nextRun: new Date() });
+    setNewSchedule({ frequency: "once", nextRun: new Date() });
   };
 
   const handleStartScan = (agentId: string) => {
     const schedule: ScanSchedule = {
       id: crypto.randomUUID(),
       agentId,
-      frequency: 'once',
+      frequency: "once",
       nextRun: new Date(),
-      status: 'running'
+      status: "running",
     };
 
-    setSchedules(prev => [...prev, schedule]);
+    setSchedules((prev) => [...prev, schedule]);
   };
 
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {agents.map(agent => (
-          <div key={agent.id} className="bg-white rounded-lg shadow-sm border p-6">
+        {agents.map((agent) => (
+          <Card
+            key={agent.id}
+            className="relative flex flex-col rounded-lg justify-between dark:bg-dark-bgPrimary
+    hover:bg-tremor-background-muted 
+    hover:dark:bg-dark-tremor-background-muted"
+          >
             <div className="flex items-start justify-between">
               <div className="flex items-center space-x-3">
                 <div className="p-2 bg-primary/10 rounded-lg">
                   <agent.icon className="h-6 w-6 text-primary" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-medium text-gray-900">{agent.name}</h3>
+                  <h3 className="text-lg font-medium ">{agent.name}</h3>
                   <p className="text-sm text-gray-500">{agent.role}</p>
                 </div>
               </div>
@@ -151,10 +172,14 @@ export default function SpecializedAIAgents() {
             </div>
 
             <div className="mt-4">
-              <h4 className="text-sm font-medium text-gray-900">Expertise:</h4>
+              <h4 className="text-sm font-medium ">Expertise:</h4>
               <ul className="mt-2 space-y-1">
                 {agent.expertise.map((skill, index) => (
-                  <li key={index} className="text-sm text-gray-600 flex items-center">
+                  <li
+                    key={index}
+                    className="text-sm  flex items-center
+                    text-tremor-content dark:text-dark-tremor-content"
+                  >
                     <span className="w-1.5 h-1.5 rounded-full bg-primary/60 mr-2" />
                     {skill}
                   </li>
@@ -181,34 +206,49 @@ export default function SpecializedAIAgents() {
                 Schedule
               </button>
             </div>
-          </div>
+          </Card>
         ))}
       </div>
 
       {/* Active Scans */}
       {schedules.length > 0 && (
         <div className="mt-8">
-          <h2 className="text-lg font-medium text-gray-900 mb-4">Active & Scheduled Scans</h2>
+          <h2 className="text-lg font-medium text-gray-900 mb-4">
+            Active & Scheduled Scans
+          </h2>
           <div className="bg-white shadow-sm rounded-lg divide-y">
-            {schedules.map(schedule => {
-              const agent = agents.find(a => a.id === schedule.agentId);
+            {schedules.map((schedule) => {
+              const agent = agents.find((a) => a.id === schedule.agentId);
               if (!agent) return null;
 
               return (
-                <div key={schedule.id} className="p-4 flex items-center justify-between">
+                <div
+                  key={schedule.id}
+                  className="p-4 flex items-center justify-between"
+                >
                   <div className="flex items-center space-x-3">
-                    <div className={`p-2 rounded-lg ${
-                      schedule.status === 'running' ? 'bg-blue-50' :
-                      schedule.status === 'completed' ? 'bg-green-50' :
-                      schedule.status === 'failed' ? 'bg-red-50' :
-                      'bg-gray-50'
-                    }`}>
-                      <agent.icon className={`h-5 w-5 ${
-                        schedule.status === 'running' ? 'text-blue-600' :
-                        schedule.status === 'completed' ? 'text-green-600' :
-                        schedule.status === 'failed' ? 'text-red-600' :
-                        'text-gray-600'
-                      }`} />
+                    <div
+                      className={`p-2 rounded-lg ${
+                        schedule.status === "running"
+                          ? "bg-blue-50"
+                          : schedule.status === "completed"
+                          ? "bg-green-50"
+                          : schedule.status === "failed"
+                          ? "bg-red-50"
+                          : "bg-gray-50"
+                      }`}
+                    >
+                      <agent.icon
+                        className={`h-5 w-5 ${
+                          schedule.status === "running"
+                            ? "text-blue-600"
+                            : schedule.status === "completed"
+                            ? "text-green-600"
+                            : schedule.status === "failed"
+                            ? "text-red-600"
+                            : "text-gray-600"
+                        }`}
+                      />
                     </div>
                     <div>
                       <h3 className="text-sm font-medium text-gray-900">
@@ -216,16 +256,23 @@ export default function SpecializedAIAgents() {
                       </h3>
                       <div className="flex items-center space-x-2 text-xs text-gray-500">
                         <Clock className="h-4 w-4" />
-                        <span>Next run: {schedule.nextRun.toLocaleString()}</span>
+                        <span>
+                          Next run: {schedule.nextRun.toLocaleString()}
+                        </span>
                       </div>
                     </div>
                   </div>
-                  <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-                    schedule.status === 'running' ? 'bg-blue-100 text-blue-800' :
-                    schedule.status === 'completed' ? 'bg-green-100 text-green-800' :
-                    schedule.status === 'failed' ? 'bg-red-100 text-red-800' :
-                    'bg-gray-100 text-gray-800'
-                  }`}>
+                  <span
+                    className={`px-2 py-1 text-xs font-medium rounded-full ${
+                      schedule.status === "running"
+                        ? "bg-blue-100 text-blue-800"
+                        : schedule.status === "completed"
+                        ? "bg-green-100 text-green-800"
+                        : schedule.status === "failed"
+                        ? "bg-red-100 text-red-800"
+                        : "bg-gray-100 text-gray-800"
+                    }`}
+                  >
                     {schedule.status}
                   </span>
                 </div>
@@ -249,10 +296,12 @@ export default function SpecializedAIAgents() {
                 </label>
                 <select
                   value={newSchedule.frequency}
-                  onChange={(e) => setNewSchedule(prev => ({
-                    ...prev,
-                    frequency: e.target.value as ScanSchedule['frequency']
-                  }))}
+                  onChange={(e) =>
+                    setNewSchedule((prev) => ({
+                      ...prev,
+                      frequency: e.target.value as ScanSchedule["frequency"],
+                    }))
+                  }
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
                 >
                   <option value="once">Once</option>
@@ -268,10 +317,12 @@ export default function SpecializedAIAgents() {
                 <input
                   type="datetime-local"
                   value={newSchedule.nextRun.toISOString().slice(0, 16)}
-                  onChange={(e) => setNewSchedule(prev => ({
-                    ...prev,
-                    nextRun: new Date(e.target.value)
-                  }))}
+                  onChange={(e) =>
+                    setNewSchedule((prev) => ({
+                      ...prev,
+                      nextRun: new Date(e.target.value),
+                    }))
+                  }
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
                 />
               </div>
@@ -304,7 +355,9 @@ export default function SpecializedAIAgents() {
                   <selectedAgent.icon className="h-6 w-6 text-primary" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-medium text-gray-900">{selectedAgent.name}</h3>
+                  <h3 className="text-lg font-medium text-gray-900">
+                    {selectedAgent.name}
+                  </h3>
                   <p className="text-sm text-gray-500">{selectedAgent.role}</p>
                 </div>
               </div>
