@@ -290,41 +290,121 @@
 //   }
 // }
 
+// import { NextResponse } from "next/server";
+
+// const zapApiUrl = "http://localhost:8080";
+
+// // Function to check if Spider has finished
+// async function waitForSpider(spiderId) {
+//   while (true) {
+//     const response = await fetch(
+//       `${zapApiUrl}/JSON/spider/view/status/?scanId=${spiderId}`
+//     );
+//     const data = await response.json();
+//     console.log("-------------------data");
+//     console.log(data);
+
+//     if (data.status === "100") {
+//       console.log("Spider scan completed.");
+//       break;
+//     }
+
+//     console.log("Waiting for Spider scan to complete...");
+//     await new Promise((resolve) => setTimeout(resolve, 10000)); // Wait 5 sec
+//   }
+// }
+
+// // Function to fetch ZAP scan report
+// async function getZapReport() {
+//   const response = await fetch(`${zapApiUrl}/OTHER/core/other/jsonreport/`);
+//   const report = await response.json();
+//   console.log("Fetched ZAP report.");
+//   return report;
+// }
+
+// export async function POST(req) {
+//   try {
+//     const { url } = await req.json();
+//     if (!url) {
+//       return NextResponse.json(
+//         { message: "Missing target URL" },
+//         { status: 400 }
+//       );
+//     }
+
+//     // Step 1: Start Spider Scan
+//     const spiderResponse = await fetch(
+//       `${zapApiUrl}/JSON/spider/action/scan/?url=${encodeURIComponent(
+//         url
+//       )}&maxChildren=10`
+//     );
+//     const spiderData = await spiderResponse.json();
+
+//     if (!spiderData.scan) {
+//       throw new Error("Failed to start spider scan");
+//     }
+
+//     console.log(`Spider scan started with ID: ${spiderData.scan}`);
+
+//     // Step 2: Wait for Spider Scan to Complete
+//     await waitForSpider(spiderData.scan);
+
+//     // Step 3: Start Active Scan
+//     const ascanResponse = await fetch(
+//       `${zapApiUrl}/JSON/ascan/action/scan/?url=${encodeURIComponent(
+//         url
+//       )}&recurse=false`
+//     );
+//     const ascanData = await ascanResponse.json();
+
+//     if (!ascanData.scan) {
+//       throw new Error("Failed to start active scan");
+//     }
+
+//     console.log(`Active scan started with ID: ${ascanData.scan}`);
+
+//     // Step 4: Wait for Active Scan to Complete
+//     while (true) {
+//       const statusResponse = await fetch(
+//         `${zapApiUrl}/JSON/ascan/view/status/?scanId=${ascanData.scan}`
+//       );
+//       const statusData = await statusResponse.json();
+
+//       console.log("-------------------statusData");
+//       console.log(statusData);
+
+//       if (statusData.status === "100") {
+//         console.log("Active scan completed.");
+//         break;
+//       }
+
+//       console.log("Waiting for Active scan to complete...");
+//       await new Promise((resolve) => setTimeout(resolve, 15000)); // Wait 5 sec
+//     }
+
+//     // Step 5: Fetch the Scan Report
+//     const scanReport = await getZapReport();
+
+//     return NextResponse.json({
+//       message: "Scan completed successfully",
+//       report: scanReport,
+//     });
+//   } catch (error) {
+//     console.error("Internal Server Error:", error);
+//     return NextResponse.json(
+//       { message: "Internal server error", error: error.message },
+//       { status: 500 }
+//     );
+//   }
+// }
+
 import { NextResponse } from "next/server";
 
 const zapApiUrl = "http://localhost:8080";
 
-// Function to check if Spider has finished
-async function waitForSpider(spiderId) {
-  while (true) {
-    const response = await fetch(
-      `${zapApiUrl}/JSON/spider/view/status/?scanId=${spiderId}`
-    );
-    const data = await response.json();
-    console.log("-------------------data");
-    console.log(data);
-
-    if (data.status === "100") {
-      console.log("Spider scan completed.");
-      break;
-    }
-
-    console.log("Waiting for Spider scan to complete...");
-    await new Promise((resolve) => setTimeout(resolve, 10000)); // Wait 5 sec
-  }
-}
-
-// Function to fetch ZAP scan report
-async function getZapReport() {
-  const response = await fetch(`${zapApiUrl}/OTHER/core/other/jsonreport/`);
-  const report = await response.json();
-  console.log("Fetched ZAP report.");
-  return report;
-}
-
-export async function POST(req) {
+export async function POST(req: Request) {
   try {
-    const { url } = await req.json();
+    const { url, type } = await req.json();
     if (!url) {
       return NextResponse.json(
         { message: "Missing target URL" },
@@ -332,63 +412,45 @@ export async function POST(req) {
       );
     }
 
-    // Step 1: Start Spider Scan
-    const spiderResponse = await fetch(
-      `${zapApiUrl}/JSON/spider/action/scan/?url=${encodeURIComponent(
+    // Start Spider Scan
+    const response = await fetch(
+      `${zapApiUrl}/JSON/${type}/action/scan/?url=${encodeURIComponent(
         url
       )}&maxChildren=10`
     );
-    const spiderData = await spiderResponse.json();
+    const data = await response.json();
 
-    if (!spiderData.scan) {
+    if (!data.scan) {
       throw new Error("Failed to start spider scan");
     }
 
-    console.log(`Spider scan started with ID: ${spiderData.scan}`);
-
-    // Step 2: Wait for Spider Scan to Complete
-    await waitForSpider(spiderData.scan);
-
-    // Step 3: Start Active Scan
-    const ascanResponse = await fetch(
-      `${zapApiUrl}/JSON/ascan/action/scan/?url=${encodeURIComponent(
-        url
-      )}&recurse=false`
-    );
-    const ascanData = await ascanResponse.json();
-
-    if (!ascanData.scan) {
-      throw new Error("Failed to start active scan");
-    }
-
-    console.log(`Active scan started with ID: ${ascanData.scan}`);
-
-    // Step 4: Wait for Active Scan to Complete
-    while (true) {
-      const statusResponse = await fetch(
-        `${zapApiUrl}/JSON/ascan/view/status/?scanId=${ascanData.scan}`
-      );
-      const statusData = await statusResponse.json();
-
-      console.log("-------------------statusData");
-      console.log(statusData);
-
-      if (statusData.status === "100") {
-        console.log("Active scan completed.");
-        break;
-      }
-
-      console.log("Waiting for Active scan to complete...");
-      await new Promise((resolve) => setTimeout(resolve, 15000)); // Wait 5 sec
-    }
-
-    // Step 5: Fetch the Scan Report
-    const scanReport = await getZapReport();
+    console.log(`Spider scan started with ID: ${data.scan}`);
 
     return NextResponse.json({
-      message: "Scan completed successfully",
-      report: scanReport,
+      message: "Scans started",
+      scanId: data.scan,
     });
+
+    // Start Active Scan (after Spider scan completes)
+    // const ascanResponse = await fetch(
+    //   `${zapApiUrl}/JSON/ascan/action/scan/?url=${encodeURIComponent(
+    //     url
+    //   )}&recurse=false`
+    // );
+    // const ascanData = await ascanResponse.json();
+
+    // if (!ascanData.scan) {
+    //   throw new Error("Failed to start active scan");
+    // }
+
+    // console.log(`Active scan started with ID: ${ascanData.scan}`);
+
+    // // Send scan IDs to the frontend
+    // return NextResponse.json({
+    //   message: "Scans started",
+    //   spiderScanId: spiderData.scan,
+    //   activeScanId: ascanData.scan,
+    // });
   } catch (error) {
     console.error("Internal Server Error:", error);
     return NextResponse.json(
