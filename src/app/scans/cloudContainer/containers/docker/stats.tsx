@@ -6,7 +6,10 @@ interface VulnerabilitiesStatsProps {
   severityArray: { severity: string; count: number }[];
 }
 
-const severityMetadata: Record<string, { name: string; color: string; iconColor: string; icon: JSX.Element }> = {
+const severityMetadata: Record<
+  string,
+  { name: string; color: string; iconColor: string; icon: JSX.Element }
+> = {
   CRITICAL: {
     name: "Critical Vulnerabilities",
     color: "bg-red-100",
@@ -103,7 +106,9 @@ const severityMetadata: Record<string, { name: string; color: string; iconColor:
   },
 };
 
-const VulnerabilitiesStats: React.FC<VulnerabilitiesStatsProps> = ({ severityArray }) => {
+const VulnerabilitiesStats: React.FC<VulnerabilitiesStatsProps> = ({
+  severityArray,
+}) => {
   return (
     <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
       {severityArray.map(({ severity, count }) => {
@@ -114,18 +119,22 @@ const VulnerabilitiesStats: React.FC<VulnerabilitiesStatsProps> = ({ severityArr
         return (
           <div
             key={severity}
-            className="relative bg-white pt-5 px-4 pb-12 sm:pt-6 sm:px-6 shadow rounded-lg overflow-hidden"
+            className="relative bg-white dark:bg-[#111827] pt-5 px-4 pb-12 sm:pt-6 sm:px-6 shadow-lg dark:shadow-md rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 transition-all"
           >
             <dt>
               <div className={`absolute rounded-md p-3 ${metadata.color}`}>
-                <div className={metadata.iconColor}>{metadata.icon}</div>
+                <div className={`${metadata.iconColor} dark`}>
+                  {metadata.icon}
+                </div>
               </div>
-              <p className="ml-16 text-sm font-medium text-gray-500 truncate">
+              <p className="ml-16 text-sm font-medium text-gray-700 dark:text-gray-500 truncate">
                 {metadata.name}
               </p>
             </dt>
             <dd className="ml-16 pb-6 flex items-baseline sm:pb-7">
-              <p className="text-2xl font-semibold text-gray-900">{count}</p>
+              <p className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
+                {count}
+              </p>
             </dd>
           </div>
         );
