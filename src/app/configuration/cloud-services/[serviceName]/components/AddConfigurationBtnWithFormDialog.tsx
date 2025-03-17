@@ -15,7 +15,7 @@ const globalFormMap: Record<
   React.FC<{
     isFormModalOpen: boolean;
     onClose: () => void;
-    serviceNameInUrl: string;
+    serviceUrl: string;
   }>
 > = {
   "amazon-web-services": AmazonWebServicesConfigFormModal,
@@ -28,10 +28,10 @@ const globalFormMap: Record<
 
 export default function AddConfigurationBtnWithFormDialog({
   btnText,
-  serviceNameInUrl,
+  serviceUrl,
 }: {
   btnText: string;
-  serviceNameInUrl: string;
+  serviceUrl: string;
 }) {
   const [isFormModalOpen, setFormModalOpen] = useState(false);
 
@@ -40,14 +40,14 @@ export default function AddConfigurationBtnWithFormDialog({
   };
 
   // Get the corresponding form component
-  const ConfigFormModal = globalFormMap[serviceNameInUrl];
+  const ConfigFormModal = globalFormMap[serviceUrl];
 
   return (
     <>
       <Button onClick={toggleFormModal}>{btnText}</Button>
       {ConfigFormModal && (
         <ConfigFormModal
-          serviceNameInUrl={serviceNameInUrl}
+          serviceUrl={serviceUrl}
           isFormModalOpen={isFormModalOpen}
           onClose={toggleFormModal}
         />
