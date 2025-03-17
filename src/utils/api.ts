@@ -39,6 +39,7 @@ const columnArr: Record<string, string>[] = [
 //create table
 
 import { tableData } from "@/app/scans/WebApi/data";
+import { Buffer } from "buffer";
 
 const baseUrl = typeof window === "undefined" ? "http://localhost:3000" : "";
 
@@ -215,6 +216,7 @@ export async function updateColumn(
   provider: string
 ) {
   const jsonString = JSON.stringify(data).replace(/"/g, '\\"');
+  console.log(jsonString)
   const query = `
     UPDATE "${tableName}"
     SET "${columnName}" = jsonb_set(
@@ -237,15 +239,18 @@ export async function updateColumn(
   return res.json();
 }
 
+
+//////////////////////////
 export async function updateColumnGeneralised(
   tableName: string,
   columnName: string,
   data: any,
   key: string,
-  associatiedColumn: string,
+  associatedColumn: string,
   associatedValue: string
 ) {
-  const jsonString = JSON.stringify(data).replace(/"/g, '\\"');
+  const jsonString = JSON.stringify(data).replace(/'/g, "");
+  console.log(jsonString);
   const query = `
     UPDATE "${tableName}"
     SET "${columnName}" = jsonb_set(
@@ -254,19 +259,23 @@ export async function updateColumnGeneralised(
       '${jsonString}'::jsonb,
       true
     )
-    WHERE ${associatiedColumn} = '${associatedValue}';
+    WHERE ${associatedColumn} = '${associatedValue}';
   `;
 
-  console.log(query);
+  //console.log(query);
 
-  const res = await fetch(`${baseUrl}/api/dbApi`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ query }),
+   const res = await fetch(`${baseUrl}/api/dbApi`, {
+     method: "POST",
+     headers: { "Content-Type": "application/json" },
+     body: JSON.stringify({ query }),
   });
 
   return res.json();
 }
+
+
+
+
 
 export async function deleteObjectWithKey(
   key: string,
