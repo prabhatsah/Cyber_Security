@@ -558,8 +558,8 @@ export default function WebApi() {
   };
 
   return (
-    <div className="p-4">
-      <p className="font-bold text-gray-600">Web & API Security</p>
+    <div className="">
+      <p className="font-bold ">Web & API Security</p>
       <SearchBar
         query={query}
         setQuery={setQuery}
