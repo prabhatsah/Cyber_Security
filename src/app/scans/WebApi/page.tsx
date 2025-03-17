@@ -390,23 +390,251 @@ interface ApiResponse {
 //   );
 // }
 
+// export default function WebApi() {
+//   const [query, setQuery] = useState("");
+//   const [data, setData] = useState(null);
+//   const [error, setError] = useState(null);
+//   const [isLoading, setIsLoading] = useState(false);
+
+//   const [spiderProgress, setSpiderProgress] = useState(0);
+//   const [activeProgress, setActiveProgress] = useState(0);
+//   const [foundURI, setFoundURI] = useState([]);
+
+//   const [newAlerts, setNewAlerts] = useState("");
+//   const [numRequests, setNumRequests] = useState("");
+
+//   const [messages, setMessages] = useState([]);
+
+//   const intervalRef = useRef(null);
+
+//   const { setItems } = useBreadcrumb();
+
+//   useEffect(() => {
+//     setItems([
+//       { label: "Scans", href: "/scans" },
+//       { label: "Web & API Security", href: "/scans/webApi" },
+//     ]);
+
+//     return () => {
+//       if (intervalRef.current) clearInterval(intervalRef.current);
+//     };
+//   }, []);
+
+//   const apiRequest = async (url, options = {}) => {
+//     try {
+//       const response = await fetch(url, options);
+//       if (!response.ok) throw new Error(`Error: ${response.statusText}`);
+//       return await response.json();
+//     } catch (error) {
+//       console.error(error);
+//       throw error;
+//     }
+//   };
+
+//   const fetchMessages = async () => {
+//     try {
+//       const messagesData = await apiRequest(
+//         `/api/webApi/ZAP/messages?baseurl=${encodeURIComponent(query)}&start=0`
+//       );
+
+//       console.log("ZAP Messages:", messagesData);
+//       setMessages(messagesData.messages);
+//     } catch (err) {
+//       console.error("Error fetching messages:", err);
+//     }
+//   };
+
+//   const fetchData = useCallback(async () => {
+//     if (!query) {
+//       setError("Please provide a valid URL.");
+//       return;
+//     }
+
+//     setError(null);
+//     setIsLoading(true);
+//     try {
+//       const result = await apiRequest("/api/webApi/ZAP", {
+//         method: "POST",
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify({ url: query, type: "spider" }),
+//       });
+//       await checkSpiderProgress(result.scanId);
+//     } catch (err) {
+//       setError(err.message);
+//     }
+//   }, [query]);
+
+//   const checkSpiderProgress = async (spiderScanId) => {
+//     let delay = 1000;
+
+//     const poll = async () => {
+//       try {
+//         const progressData = await apiRequest(
+//           `/api/webApi/ZAP/progress?scanId=${spiderScanId}&type=spider`
+//         );
+//         setSpiderProgress(Number(progressData.progress) || 0);
+//         await fetchFoundUrls(spiderScanId);
+
+//         if (progressData.progress < 100) {
+//           delay = Math.min(delay * 2, 5000);
+//           setTimeout(poll, delay);
+//         } else {
+//           const result = await apiRequest("/api/webApi/ZAP", {
+//             method: "POST",
+//             headers: { "Content-Type": "application/json" },
+//             body: JSON.stringify({ url: query, type: "ascan" }),
+//           });
+//           await checkActiveScanProgress(result.scanId);
+//         }
+//       } catch (err) {
+//         console.error("Error fetching progress:", err);
+//       }
+//     };
+//     poll();
+//   };
+
+//   const checkActiveScanProgress = async (activeScanId) => {
+//     // Fetch new messages
+//     await fetchMessages();
+
+//     let delay = 1000;
+
+//     const poll = async () => {
+//       try {
+//         // const progressData = await apiRequest(
+//         //   `/api/webApi/ZAP/progress?scanId=${activeScanId}&type=ascan`
+//         // );
+//         // setActiveProgress(Number(progressData.progress) || 0);
+
+//         // Fetch scan details using the new API route
+//         const scanDetails = await apiRequest("/api/webApi/ZAP/scanDetails");
+//         const scanInfo = scanDetails.scans.find(
+//           (scan) => scan.id === activeScanId
+//         );
+
+//         if (scanInfo) {
+//           if (scanInfo.state === "FINISHED") {
+//             setActiveProgress(100);
+//           } else {
+//             setActiveProgress(Number(scanInfo.progress) || 0);
+//           }
+//           setNewAlerts(scanInfo.newAlertCount);
+//           setNumRequests(scanInfo.reqCount);
+//         }
+
+//         if (scanInfo.state !== "FINISHED") {
+//           delay = Math.min(delay * 2, 5000);
+//           setTimeout(poll, delay);
+//         } else {
+//           await fetchFinalReport();
+//         }
+//       } catch (err) {
+//         console.error("Error fetching progress:", err);
+//       }
+//     };
+//     poll();
+//   };
+
+//   const fetchFoundUrls = async (spiderScanId) => {
+//     try {
+//       const data = await apiRequest(
+//         `/api/webApi/ZAP/spiderResults?scanId=${spiderScanId}`
+//       );
+//       setFoundURI(data.urls || []);
+//     } catch (err) {
+//       console.error("Error fetching found URLs:", err);
+//     }
+//   };
+
+//   const fetchFinalReport = async () => {
+//     try {
+//       const reportData = await apiRequest(`/api/webApi/ZAP/report`);
+//       setData(reportData.report);
+//       setIsLoading(false);
+//     } catch (err) {
+//       console.error("Error fetching report:", err);
+//       setIsLoading(false);
+//     }
+//   };
+
+//   return (
+//     <div className="p-4">
+//       <p className="font-bold text-gray-600">Web & API Security</p>
+//       <SearchBar
+//         query={query}
+//         setQuery={setQuery}
+//         fetchData={fetchData}
+//         isLoading={isLoading}
+//       />
+//       {error && <p className="text-red-600 text-center">{error}</p>}
+//       <Tabs
+//         tabs={[
+//           {
+//             label: "Spider",
+//             content: (
+//               <SpiderScan progress={spiderProgress} foundURI={foundURI} />
+//             ),
+//           },
+//           {
+//             label: "Active Scan",
+//             content: (
+//               <ActiveScan
+//                 progress={activeProgress}
+//                 newAlerts={newAlerts}
+//                 numRequests={numRequests}
+//                 messages={messages}
+//               />
+//             ),
+//           },
+//         ]}
+//       />
+//       {data && <Dashboard _data={data} />}
+//       <PastScans />
+//     </div>
+//   );
+// }
+
+// const checkActiveScanProgress = async (activeScanId) => {
+//   let timeoutId;
+//   fetchMessages();
+//   const poll = async () => {
+//     try {
+//       const scanDetails = await apiRequest("/api/webApi/ZAP/scanDetails");
+//       const scanInfo = scanDetails.scans.find(
+//         (scan) => scan.id === activeScanId
+//       );
+//       if (scanInfo) {
+//         setActiveProgress(
+//           scanInfo.state === "FINISHED" ? 100 : Number(scanInfo.progress) || 0
+//         );
+//         setNewAlerts(scanInfo.newAlertCount);
+//         setNumRequests(scanInfo.reqCount);
+//       }
+//       if (scanInfo?.state !== "FINISHED") {
+//         timeoutId = setTimeout(poll, 2000);
+//       } else {
+//         await fetchFinalReport();
+//       }
+//     } catch (err) {
+//       console.error("Error fetching progress:", err);
+//     }
+//   };
+//   poll();
+//   return () => clearTimeout(timeoutId);
+// };
+
 export default function WebApi() {
   const [query, setQuery] = useState("");
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-
   const [spiderProgress, setSpiderProgress] = useState(0);
   const [activeProgress, setActiveProgress] = useState(0);
   const [foundURI, setFoundURI] = useState([]);
-
   const [newAlerts, setNewAlerts] = useState("");
   const [numRequests, setNumRequests] = useState("");
-
   const [messages, setMessages] = useState([]);
-
   const intervalRef = useRef(null);
-
   const { setItems } = useBreadcrumb();
 
   useEffect(() => {
@@ -414,10 +642,7 @@ export default function WebApi() {
       { label: "Scans", href: "/scans" },
       { label: "Web & API Security", href: "/scans/webApi" },
     ]);
-
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-    };
+    return () => clearInterval(intervalRef.current);
   }, []);
 
   const apiRequest = async (url, options = {}) => {
@@ -426,30 +651,29 @@ export default function WebApi() {
       if (!response.ok) throw new Error(`Error: ${response.statusText}`);
       return await response.json();
     } catch (error) {
+      setError(error.message);
       console.error(error);
       throw error;
     }
   };
 
-  const fetchMessages = async () => {
+  const fetchMessages = useCallback(async () => {
+    if (!query) return;
     try {
       const messagesData = await apiRequest(
-        `/api/webApi/ZAP/messages?baseurl=${encodeURIComponent(query)}&start=0`
+        `/api/webApi/ZAP/messages?baseurl=${encodeURIComponent(query)}`
       );
-
-      console.log("ZAP Messages:", messagesData);
       setMessages(messagesData.messages);
     } catch (err) {
       console.error("Error fetching messages:", err);
     }
-  };
+  }, [query]);
 
   const fetchData = useCallback(async () => {
     if (!query) {
       setError("Please provide a valid URL.");
       return;
     }
-
     setError(null);
     setIsLoading(true);
     try {
@@ -465,8 +689,7 @@ export default function WebApi() {
   }, [query]);
 
   const checkSpiderProgress = async (spiderScanId) => {
-    let delay = 1000;
-
+    let timeoutId;
     const poll = async () => {
       try {
         const progressData = await apiRequest(
@@ -474,10 +697,8 @@ export default function WebApi() {
         );
         setSpiderProgress(Number(progressData.progress) || 0);
         await fetchFoundUrls(spiderScanId);
-
         if (progressData.progress < 100) {
-          delay = Math.min(delay * 2, 5000);
-          setTimeout(poll, delay);
+          timeoutId = setTimeout(poll, 2000);
         } else {
           const result = await apiRequest("/api/webApi/ZAP", {
             method: "POST",
@@ -491,48 +712,48 @@ export default function WebApi() {
       }
     };
     poll();
+    return () => clearTimeout(timeoutId);
   };
 
-  const checkActiveScanProgress = async (activeScanId) => {
-    // Fetch new messages
-    await fetchMessages();
+  const checkActiveScanProgress = (activeScanId) => {
+    let timeoutId;
 
-    let delay = 1000;
+    // Start fetching messages at a regular interval
+    const messageInterval = setInterval(fetchMessages, 5000);
 
     const poll = async () => {
       try {
-        // const progressData = await apiRequest(
-        //   `/api/webApi/ZAP/progress?scanId=${activeScanId}&type=ascan`
-        // );
-        // setActiveProgress(Number(progressData.progress) || 0);
-
-        // Fetch scan details using the new API route
         const scanDetails = await apiRequest("/api/webApi/ZAP/scanDetails");
         const scanInfo = scanDetails.scans.find(
           (scan) => scan.id === activeScanId
         );
 
         if (scanInfo) {
-          if (scanInfo.state === "FINISHED") {
-            setActiveProgress(100);
-          } else {
-            setActiveProgress(Number(scanInfo.progress) || 0);
-          }
+          setActiveProgress(
+            scanInfo.state === "FINISHED" ? 100 : Number(scanInfo.progress) || 0
+          );
           setNewAlerts(scanInfo.newAlertCount);
           setNumRequests(scanInfo.reqCount);
         }
 
-        if (scanInfo.state !== "FINISHED") {
-          delay = Math.min(delay * 2, 5000);
-          setTimeout(poll, delay);
+        if (scanInfo?.state !== "FINISHED") {
+          timeoutId = setTimeout(poll, 2000);
         } else {
+          clearInterval(messageInterval); // Stop fetching messages when scan completes
+          clearTimeout(timeoutId); // Ensure timeout is cleared
           await fetchFinalReport();
         }
       } catch (err) {
         console.error("Error fetching progress:", err);
       }
     };
+
     poll();
+
+    return () => {
+      clearTimeout(timeoutId);
+      clearInterval(messageInterval);
+    };
   };
 
   const fetchFoundUrls = async (spiderScanId) => {
@@ -550,9 +771,9 @@ export default function WebApi() {
     try {
       const reportData = await apiRequest(`/api/webApi/ZAP/report`);
       setData(reportData.report);
-      setIsLoading(false);
     } catch (err) {
       console.error("Error fetching report:", err);
+    } finally {
       setIsLoading(false);
     }
   };
