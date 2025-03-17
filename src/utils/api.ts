@@ -39,6 +39,7 @@ const columnArr: Record<string, string>[] = [
 //create table
 
 import { tableData } from "@/app/scans/WebApi/data";
+import { Buffer } from "buffer";
 
 const baseUrl = typeof window === "undefined" ? "http://localhost:3000" : "";
 
@@ -184,8 +185,6 @@ export async function getTableValues(tableName: string) {
   const query = `SELECT json_agg(t) 
                     FROM ${tableName} t;`;
 
-  const custonQuery = `SELECT json_agg(json_build_object('id', id,'name', name,'email', email)) FROM ${tableName} WHERE name = 'Alice';`;
-
   const res = await fetch(`${baseUrl}/api/dbApi`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -214,7 +213,8 @@ export async function updateColumn(
   key: string,
   provider: string
 ) {
-  const jsonString = JSON.stringify(data).replace(/"/g, '\\"');
+  const jsonString = JSON.stringify(data).replace(/'/g, "");
+  console.log(jsonString)
   const query = `
     UPDATE "${tableName}"
     SET "${columnName}" = jsonb_set(
@@ -237,15 +237,18 @@ export async function updateColumn(
   return res.json();
 }
 
+
+//////////////////////////
 export async function updateColumnGeneralised(
   tableName: string,
   columnName: string,
   data: any,
   key: string,
-  associatiedColumn: string,
+  associatedColumn: string,
   associatedValue: string
 ) {
-  const jsonString = JSON.stringify(data).replace(/"/g, '\\"');
+  const jsonString = JSON.stringify(data).replace(/'/g, "");
+  console.log(jsonString);
   const query = `
     UPDATE "${tableName}"
     SET "${columnName}" = jsonb_set(
@@ -254,19 +257,23 @@ export async function updateColumnGeneralised(
       '${jsonString}'::jsonb,
       true
     )
-    WHERE ${associatiedColumn} = '${associatedValue}';
+    WHERE ${associatedColumn} = '${associatedValue}';
   `;
 
-  console.log(query);
+  //console.log(query);
 
-  const res = await fetch(`${baseUrl}/api/dbApi`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ query }),
+   const res = await fetch(`${baseUrl}/api/dbApi`, {
+     method: "POST",
+     headers: { "Content-Type": "application/json" },
+     body: JSON.stringify({ query  , instruction : "update" }),
   });
 
   return res.json();
 }
+
+
+
+
 
 export async function deleteObjectWithKey(
   key: string,
@@ -295,54 +302,17 @@ api.fetchData(name,null,null,null,{'projectId' : ['gcp-project-98341', 'gcp-proj
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 export async function fetchData(
   tableName: string,
-  provider: string | null,
-  column: string | null,
-  mainKey: string | null,
-  keyValue: Record<string, any> | null
-) {
-  let query = "";
-
-  if (!provider && !column && !mainKey && !keyValue) {
-    query = `SELECT jsonb_agg(t) FROM (SELECT * FROM "${tableName}") t;`;
-  } else if (column !== "data" && !mainKey && !keyValue) {
-    query = `SELECT jsonb_pretty(jsonb_agg(t))
-             FROM (SELECT * FROM "${tableName}" WHERE "${column}" = '${provider}') t;`;
-  } else if (mainKey) {
-    query = `SELECT jsonb_agg(data->'${mainKey}') 
-             FROM "${tableName}" 
-             WHERE data ? '${mainKey}';`;
-  } else if (keyValue) {
-    let conditions: string[] = [];
-
-    for (let key in keyValue) {
-      if (Array.isArray(keyValue[key])) {
-        const valuesList = keyValue[key]
-          .filter((value: any) => value !== null && value !== undefined)
-          .map((value: any) => `'${value}'`)
-          .join(", ");
-
-        if (valuesList) {
-          conditions.push(`value->>'${key}' IN (${valuesList})`);
-        }
-      }
-    }
-
-    if (conditions.length > 0) {
-      const conditionString = conditions.join(" AND ");
-
-      query = `
-            SELECT jsonb_agg(value)
-            FROM "${tableName}", 
-            LATERAL jsonb_each(data) AS each_obj(key, value)
-            WHERE ${conditionString};
-        `;
-    }
-  }
+  orderByColumn : string,
+  columnFilter?: { column: string; value: string | number },
+  jsonFilter?: { column: string; key: string; value: string | number }) {
+  
+  const query = {tableName,orderByColumn,columnFilter,jsonFilter}
   console.log(query);
+  
   const res = await fetch(`${baseUrl}/api/dbApi`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ query }),
+    body: JSON.stringify({ query , instruction : "fetch" }),
   });
 
   return res.json();

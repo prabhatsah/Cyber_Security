@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { NodeSSH } from "node-ssh";
 import * as fs from "fs";
 import path from "path";
+import { off } from "process";
 
 const ssh = new NodeSSH();
 const localFilePath = path.join(__dirname, "query.sql");
@@ -36,6 +37,7 @@ export async function POST(req: Request) {
       username: "root",
       password: "QR66&4Zq2#",
     });
+
     let jsonData: any;
     let result: any;
 
@@ -51,7 +53,14 @@ export async function POST(req: Request) {
       );
       await ssh.execCommand(`rm -f ${remoteFilePath}`);
     } else if (instruction && instruction === "fetch") {
-      const fetchedResult = await fetchPaginatedData();
+      const fetchedResult = await fetchPaginatedData(
+        query.tableName,
+        query.orderByColumn,
+        null,
+        null,
+        query.columnFilter,
+        query.jsonFilter
+      );
       return NextResponse.json({
         success: true,
         fullData: result,
@@ -81,27 +90,47 @@ export async function POST(req: Request) {
   }
 }
 
-async function fetchPaginatedData(offset = 0, limit = 1000) {
+async function fetchPaginatedData(
+  tableName: string,
+  orderByColumn: string,
+  offset: number | null,
+  limit: number | null,
+  columnFilter?: { column: string; value: string | number } | null,
+  jsonFilter?: { column: string; key: string; value: string | number } | null
+) {
   let hasMore = true;
-  let jsonParts = [];
+  let jsonParts: string[] = [];
+
+  offset = offset ?? 0;
+  limit = limit ?? 1000;
 
   while (hasMore) {
+    let whereClause = "";
+
+    if (columnFilter) {
+      whereClause = `WHERE "${columnFilter.column}" = '${columnFilter.value}'`;
+    }
+
+    if (jsonFilter) {
+      whereClause = `WHERE "${jsonFilter.column}" @> '{"${jsonFilter.key}": "${jsonFilter.value}"}'::jsonb`;
+    }
+
     const query = `
         SELECT COALESCE(jsonb_agg(t), '[]') FROM (
-          SELECT * FROM "image_file_scanning"
-          ORDER BY slno
+          SELECT * FROM "${tableName}"
+          ${whereClause}
+          ORDER BY ${orderByColumn}
           LIMIT ${limit} OFFSET ${offset}
         ) t;
       `;
 
+    console.log(query);
     const result = await ssh.execCommand(
       `PGPASSWORD="postgres" psql -h localhost -U postgres -p 5436 -d cyber_security -A -t -c "${query}"`
     );
 
     try {
       const extractedJson = result.stdout.trim().match(/\[.*\]/s)?.[0] || "[]";
-
-      // Remove square brackets to merge arrays correctly
       const innerJson = extractedJson.slice(1, -1).trim();
 
       if (innerJson) {

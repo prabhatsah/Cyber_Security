@@ -50,6 +50,8 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
     setIsFullScreen(!isFullScreen);
   };
 
+  //api.fetchData('image_file_scanning',"slno").then(setTableResult);
+
   function cleanAndFormatJson(jsonString: string): string {
     jsonString = jsonString.replace(/\"\/bin\/sh\"/g, "");
     return JSON.stringify(JSON.parse(jsonString), null, 2);
@@ -107,7 +109,7 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
   };
 
   const saveHistoryScans = (command: string | null, data: any | null) => {
-    const name = "Image_File_Scanning";
+    const name = "image_file_scanning";
     let type = command?.includes("Img") ? "Image" : "File";
     let history =
       type === "Image"
@@ -118,7 +120,7 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
     history = data?.Metadata?.ImageConfig?.history;
 
     data.Metadata.ImageConfig.history = history.map((entry: any) => {
-      if (entry.created_by === 'CMD ["/bin/sh"]') {
+      if (entry.created_by) {
         const { created_by, ...rest } = entry;
         return rest;
       }
@@ -823,7 +825,7 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
                         <div className="relative">
                           <a
                             onClick={toggleFullScreen}
-                            className="absolute cursor-pointer top-0 right-0 text-black rounded-md hover:bg-grey-600"
+                            className="absolute cursor-pointer top-0 right-0 text-black dark:text-white rounded-md hover:bg-grey-600"
                           >
                             {isFullScreen ? (
                               <Minimize size={20} />
