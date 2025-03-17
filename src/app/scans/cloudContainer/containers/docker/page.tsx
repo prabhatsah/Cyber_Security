@@ -277,7 +277,7 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
               </div>
             </div>
 
-            <div className="p-3 text-gray-700 dark:text-gray-300 text-sm leading-relaxed flex-grow overflow-hidden text-ellipsis line-clamp-2">
+            <div className="p-4 text-gray-700 dark:text-gray-300 text-sm leading-relaxed flex-grow overflow-hidden text-ellipsis line-clamp-2">
               <Text className="mt-1">
                 Use <code>docker scan</code> to check for vulnerabilities. Save
                 and transfer images easily with
@@ -336,7 +336,7 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
               </div>
             </div>
 
-            <div className="p-3 text-gray-700 dark:text-gray-300 text-sm leading-relaxed flex-grow overflow-hidden text-ellipsis line-clamp-2">
+            <div className="p-4 text-gray-700 dark:text-gray-300 text-sm leading-relaxed flex-grow overflow-hidden text-ellipsis line-clamp-2">
               <Text className="mt-1">
                 Track container history, troubleshoot issues, and manage
                 inactive containers by identifying their status and last run
@@ -823,7 +823,7 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
                         <div className="relative">
                           <a
                             onClick={toggleFullScreen}
-                            className="absolute cursor-pointer top-0 right-0 text-black rounded-md hover:bg-grey-600"
+                            className="absolute cursor-pointer top-0 right-0 text-black dark:text-white rounded-md hover:bg-grey-600"
                           >
                             {isFullScreen ? (
                               <Minimize size={20} />
