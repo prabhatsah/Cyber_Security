@@ -11,11 +11,10 @@ import {
 import * as api from "@/utils/api";
 import CloudWidget from "./EachCloudWidget";
 import { CloudSkeleton } from "../components/Skeleton";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { useConfiguration } from "../components/ConfigurationContext";
 import { useBreadcrumb } from "@/contexts/BreadcrumbContext";
 import {
-  ConfigDataFormatted,
   EachConfigDataFormatted,
   EachConfigDataFromServer,
 } from "../components/type";
@@ -112,46 +111,22 @@ export default function CloudServicesConfig() {
     }
   }, [fetchedData]);
 
-  for (let index = 0; index < cloudConfigList.length; index++) {
-    const cloudServiceName = cloudConfigList[0].name;
+  const updatedCloudConfigList = useMemo(() => {
+    return cloudConfigList.map((cloudService) => {
+      const cloudServiceName = cloudService.href.split("/")[3];
 
-    cloudConfigList[index].configurationCount =
-      Object.keys(configData).length > 0
-        ? Object.keys(configData[cloudServiceName].data).length
-        : 0;
+      if (configData[cloudServiceName]) {
+        return {
+          ...cloudService,
+          configurationCount: Object.keys(configData[cloudServiceName].data)
+            .length,
+          configurations: Object.values(configData[cloudServiceName].data),
+        };
+      }
 
-    // if (configData[index].name === "amazon-web-services") {
-    //   cloudConfigList[0].configurationCount = Object.keys(
-    //     configData[index].data
-    //   ).length;
-    //   cloudConfigList[0].configurations = Object.values(configData[index].data);
-    // } else if (configData[index].name === "microsoft-azure") {
-    //   cloudConfigList[1].configurationCount = Object.keys(
-    //     configData[index].data
-    //   ).length;
-    //   cloudConfigList[1].configurations = Object.values(configData[index].data);
-    // } else if (configData[index].name === "google-cloud-platform") {
-    //   cloudConfigList[2].configurationCount = Object.keys(
-    //     configData[index].data
-    //   ).length;
-    //   cloudConfigList[2].configurations = Object.values(configData[index].data);
-    // } else if (configData[index].name === "ibm-cloud") {
-    //   cloudConfigList[3].configurationCount = Object.keys(
-    //     configData[index].data
-    //   ).length;
-    //   cloudConfigList[3].configurations = Object.values(configData[index].data);
-    // } else if (configData[index].name === "oracle-cloud-infrastructure") {
-    //   cloudConfigList[4].configurationCount = Object.keys(
-    //     configData[index].data
-    //   ).length;
-    //   cloudConfigList[4].configurations = Object.values(configData[index].data);
-    // } else if (configData[index].name === "alibaba-cloud") {
-    //   cloudConfigList[5].configurationCount = Object.keys(
-    //     configData[index].data
-    //   ).length;
-    //   cloudConfigList[5].configurations = Object.values(configData[index].data);
-    // }
-  }
+      return { ...cloudService, configurationCount: 0, configurations: [] };
+    });
+  }, [configData]);
 
   currentTime = new Date();
   console.log("Now returning: " + currentTime.toISOString());
@@ -168,11 +143,11 @@ export default function CloudServicesConfig() {
             Cloud Services
           </h2>
           <span className="inline-flex size-7 items-center justify-center rounded-full bg-tremor-background-subtle text-tremor-label font-medium text-tremor-content-strong dark:bg-dark-tremor-background-subtle dark:text-dark-tremor-content-strong">
-            {cloudConfigList.length}
+            {updatedCloudConfigList.length}
           </span>
         </div>
         <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 h-fit">
-          {cloudConfigList.map((item) => (
+          {updatedCloudConfigList.map((item) => (
             <CloudWidget key={item.name} item={item} />
           ))}
         </div>
