@@ -1,12 +1,10 @@
-import "../../styles/globals.css";
-import ConfigSidebar from "./components/ConfigSidebar";
-import { ConfigurationProvider } from "./components/ConfigurationContext";
 import * as api from "@/utils/api";
+import { ConfigurationProvider } from "../components/ConfigurationContext";
 
 export async function fetchdata() {
   const tableName = "cloud_config";
-  const provider = "google-cloud-platform";
-  const data = await api.fetchData(tableName, provider, "name", null, null);
+  const provider = null;
+  const data = await api.fetchData(tableName, provider, null, null, null);
   return data;
 }
 
@@ -25,7 +23,6 @@ export default async function RootLayout({
   return (
     <>
       <div className="flex h-full">
-        {/* <ConfigSidebar /> */}
         <ConfigurationProvider configData={configData.data}>
           {children}
         </ConfigurationProvider>
