@@ -88,6 +88,8 @@ export default function CloudServicesConfig() {
   const [isLoading, setIsLoading] = useState(false);
 
   const fetchedData = useConfiguration();
+  console.log("configData in cloud service page.tsx - ");
+  console.log(fetchedData);
 
   useEffect(() => {
     if (fetchedData) {

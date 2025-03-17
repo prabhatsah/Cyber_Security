@@ -140,6 +140,7 @@ const data = [
 export default function CloudServiceDetails({
   params,
 }: {
+  //params: Promise<{ serviceName: string }>
   params: Promise<{ serviceName: string }>;
 }) {
   const unwrappedParams = React.use(params); // Unwrap the Promise here
@@ -162,12 +163,16 @@ export default function CloudServiceDetails({
   const [isLoading, setIsLoading] = useState(false);
 
   const fetchedData = useConfiguration();
+  // console.log("configData in each cloud service page.tsx - ");
+  console.log(fetchedData.data);
 
   useEffect(() => {
-    if (fetchedData) {
+    if (fetchedData && fetchedData.length > 0) {
       setEachConfigData(fetchedData);
-      console.log("eachConfigData - ");
-      console.log(eachConfigData); // Update the state when fetchedData is available
+      // console.log("eachConfigData - ");
+      // console.log(eachConfigData); // Update the state when fetchedData is available
+      console.log("configData in each cloud service page.tsx - ");
+      console.log(fetchedData[5].data);
     }
   }, [fetchedData]);
 
