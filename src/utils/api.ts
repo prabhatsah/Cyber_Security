@@ -185,8 +185,6 @@ export async function getTableValues(tableName: string) {
   const query = `SELECT json_agg(t) 
                     FROM ${tableName} t;`;
 
-  const custonQuery = `SELECT json_agg(json_build_object('id', id,'name', name,'email', email)) FROM ${tableName} WHERE name = 'Alice';`;
-
   const res = await fetch(`${baseUrl}/api/dbApi`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
