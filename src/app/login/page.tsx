@@ -24,6 +24,7 @@ import { useRouter } from "next/navigation";
 import SignUp from "./components_signUp/signup_form_component";
 import { clearAllCookieSession } from "@/ikon/utils/session/cookieSession";
 import { LoginForm } from "@/components/ui/login-form";
+import { Shield } from "lucide-react";
 
 const SigninFormSchema = z.object({
   userName: z.string().min(2, { message: "Please enter username." }).trim(),
@@ -143,21 +144,23 @@ function Login() {
     //               e.preventDefault();
     //               form.reset();
     //             }}
-    //             className='reset-btn'>
+    //             className="reset-btn"
+    //           >
     //             Reset
     //           </button>
-    //           <button
-    //             className="login-btn">
-    //             Login
-    //           </button>
+    //           <button className="login-btn">Login</button>
     //         </div>
     //         <div className="text-center text-white flex flex-row gap-2">
-    //           <span className='dont-have-acct-text'>Don’t have any account?</span>
-    //           <span className="signup-text" onClick={() => setOpen(true)}>Sign Up</span>
+    //           <span className="dont-have-acct-text">
+    //             Don’t have any account?
+    //           </span>
+    //           <span className="signup-text" onClick={() => setOpen(true)}>
+    //             Sign Up
+    //           </span>
     //         </div>
-    //         <div className='flex flex-col mt-5'>
-    //           <span className='support-text'>Looking for Support?</span>
-    //           <span className='version-text'>Version 8.0.0</span>
+    //         <div className="flex flex-col mt-5">
+    //           <span className="support-text">Looking for Support?</span>
+    //           <span className="version-text">Version 8.0.0</span>
     //         </div>
     //       </div>
     //     </form>
@@ -165,7 +168,13 @@ function Login() {
     //   <SignUp open={open} setOpen={setOpen} />
     // </>
 
-    <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
+    <div className="bg-dark-bgPrimary flex w-full items-center justify-center absolute inset-0">
+      <div className="absolute top-5 left-5 flex items-center ">
+        <Shield className="h-8 w-8 text-primary" />
+        <h1 className="ml-2 text-xl font-semibold text-gray-900 dark:text-white">
+          SecureGuard
+        </h1>
+      </div>
       <div className="w-full max-w-sm">
         <LoginForm />
       </div>
