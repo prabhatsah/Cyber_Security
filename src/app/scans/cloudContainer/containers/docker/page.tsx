@@ -50,6 +50,8 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
     setIsFullScreen(!isFullScreen);
   };
 
+  //api.fetchData('image_file_scanning',"slno").then(setTableResult);
+
   function cleanAndFormatJson(jsonString: string): string {
     jsonString = jsonString.replace(/\"\/bin\/sh\"/g, "");
     return JSON.stringify(JSON.parse(jsonString), null, 2);
