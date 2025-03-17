@@ -137,7 +137,11 @@ const data = [
   },
 ];
 
-export default function CloudServiceDetails({ params }: { params: string }) {
+export default function CloudServiceDetails({
+  params,
+}: {
+  params: Promise<{ serviceName: string }>;
+}) {
   const unwrappedParams = React.use(params); // Unwrap the Promise here
   const serviceUrl = unwrappedParams.serviceName;
   const serviceName = serviceUrl
