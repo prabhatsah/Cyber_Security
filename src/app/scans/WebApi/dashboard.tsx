@@ -20,6 +20,7 @@ import {
   TableRow,
 } from "@/components/Table";
 import { data, severity, tableData, alertsCount } from "./data";
+import Link from "next/link";
 
 console.log(severity);
 
@@ -103,7 +104,10 @@ export default function Dashboard({ _data }) {
     <div className="min-h-[90vh]">
       <section className="my-4">
         <div className="grid grid-cols-4 gap-5">
-          <Card className="col-span-1 rounded-md ">
+          <Card
+            className="col-span-1 rounded-md bg-tremor-background ring-tremor-ring shadow-tremor-card dark:ring-dark-tremor-ring dark:shadow-dark-tremor-card border-tremor-brand dark:border-dark-tremor-brand relative flex flex-col rounded-lg justify-between
+           dark:bg-dark-bgPrimary hover:bg-tremor-background-muted hover:dark:bg-dark-tremor-background-muted"
+          >
             <div className="flex flex-col items-center">
               <div className=" mt-2 grid grid-cols-8 gap-8 items-center">
                 <div className="relative col-span-3">
@@ -151,10 +155,10 @@ export default function Dashboard({ _data }) {
                           )}
                         />
                         <div>
-                          <p className="text-sm font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">
+                          <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
                             {item.count}
                           </p>
-                          <p className="mt-0.5 whitespace-nowrap text-sm text-tremor-content dark:text-dark-tremor-content">
+                          <p className="mt-0.5 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
                             {item.severity}
                           </p>
                         </div>
@@ -165,7 +169,10 @@ export default function Dashboard({ _data }) {
               </div>
             </div>
           </Card>
-          <Card className="col-span-3 rounded-md ">
+          <Card
+            className="col-span-3 rounded-md bg-tremor-background ring-tremor-ring shadow-tremor-card dark:ring-dark-tremor-ring dark:shadow-dark-tremor-card border-tremor-brand dark:border-dark-tremor-brand relative  flex-col rounded-lg justify-between
+           dark:bg-dark-bgPrimary hover:bg-tremor-background-muted hover:dark:bg-dark-tremor-background-mute"
+          >
             <div className="flex gap-5">
               <h3 className="text-tremor-title font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong">
                 {_data.site[0]["@name"]}
@@ -178,49 +185,6 @@ export default function Dashboard({ _data }) {
         </div>
         <div className="w-full mt-8">
           <h1 className="text-md font-semibold text-gray-900 dark:text-gray-50">
-            Alerts
-          </h1>
-          <TableRoot className="mt-3">
-            <Table>
-              <TableHead>
-                <TableRow>
-                  {/* <TableHeaderCell>Id</TableHeaderCell> */}
-                  <TableHeaderCell>Name</TableHeaderCell>
-                  <TableHeaderCell>Risk Level</TableHeaderCell>
-                  <TableHeaderCell>Instances</TableHeaderCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {_data.site[0].alerts.map((item) => (
-                  <TableRow key={item.pluginid}>
-                    {/* <TableCell>{item.pluginid}</TableCell> */}
-                    <TableCell>{item.alert}</TableCell>
-                    <TableCell>
-                      <Badge
-                        variant={
-                          ristCodeVsDesc[item.riskcode] === "Critical" ||
-                          ristCodeVsDesc[item.riskcode] === "High"
-                            ? "error"
-                            : ristCodeVsDesc[item.riskcode] === "Medium"
-                            ? "warning"
-                            : ristCodeVsDesc[item.riskcode] === "Low"
-                            ? "success"
-                            : "default"
-                        }
-                      >
-                        {ristCodeVsDesc[item.riskcode]}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>{item.count}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableRoot>
-        </div>
-
-        <div className="w-full mt-8">
-          <h1 className="text-md font-semibold text-gray-900 dark:text-gray-50">
             Alert Details
           </h1>
           <Accordion type="multiple" className="mt-3 ">
@@ -231,14 +195,14 @@ export default function Dashboard({ _data }) {
                     <RiAlertLine
                       className={`size-4 ${
                         ristCodeVsDesc[dataItem.riskcode] === "Critical"
-                          ? "text-red-900"
+                          ? "text-red-900 dark:text-red-400"
                           : ristCodeVsDesc[dataItem.riskcode] === "High"
-                          ? "text-red-900"
+                          ? "text-red-900 dark:text-red-400"
                           : ristCodeVsDesc[dataItem.riskcode] === "Medium"
-                          ? "text-yellow-900"
+                          ? "text-yellow-900 dark:text-yellow-400"
                           : ristCodeVsDesc[dataItem.riskcode] === "Low"
-                          ? "text-emerald-900"
-                          : "text-blue-900"
+                          ? "text-emerald-900 dark:text-emerald-400"
+                          : "text-blue-900 dark:text-blue-400"
                       }`}
                     />
                     {dataItem.alert}
@@ -260,131 +224,6 @@ export default function Dashboard({ _data }) {
                   </span>
                 </AccordionTrigger>
                 <AccordionContent className="px-6">
-                  {/* <p className="mt-2 flex dark:text-gray-400">
-                    <span className="text-sm text-gray-900 font-semibold w-24 dark:text-gray-50">
-                      Risk:
-                    </span>
-                    <Badge
-                      variant={
-                        ristCodeVsDesc[dataItem.riskcode] === "Critical" ||
-                        ristCodeVsDesc[dataItem.riskcode] === "High"
-                          ? "error"
-                          : ristCodeVsDesc[dataItem.riskcode] === "Medium"
-                          ? "warning"
-                          : ristCodeVsDesc[dataItem.riskcode] === "Low"
-                          ? "success"
-                          : "default"
-                      }
-                    >
-                      {ristCodeVsDesc[dataItem.riskcode]}
-                    </Badge>
-                  </p> */}
-                  {/* <p className="mt-2 flex dark:text-gray-400">
-                    <span className="text-sm text-gray-900 font-semibold w-24 dark:text-gray-50">
-                      Confidence:
-                    </span>
-                    <Badge
-                      variant={
-                        ristCodeVsDesc[dataItem.confidence] === "Critical" ||
-                        ristCodeVsDesc[dataItem.confidence] === "High"
-                          ? "error"
-                          : ristCodeVsDesc[dataItem.confidence] === "Medium"
-                          ? "warning"
-                          : ristCodeVsDesc[dataItem.confidence] === "Low"
-                          ? "success"
-                          : "default"
-                      }
-                    >
-                      {ristCodeVsDesc[dataItem.confidence]}
-                    </Badge>
-                  </p> */}
-                  {/* <p className="mt-2 flex dark:text-gray-400">
-                    <span className="text-sm text-gray-900 font-semibold w-24 dark:text-gray-50">
-                      Instances:
-                    </span>
-                    <span>{dataItem.count}</span>
-                  </p> */}
-                  {/* <p className="mt-2 flex dark:text-gray-400">
-                    <span className="text-sm text-gray-900 font-semibold w-24 dark:text-gray-50">
-                      CWE Id:
-                    </span>
-                    <span>{dataItem["cweid"]}</span>
-                  </p> */}
-                  {/* <p className="mt-2 flex dark:text-gray-400">
-                    <span className="text-sm text-gray-900 font-semibold w-24 dark:text-gray-50">
-                      WASC Id:
-                    </span>
-                    <span>{dataItem["wascid"]}</span>
-                  </p> */}
-                  {/* <p className="mt-2 flex dark:text-gray-400">
-                    <span className="text-sm text-gray-900 font-semibold w-24 dark:text-gray-50">
-                      Plugin Id:
-                    </span>
-                    <span>{dataItem["pluginid"]}</span>
-                  </p> */}
-                  {/* <p className="mt-2 flex dark:text-gray-400">
-                    <span className="text-sm text-gray-900 font-semibold w-32 dark:text-gray-50">
-                      Description:
-                    </span>
-                    <span>{removePTags(dataItem.desc)}</span>
-                  </p> */}
-                  {/* <p className="mt-2 flex dark:text-gray-400">
-                    <span className="text-sm text-gray-900 font-semibold w-24 dark:text-gray-50">
-                      Solution:
-                    </span>
-                    <span>{removePTags(dataItem.solution)}</span>
-                  </p> */}
-                  {/* <p className="flex mt-2  dark:text-gray-400">
-                    <p className="text-sm text-gray-900 font-semibold w-24 dark:text-gray-50">
-                      Reference:
-                    </p>
-                    <ul className="">
-                      {extractTextFromPTags(dataItem.reference).map(
-                        (reference, index) => (
-                          <li key={index} className="mb-1">
-                            {reference}
-                          </li>
-                        )
-                      )}
-                    </ul>
-                  </p> */}
-                  {/* {dataItem.instances.map((instance) => (
-                    <AccordionItem value={instance.id} key={instance.id}>
-                      <AccordionTrigger>
-                        <span className="flex items-center gap-2 h-8">
-                          <RiLink className="size-4 text-blue-500" />
-                          {instance.uri}
-                        </span>
-                      </AccordionTrigger>
-                      <AccordionContent className="px-6">
-                        <p className="flex dark:text-gray-400">
-                          <span className="text-sm text-gray-900 font-semibold w-24 dark:text-gray-50">
-                            Method:
-                          </span>
-                          <span>{instance.method}</span>
-                        </p>
-                        <p className="flex mt-1 dark:text-gray-400">
-                          <span className="text-sm text-gray-900 font-semibold w-24 dark:text-gray-50">
-                            Parameter:
-                          </span>
-                          <span>{instance.param}</span>
-                        </p>
-                        <p className="flex mt-1 dark:text-gray-400">
-                          <span className="text-sm text-gray-900 font-semibold w-24 dark:text-gray-50">
-                            Attack:
-                          </span>
-                          <span>{instance.attack}</span>
-                        </p>
-                        <p className="flex mt-1 dark:text-gray-400">
-                          <span className="text-sm text-gray-900 font-semibold w-24 dark:text-gray-50">
-                            Evidence:
-                          </span>
-                          <span>{instance.evidence}</span>
-                        </p>
-                      </AccordionContent>
-                    </AccordionItem>
-                  ))} */}
-
                   <div className="mt-2 dark:text-gray-400">
                     {/* Risk & Confidence */}
                     {[
