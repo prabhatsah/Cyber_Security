@@ -277,7 +277,7 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
               </div>
             </div>
 
-            <div className="p-3 text-gray-700 dark:text-gray-300 text-sm leading-relaxed flex-grow overflow-hidden text-ellipsis line-clamp-2">
+            <div className="p-4 text-gray-700 dark:text-gray-300 text-sm leading-relaxed flex-grow overflow-hidden text-ellipsis line-clamp-2">
               <Text className="mt-1">
                 Use <code>docker scan</code> to check for vulnerabilities. Save
                 and transfer images easily with
@@ -336,7 +336,7 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
               </div>
             </div>
 
-            <div className="p-3 text-gray-700 dark:text-gray-300 text-sm leading-relaxed flex-grow overflow-hidden text-ellipsis line-clamp-2">
+            <div className="p-4 text-gray-700 dark:text-gray-300 text-sm leading-relaxed flex-grow overflow-hidden text-ellipsis line-clamp-2">
               <Text className="mt-1">
                 Track container history, troubleshoot issues, and manage
                 inactive containers by identifying their status and last run
@@ -390,7 +390,7 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
               </div>
             </div>
 
-            <div className="p-3 text-gray-700 dark:text-gray-300 text-sm leading-relaxed flex-grow overflow-hidden text-ellipsis line-clamp-2">
+            <div className="p-4 text-gray-700 dark:text-gray-300 text-sm leading-relaxed flex-grow overflow-hidden text-ellipsis line-clamp-2">
               <Text className="mt-1">
                 Scan a remote image directly from a registry by specifying the
                 image name and tag. Example:{" "}
@@ -439,7 +439,7 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
               </div>
             </div>
 
-            <div className="p-3 text-gray-700 dark:text-gray-300 text-sm leading-relaxed flex-grow overflow-hidden text-ellipsis line-clamp-2">
+            <div className="p-4 text-gray-700 dark:text-gray-300 text-sm leading-relaxed flex-grow overflow-hidden text-ellipsis line-clamp-2">
               <Text className="mt-1">
                 You can scan your system for security issues using a
                 container-based tool. If the tool is installed, you can run it
