@@ -215,7 +215,7 @@ export async function updateColumn(
   key: string,
   provider: string
 ) {
-  const jsonString = JSON.stringify(data).replace(/"/g, '\\"');
+  const jsonString = JSON.stringify(data).replace(/'/g, "");
   console.log(jsonString)
   const query = `
     UPDATE "${tableName}"
