@@ -24,7 +24,6 @@ import { useRouter } from "next/navigation";
 import SignUp from "./components_signUp/signup_form_component";
 import { clearAllCookieSession } from "@/ikon/utils/session/cookieSession";
 import { LoginForm } from "@/components/ui/login-form";
-import { Shield } from "lucide-react";
 
 const SigninFormSchema = z.object({
   userName: z.string().min(2, { message: "Please enter username." }).trim(),
@@ -84,101 +83,95 @@ function Login() {
     }
   }
   return (
-    // <>
-    //   {/* Login Form */}
-    //   <Form {...form}>
-    //     <form
-    //       onSubmit={form.handleSubmit(signin)}
-    //       className="flex flex-col justify-between"
-    //     >
-    //       {/* Main Form Section */}
-    //       <div className="main-form-section flex flex-col gap-3">
-    //         {/* Username Field */}
-    //         <FormField
-    //           control={form.control}
-    //           name="userName"
-    //           render={({ field }) => (
-    //             <FormItem className="mb-3">
-    //               <FormControl>
-    //                 <Input
-    //                   {...field}
-    //                   placeholder="Username"
-    //                   id="userName"
-    //                   className="form-input-bg "
-    //                 />
-    //               </FormControl>
-    //               <FormMessage />
-    //             </FormItem>
-    //           )}
-    //         />
+    <>
+      {/* Login Form */}
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(signin)}
+          className="flex flex-col justify-between"
+        >
+          {/* Main Form Section */}
+          <div className="main-form-section flex flex-col gap-3">
+            {/* Username Field */}
+            <FormField
+              control={form.control}
+              name="userName"
+              render={({ field }) => (
+                <FormItem className="mb-3">
+                  <FormControl>
+                    <Input
+                      {...field}
+                      placeholder="Username"
+                      id="userName"
+                      className="form-input-bg "
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-    //         {/* Password Field */}
-    //         <FormField
-    //           control={form.control}
-    //           name="password"
-    //           render={({ field }) => (
-    //             <FormItem className="mb-3">
-    //               <FormControl>
-    //                 <Input
-    //                   {...field}
-    //                   type="password"
-    //                   placeholder="************"
-    //                   id="password"
-    //                   className="form-input-bg"
-    //                 />
-    //               </FormControl>
-    //               <FormMessage />
-    //             </FormItem>
-    //           )}
-    //         />
-    //         <div className="text-right mb-3 forgot-password-text">
-    //           <a href="/forgot-password" className="hover:underline">
-    //             Forgot Password?
-    //           </a>
-    //         </div>
+            {/* Password Field */}
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem className="mb-3">
+                  <FormControl>
+                    <Input
+                      {...field}
+                      type="password"
+                      placeholder="************"
+                      id="password"
+                      className="form-input-bg"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <div className="text-right mb-3 forgot-password-text">
+              <a href="/forgot-password" className="hover:underline">
+                Forgot Password?
+              </a>
+            </div>
 
-    //         {/* Buttons */}
-    //         <div className="flex flex-col-reverse lg:flex-row gap-3 justify-between items-center mb-3">
-    //           <button
-    //             onClick={(e) => {
-    //               e.preventDefault();
-    //               form.reset();
-    //             }}
-    //             className="reset-btn"
-    //           >
-    //             Reset
-    //           </button>
-    //           <button className="login-btn">Login</button>
-    //         </div>
-    //         <div className="text-center text-white flex flex-row gap-2">
-    //           <span className="dont-have-acct-text">
-    //             Don’t have any account?
-    //           </span>
-    //           <span className="signup-text" onClick={() => setOpen(true)}>
-    //             Sign Up
-    //           </span>
-    //         </div>
-    //         <div className="flex flex-col mt-5">
-    //           <span className="support-text">Looking for Support?</span>
-    //           <span className="version-text">Version 8.0.0</span>
-    //         </div>
-    //       </div>
-    //     </form>
-    //   </Form>
-    //   <SignUp open={open} setOpen={setOpen} />
-    // </>
+            {/* Buttons */}
+            <div className="flex flex-col-reverse lg:flex-row gap-3 justify-between items-center mb-3">
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  form.reset();
+                }}
+                className="reset-btn"
+              >
+                Reset
+              </button>
+              <button className="login-btn">Login</button>
+            </div>
+            <div className="text-center text-white flex flex-row gap-2">
+              <span className="dont-have-acct-text">
+                Don’t have any account?
+              </span>
+              <span className="signup-text" onClick={() => setOpen(true)}>
+                Sign Up
+              </span>
+            </div>
+            <div className="flex flex-col mt-5">
+              <span className="support-text">Looking for Support?</span>
+              <span className="version-text">Version 8.0.0</span>
+            </div>
+          </div>
+        </form>
+      </Form>
+      <SignUp open={open} setOpen={setOpen} />
+    </>
 
-    <div className="bg-dark-bgPrimary flex w-full items-center justify-center absolute inset-0">
-      <div className="absolute top-5 left-5 flex items-center ">
-        <Shield className="h-8 w-8 text-primary" />
-        <h1 className="ml-2 text-xl font-semibold text-gray-900 dark:text-white">
-          SecureGuard
-        </h1>
-      </div>
-      <div className="w-full max-w-sm">
-        <LoginForm />
-      </div>
-    </div>
+    // <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
+    //   <div className="w-full max-w-sm">
+    //     <LoginForm />
+    //   </div>
+    // </div>
   );
 }
 

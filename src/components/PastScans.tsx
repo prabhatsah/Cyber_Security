@@ -73,13 +73,21 @@ export default function PastScans() {
         <h3 className="text-tremor-title font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong">
           Past Scans
         </h3>
-        <p className="text-tremor-default text-tremor-content dark:text-dark-tremor-content">
+        <p
+          className="text-tremor-default dark:text-gray-400 text-gray-700
+        "
+        >
           Briefly analyze past scans
         </p>
       </div>
 
       {data.map((order) => (
-        <Card key={order.item} className="p-2 mb-5">
+        <Card
+          key={order.item}
+          className="p-2 mb-5
+        bg-tremor-background ring-tremor-ring shadow-tremor-card dark:ring-dark-tremor-ring dark:shadow-dark-tremor-card border-tremor-brand dark:border-dark-tremor-brand relative  flex-col rounded-lg justify-between
+           dark:bg-dark-bgPrimary hover:bg-tremor-background-muted hover:dark:bg-dark-tremor-background-mute"
+        >
           <div className="rounded-sm border border-tremor-border bg-tremor-background-muted p-4 dark:border-dark-tremor-border dark:bg-dark-tremor-background-muted">
             <div className="flex items-center justify-between space-x-4 sm:justify-start sm:space-x-2">
               <h4 className="truncate text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">
@@ -107,7 +115,7 @@ export default function PastScans() {
                   className="size-5 text-tremor-content-subtle dark:text-dark-tremor-content-subtle"
                   aria-hidden={true}
                 />
-                <p className="text-tremor-default text-tremor-content dark:text-dark-tremor-content">
+                <p className="text-tremor-default text-tremor-content dark:text-gray-50">
                   {order.company}
                 </p>
               </div>
@@ -116,7 +124,7 @@ export default function PastScans() {
                   className="size-5 text-tremor-content-subtle dark:text-dark-tremor-content-subtle"
                   aria-hidden={true}
                 />
-                <p className="text-tremor-default text-tremor-content dark:text-dark-tremor-content">
+                <p className="text-tremor-default text-tremor-content dark:text-gray-50">
                   {order.location}
                 </p>
               </div>
@@ -125,7 +133,7 @@ export default function PastScans() {
                   className="size-5 text-tremor-content-subtle dark:text-dark-tremor-content-subtle"
                   aria-hidden={true}
                 />
-                <p className="text-tremor-default text-tremor-content dark:text-dark-tremor-content">
+                <p className="text-tremor-default text-tremor-content dark:text-gray-50">
                   {order.contact}
                 </p>
               </div>
@@ -148,7 +156,7 @@ export default function PastScans() {
                   Alerts ({order.fulfillmentActual}/{order.fulfillmentTotal})
                 </p>
               </div>
-              <p className="mt-2 text-tremor-default text-tremor-content dark:text-dark-tremor-content sm:mt-0">
+              <p className="mt-2 text-tremor-default text-tremor-content dark:text-gray-50 sm:mt-0">
                 Scanned <strong>{order.lastUpdated}</strong>
               </p>
             </div>

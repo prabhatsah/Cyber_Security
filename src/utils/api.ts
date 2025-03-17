@@ -40,9 +40,7 @@ const columnArr: Record<string, string>[] = [
 
 import { tableData } from "@/app/scans/WebApi/data";
 
-
 const baseUrl = typeof window === "undefined" ? "http://localhost:3000" : "";
-
 
 export async function createTable(
   tableName: string,
@@ -78,11 +76,11 @@ export async function descTable(tableName: string) {
                             WHERE table_name = '${tableName}'
                             ) AS columns_info;
                             `;
-                            const res = await fetch(`${baseUrl}/api/dbApi`, {
-                              method: "POST",
-                              headers: { "Content-Type": "application/json" },
-                              body: JSON.stringify({ query }),
-                            });
+  const res = await fetch(`${baseUrl}/api/dbApi`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ query }),
+  });
 
   return res.json();
 }
@@ -95,16 +93,16 @@ export async function showTables() {
                     FROM information_schema.tables 
                     WHERE table_schema = 'public'
                     ) AS tables_info;`;
-                    const res = await fetch(`${baseUrl}/api/dbApi`, {
-                      method: "POST",
-                      headers: { "Content-Type": "application/json" },
-                      body: JSON.stringify({ query }),
-                    });
+  const res = await fetch(`${baseUrl}/api/dbApi`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ query }),
+  });
 
   return res.json();
 }
 
-//update table with values
+//insert into table with values
 export async function addColumn(
   tableName: string,
   values: Record<string, any>[]
@@ -239,6 +237,37 @@ export async function updateColumn(
   return res.json();
 }
 
+export async function updateColumnGeneralised(
+  tableName: string,
+  columnName: string,
+  data: any,
+  key: string,
+  associatiedColumn: string,
+  associatedValue: string
+) {
+  const jsonString = JSON.stringify(data).replace(/"/g, '\\"');
+  const query = `
+    UPDATE "${tableName}"
+    SET "${columnName}" = jsonb_set(
+      COALESCE("${columnName}", '{}'::jsonb),
+      '{${key}}',
+      '${jsonString}'::jsonb,
+      true
+    )
+    WHERE ${associatiedColumn} = '${associatedValue}';
+  `;
+
+  console.log(query);
+
+  const res = await fetch(`${baseUrl}/api/dbApi`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ query }),
+  });
+
+  return res.json();
+}
+
 export async function deleteObjectWithKey(
   key: string,
   tableName: string,
@@ -319,19 +348,23 @@ export async function fetchData(
   return res.json();
 }
 
-export async function deleteConfigWithKey(tableName : string , key : string , value : string){
-  let query : string ="";
-  if(key && value){
+export async function deleteConfigWithKey(
+  tableName: string,
+  key: string,
+  value: string
+) {
+  let query: string = "";
+  if (key && value) {
     query = `UPDATE ${tableName}
               SET data = data - key
               FROM (
                   SELECT key
                   FROM ${tableName}, jsonb_each(data)                    //data ---> columnName fixed
                   WHERE value->>'${key}' = '${value}'
-              ) subquery`
+              ) subquery`;
   }
 
-  console.log(query)
+  console.log(query);
   const res = await fetch(`${baseUrl}/api/dbApi`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
