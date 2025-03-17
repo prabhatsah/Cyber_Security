@@ -46,7 +46,7 @@ export async function POST(req: Request) {
       );
   
       console.log("Query Result:", result);
-      //await ssh.execCommand(`rm -f ${remoteFilePath}`);
+      await ssh.execCommand(`rm -f ${remoteFilePath}`);
       ssh.dispose();
       let jsonData : any;
       if(result.stdout.includes('json'))
