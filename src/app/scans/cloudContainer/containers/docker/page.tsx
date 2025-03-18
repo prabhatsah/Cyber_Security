@@ -140,6 +140,7 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
   ) => {
     let data: any;
     //creatingTable().then(setTableResult);
+    //api.fetchData('image_file_scanning',"slno",{column : "type" , value: "Image"}).then(setTableResult);
     try {
       setLoading(commandKey);
       setError(null);

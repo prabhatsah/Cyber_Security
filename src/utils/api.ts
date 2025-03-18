@@ -272,9 +272,6 @@ export async function updateColumnGeneralised(
 }
 
 
-
-
-
 export async function deleteObjectWithKey(
   key: string,
   tableName: string,
@@ -308,7 +305,7 @@ export async function fetchData(
   
   const query = {tableName,orderByColumn,columnFilter,jsonFilter}
   console.log(query);
-  
+
   const res = await fetch(`${baseUrl}/api/dbApi`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
