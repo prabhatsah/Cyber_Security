@@ -1,9 +1,11 @@
 "use client";
 import { useState } from "react";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+//import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { Card, Title, Text, Button } from "@tremor/react";
 import { Boxes, Server } from "lucide-react";
 import DockerPage from "./docker/page";
 import KubernetesPage from "./kubernetes/page";
+
 
 export default function Dashboard() {
   const [selectedTool, setSelectedTool] = useState<string | null>(null);
@@ -11,71 +13,119 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen flex flex-col items-center">
       {selectedTool === "docker" ? (
-        <DockerPage onBack={() => setSelectedTool(null)} />) : selectedTool === "kubernetes" ? (
-        <KubernetesPage onBack={() => setSelectedTool(null)} />) : ( 
+        <DockerPage onBack={() => setSelectedTool(null)} />
+      ) : selectedTool === "kubernetes" ? (
+        <KubernetesPage onBack={() => setSelectedTool(null)} />
+      ) : (
         <>
           <h1 className="text-2xl mt-10 mb-8 text-blue-500">Container Tools</h1>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-6xl px-6">
-
-            <Card className="cursor-default transform transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-2xl rounded-lg border border-gray-300 bg-white">
-              <CardHeader className="flex flex-row items-center gap-4 p-6 rounded-t-lg bg-blue-500 text-white">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-6xl">
+            <Card className="cursor-default transform transition-all rounded-lg p-0 duration-300 hover:scale-105 shadow-lg hover:shadow-2xl flex flex-col">
+              <div className="flex flex-row items-center gap-4 p-6 w-full bg-blue-500 text-white rounded-t">
                 <Boxes className="w-10 h-10" />
-                <CardTitle className="text-2xl font-semibold">Docker</CardTitle>
-              </CardHeader>
-              <CardDescription className="px-6 py-4 text-gray-600 text-sm leading-relaxed">
-                <p>
-                  Docker is an open-source platform that enables developers to automate the deployment, scaling, and management 
-                  of applications using containerization. It allows applications and their dependencies to be packaged together 
-                  in lightweight, portable containers.
-                </p>
+                <p className="text-2xl font-semibold">Docker</p>
+              </div>
 
-                <p className="mt-3">
-                  Containers ensure consistency across different environments, making Docker a popular choice for 
-                  DevOps, microservices, and cloud-native applications. It simplifies software delivery by eliminating 
-                  compatibility issues between development, testing, and production.
-                </p>
+              <div className="px-6 py-4 text-gray-600 text-sm leading-relaxed dark:text-gray-300 flex-grow min-h-[200px]">
+                <Text>
+                  Docker is an open-source platform designed to simplify the
+                  deployment, scaling, and management of applications using
+                  containerization. By encapsulating applications and their
+                  dependencies into lightweight, portable containers, Docker
+                  ensures consistency across different computing environments.
+                  Unlike traditional virtualization, which requires an entire
+                  operating system for each instance, Docker utilizes the host
+                  OS kernel, making containers faster, more efficient, and
+                  resource-friendly.
+                </Text>
 
-                <p className="mt-3">
-                  Key features include fast and efficient containerized application deployment, resource isolation, scalability, 
-                  and integration with orchestration tools like Kubernetes. Docker supports multiple operating systems and 
-                  cloud platforms.
-                </p>
-              </CardDescription>
-              <CardContent className="flex mt-5 justify-center p-5 bg-gray-100 rounded-b-lg">
-                <button className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-8 rounded-full shadow-lg transition-all" onClick={() => setSelectedTool("docker")}>
-                  Scan for docker
-                </button>
-              </CardContent>
+                <Text className="mt-3">
+                  One of Docker’s key advantages is its ability to maintain
+                  uniformity across development, testing, and production
+                  environments. Containers allow developers to package software
+                  with all necessary dependencies, ensuring it runs identically
+                  regardless of the underlying infrastructure. This eliminates
+                  the common “it works on my machine” problem, making Docker an
+                  essential tool for DevOps workflows, CI/CD pipelines, and
+                  microservices-based architectures.
+                </Text>
+
+                <Text className="mt-3">
+                  Additionally, Docker improves scalability and operational
+                  efficiency by enabling rapid container deployment and
+                  orchestration. It integrates seamlessly with tools like
+                  Kubernetes, which automates scaling, load balancing, and
+                  self-healing functionalities. Organizations leverage Docker to
+                  optimize resource utilization, reduce infrastructure costs,
+                  and enhance application portability across cloud, on-premise,
+                  and hybrid environments.
+                </Text>
+              </div>
+
+              <div className="flex mt-auto justify-center p-5 w-full rounded-b-lg">
+                <Button
+                  color="blue"
+                  size="lg"
+                  className="rounded-full px-8 py-3"
+                  onClick={() => setSelectedTool("docker")}
+                >
+                  Scan for Docker
+                </Button>
+              </div>
             </Card>
 
-
-            <Card className="cursor-default transform transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-2xl rounded-lg border border-gray-300 bg-white">
-              <CardHeader className="flex flex-row items-center gap-4 p-6 rounded-t-lg bg-blue-500 text-white">
+            <Card className="cursor-default transform transition-all rounded-lg p-0 duration-300 hover:scale-105 shadow-lg hover:shadow-2xl flex flex-col">
+              <div className="flex flex-row items-center gap-4 p-6 w-full bg-blue-500 text-white rounded-t">
                 <Server className="w-10 h-10" />
-                <CardTitle className="text-2xl font-semibold">Kubernetes</CardTitle>
-              </CardHeader>
-              <CardDescription className="px-6 py-4 text-gray-600 text-sm leading-relaxed">
-                <p>
-                  Kubernetes is an open-source container orchestration system that automates deployment, scaling, and management 
-                  of containerized applications. It helps organizations efficiently manage workloads across multiple environments.
-                </p>
-                
-                <p className="mt-3">
-                  Originally developed by Google and now maintained by the Cloud Native Computing Foundation (CNCF), Kubernetes 
-                  enables automated rollouts, self-healing, load balancing, and resource optimization. It integrates seamlessly with 
-                  Docker and other container runtimes.
-                </p>
+                <p className="text-2xl text-white font-semibold">Kubernetes</p>
+              </div>
 
-                <p className="mt-3">
-                  Key features include service discovery, storage orchestration, networking, and security policies. 
-                  Kubernetes is widely used in cloud-native applications, microservices architectures, and hybrid cloud environments.
-                </p>
-              </CardDescription>
-              <CardContent className="flex justify-center p-5 mt-5  bg-gray-100 rounded-b-lg">
-                <button className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-8 rounded-full shadow-lg transition-all" onClick={() => setSelectedTool("kubernetes")}>
-                  Scan for kubernetes
-                </button>
-              </CardContent>
+              <div className="px-6 py-4 text-gray-600 text-sm leading-relaxed dark:text-gray-300 flex-grow min-h-[200px]">
+                <Text>
+                  Kubernetes is an open-source container orchestration system
+                  that automates the deployment, scaling, and management of
+                  containerized applications. It provides a robust framework for
+                  handling complex workloads by efficiently distributing
+                  resources across different environments. With Kubernetes,
+                  organizations can ensure high availability, fault tolerance,
+                  and seamless application performance, whether running on
+                  cloud, on-premise, or hybrid infrastructure.
+                </Text>
+
+                <Text className="mt-3">
+                  Originally developed by Google and now maintained by the Cloud
+                  Native Computing Foundation (CNCF), Kubernetes has become the
+                  industry standard for container orchestration. It offers
+                  advanced features such as automated rollouts and rollbacks,
+                  self-healing, service discovery, and load balancing. By
+                  dynamically managing containerized workloads, Kubernetes
+                  optimizes resource utilization and enhances operational
+                  efficiency, making it a key component of modern DevOps
+                  workflows.
+                </Text>
+
+                <Text className="mt-3">
+                  Kubernetes integrates seamlessly with container runtimes like
+                  Docker, allowing developers to deploy and scale applications
+                  effortlessly. It supports multi-cloud and hybrid environments,
+                  enabling businesses to run applications consistently across
+                  different infrastructures. With features like persistent
+                  storage management, network policies, and security controls,
+                  Kubernetes ensures reliability, scalability, and security for
+                  cloud-native applications.
+                </Text>
+              </div>
+
+              <div className="flex mt-auto justify-center p-5 w-full rounded-b-lg">
+                <Button
+                  color="blue"
+                  size="lg"
+                  className="rounded-full px-8 py-3"
+                  onClick={() => setSelectedTool("docker")}
+                >
+                  Scan for Kubernetes
+                </Button>
+              </div>
             </Card>
           </div>
         </>

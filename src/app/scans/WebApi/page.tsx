@@ -989,7 +989,6 @@ export default function WebApi() {
   return (
     <div className="p-4">
       <p className="font-bold text-gray-600">Web & API Security</p>
-
       <SearchBar
         query={query}
         setQuery={setQuery}
@@ -1002,12 +1001,14 @@ export default function WebApi() {
       <Tabs
         tabs={[
           {
+            icon: <LiaSpiderSolid />,
             label: "Spider",
             content: (
               <SpiderScan progress={spiderProgress} foundURI={foundURI} />
             ),
           },
           {
+            icon: <FaFire />,
             label: "Active Scan",
             content: (
               <ActiveScan

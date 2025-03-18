@@ -3,6 +3,7 @@ import React, { useState } from "react";
 interface Tab {
   label: string;
   content: React.ReactNode;
+  icon?: React.ReactNode;
 }
 
 interface TabsProps {
@@ -14,18 +15,19 @@ const Tabs: React.FC<TabsProps> = ({ tabs }) => {
 
   return (
     <div className="w-full">
-      <div className="flex border-b border-gray-300">
+      <div className="flex border-b border-gray-200 dark:border-gray-800 inline-flex ">
         {tabs.map((tab, index) => (
           <button
             key={index}
-            className={`px-4 py-2 text-lg font-semibold focus:outline-none ${
+            className={`px-4 flex items-center gap-2 py-2 text-lg font-semibold focus:outline-none ${
               activeTab === index
                 ? "border-b-2 border-blue-500 text-blue-500"
                 : "text-gray-600 hover:text-blue-500"
             }`}
             onClick={() => setActiveTab(index)}
           >
-            {tab.label}
+           <span>{tab.icon}</span>
+            <span>{tab.label}</span>
           </button>
         ))}
       </div>
