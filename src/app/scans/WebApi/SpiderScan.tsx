@@ -15,34 +15,21 @@ import { Gauge } from "lucide-react";
 export default function SpiderScan({ progress, foundURI }) {
   return (
     <div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Card className="p-6">
-            <div className="flex items-center gap-6">
-              <div className="p-3 bg-primary/10 rounded-lg">
-                <Gauge className="w-6 h-6 text-primary" />
-              </div>
-              <div className="flex-1">
-                <p className="text-sm font-medium text-muted-foreground mb-3">Scan Progress</p>
-                <div className="space-y-2">
-                  <progress value={progress} className="h-2" />
-                  <p className="text-xs text-muted-foreground text-right">{progress}%</p>
-                </div>
-              </div>
-            </div>
-          </Card>
-
-          <Card className="p-6">
-            <div className="flex items-center justify-between gap-6">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground mb-3">Found URLs</p>
-                <p className="text-2xl font-bold">{foundURI.length}</p>
-              </div>
-              <div className="p-3 bg-primary/10 rounded-lg">
-                <Gauge className="w-6 h-6 text-primary" />
-              </div>
-            </div>
-          </Card>
+      <div className="flex gap-5">
+        <ProgressBar
+          value={progress}
+          label={`${progress}%`}
+        className="w-1/2"
+/>
+        <div className="flex gap-5 w-1/2">
+          <div>
+            <p>
+              <span>Found URLs: </span>
+              <span>{foundURI.length}</span>
+            </p>
+          </div>
         </div>
+      </div>
       <div className="w-full mt-8">
         <h1 className="text-md font-semibold text-gray-900 dark:text-gray-50">
           URLs

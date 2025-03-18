@@ -38,7 +38,8 @@ import {
 } from "@/components/Table";
 import SpiderScan from "./SpiderScan";
 import ActiveScan from "./ActiveScan";
-
+import { LiaSpiderSolid } from "react-icons/lia";
+import { FaFire } from "react-icons/fa";
 interface webApiData {
   [key: string]: any;
 }
@@ -791,12 +792,14 @@ export default function WebApi() {
       <Tabs
         tabs={[
           {
+            icon: <LiaSpiderSolid />,
             label: "Spider",
             content: (
               <SpiderScan progress={spiderProgress} foundURI={foundURI} />
             ),
           },
           {
+            icon: <FaFire />,
             label: "Active Scan",
             content: (
               <ActiveScan
