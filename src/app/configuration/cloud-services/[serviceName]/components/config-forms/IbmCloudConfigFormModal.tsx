@@ -2,15 +2,15 @@ import { RiCloseLine, RiCloudLine } from "@remixicon/react";
 import { Dialog, DialogPanel, Divider } from "@tremor/react";
 
 export default function IbmCloudConfigFormModal({
-  serviceNameInUrl,
+  serviceUrl,
   isFormModalOpen,
   onClose,
 }: {
-  serviceNameInUrl: string;
+  serviceUrl: string;
   isFormModalOpen: boolean;
   onClose: () => void;
 }) {
-  const serviceNameArray = serviceNameInUrl.split("-");
+  const serviceNameArray = serviceUrl.split("-");
   let serviceName = "";
   serviceNameArray.forEach((eachPart) => {
     if (eachPart === "ibm") {
