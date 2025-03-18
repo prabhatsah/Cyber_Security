@@ -20,8 +20,17 @@ import * as api from "@/utils/api";
 import { Card, Title, Text, Button } from "@tremor/react";
 import { TextInput } from "@tremor/react";
 import { Badge } from "@tremor/react";
+import * as prevScans from "./scanHistory";
 
 type CommandKey = keyof typeof dockerCommands;
+
+const fetchHistoryScans = async () => {
+  if (!prevScans.getter()) {
+    const scans = await api.fetchData("image_file_scanning", "slno");
+    prevScans.setter(scans);
+  }
+};
+fetchHistoryScans();
 
 export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
   const [tableType, setTableType] = useState("");
@@ -39,55 +48,58 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
   const [currSeverity, setCurrSeverity] = useState<
     { severity: string; count: number }[]
   >([]);
+
   const [fileScan, setFileScan] = useState(0);
   const [imageFiles, setImageFiles] = useState<string | null>(null);
   const [fileSystemResult, setfileSystemResult] = useState<Record<string, any>>(
     {}
   );
+
+  console.log(prevScans.getter());
+
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [tableResult, setTableResult] = useState<any>();
   const toggleFullScreen = () => {
     setIsFullScreen(!isFullScreen);
   };
 
-  //api.fetchData('image_file_scanning',"slno").then(setTableResult);
-
   function cleanAndFormatJson(jsonString: string): string {
     jsonString = jsonString.replace(/\"\/bin\/sh\"/g, "");
     return JSON.stringify(JSON.parse(jsonString), null, 2);
   }
-
   useEffect(() => {
     console.log(tableResult);
   }, [tableResult]);
 
-  function creatingTable() {
-    const name = "Image_File_Scanning";
+  //dummy////////////////////////////////
+  // function creatingTable() {
+  //   const name = "Image_File_Scanning";
 
-    const columnArr: Record<string, string>[] = [
-      { column: "SLNO", dataType: "Serial", constraints: "PRIMARY KEY" },
-      { column: "type", dataType: "VARCHAR(100)", constraints: "NOT NULL" },
-      {
-        column: "data",
-        dataType: "jsonb",
-        defaultValue: "'{}'",
-      },
-    ];
+  //   const columnArr: Record<string, string>[] = [
+  //     { column: "SLNO", dataType: "Serial", constraints: "PRIMARY KEY" },
+  //     { column: "type", dataType: "VARCHAR(100)", constraints: "NOT NULL" },
+  //     {
+  //       column: "data",
+  //       dataType: "jsonb",
+  //       defaultValue: "'{}'",
+  //     },
+  //   ];
 
-    const valuesArr: Record<string, any>[] = [
-      { column: "slno" },
-      {
-        column: "type",
-        value: ["Image", "File"],
-      },
-      {
-        column: "data",
-        value: ["{}", "{}"],
-      },
-    ];
+  //   const valuesArr: Record<string, any>[] = [
+  //     { column: "slno" },
+  //     {
+  //       column: "type",
+  //       value: ["Image", "File"],
+  //     },
+  //     {
+  //       column: "data",
+  //       value: ["{}", "{}"],
+  //     },
+  //   ];
 
-    return api.addColumn(name, valuesArr);
-  }
+  //   return api.addColumn(name, valuesArr);
+  // }
+  ///////////////////////////////////////
 
   useEffect(() => {
     console.log(fileSystemResult);

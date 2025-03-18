@@ -26,3 +26,23 @@ export interface ConfigurationContextType {
   configurationData: ConfigurationData;
   setConfigurationData: React.Dispatch<React.SetStateAction<ConfigurationData>>;
 }
+
+export interface EachConfigDataFromServer {
+  id: string;
+  name: string;
+  data: Record<string, object>;
+}
+
+export interface EachConfigDataFormatted {
+  id: string;
+  data: Record<string, GoogleCloudConfig | any>;
+}
+
+export interface ConfigDataFormatted {
+  "amazon-web-services": EachConfigDataFormatted;
+  "microsoft-azure": EachConfigDataFormatted;
+  "google-cloud-platform": EachConfigDataFormatted;
+  "ibm-cloud": EachConfigDataFormatted;
+  "oracle-cloud-infrastructure": EachConfigDataFormatted;
+  "alibaba-cloud": EachConfigDataFormatted;
+}
