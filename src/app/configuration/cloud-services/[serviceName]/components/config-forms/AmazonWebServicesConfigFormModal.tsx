@@ -2,15 +2,15 @@ import { RiAmazonFill, RiCloseLine } from "@remixicon/react";
 import { Dialog, DialogPanel, Divider } from "@tremor/react";
 
 export default function AmazonWebServicesConfigFormModal({
-  serviceNameInUrl,
+  serviceUrl,
   isFormModalOpen,
   onClose,
 }: {
-  serviceNameInUrl: string;
+  serviceUrl: string;
   isFormModalOpen: boolean;
   onClose: () => void;
 }) {
-  const serviceNameArray = serviceNameInUrl.split("-");
+  const serviceNameArray = serviceUrl.split("-");
   let serviceName = "";
   serviceNameArray.forEach((eachPart) => {
     serviceName +=

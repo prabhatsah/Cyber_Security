@@ -265,7 +265,7 @@ export async function updateColumnGeneralised(
    const res = await fetch(`${baseUrl}/api/dbApi`, {
      method: "POST",
      headers: { "Content-Type": "application/json" },
-     body: JSON.stringify({ query }),
+     body: JSON.stringify({ query  , instruction : "update" }),
   });
 
   return res.json();
@@ -302,54 +302,17 @@ api.fetchData(name,null,null,null,{'projectId' : ['gcp-project-98341', 'gcp-proj
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 export async function fetchData(
   tableName: string,
-  provider: string | null,
-  column: string | null,
-  mainKey: string | null,
-  keyValue: Record<string, any> | null
-) {
-  let query = "";
-
-  if (!provider && !column && !mainKey && !keyValue) {
-    query = `SELECT jsonb_agg(t) FROM (SELECT * FROM "${tableName}") t;`;
-  } else if (column !== "data" && !mainKey && !keyValue) {
-    query = `SELECT jsonb_pretty(jsonb_agg(t))
-             FROM (SELECT * FROM "${tableName}" WHERE "${column}" = '${provider}') t;`;
-  } else if (mainKey) {
-    query = `SELECT jsonb_agg(data->'${mainKey}') 
-             FROM "${tableName}" 
-             WHERE data ? '${mainKey}';`;
-  } else if (keyValue) {
-    let conditions: string[] = [];
-
-    for (let key in keyValue) {
-      if (Array.isArray(keyValue[key])) {
-        const valuesList = keyValue[key]
-          .filter((value: any) => value !== null && value !== undefined)
-          .map((value: any) => `'${value}'`)
-          .join(", ");
-
-        if (valuesList) {
-          conditions.push(`value->>'${key}' IN (${valuesList})`);
-        }
-      }
-    }
-
-    if (conditions.length > 0) {
-      const conditionString = conditions.join(" AND ");
-
-      query = `
-            SELECT jsonb_agg(value)
-            FROM "${tableName}", 
-            LATERAL jsonb_each(data) AS each_obj(key, value)
-            WHERE ${conditionString};
-        `;
-    }
-  }
+  orderByColumn : string,
+  columnFilter?: { column: string; value: string | number },
+  jsonFilter?: { column: string; key: string; value: string | number }) {
+  
+  const query = {tableName,orderByColumn,columnFilter,jsonFilter}
   console.log(query);
+  
   const res = await fetch(`${baseUrl}/api/dbApi`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ query }),
+    body: JSON.stringify({ query , instruction : "fetch" }),
   });
 
   return res.json();
