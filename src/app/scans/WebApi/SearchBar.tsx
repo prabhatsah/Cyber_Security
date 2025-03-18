@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { FiSearch, FiXCircle } from "react-icons/fi";
-import { FcElectricity } from "react-icons/fc";
+import { GiElectric } from "react-icons/gi";
 
 import { Menu } from "@headlessui/react";
 
@@ -64,7 +64,7 @@ export default function SearchBar({
           {isLoading ? (
             <span className="animate-spin">🔄</span>
           ) : (
-            <FcElectricity  size={20} style={{ color: "red" }} />
+            <GiElectric    size={20} /> 
           )}
           
           {isLoading ? "Attacking": "Attack"}
