@@ -7,65 +7,82 @@ import {
   RiCloudLine,
   RiCloudy2Line,
   RiGoogleFill,
-  RiSettings5Line,
   RiWindowsFill,
 } from "@remixicon/react";
 import { Card } from "@tremor/react";
-import { useEffect } from "react";
-
-const data = [
+import { useEffect, useMemo, useState } from "react";
+import { useConfiguration } from "../components/ConfigurationContext";
+import {
+  EachConfigDataFormatted,
+  EachConfigDataFromServer,
+} from "../components/type";
+import CloudWidget from "./EachCloudWidget";
+const cloudConfigList = [
   {
     name: "Amazon Web Services",
     description:
       "AWS CloudFormation is a service that enables infrastructure as code, allowing users to define and provision AWS resources using templates.",
-    configurations: 7,
-    icon: RiAmazonLine,
+    icon: <RiAmazonLine className="size-5" aria-hidden={true} />,
     href: "/scans/cloudContainer/cloud/amazon-web-services",
+    configurations: [],
+    configurationCount: 0,
   },
   {
     name: "Microsoft Azure",
     description:
       "Azure Resource Manager (ARM) is a service that enables infrastructure as code, allowing users to deploy, manage, and organize Azure resources using declarative templates.",
-    configurations: 8,
-    icon: RiWindowsFill,
+    icon: <RiWindowsFill className="size-5" aria-hidden={true} />,
     href: "/scans/cloudContainer/cloud/microsoft-azure",
+    configurations: [],
+    configurationCount: 0,
   },
   {
     name: "Google Cloud Platform",
     description:
       "Google Cloud Deployment Manager is a service that enables infrastructure as code, allowing users to define, deploy, and manage Google Cloud resources using configuration templates.",
-    configurations: 17,
-    icon: RiGoogleFill,
+    icon: <RiGoogleFill className="size-5" aria-hidden={true} />,
     href: "/scans/cloudContainer/cloud/google-cloud-platform",
+    configurations: [],
+    configurationCount: 0,
   },
   {
     name: "IBM Cloud",
     description:
       "IBM Cloud Schematics enables infrastructure as code, automating the deployment and management of IBM Cloud resources using Terraform.",
-    configurations: 6,
-    icon: RiCloudLine,
+    icon: <RiCloudLine className="size-5" aria-hidden={true} />,
     href: "/scans/cloudContainer/cloud/ibm-cloud",
+    configurations: [],
+    configurationCount: 0,
   },
   {
     name: "Oracle Cloud Infrastructure",
     description:
       "Oracle Cloud Infrastructure (OCI) Resource Manager enables infrastructure as code, allowing users to automate resource deployment and management using Terraform.",
-    configurations: 2,
-    icon: RiCloudy2Line,
+    icon: <RiCloudy2Line className="size-5" aria-hidden={true} />,
     href: "/scans/cloudContainer/cloud/oracle-cloud-infrastructure",
+    configurations: [],
+    configurationCount: 0,
   },
   {
     name: "Alibaba Cloud",
     description:
       "Alibaba Cloud Resource Orchestration Service (ROS) enables infrastructure as code, allowing users to define and manage cloud resources using templates.",
-    configurations: 0,
-    icon: RiAlibabaCloudFill,
+    icon: <RiAlibabaCloudFill className="size-5" aria-hidden={true} />,
     href: "/scans/cloudContainer/cloud/alibaba-cloud",
+    configurations: [],
+    configurationCount: 0,
   },
 ];
 
 export default function CloudServicesConfig() {
   const { setItems } = useBreadcrumb();
+  const fetchedData = useConfiguration();
+  console.log("configData in cloud service page.tsx - ");
+  console.log(fetchedData);
+  const [configData, setConfigData] = useState<
+    Record<string, EachConfigDataFormatted>
+  >({});
+
   useEffect(() => {
     setItems([
       { label: "Scans", href: "/scans" },
@@ -73,59 +90,88 @@ export default function CloudServicesConfig() {
     ]);
   }, []);
 
+  useEffect(() => {
+    let formattedData: Record<string, EachConfigDataFormatted> = {};
+    if (fetchedData && fetchedData.length > 0) {
+      fetchedData.forEach((element: EachConfigDataFromServer) => {
+        formattedData[element.name] = {
+          id: element.id,
+          data: element.data,
+        };
+      });
+      setConfigData(formattedData);
+      console.log("configData updated", formattedData);
+    }
+  }, [fetchedData]);
+
+  // const updatedCloudConfigList = useMemo(() => {
+  //   return cloudConfigList.map((cloudService) => {
+  //     const cloudServiceName = cloudService.href.split("/")[3];
+
+  //     return {
+  //       ...cloudService,
+  //       configurations: configData[cloudServiceName]
+  //         ? Object.keys(configData[cloudServiceName].data).length
+  //         : 0,
+  //     };
+  //   });
+  // }, [configData]);
+
+  const updatedCloudConfigList = useMemo(() => {
+    return cloudConfigList.map((cloudService) => {
+      const cloudServiceName = cloudService.href.split("/")[4];
+      debugger;
+      if (configData[cloudServiceName]) {
+        return {
+          ...cloudService,
+          configurationCount: Object.keys(configData[cloudServiceName].data)
+            .length,
+          configurations: Object.values(configData[cloudServiceName].data),
+        };
+      }
+
+      return { ...cloudService, configurationCount: 0, configurations: [] };
+    });
+  }, [configData]);
+
+  // const updatedCloudConfigList = useMemo(() => {
+  //   return cloudConfigList.map((cloudService) => {
+  //     const cloudServiceName = cloudService.href.split("/")[3];
+
+  //     // Find the matching service in configData
+  //     const matchedService = configData.find(
+  //       (service) => service.name === cloudServiceName
+  //     );
+
+  //     if (matchedService) {
+  //       return {
+  //         ...cloudService,
+  //         configurationCount: Object.keys(matchedService.data).length,
+  //         configurations: Object.values(matchedService.data),
+  //       };
+  //     }
+
+  //     return { ...cloudService, configurationCount: 0, configurations: [] };
+  //   });
+  // }, [configData]);
+
   return (
     <>
-      <div className=" flex flex-col gap-3">
-        <dl className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 h-fit">
-          {data.map((item) => (
-            <Card
-              key={item.name}
-              className="cursor-pointer relative flex flex-col rounded-lg justify-between
-               hover:bg-tremor-background-muted 
-               hover:dark:bg-dark-tremor-background-muted"
-            >
-              <div className="flex items-center space-x-3">
-                <span
-                  className="flex size-12 shrink-0 items-center 
-                justify-center text-primary rounded-md border 
-                border-tremor-border p-1 dark:border-dark-tremor-border"
-                >
-                  <item.icon className="size-5" aria-hidden={true} />
-                </span>
-                <dt
-                  className="text-tremor-default font-medium 
-                text-tremor-content-strong dark:text-dark-tremor-content-strong"
-                >
-                  <a href={item.href} className="focus:outline-none">
-                    <span className="absolute inset-0" aria-hidden={true} />
-                    {item.name}
-                  </a>
-                </dt>
-              </div>
-              <div className="mt-4 flex flex-1 flex-col">
-                <div className="flex-1">
-                  <dd
-                    className="text-tremor-default leading-6 
-                  text-tremor-content dark:text-dark-tremor-content"
-                  >
-                    {item.description}
-                  </dd>
-                </div>
-                <div className="mt-6 flex items-center space-x-2">
-                  <RiSettings5Line
-                    className="size-5 text-tremor-content-subtle dark:text-dark-tremor-content-subtle"
-                    aria-hidden={true}
-                  />
-                  <p className="text-tremor-default text-tremor-content dark:text-dark-tremor-content">
-                    {item.configurations > 1
-                      ? `${item.configurations} Configurations`
-                      : `${item.configurations} Configuration`}
-                  </p>
-                </div>
-              </div>
-            </Card>
+      <div className=" flex flex-col relative">
+        <div className="flex items-center space-x-2">
+          <h2 className="text-2xl font-semibold text-primary ">
+            Cloud Services
+          </h2>
+          <span className="inline-flex size-7 items-center justify-center rounded-full bg-tremor-background-subtle text-tremor-label font-medium text-tremor-content-strong dark:bg-dark-tremor-background-subtle dark:text-dark-tremor-content-strong">
+            {updatedCloudConfigList.length}
+          </span>
+        </div>
+
+        <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 h-fit">
+          {updatedCloudConfigList.map((item) => (
+            <CloudWidget key={item.name} item={item} />
           ))}
-        </dl>
+        </div>
       </div>
     </>
   );
