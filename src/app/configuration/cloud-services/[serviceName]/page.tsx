@@ -1,11 +1,13 @@
 "use client";
 
-import AddConfigurationBtnWithFormDialog from "./components/AddConfigurationBtnWithFormDialog";
-import React, { useEffect, useState } from "react";
-import { useConfiguration } from "../../components/ConfigurationContext";
+import React, { useEffect } from "react";
 import { useBreadcrumb } from "@/contexts/BreadcrumbContext";
-import ConfigWidget from "./components/EachConfig";
-import * as api from "../../../../utils/api";
+import GoogleCloudConfig from "./components/cloud-configs/google-cloud-config";
+import AmazonWebServicesConfig from "./components/cloud-configs/amazon-web-services-config";
+import MicrosoftAzureConfig from "./components/cloud-configs/microsoft-azure-config";
+import IbmCloudConfig from "./components/cloud-configs/ibm-cloud-config";
+import OracleCloudConfig from "./components/cloud-configs/oracle-cloud-config";
+import AlibabaCloudConfig from "./components/cloud-configs/alibaba-cloud-config";
 
 const data = [
   {
@@ -136,6 +138,21 @@ const data = [
   },
 ];
 
+const globalConfigMap: Record<
+  string,
+  React.FC<{
+    serviceUrl: string;
+    serviceName: string;
+  }>
+> = {
+  "amazon-web-services": AmazonWebServicesConfig,
+  "microsoft-azure": MicrosoftAzureConfig,
+  "google-cloud-platform": GoogleCloudConfig,
+  "ibm-cloud": IbmCloudConfig,
+  "oracle-cloud-infrastructure": OracleCloudConfig,
+  "alibaba-cloud": AlibabaCloudConfig,
+};
+
 export default function CloudServiceDetails({
   params,
 }: {
@@ -146,10 +163,12 @@ export default function CloudServiceDetails({
   const serviceUrl = unwrappedParams.serviceName;
   const serviceName = serviceUrl
     .split("-") // Split the string at hyphens
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1)) // Capitalize the first letter of each word
+    .map((word) =>
+      word === "ibm"
+        ? word.toUpperCase()
+        : word.charAt(0).toUpperCase() + word.slice(1)
+    ) // Capitalize the first letter of each word
     .join(" ");
-
-  // api.fetchData("cloud_config", serviceUrl, "name", null, null);
 
   const { setItems } = useBreadcrumb();
   useEffect(() => {
@@ -160,35 +179,47 @@ export default function CloudServiceDetails({
     ]);
   }, []);
 
-  const [eachConfigData, setEachConfigData] = useState<any>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  // const [eachConfigData, setEachConfigData] = useState<
+  //   EachConfigDataFormatted | Record<string, any>
+  // >({});
+  // const [isLoading, setIsLoading] = useState(false);
 
-  const fetchedData = useConfiguration();
-  // console.log("configData in each cloud service page.tsx - ");
-  console.log(fetchedData.data);
+  // const fetchedData = useConfiguration();
 
-  useEffect(() => {
-    // if (fetchedData) {
-    //   setEachConfigData(fetchedData);
-    //   console.log("eachConfigData - ");
-    //   console.log(eachConfigData); // Update the state when fetchedData is available
-    // }
-    if (fetchedData && fetchedData.length > 0) {
-      setEachConfigData(fetchedData);
-      console.log("eachConfigData updated", fetchedData);
-    }
-  }, [fetchedData]);
+  // useEffect(() => {
+  //   let eachConfigDataFormatted: EachConfigDataFormatted | Record<string, any> =
+  //     {};
+  //   if (fetchedData && fetchedData.length > 0) {
+  //     fetchedData
+  //       .filter(
+  //         (eachData: EachConfigDataFromServer) => eachData.name === serviceUrl
+  //       )
+  //       .forEach((element: EachConfigDataFromServer) => {
+  //         eachConfigDataFormatted = {
+  //           id: element.id,
+  //           data: element.data,
+  //         };
+  //       });
+  //     setEachConfigData(eachConfigDataFormatted);
+  //     console.log(serviceName, " Data updated ", eachConfigDataFormatted);
+  //   }
+  // }, [fetchedData]);
+
+  // Get the corresponding config component
+  const CloudConfigTemplate = globalConfigMap[serviceUrl];
 
   return (
     <>
       <div className=" flex flex-col flex-grow">
-        <div className="flex items-center justify-between">
+        {/* <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <h3 className="text-tremor-default font-medium text-primary">
               {serviceName} Configurations
             </h3>
             <span className="inline-flex size-7 items-center justify-center rounded-full bg-tremor-background-subtle text-tremor-label font-medium text-tremor-content-strong dark:bg-dark-tremor-background-subtle dark:text-dark-tremor-content-strong">
-              {data.length}
+              {Object.keys(eachConfigData).length > 0
+                ? Object.keys(eachConfigData.data).length
+                : 0}
             </span>
           </div>
           <AddConfigurationBtnWithFormDialog
@@ -196,55 +227,20 @@ export default function CloudServiceDetails({
             serviceUrl={serviceUrl}
           />
         </div>
-        {/* <Divider className="my-4" /> */}
+
         <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {data.map((eachConfigDetails) => (
             <ConfigWidget
               key={eachConfigDetails.name}
               eachConfigDetails={eachConfigDetails}
             />
-            // <Card key={member.name} className="group p-4 rounded-lg">
-            //   <div className="flex items-center space-x-4">
-            //     <span
-            //       className={`${member.textColor} ${member.bgColor} flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-tremor-default font-medium"`}
-            //       aria-hidden={true}
-            //     >
-            //       {member.initial}
-            //     </span>
-            //     <div className="truncate">
-            //       <p className="truncate text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">
-            //         <a href={member.href} className="focus:outline-none">
-            //           {/* Extend link to entire card */}
-            //           <span className="absolute inset-0" aria-hidden={true} />
-            //           {member.name}
-            //         </a>
-            //       </p>
-            //       <p className="truncate text-tremor-default text-tremor-content dark:text-dark-tremor-content">
-            //         {member.email}
-            //       </p>
-            //     </div>
-            //   </div>
-            //   <div className="mt-6 grid grid-cols-2 divide-x divide-tremor-border border-t border-tremor-border dark:divide-dark-tremor-border dark:border-dark-tremor-border">
-            //     {member.details.map((item) => (
-            //       <div key={item.type} className="truncate px-3 py-2">
-            //         <p className="truncate text-tremor-label text-tremor-content dark:text-dark-tremor-content">
-            //           {item.type}
-            //         </p>
-            //         <p className="truncate text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">
-            //           {item.value}
-            //         </p>
-            //       </div>
-            //     ))}
-            //   </div>
-            //   <span
-            //     className="pointer-events-none absolute right-4 top-4 text-tremor-content-subtle group-hover:text-tremor-content dark:text-dark-tremor-content-subtle group-hover:dark:text-dark-tremor-content"
-            //     aria-hidden={true}
-            //   >
-            //     <RiEdit2Line className="size-4" aria-hidden={true} />
-            //   </span>
-            // </Card>
           ))}
-        </div>
+        </div> */}
+
+        <CloudConfigTemplate
+          serviceUrl={serviceUrl}
+          serviceName={serviceName}
+        />
       </div>
     </>
   );
