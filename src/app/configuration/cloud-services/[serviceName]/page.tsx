@@ -1,12 +1,11 @@
 "use client";
 
-import { RiEdit2Line } from "@remixicon/react";
-import { Card, Divider } from "@tremor/react";
 import AddConfigurationBtnWithFormDialog from "./components/AddConfigurationBtnWithFormDialog";
 import React, { useEffect, useState } from "react";
 import { useConfiguration } from "../../components/ConfigurationContext";
 import { useBreadcrumb } from "@/contexts/BreadcrumbContext";
 import ConfigWidget from "./components/EachConfig";
+import * as api from "../../../../utils/api";
 
 const data = [
   {
@@ -150,6 +149,8 @@ export default function CloudServiceDetails({
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1)) // Capitalize the first letter of each word
     .join(" ");
 
+  // api.fetchData("cloud_config", serviceUrl, "name", null, null);
+
   const { setItems } = useBreadcrumb();
   useEffect(() => {
     setItems([
@@ -167,12 +168,14 @@ export default function CloudServiceDetails({
   console.log(fetchedData.data);
 
   useEffect(() => {
+    // if (fetchedData) {
+    //   setEachConfigData(fetchedData);
+    //   console.log("eachConfigData - ");
+    //   console.log(eachConfigData); // Update the state when fetchedData is available
+    // }
     if (fetchedData && fetchedData.length > 0) {
       setEachConfigData(fetchedData);
-      // console.log("eachConfigData - ");
-      // console.log(eachConfigData); // Update the state when fetchedData is available
-      console.log("configData in each cloud service page.tsx - ");
-      console.log(fetchedData[5].data);
+      console.log("eachConfigData updated", fetchedData);
     }
   }, [fetchedData]);
 
@@ -196,7 +199,10 @@ export default function CloudServiceDetails({
         {/* <Divider className="my-4" /> */}
         <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {data.map((eachConfigDetails) => (
-            <ConfigWidget eachConfigDetails={eachConfigDetails} />
+            <ConfigWidget
+              key={eachConfigDetails.name}
+              eachConfigDetails={eachConfigDetails}
+            />
             // <Card key={member.name} className="group p-4 rounded-lg">
             //   <div className="flex items-center space-x-4">
             //     <span

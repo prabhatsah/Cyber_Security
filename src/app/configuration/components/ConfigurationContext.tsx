@@ -40,7 +40,7 @@
 
 "use client";
 import React, { createContext, useContext } from "react";
-import { ConfigurationContextType, ConfigurationData } from "./type";
+// import { ConfigurationContextType, ConfigurationData } from "./type";
 
 // Create a context for the configData
 const ConfigurationContext = createContext<any>(null);
