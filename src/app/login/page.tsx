@@ -84,59 +84,58 @@ function Login() {
     }
   }
   return (
-    // <>
-    //   {/* Login Form */}
-    //   <Form {...form}>
-    //     <form
-    //       onSubmit={form.handleSubmit(signin)}
-    //       className="flex flex-col justify-between"
-    //     >
-    //       {/* Main Form Section */}
-    //       <div className="main-form-section flex flex-col gap-3">
-    //         {/* Username Field */}
-    //         <FormField
-    //           control={form.control}
-    //           name="userName"
-    //           render={({ field }) => (
-    //             <FormItem className="mb-3">
-    //               <FormControl>
-    //                 <Input
-    //                   {...field}
-    //                   placeholder="Username"
-    //                   id="userName"
-    //                   className="form-input-bg "
-    //                 />
-    //               </FormControl>
-    //               <FormMessage />
-    //             </FormItem>
-    //           )}
-    //         />
+    <>
+      {/* Login Form */}
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(signin)}
+          className="flex flex-col justify-between"
+        >
+          {/* Main Form Section */}
+          <div className="main-form-section flex flex-col gap-3">
+            {/* Username Field */}
+            <FormField
+              control={form.control}
+              name="userName"
+              render={({ field }) => (
+                <FormItem className="mb-3">
+                  <FormControl>
+                    <Input
+                      {...field}
+                      placeholder="Username"
+                      id="userName"
+                      className="form-input-bg "
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-    //         {/* Password Field */}
-    //         <FormField
-    //           control={form.control}
-    //           name="password"
-    //           render={({ field }) => (
-    //             <FormItem className="mb-3">
-    //               <FormControl>
-    //                 <Input
-    //                   {...field}
-    //                   type="password"
-    //                   placeholder="************"
-    //                   id="password"
-    //                   className="form-input-bg"
-    //                 />
-    //               </FormControl>
-    //               <FormMessage />
-    //             </FormItem>
-    //           )}
-    //         />
-    //         <div className="text-right mb-3 forgot-password-text">
-    //           <a href="/forgot-password" className="hover:underline">
-    //             Forgot Password?
-    //           </a>
-    //         </div>
-
+            {/* Password Field */}
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem className="mb-3">
+                  <FormControl>
+                    <Input
+                      {...field}
+                      type="password"
+                      placeholder="************"
+                      id="password"
+                      className="form-input-bg"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <div className="text-right mb-3 forgot-password-text">
+              <a href="/forgot-password" className="hover:underline">
+                Forgot Password?
+              </a>
+            </div>
     //         {/* Buttons */}
     //         <div className="flex flex-col-reverse lg:flex-row gap-3 justify-between items-center mb-3">
     //           <button

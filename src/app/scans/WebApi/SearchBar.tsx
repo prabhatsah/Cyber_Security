@@ -41,6 +41,7 @@ export default function SearchBar({
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           className="flex-grow p-2 rounded-lg border dark:bg-gray-950 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          disabled={isLoading}
         />
 
         {/* Clear Button */}
