@@ -3,8 +3,8 @@ import { ConfigurationProvider } from "../components/ConfigurationContext";
 
 export async function fetchdata() {
   const tableName = "cloud_config";
-  const provider = null;
-  const data = await api.fetchData(tableName, provider, null, null, null);
+  const orderByField = "id";
+  const data = await api.fetchData(tableName, orderByField);
   return data;
 }
 
