@@ -112,7 +112,7 @@ export default function Sidebar() {
           </nav>
           <div className="mt-auto px-4 py-4">
             <div className="bg-secondary rounded-lg p-4">
-              <h3 className="text-sm font-medium text-gray-900">Need Help?</h3>
+              <h3 className="text-sm font-medium">Need Help?</h3>
               <p className="mt-2 text-xs text-gray-500">
                 Contact our support team for assistance with your security
                 assessments.
