@@ -6,7 +6,7 @@ interface VulnerabilitiesStatsProps {
   severityArray: { severity: string; count: number }[];
 }
 
-const severityMetadata: Record<
+export const severityMetadata: Record<
   string,
   { name: string; color: string; iconColor: string; icon: JSX.Element }
 > = {

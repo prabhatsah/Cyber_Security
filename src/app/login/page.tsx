@@ -77,7 +77,7 @@ function Login() {
         }
 
         router.push("/");
-       
+
       }
     } catch (error) {
       toast.error("Error while login.");
@@ -138,40 +138,40 @@ function Login() {
             </div>
     //         {/* Buttons */}
     //         <div className="flex flex-col-reverse lg:flex-row gap-3 justify-between items-center mb-3">
-    //           <button
-    //             onClick={(e) => {
-    //               e.preventDefault();
-    //               form.reset();
-    //             }}
-    //             className="reset-btn"
-    //           >
-    //             Reset
-    //           </button>
-    //           <button className="login-btn">Login</button>
-    //         </div>
-    //         <div className="text-center text-white flex flex-row gap-2">
-    //           <span className="dont-have-acct-text">
-    //             Don’t have any account?
-    //           </span>
-    //           <span className="signup-text" onClick={() => setOpen(true)}>
-    //             Sign Up
-    //           </span>
-    //         </div>
-    //         <div className="flex flex-col mt-5">
-    //           <span className="support-text">Looking for Support?</span>
-    //           <span className="version-text">Version 8.0.0</span>
-    //         </div>
-    //       </div>
-    //     </form>
-    //   </Form>
-    //   <SignUp open={open} setOpen={setOpen} />
-    // </>
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  form.reset();
+                }}
+                className="reset-btn"
+              >
+                Reset
+              </button>
+              <button className="login-btn">Login</button>
+            </div>
+            <div className="text-center text-white flex flex-row gap-2">
+              <span className="dont-have-acct-text">
+                Don’t have any account?
+              </span>
+              <span className="signup-text" onClick={() => setOpen(true)}>
+                Sign Up
+              </span>
+            </div>
+            <div className="flex flex-col mt-5">
+              <span className="support-text">Looking for Support?</span>
+              <span className="version-text">Version 8.0.0</span>
+            </div>
+          </div>
+        </form>
+      </Form>
+      <SignUp open={open} setOpen={setOpen} />
+    </>
 
-    <div className="flex h-full w-full items-center justify-center  ">
-      <div className=" ">
-        <LoginForm />
-      </div>
-    </div>
+    // <div className="flex h-full w-full items-center justify-center  ">
+    //   <div className=" ">
+    //     <LoginForm />
+    //   </div>
+    // </div>
   );
 }
 

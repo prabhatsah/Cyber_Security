@@ -9,12 +9,12 @@ const ImageInfoCard = ({ title, value }) => (
 
 export default function ImageDetails({ data }) {
   if (!data) return <p className="text-red-500">No data available</p>;
-  
+
   const { Metadata } = data;
   const osDetails = `${Metadata.OS.Family} ${Metadata.OS.Name}`;
   const createdAt = new Date(data.CreatedAt).toLocaleString();
   const imageConfig = Metadata.ImageConfig;
-  
+
   return (
     <div className="p-6 max-w-4xl mx-auto space-y-4">
       <h2 className="text-xl font-bold text-gray-900 dark:text-white">Container Image Details</h2>
