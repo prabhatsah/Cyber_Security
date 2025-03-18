@@ -1,4 +1,4 @@
-export interface GoogleCloudConfig {
+export interface GoogleCloudConfiguration {
   configId: string;
   cloudProvider: string;
   configurationName: string;
@@ -16,7 +16,7 @@ export interface GoogleCloudConfig {
 export interface ConfigurationData {
   "amazon-web-services": Array<Record<string, any>>;
   "microsoft-azure": Array<Record<string, any>>;
-  "google-cloud-platform": Array<GoogleCloudConfig | null>;
+  "google-cloud-platform": Array<GoogleCloudConfiguration | null>;
   "ibm-cloud": Array<Record<string, any>>;
   "oracle-cloud-infrastructure": Array<Record<string, any>>;
   "alibaba-cloud": Array<Record<string, any>>;
@@ -35,7 +35,7 @@ export interface EachConfigDataFromServer {
 
 export interface EachConfigDataFormatted {
   id: string;
-  data: Record<string, GoogleCloudConfig | any>;
+  data: Record<string, GoogleCloudConfiguration | any>;
 }
 
 export interface ConfigDataFormatted {
