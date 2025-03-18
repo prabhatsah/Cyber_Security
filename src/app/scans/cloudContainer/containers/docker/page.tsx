@@ -21,16 +21,22 @@ import { Card, Title, Text, Button } from "@tremor/react";
 import { TextInput } from "@tremor/react";
 import { Badge } from "@tremor/react";
 import * as prevScans from "./scanHistory";
+import { getTotalVulnerabilitiesFOrImages } from "./sideMenuHistory";
 
 type CommandKey = keyof typeof dockerCommands;
 
 const fetchHistoryScans = async () => {
-  if (!prevScans.getter()) {
-    const scans = await api.fetchData("image_file_scanning", "slno");
-    prevScans.setter(scans);
-  }
+  const tableName = "image_file_scanning";
+  const orderByColumn = "slno"
+  const scans = await api.fetchData(tableName, orderByColumn);
+  prevScans.setter(scans);
 };
-fetchHistoryScans();
+async function fetchAndProcessHistory() {
+  await fetchHistoryScans();
+  getTotalVulnerabilitiesFOrImages(prevScans.getter()?.data);
+}
+fetchAndProcessHistory();
+
 
 export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
   const [tableType, setTableType] = useState("");
@@ -55,7 +61,7 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
     {}
   );
 
-  console.log(prevScans.getter());
+  //console.log(prevScans.getter().data);
 
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [tableResult, setTableResult] = useState<any>();
@@ -99,6 +105,8 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
 
   //   return api.addColumn(name, valuesArr);
   // }
+  //creatingTable().then(setTableResult);
+  //api.fetchData('image_file_scanning',"slno",{column : "type" , value: "Image"}).then(setTableResult);
   ///////////////////////////////////////
 
   useEffect(() => {
@@ -121,24 +129,23 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
   };
 
   const saveHistoryScans = (command: string | null, data: any | null) => {
+    console.log(command, data);
     const name = "image_file_scanning";
     let type = command?.includes("Img") ? "Image" : "File";
-    let history =
-      type === "Image"
-        ? data?.Metadata?.ImageConfig?.history
-        : data?.Results[0].Target;
-    const key = data?.Metadata?.OS?.Family + data?.SchemaVersion;
 
-    history = data?.Metadata?.ImageConfig?.history;
+    let history = data?.Metadata?.ImageConfig?.history;
 
-    data.Metadata.ImageConfig.history = history.map((entry: any) => {
-      if (entry.created_by) {
-        const { created_by, ...rest } = entry;
-        return rest;
-      }
-      return entry;
-    });
+    const key = type === "Image" ? data?.Metadata?.RepoTags[0] : data?.Results[0].Target;
 
+    if (type === "Image") {
+      data.Metadata.ImageConfig.history = history.map((entry: any) => {
+        if (entry.created_by) {
+          const { created_by, ...rest } = entry;
+          return rest;
+        }
+        return entry;
+      });
+    }
     console.log(command, data);
 
     return api.updateColumnGeneralised(name, "data", data, key, "type", type);
@@ -151,8 +158,6 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
     flag: number = 0
   ) => {
     let data: any;
-    //creatingTable().then(setTableResult);
-    //api.fetchData('image_file_scanning',"slno",{column : "type" , value: "Image"}).then(setTableResult);
     try {
       setLoading(commandKey);
       setError(null);
@@ -166,7 +171,6 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
       });
       if (response.ok) {
         data = await response.json();
-
         const severity = new Map<string, number>([
           ["LOW", 0],
           ["MEDIUM", 0],
@@ -179,6 +183,7 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
           let finalResult: any;
           finalResult = JSON.parse(formattedString);
           saveHistoryScans(commandKey, finalResult).then(setTableResult);
+          console.log("after saveHistory line 187-->")
           //console.log(finalResult);
           setOutputScan(finalResult);
           setScanResults((prevResults) => ({
@@ -222,8 +227,10 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
           finalResult = JSON.parse(formattedString);
           finalResult["fileName"] = itemId;
           saveHistoryScans(commandKey, finalResult).then(setTableResult);
+          fetchAndProcessHistory();
           setfileSystemResult(finalResult);
         } else {
+          console.log("Entering else")
           const parsedData = data.output
             .trim()
             .split("\n")
@@ -516,11 +523,10 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
                     }
                   }}
                   disabled={loading === "scanFileSystem"}
-                  className={`flex items-center px-4 py-2 text-white font-semibold rounded-lg transition-all ${
-                    loading === "scanFileSystem"
-                      ? "bg-gray-500 cursor-not-allowed"
-                      : "bg-blue-600 hover:bg-blue-700"
-                  }`}
+                  className={`flex items-center px-4 py-2 text-white font-semibold rounded-lg transition-all ${loading === "scanFileSystem"
+                    ? "bg-gray-500 cursor-not-allowed"
+                    : "bg-blue-600 hover:bg-blue-700"
+                    }`}
                 >
                   {loading === "scanFileSystem" ? (
                     "Scanning..."
@@ -584,11 +590,10 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
                       }
                     }}
                     disabled={loading === "scanRemoteImg"}
-                    className={`flex items-center px-2 py-2 text-white font-semibold rounded-lg transition-all ${
-                      loading === "scanRemoteImg"
-                        ? "bg-grey-800 cursor-not-allowed"
-                        : "bg-blue-600 hover:bg-blue-700"
-                    }`}
+                    className={`flex items-center px-2 py-2 text-white font-semibold rounded-lg transition-all ${loading === "scanRemoteImg"
+                      ? "bg-grey-800 cursor-not-allowed"
+                      : "bg-blue-600 hover:bg-blue-700"
+                      }`}
                   >
                     {loading === "scanRemoteImg" ? (
                       "Scanning..."
@@ -663,11 +668,10 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
                                 );
                               }}
                               disabled={loading === row.Image}
-                              className={`flex items-center justify-center gap-1 px-2 py-2 w-18 rounded-lg font-xs transition ${
-                                loading === row.Image
-                                  ? "bg-gray-400 dark:bg-gray-600 cursor-not-allowed"
-                                  : "bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
-                              } text-white`}
+                              className={`flex items-center justify-center gap-1 px-2 py-2 w-18 rounded-lg font-xs transition ${loading === row.Image
+                                ? "bg-gray-400 dark:bg-gray-600 cursor-not-allowed"
+                                : "bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
+                                } text-white`}
                             >
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -729,11 +733,10 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
                               );
                             }}
                             disabled={loading === row.Repository}
-                            className={`bg-blue-600 text-white px-2 py-2 rounded hover:bg-blue-700 ${
-                              loading === row.Repository
-                                ? "bg-gray-400 cursor-not-allowed"
-                                : ""
-                            }`}
+                            className={`bg-blue-600 text-white px-2 py-2 rounded hover:bg-blue-700 ${loading === row.Repository
+                              ? "bg-gray-400 cursor-not-allowed"
+                              : ""
+                              }`}
                           >
                             <div className="flex items-center gap-1">
                               <svg
@@ -818,8 +821,8 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
                   </div>
 
                   {latestResult &&
-                  latestResult.Vulnerabilities &&
-                  latestResult.Vulnerabilities.length > 0 ? (
+                    latestResult.Vulnerabilities &&
+                    latestResult.Vulnerabilities.length > 0 ? (
                     <>
                       <div className="mt-6 bg-gray-100 dark:bg-[#0f172a] p-4 rounded-lg shadow-md">
                         <h4 className="text-lg font-semibold text-gray-00 mb-4">
@@ -829,11 +832,10 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
                       </div>
 
                       <div
-                        className={`mt-6 bg-gray-100 dark:bg-[#0f172a] p-4 rounded-lg shadow-md ${
-                          isFullScreen
-                            ? "fixed top-0 left-0 w-full h-full z-50 bg-white dark:bg-[#0f172a] p-8"
-                            : ""
-                        }`}
+                        className={`mt-6 bg-gray-100 dark:bg-[#0f172a] p-4 rounded-lg shadow-md ${isFullScreen
+                          ? "fixed top-0 left-0 w-full h-full z-50 bg-white dark:bg-[#0f172a] p-8"
+                          : ""
+                          }`}
                       >
                         <div className="relative">
                           <a
@@ -854,9 +856,8 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
                           </div>
                         </div>
                         <TableRoot
-                          className={`overflow-x-auto overflow-y-auto rounded-lg scrollbar-thin scrollbar-thumb-yellow-500 scrollbar-track-gray-200 dark:scrollbar-thumb-blue-400 dark:scrollbar-track-gray-800 ${
-                            isFullScreen ? "max-h-[90vh]" : "max-h-80"
-                          }`}
+                          className={`overflow-x-auto overflow-y-auto rounded-lg scrollbar-thin scrollbar-thumb-yellow-500 scrollbar-track-gray-200 dark:scrollbar-thumb-blue-400 dark:scrollbar-track-gray-800 ${isFullScreen ? "max-h-[90vh]" : "max-h-80"
+                            }`}
                         >
                           <Table>
                             <TableHead className="sticky top-0 bg-gray-200 dark:bg-gray-800 z-10 rounded-lg">

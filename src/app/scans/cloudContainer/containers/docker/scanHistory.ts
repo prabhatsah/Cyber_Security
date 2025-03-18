@@ -1,4 +1,4 @@
-var previousScannedResults: any;
+let previousScannedResults: any;
 
 export function setter(OGdata: any) {
   previousScannedResults = OGdata;
