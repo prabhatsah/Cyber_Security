@@ -62,12 +62,12 @@ export default function SearchBar({
           }`}
         >
           {isLoading ? (
-            <span className="animate-spin">🔄</span>
+            <span className="animate-spin"><LuRefreshCw /></span>
           ) : (
             <GiElectric    size={20} /> 
           )}
           
-          {isLoading ? "Attacking": "Attack"}
+          {isLoading ? "Attacking...": "Attack"}
 
         </button>
       </div>
