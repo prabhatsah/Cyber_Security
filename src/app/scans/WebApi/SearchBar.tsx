@@ -1,8 +1,8 @@
 "use client";
 import { useState } from "react";
 import { FiSearch, FiXCircle } from "react-icons/fi";
-import { FcElectricity } from "react-icons/fc";
-
+import { GiElectric } from "react-icons/gi";
+import { LuRefreshCw } from "react-icons/lu";
 import { Menu } from "@headlessui/react";
 
 interface SearchBarProps {
@@ -41,6 +41,7 @@ export default function SearchBar({
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           className="flex-grow p-2 rounded-lg border dark:bg-gray-950 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          disabled={isLoading}
         />
 
         {/* Clear Button */}
@@ -62,12 +63,12 @@ export default function SearchBar({
           }`}
         >
           {isLoading ? (
-            <span className="animate-spin">🔄</span>
+            <span className="animate-spin"><LuRefreshCw /></span>
           ) : (
-            <FcElectricity  size={20} style={{ color: "red" }} />
+            <GiElectric    size={20} /> 
           )}
           
-          {isLoading ? "Attacking": "Attack"}
+          {isLoading ? "Attacking...": "Attack"}
 
         </button>
       </div>

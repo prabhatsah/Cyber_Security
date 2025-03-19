@@ -26,7 +26,7 @@ export default function Layout({
   isLoginPage: boolean;
 }) {
   return (
-    <div className={`flex h-screen ${isLoginPage ? "bg-white" : ""}`}>
+    <div className={`flex h-screen ${isLoginPage ? "bg-white  dark:bg-gray-950" : ""}`}>
       {/* Render Sidebar and Navbar only if not on the login page */}
       {!isLoginPage && (
         <div className="w-64">
