@@ -1,7 +1,8 @@
-// pages/index.js
+"use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import DataTable from "react-data-table-component";
+import { useBreadcrumb } from "@/contexts/BreadcrumbContext";
 
 //A SAMPLE version of your data.
 const data = {
@@ -3776,7 +3777,28 @@ const data = {
   },
 };
 
-export default function Dashboard() {
+export default function Dashboard({
+  params,
+}: {
+  params: { serviceName: string };
+}) {
+  const { setItems } = useBreadcrumb();
+
+  useEffect(() => {
+    setItems([
+      { label: "Scans", href: "/scans" },
+      { label: "Cloud Security", href: "/scans/cloudContainer/cloud" },
+      {
+        label: params.serviceName,
+        href: `/scans/cloudContainer/cloud/${params.serviceName}`,
+      },
+      {
+        label: "Cyber Security Test Project",
+        href: `/scans/cloudContainer/cloud/${params.serviceName}/dashboard`,
+      },
+    ]);
+  }, []);
+
   const services = data.services;
 
   //Columns for the "Resource Counts" DataTable.
