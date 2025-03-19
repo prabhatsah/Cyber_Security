@@ -1,11 +1,9 @@
-import { Badge } from "@/components/Badge";
 import { Input } from "@/components/Input";
 import {
   RiCheckboxCircleLine,
   RiCloseLine,
   RiErrorWarningLine,
   RiGoogleFill,
-  RiShieldCheckLine,
 } from "@remixicon/react";
 import {
   Dialog,
@@ -18,13 +16,8 @@ import { useEffect, useState } from "react";
 import { testGoogleCloudConnection } from "../apis/googleCloud";
 import { Button } from "@/components/Button";
 import { format } from "date-fns";
-// import { useConfiguration } from "@/app/configuration/components/ConfigurationContext";
-import {
-  addNewConfiguration,
-  createTable,
-  describeTable,
-} from "../apis/cloudConfigDataHandler";
-import { GoogleCloudConfig } from "@/app/configuration/components/type";
+import { addNewConfiguration } from "../apis/cloudConfigDataHandler";
+import { GoogleCloudConfiguration } from "@/app/configuration/components/type";
 
 export default function GoogleCloudConfigFormModal({
   serviceUrl,
@@ -130,7 +123,7 @@ export default function GoogleCloudConfigFormModal({
     if (!validateForm()) return;
 
     const configId = crypto.randomUUID();
-    const dataToBeSaved: GoogleCloudConfig = {
+    const dataToBeSaved: GoogleCloudConfiguration = {
       configId: configId,
       cloudProvider: "gcp",
       configurationName: formData.configurationName,

@@ -1,82 +1,105 @@
+// import {
+//   Table,
+//   TableBody,
+//   TableCell,
+//   TableHead,
+//   TableHeaderCell,
+//   TableRoot,
+//   TableRow,
+// } from "@/components/Table";
 import {
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeaderCell,
-  TableRoot,
   TableRow,
-} from "@/components/Table";
+} from "@tremor/react";
+
 import { ProgressBar } from "@/components/ui/progress";
 import { Badge } from "@/components/Badge";
-import { Card } from "@tremor/react";
-import { Gauge } from "lucide-react";
+import { useEffect, useRef } from "react";
 
 export default function SpiderScan({ progress, foundURI }) {
+  const tableBodyRef = useRef(null);
+
+  // Scroll only the table body when new data is added
+  useEffect(() => {
+    if (tableBodyRef.current) {
+      tableBodyRef.current.scrollTop = tableBodyRef.current.scrollHeight;
+    }
+  }, [foundURI]);
+
   return (
     <div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Card className="p-6">
-            <div className="flex items-center gap-6">
-              <div className="p-3 bg-primary/10 rounded-lg">
-                <Gauge className="w-6 h-6 text-primary" />
-              </div>
-              <div className="flex-1">
-                <p className="text-sm font-medium text-muted-foreground mb-3">Scan Progress</p>
-                <div className="space-y-2">
-                  <progress value={progress} className="h-2" />
-                  <p className="text-xs text-muted-foreground text-right">{progress}%</p>
-                </div>
-              </div>
-            </div>
-          </Card>
-
-          <Card className="p-6">
-            <div className="flex items-center justify-between gap-6">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground mb-3">Found URLs</p>
-                <p className="text-2xl font-bold">{foundURI.length}</p>
-              </div>
-              <div className="p-3 bg-primary/10 rounded-lg">
-                <Gauge className="w-6 h-6 text-primary" />
-              </div>
-            </div>
-          </Card>
+      {/* Progress and URL count */}
+      <div className="flex gap-5">
+        <ProgressBar
+          value={progress}
+          label={`${progress}%`}
+          className="w-1/2"
+        />
+        <div className="flex items-center gap-5 w-1/2">
+          <p>
+            <span>Found URLs: </span>
+            <span>{foundURI.length}</span>
+          </p>
         </div>
-      <div className="w-full mt-8">
-        <h1 className="text-md font-semibold text-gray-900 dark:text-gray-50">
+      </div>
+
+      {/* Table Section */}
+      <div className="mt-8">
+        <h3 className="font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong">
           URLs
-        </h1>
-        <TableRoot className="mt-3">
-          <Table>
+        </h3>
+
+        {/* Scrollable Table Body */}
+        <div
+          ref={tableBodyRef}
+          className="overflow-y-auto h-96 border rounded-lg mt-4"
+        >
+          <Table className="w-full">
             <TableHead>
               <TableRow>
-                <TableHeaderCell>Method</TableHeaderCell>
-                <TableHeaderCell>URI</TableHeaderCell>
-                <TableHeaderCell>Flags</TableHeaderCell>
+                <TableHeaderCell className="sticky top-0 z-10 border-b bg-tremor-background text-tremor-content-strong dark:bg-gray-950 dark:text-dark-tremor-content-strong">
+                  Method
+                </TableHeaderCell>
+                <TableHeaderCell className="sticky top-0 z-10 border-b bg-tremor-background text-tremor-content-strong dark:bg-gray-950 dark:text-dark-tremor-content-strong">
+                  URI
+                </TableHeaderCell>
+                <TableHeaderCell className="sticky top-0 z-10 border-b bg-tremor-background text-tremor-content-strong dark:bg-gray-950 dark:text-dark-tremor-content-strong">
+                  Flags
+                </TableHeaderCell>
               </TableRow>
             </TableHead>
-            <TableBody>
-              {foundURI.length > 0 ? (
-                foundURI.map((item, index) => (
-                  <TableRow key={index}>
-                    <TableCell>
+
+            {foundURI.length > 0 ? (
+              <TableBody>
+                {foundURI.map((item, index) => (
+                  <TableRow key={`${item.url}-${index}`}>
+                    <TableCell className="border-b font-medium text-tremor-content-strong dark:border-dark-tremor-border dark:text-dark-tremor-content-strong">
                       <Badge variant="default">{item.method || "GET"}</Badge>
                     </TableCell>
-                    <TableCell>{item.url}</TableCell>
-                    <TableCell>{item.flags || "None"}</TableCell>
+                    <TableCell className="border-b dark:border-dark-tremor-border">
+                      {item.url}
+                    </TableCell>
+                    <TableCell className="border-b dark:border-dark-tremor-border">
+                      {item.flags || "None"}
+                    </TableCell>
                   </TableRow>
-                ))
-              ) : (
+                ))}
+              </TableBody>
+            ) : (
+              <TableBody>
                 <TableRow>
-                  <TableCell colSpan={3} className="text-center">
+                  <TableCell colSpan={3} className="text-center p-4">
                     No URLs found yet.
                   </TableCell>
                 </TableRow>
-              )}
-            </TableBody>
+              </TableBody>
+            )}
           </Table>
-        </TableRoot>
+        </div>
       </div>
     </div>
   );

@@ -20,7 +20,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { getAccountTree } from "@/ikon/utils/api/accountService";
 import { setActiveAccountId } from "@/ikon/utils/actions/account";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import SignUp from "./components_signUp/signup_form_component";
 import { clearAllCookieSession } from "@/ikon/utils/session/cookieSession";
 import { LoginForm } from "@/components/ui/login-form";
@@ -77,6 +77,7 @@ function Login() {
         }
 
         router.push("/");
+
       }
     } catch (error) {
       toast.error("Error while login.");
@@ -135,9 +136,8 @@ function Login() {
                 Forgot Password?
               </a>
             </div>
-
-            {/* Buttons */}
-            <div className="flex flex-col-reverse lg:flex-row gap-3 justify-between items-center mb-3">
+    //         {/* Buttons */}
+    //         <div className="flex flex-col-reverse lg:flex-row gap-3 justify-between items-center mb-3">
               <button
                 onClick={(e) => {
                   e.preventDefault();
@@ -167,8 +167,8 @@ function Login() {
       <SignUp open={open} setOpen={setOpen} />
     </>
 
-    // <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
-    //   <div className="w-full max-w-sm">
+    // <div className="flex h-full w-full items-center justify-center  ">
+    //   <div className=" ">
     //     <LoginForm />
     //   </div>
     // </div>

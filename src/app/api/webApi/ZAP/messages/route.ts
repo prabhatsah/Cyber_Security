@@ -129,6 +129,8 @@ export async function GET(req: Request) {
     // const start = searchParams.get("start") || "0";
     // const count = searchParams.get("count") || "5"; // Allow dynamic count
 
+    console.log("inside fetch messages api");
+
     if (!baseurl) {
       return NextResponse.json(
         { message: "Missing base URL" },
