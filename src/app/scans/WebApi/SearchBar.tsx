@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { FiSearch, FiXCircle } from "react-icons/fi";
 import { GiElectric } from "react-icons/gi";
-
+import { LuRefreshCw } from "react-icons/lu";
 import { Menu } from "@headlessui/react";
 
 interface SearchBarProps {
