@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { FiSearch, FiXCircle } from "react-icons/fi";
 import { GiElectric } from "react-icons/gi";
-
+import { LuRefreshCw } from "react-icons/lu";
 import { Menu } from "@headlessui/react";
 
 interface SearchBarProps {
@@ -63,12 +63,12 @@ export default function SearchBar({
           }`}
         >
           {isLoading ? (
-            <span className="animate-spin">🔄</span>
+            <span className="animate-spin"><LuRefreshCw /></span>
           ) : (
             <GiElectric    size={20} /> 
           )}
           
-          {isLoading ? "Attacking": "Attack"}
+          {isLoading ? "Attacking...": "Attack"}
 
         </button>
       </div>
