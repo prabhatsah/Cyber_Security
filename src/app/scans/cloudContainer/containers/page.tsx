@@ -1,14 +1,48 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 //import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Card, Title, Text, Button } from "@tremor/react";
 import { Boxes, Server } from "lucide-react";
 import DockerPage from "./docker/page";
 import KubernetesPage from "./kubernetes/page";
+import { getTotalVulnerabilitiesForImages } from "./docker/sideMenuHistory";
+import * as api from "@/utils/api";
+import * as prevScans from "./docker/scanHistory";
 
+const fetchHistoryScans = async () => {
+  const tableName = "image_file_scanning";
+  const orderByColumn = "slno"
+  const scans = await api.fetchData(tableName, orderByColumn);
+  console.log(scans);
+  prevScans.setter(scans);
+};
+async function fetchAndProcessHistory() {
+  await fetchHistoryScans();
+  return getTotalVulnerabilitiesForImages(prevScans.getter()?.data);
+}
 
 export default function Dashboard() {
+  const hasFetched = useRef(false);
   const [selectedTool, setSelectedTool] = useState<string | null>(null);
+  const [historyData, setHistoryData] = useState<any>(null);
+
+
+  useEffect(() => {
+    if (!hasFetched.current) {
+      fetchAndProcessHistory().then((data) => {
+        console.log(data)
+        setHistoryData(data);
+        prevScans.VulnerabilitiesSetter(data);
+      });
+
+      //hasFetched.current = true;
+    }
+  }, []);
+
+
+  if (!prevScans.Vulnerabilitiesgetter()) {
+    return <p>Loading...</p>;
+  }
 
   return (
     <div className="min-h-screen flex flex-col items-center">
