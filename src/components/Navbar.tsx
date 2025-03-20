@@ -3,6 +3,7 @@ import { Bell, Sun, Moon, ChevronsUpDown } from "lucide-react";
 import GenericBreadcrumb from "./GenericBreadcrumb";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import AppBreadcrumb from "./app-breadcrumb";
 
 import { cx, focusRing } from "@/lib/utils";
 import { Button } from "@tremor/react";
@@ -36,7 +37,8 @@ export default function Navbar() {
     <header className="border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950">
       <div className="flex justify-between items-center py-2 px-6">
         <div className="sticky top-0 z-10 py-2 px-4">
-          <GenericBreadcrumb />
+          {/* <GenericBreadcrumb /> */}
+          <AppBreadcrumb />
         </div>
         <div className="flex items-center space-x-4 relative">
           {/* Dark Mode Toggle */}

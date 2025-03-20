@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import ConfigHeader from "../components/ConfigHeader";
 import { useConfiguration } from "@/app/configuration/components/ConfigurationContext";
 import { EachConfigDataFromServer } from "@/app/configuration/components/type";
+import NoSavedConfigTemplate from "../components/NoSavedConfigTemplate";
 
 export default function MicrosoftAzureConfig({
   serviceUrl,
@@ -35,7 +36,7 @@ export default function MicrosoftAzureConfig({
         configDataLength={cloudConfigData.length}
       />
 
-      <div className="mt-6">Microsoft Azure Configurations</div>
+      {cloudConfigData.length === 0 ? <NoSavedConfigTemplate /> : <div className="mt-6">{serviceName} Configurations</div>}
     </>
   );
 }

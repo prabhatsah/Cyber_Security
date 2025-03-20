@@ -6,8 +6,7 @@ import { redirect } from "next/navigation";
 
 function clickHandle(url: string) {
   //redirect(url);
-  console.log("Hello2");
-  redirect("/configuration/cloud-services/google-cloud-platform");
+
 }
 
 export default function CloudWidget({ item }: { item: any }) {

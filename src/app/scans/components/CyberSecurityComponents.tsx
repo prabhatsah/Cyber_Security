@@ -18,6 +18,7 @@ import {
 import { useRouter } from "next/navigation";
 import { Card } from "@tremor/react";
 import { SkeletonCard } from "./Skeleton";
+import FullPageLoading from "@/components/FullPageLoading";
 
 interface AIAgent {
   id: string;
@@ -93,7 +94,7 @@ const comps: AIAgent[] = [
     ],
     description:
       "Ensuring security of web applications and APIs against vulnerabilities and attacks.",
-    route: "/scans/webApi",
+    route: "/scans/WebApi",
   },
   {
     id: "cloud-container-security",
@@ -185,8 +186,13 @@ const comps: AIAgent[] = [
 export default function CyberSecurityComponents() {
   const router = useRouter();
 
-  const handleClick = (route: string) => {
-    router.push(route);
+  const handleClick = async (route: string) => {
+    //router.push(route);
+    setIsLoading(true);
+
+    setTimeout(() => {
+      router.push(route);
+    }, 500); // delay for better UX (simulate load time)
   };
 
   const [isLoading, setIsLoading] = useState(true);
@@ -234,7 +240,8 @@ export default function CyberSecurityComponents() {
   }, []);
 
   if (isLoading) {
-    return <SkeletonCard />;
+    //return <SkeletonCard />;
+    return <FullPageLoading />
   }
 
   return (
@@ -296,7 +303,7 @@ export default function CyberSecurityComponents() {
               </ul>
             </div>
 
-            <div className="mt-6 flex space-x-3" onClick={() => handleClick()}>
+            <div className="mt-6 flex space-x-3" >
               <button
                 onClick={() => handleClick(agent.route)}
                 className="flex-1 btn-primary"
@@ -309,7 +316,7 @@ export default function CyberSecurityComponents() {
                   setSelectedAgent(agent);
                   // setShowScheduleForm(true);
                 }}
-                className="flex-1 btn-secondary"
+                className="flex-1 dark:bg-dark-bgTertiary btn-primary"
               >
                 <Calendar className="h-4 w-4 mr-2" />
                 Schedule
@@ -337,26 +344,24 @@ export default function CyberSecurityComponents() {
                 >
                   <div className="flex items-center space-x-3">
                     <div
-                      className={`p-2 rounded-lg ${
-                        schedule.status === "running"
-                          ? "bg-blue-50"
-                          : schedule.status === "completed"
+                      className={`p-2 rounded-lg ${schedule.status === "running"
+                        ? "bg-blue-50"
+                        : schedule.status === "completed"
                           ? "bg-green-50"
                           : schedule.status === "failed"
-                          ? "bg-red-50"
-                          : "bg-gray-50"
-                      }`}
+                            ? "bg-red-50"
+                            : "bg-gray-50"
+                        }`}
                     >
                       <agent.icon
-                        className={`h-5 w-5 ${
-                          schedule.status === "running"
-                            ? "text-blue-600"
-                            : schedule.status === "completed"
+                        className={`h-5 w-5 ${schedule.status === "running"
+                          ? "text-blue-600"
+                          : schedule.status === "completed"
                             ? "text-green-600"
                             : schedule.status === "failed"
-                            ? "text-red-600"
-                            : "text-gray-600"
-                        }`}
+                              ? "text-red-600"
+                              : "text-gray-600"
+                          }`}
                       />
                     </div>
                     <div>
@@ -372,15 +377,14 @@ export default function CyberSecurityComponents() {
                     </div>
                   </div>
                   <span
-                    className={`px-2 py-1 text-xs font-medium rounded-full ${
-                      schedule.status === "running"
-                        ? "bg-blue-100 text-blue-800"
-                        : schedule.status === "completed"
+                    className={`px-2 py-1 text-xs font-medium rounded-full ${schedule.status === "running"
+                      ? "bg-blue-100 text-blue-800"
+                      : schedule.status === "completed"
                         ? "bg-green-100 text-green-800"
                         : schedule.status === "failed"
-                        ? "bg-red-100 text-red-800"
-                        : "bg-gray-100 text-gray-800"
-                    }`}
+                          ? "bg-red-100 text-red-800"
+                          : "bg-gray-100 text-gray-800"
+                      }`}
                   >
                     {schedule.status}
                   </span>

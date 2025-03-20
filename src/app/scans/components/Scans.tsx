@@ -1,4 +1,8 @@
 "use client";
+import { RiRobot2Fill, RiStackFill } from "@remixicon/react"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/Tabs"
+
+
 
 import { useState } from "react";
 import {
@@ -80,7 +84,7 @@ export function Scans() {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-5">
+      <div className="flex justify-between items-center mb-8">
         <div>
           <h1 className="text-2xl font-semibold text-primary">
             Security Scans
@@ -116,13 +120,13 @@ export function Scans() {
             <Shield className="h-4 w-4 mr-2" />
             Quick Scan
           </button>
-          <button onClick={() => {}} className="btn-primary">
+          <button onClick={() => { }} className="btn-primary">
             <Plus className="h-4 w-4 mr-2" />
             Add Target
           </button>
         </div>
       </div>
-      <div className="flex space-x-4  mb-6">
+      {/* <div className="flex space-x-4  mb-6">
         <button
           className={`py-2 px-4 font-medium ${
             activeTab === "cyberSecurity"
@@ -152,7 +156,32 @@ export function Scans() {
         <div>
           <SpecializedAIAgents />
         </div>
-      )}
+      )} */}
+      <Tabs defaultValue="tab1">
+        <TabsList variant="solid" >
+          <TabsTrigger value="tab1" className="gap-1.5 flex ">
+            <RiStackFill className="-ml-1 size-4" aria-hidden="true" />
+            Cyber Security Components
+          </TabsTrigger>
+          <TabsTrigger value="tab2" className="gap-1.5 flex ">
+            <RiRobot2Fill className="-ml-1 size-4" aria-hidden="true" />
+            Specialized AI Agents
+          </TabsTrigger>
+        </TabsList>
+        <div className="mt-4">
+          <TabsContent value="tab1">
+            <div>
+              <CyberSecurityComponents />
+            </div>
+          </TabsContent>
+          <TabsContent value="tab2">
+            <div>
+              <SpecializedAIAgents />
+            </div>
+          </TabsContent>
+        </div>
+      </Tabs>
+
 
       {showQuickScan && (
         <ScanModal
