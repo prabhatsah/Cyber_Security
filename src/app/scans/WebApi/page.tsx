@@ -785,7 +785,7 @@
 
 "use client";
 
-import Tabs from "@/components/Tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/Tabs"
 
 import Dashboard from "./dashboard";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -805,6 +805,8 @@ import {
 } from "@/components/Table";
 import SpiderScan from "./SpiderScan";
 import ActiveScan from "./ActiveScan";
+import { FaFire, FaSpider } from "react-icons/fa6";
+
 
 interface webApiData {
   [key: string]: any;
@@ -998,10 +1000,10 @@ export default function WebApi() {
 
       {error && <p className="text-red-600 text-center">{error}</p>}
 
-      <Tabs
+      {/* <Tabs
         tabs={[
           {
-            icon: <LiaSpiderSolid />,
+            icon: <FaSpider />,
             label: "Spider",
             content: (
               <SpiderScan progress={spiderProgress} foundURI={foundURI} />
@@ -1020,7 +1022,36 @@ export default function WebApi() {
             ),
           },
         ]}
-      />
+      /> */}
+      <Tabs defaultValue="tab1">
+        <TabsList variant="solid" >
+          <TabsTrigger value="tab1" className="gap-1.5 flex ">
+            <FaSpider className="-ml-1 size-4" aria-hidden="true" />
+            Spider
+          </TabsTrigger>
+          <TabsTrigger value="tab2" className="gap-1.5 flex ">
+            <FaFire className="-ml-1 size-4" aria-hidden="true" />
+            Active Scan
+          </TabsTrigger>
+        </TabsList>
+        <div className="mt-4">
+          <TabsContent value="tab1">
+            <div>
+              <SpiderScan progress={spiderProgress} foundURI={foundURI} />
+            </div>
+          </TabsContent>
+          <TabsContent value="tab2">
+            <div>
+              <ActiveScan
+                progress={activeProgress}
+                newAlerts={newAlerts}
+                numRequests={numRequests}
+                messages={messages}
+              />
+            </div>
+          </TabsContent>
+        </div>
+      </Tabs>
 
       {data && <Dashboard _data={data} />}
       <PastScans />

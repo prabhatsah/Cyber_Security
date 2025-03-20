@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { exec } from "child_process";
-import commands from "@/app/scans/cloudContainer/containers/docker-commands.json";
+import commands from "@/app/scans/cloudContainer/container/docker-commands.json";
 
 type CommandKey = keyof typeof commands;
 
@@ -9,9 +9,11 @@ export async function POST(req: NextRequest) {
     const { commandKey, params } = await req.json();
 
     if (!commands[commandKey]) {
-      return NextResponse.json({ error: "Invalid command key" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Invalid command key" },
+        { status: 400 }
+      );
     }
-
 
     let command = commands[commandKey];
     if (params) {
@@ -26,13 +28,17 @@ export async function POST(req: NextRequest) {
     return new Promise((resolve) => {
       exec(command, (error, stdout, stderr) => {
         if (error) {
-          resolve(NextResponse.json({ error: stderr || error.message }, { status: 500 }));
+          resolve(
+            NextResponse.json(
+              { error: stderr || error.message },
+              { status: 500 }
+            )
+          );
         } else {
           resolve(NextResponse.json({ output: stdout }));
         }
       });
     });
-
   } catch (error) {
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
