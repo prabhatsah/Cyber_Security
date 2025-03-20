@@ -806,7 +806,11 @@ import {
 import SpiderScan from "./SpiderScan";
 import ActiveScan from "./ActiveScan";
 import { FaFire, FaSpider } from "react-icons/fa6";
+<<<<<<< HEAD
 
+=======
+import { RenderAppBreadcrumb } from "@/components/app-breadcrumb";
+>>>>>>> 24ead8bf151361bbc64084da26a8e6927d393582
 
 interface webApiData {
   [key: string]: any;
@@ -843,16 +847,16 @@ export default function WebApi() {
   const [numRequests, setNumRequests] = useState("");
   const [messages, setMessages] = useState([]);
   const [isScanning, setIsScanning] = useState(false); // Track scan status
-  const { setItems } = useBreadcrumb();
+  // const { setItems } = useBreadcrumb();
 
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || "/api/webApi/ZAP";
 
-  useEffect(() => {
-    setItems([
-      { label: "Scans", href: "/scans" },
-      { label: "Web & API Security", href: "/scans/webApi" },
-    ]);
-  }, [setItems]);
+  // useEffect(() => {
+  //   setItems([
+  //     { label: "Scans", href: "/scans" },
+  //     { label: "Web & API Security", href: "/scans/webApi" },
+  //   ]);
+  // }, [setItems]);
 
   const apiRequest = async (url, options = {}) => {
     try {
@@ -989,17 +993,26 @@ export default function WebApi() {
   };
 
   return (
-    <div className="p-4">
-      <p className="font-bold text-gray-600">Web & API Security</p>
-      <SearchBar
-        query={query}
-        setQuery={setQuery}
-        fetchData={fetchData}
-        isLoading={isLoading}
+    <>
+      <RenderAppBreadcrumb
+        breadcrumb={{
+          level: 1,
+          title: "Web & API Security",
+          href: "/scans/WebApi",
+        }}
       />
+      <div className="p-4">
+        <p className="font-bold text-gray-600">Web & API Security</p>
+        <SearchBar
+          query={query}
+          setQuery={setQuery}
+          fetchData={fetchData}
+          isLoading={isLoading}
+        />
 
-      {error && <p className="text-red-600 text-center">{error}</p>}
+        {error && <p className="text-red-600 text-center">{error}</p>}
 
+<<<<<<< HEAD
       {/* <Tabs
         tabs={[
           {
@@ -1052,9 +1065,35 @@ export default function WebApi() {
           </TabsContent>
         </div>
       </Tabs>
+=======
+        <Tabs
+          tabs={[
+            {
+              icon: <FaSpider />,
+              label: "Spider",
+              content: (
+                <SpiderScan progress={spiderProgress} foundURI={foundURI} />
+              ),
+            },
+            {
+              icon: <FaFire />,
+              label: "Active Scan",
+              content: (
+                <ActiveScan
+                  progress={activeProgress}
+                  newAlerts={newAlerts}
+                  numRequests={numRequests}
+                  messages={messages}
+                />
+              ),
+            },
+          ]}
+        />
+>>>>>>> 24ead8bf151361bbc64084da26a8e6927d393582
 
-      {data && <Dashboard _data={data} />}
-      <PastScans />
-    </div>
+        {data && <Dashboard _data={data} />}
+        <PastScans />
+      </div>
+    </>
   );
 }

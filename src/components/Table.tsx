@@ -9,12 +9,12 @@ const TableRoot = React.forwardRef<
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, children, ...props }, forwardedRef) => (
   <div
-    ref={forwardedRef}
-    // Activate if table is used in a float environment
-    // className="flow-root"
+  // Activate if table is used in a float environment
+  // className="flow-root"
   >
     <div
       // make table scrollable on mobile
+      ref={forwardedRef}
       className={cx("w-full overflow-auto whitespace-nowrap", className)}
       {...props}
     >
