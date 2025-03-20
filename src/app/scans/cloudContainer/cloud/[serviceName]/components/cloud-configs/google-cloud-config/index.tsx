@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import ConfigHeader from "../components/ConfigHeader";
 import GoogleCloudConfigWidget from "./GoogleCloudConfigWidget";
 import {
   EachConfigDataFromServer,
@@ -38,11 +37,6 @@ export default function GoogleCloudConfig({
 
   return (
     <>
-      <ConfigHeader
-        serviceUrl={serviceUrl}
-        serviceName={serviceName}
-        configDataLength={cloudConfigData.length}
-      />
       {cloudConfigData.length === 0 ? <NoSavedConfigTemplate /> :
         <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {cloudConfigData.map((eachConfigDetails) => (
