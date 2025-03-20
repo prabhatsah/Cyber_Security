@@ -1,5 +1,6 @@
 import * as api from "@/utils/api";
 import { ConfigurationProvider } from "../components/ConfigurationContext";
+import { RenderAppBreadcrumb } from "@/components/app-breadcrumb";
 
 export async function fetchdata() {
   const tableName = "cloud_config";
@@ -22,6 +23,13 @@ export default async function RootLayout({
 
   return (
     <>
+      <RenderAppBreadcrumb
+        breadcrumb={{
+          level: 2,
+          title: "Cloud Security",
+          href: "/scans/cloudContainer/cloud",
+        }}
+      />
       <div className="flex h-full">
         <ConfigurationProvider configData={configData.data}>
           {children}

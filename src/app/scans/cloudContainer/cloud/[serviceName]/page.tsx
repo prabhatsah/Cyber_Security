@@ -144,17 +144,17 @@ export default function CloudServiceDetails({
 }: {
   params: { serviceName: string };
 }) {
-  const { setItems } = useBreadcrumb();
-  useEffect(() => {
-    setItems([
-      { label: "Scans", href: "/scans" },
-      { label: "Cloud Security", href: "/scans/cloudContainer/cloud" },
-      {
-        label: params.serviceName,
-        href: `/scans/cloudContainer/cloud/${params.serviceName}`,
-      },
-    ]);
-  }, []);
+  // const { setItems } = useBreadcrumb();
+  // useEffect(() => {
+  //   setItems([
+  //     { label: "Scans", href: "/scans" },
+  //     { label: "Cloud Security", href: "/scans/cloudContainer/cloud" },
+  //     {
+  //       label: params.serviceName,
+  //       href: `/scans/cloudContainer/cloud/${params.serviceName}`,
+  //     },
+  //   ]);
+  // }, []);
 
   const serviceNameInUrl = params.serviceName;
   const serviceNameArray = serviceNameInUrl.split("-");

@@ -2,6 +2,7 @@
 
 import { RiSettings5Line } from "@remixicon/react";
 import { Card } from "@tremor/react";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 
 function clickHandle(url: string) {
@@ -33,10 +34,10 @@ export default function CloudWidget({ item }: { item: any }) {
           className="text-tremor-default font-medium 
       text-tremor-content-strong dark:text-dark-tremor-content-strong"
         >
-          <a href={item.href} className="focus:outline-none">
+          <Link href={item.href} className="focus:outline-none">
             <span className="absolute inset-0" aria-hidden={true} />
             {item.name}
-          </a>
+          </Link>
         </dt>
       </div>
       <div className="mt-4 flex flex-1 flex-col">
