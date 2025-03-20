@@ -61,6 +61,7 @@ export async function POST(req: Request) {
         query.columnFilter,
         query.jsonFilter
       );
+      console.log(fetchedResult);
       return NextResponse.json({
         success: true,
         fullData: result,
@@ -96,7 +97,13 @@ async function fetchPaginatedData(
   offset: number | null,
   limit: number | null,
   columnFilter?: { column: string; value: string | number } | null,
-  jsonFilter?: { column: string; key: string; value: string | number } | null
+  jsonFilters?:
+    | {
+        column: string;
+        keyPath: string[];
+        value: string | number;
+      }[]
+    | null
 ) {
   let hasMore = true;
   let jsonParts: string[] = [];
@@ -105,26 +112,45 @@ async function fetchPaginatedData(
   limit = limit ?? 1000;
 
   while (hasMore) {
-    let whereClause = "";
+    let whereClauses: string[] = [];
 
     if (columnFilter) {
-      whereClause = `WHERE "${columnFilter.column}" = '${columnFilter.value}'`;
+      whereClauses.push(`"${columnFilter.column}" = '${columnFilter.value}'`);
     }
 
-    if (jsonFilter) {
-      whereClause = `WHERE "${jsonFilter.column}" @> '{"${jsonFilter.key}": "${jsonFilter.value}"}'::jsonb`;
+    if (jsonFilters && jsonFilters.length > 0) {
+      jsonFilters.forEach((jsonFilter) => {
+        let keyPathQuery = jsonFilter.keyPath
+          .map((key, index) =>
+            index === jsonFilter.keyPath.length - 1
+              ? `->>'${key}'`
+              : `->'${key}'`
+          )
+          .join("");
+
+        whereClauses.push(`
+          EXISTS (
+            SELECT 1 FROM jsonb_each("${jsonFilter.column}") AS configs
+            WHERE configs.value${keyPathQuery} = '${jsonFilter.value}'
+          )
+        `);
+      });
     }
+
+    const whereClause =
+      whereClauses.length > 0 ? `WHERE ${whereClauses.join(" AND ")}` : "";
 
     const query = `
-        SELECT COALESCE(jsonb_agg(t), '[]') FROM (
-          SELECT * FROM "${tableName}"
-          ${whereClause}
-          ORDER BY ${orderByColumn}
-          LIMIT ${limit} OFFSET ${offset}
-        ) t;
-      `;
+      SELECT COALESCE(jsonb_agg(t), '[]') FROM (
+        SELECT * FROM "${tableName}"
+        ${whereClause}
+        ORDER BY ${orderByColumn}
+        LIMIT ${limit} OFFSET ${offset}
+      ) t;
+    `;
 
     console.log(query);
+
     const result = await ssh.execCommand(
       `PGPASSWORD="postgres" psql -h localhost -U postgres -p 5436 -d cyber_security -A -t -c "${query}"`
     );

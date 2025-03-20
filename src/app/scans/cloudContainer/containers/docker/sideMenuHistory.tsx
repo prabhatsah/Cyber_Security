@@ -1,5 +1,6 @@
 import * as prevScans from "./scanHistory";
 import { Card, Title, Text, Badge } from "@tremor/react";
+import { ExternalLink } from "lucide-react";
 
 interface Vulnerability {
     Image: string;
@@ -33,8 +34,8 @@ export function getTotalVulnerabilitiesForImages(historyData: any): Vulnerabilit
                 severity.set(vul.Severity, count + 1);
             }
         }
-
-        imageVulnerabilitiesMap[obj?.ArtifactName || key] = severity;
+        console.log(key, obj?.data?.Metadata?.RepoTags[0])
+        imageVulnerabilitiesMap[obj?.data?.Metadata?.RepoTags[0] || key] = severity;
     }
 
     const finalResult: Vulnerability[] = Object.entries(imageVulnerabilitiesMap).map(([image, severityMap]) => ({
@@ -47,17 +48,33 @@ export function getTotalVulnerabilitiesForImages(historyData: any): Vulnerabilit
     return finalResult;
 }
 
-export function ScannedImages({ data }: { data: Vulnerability[] }) {
+export function returnImageDetails() {
+    return imageDetails;
+}
+
+
+let imageDetails: any = null;
+export function ScannedImages({ data }: { data: any }) {
+
+    function showImageDetails(imageName: string) {
+        console.log(imageName)
+        const data = prevScans.fetchDetailsOfParticularImage(imageName);
+        console.log(data)
+        imageDetails = data;
+    }
+
     return (
         <div className="w-full p-4">
-            {data.map((vul, index) => (
-                <Card key={index} className="mt-3 p-4 rounded-lg shadow-lg">
+            {data.map((vul: any, index: any) => (
+                <Card key={index} className="relative mt-3 p-4 rounded-lg shadow-lg">
+                    <div className="absolute top-2 right-2 cursor-pointer">
+                        <ExternalLink className="w-4 h-4 text-gray-600 hover:text-gray-800 transition" onClick={() => showImageDetails(vul.Image)} />
+                    </div>
 
                     <Title className="">{vul.Image}</Title>
 
                     {/* Flex container with consistent spacing */}
                     <div className="flex justify-between items-center gap-6 mt-4">
-
                         {/* LOW */}
                         <div className="flex items-center gap-2">
                             <svg
@@ -68,7 +85,6 @@ export function ScannedImages({ data }: { data: Vulnerability[] }) {
                                 strokeWidth={2}
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
-                                aria-hidden="true"
                                 viewBox="0 0 30 30"
                             >
                                 <path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2" />
@@ -86,7 +102,6 @@ export function ScannedImages({ data }: { data: Vulnerability[] }) {
                                 strokeWidth={2}
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
-                                aria-hidden="true"
                                 viewBox="0 0 30 30"
                             >
                                 <circle cx={12} cy={12} r={10} />
@@ -106,7 +121,6 @@ export function ScannedImages({ data }: { data: Vulnerability[] }) {
                                 strokeWidth={2}
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
-                                aria-hidden="true"
                                 viewBox="0 0 30 30"
                             >
                                 <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
@@ -126,7 +140,6 @@ export function ScannedImages({ data }: { data: Vulnerability[] }) {
                                 strokeWidth={2}
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
-                                aria-hidden="true"
                                 viewBox="0 0 30 30"
                             >
                                 <path d="M12 16h.01" />
@@ -135,12 +148,9 @@ export function ScannedImages({ data }: { data: Vulnerability[] }) {
                             </svg>
                             <Text className="text-red-600">{vul.CRITICAL}</Text>
                         </div>
-
                     </div>
                 </Card>
             ))}
         </div>
-
-
     );
 }
