@@ -14,12 +14,16 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   let currentTime = new Date();
-  console.log("Layout called: " + currentTime.toISOString());
+  console.log("Cloud layout starts, Current Time: " + currentTime.toISOString());
 
   const configData = await fetchdata();
   console.log("configData - ");
   console.log(configData.data);
 
+  currentTime = new Date();
+  console.log("Cloud layout ends, Current Time: " + currentTime.toISOString());
+
+  let tempData = {};
   return (
     <>
       <div className="flex h-full">
