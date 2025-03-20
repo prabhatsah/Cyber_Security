@@ -74,20 +74,20 @@ const cloudConfigList = [
 ];
 
 export default function CloudServicesConfig() {
-  // const { setItems } = useBreadcrumb();
-  const fetchedData = useConfiguration();
-  console.log("configData in cloud service page.tsx - ");
-  console.log(fetchedData);
-  const [configData, setConfigData] = useState<
-    Record<string, EachConfigDataFormatted>
-  >({});
+    // const { setItems } = useBreadcrumb();
+    const fetchedData = useConfiguration();
+    console.log("configData in cloud service page.tsx - ");
+    console.log(fetchedData);
+    const [configData, setConfigData] = useState<
+        Record<string, EachConfigDataFormatted>
+    >({});
 
-  // useEffect(() => {
-  //   setItems([
-  //     { label: "Scans", href: "/scans" },
-  //     { label: "Cloud Security", href: "/scans/cloudContainer/cloud" },
-  //   ]);
-  // }, []);
+    // useEffect(() => {
+    //   setItems([
+    //     { label: "Scans", href: "/scans" },
+    //     { label: "Cloud Security", href: "/scans/cloudContainer/cloud" },
+    //   ]);
+    // }, []);
 
     useEffect(() => {
         let formattedData: Record<string, EachConfigDataFormatted> = {};
@@ -120,7 +120,7 @@ export default function CloudServicesConfig() {
         });
     }, [configData]);
 
-    currentTime = new Date();
+    let currentTime = new Date();
     console.log("Cloud widget ends, Current Time: " + currentTime.toISOString());
     return (
         <>

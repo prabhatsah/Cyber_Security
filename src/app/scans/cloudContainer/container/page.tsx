@@ -1,6 +1,5 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-//import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Card, Title, Text, Button } from "@tremor/react";
 import { Boxes, Server } from "lucide-react";
 import DockerPage from "./docker/page";
@@ -35,7 +34,7 @@ export default function Dashboard() {
         prevScans.VulnerabilitiesSetter(data);
       });
 
-      //hasFetched.current = true;
+      hasFetched.current = true;
     }
   }, []);
 
