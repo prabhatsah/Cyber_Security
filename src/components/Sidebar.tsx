@@ -49,7 +49,7 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <div className="hidden lg:flex lg:flex-shrink-0">
+    <div className="hidden lg:flex lg:flex-shrink-0 h-full">
       <div className="flex flex-col w-64">
         <div className="flex flex-col flex-grow pt-5 pb-4 overflow-y-auto border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950">
           <div className="flex items-center  px-4 ">
@@ -110,7 +110,7 @@ export default function Sidebar() {
               </div>
             ))}
           </nav>
-          <div className="mt-auto px-4 py-4">
+          {/* <div className="mt-auto px-4 py-4">
             <div className="bg-secondary rounded-lg p-4">
               <h3 className="text-sm font-medium">Need Help?</h3>
               <p className="mt-2 text-xs text-gray-500">
@@ -121,7 +121,7 @@ export default function Sidebar() {
                 Contact Support
               </button>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

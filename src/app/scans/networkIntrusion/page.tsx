@@ -1,14 +1,10 @@
 "use client";
-import { useEffect } from "react";
-import { DashboardHeader } from "@/components/dashboard-header";
-import { PacketDetails } from "@/components/packet-details";
 import { PacketStats } from "@/components/packet-stats";
 import { PacketTable } from "@/components/packet-table";
 import { VulnerabilityAlert } from "@/components/vulnerability-alert";
 import { PacketFilter } from "@/components/packet-filter";
 import { useState } from "react";
-import Layout from "@/components/Layout";
-import { useBreadcrumb } from "@/contexts/BreadcrumbContext";
+import { RenderAppBreadcrumb } from "@/components/app-breadcrumb";
 
 /* const packetData = {
   count: 2,
@@ -143,17 +139,6 @@ export default function Home() {
     getPackets();
   }, []); */
 
-  const { setItems } = useBreadcrumb();
-  useEffect(() => {
-    setItems([
-      { label: "Scans", href: "/scans" },
-      {
-        label: "Network & Intrusion Detection",
-        href: "/scans/networkIntrusion",
-      },
-    ]);
-  }, []);
-
   const handleFilter = (newFilters: any) => {
     setFilters(newFilters);
     // In a real application, you would filter the packets based on these criteria
@@ -204,9 +189,15 @@ export default function Home() {
   };
 
   return (
-    <Layout>
+    <>
+      <RenderAppBreadcrumb
+        breadcrumb={{
+          level: 1,
+          title: "Network & Intrusion Detection",
+          href: "/scans/networkIntrusion",
+        }}
+      />
       <div className="min-h-screen bg-background">
-        {/* <DashboardHeader /> */}
         <main className=" space-y-6">
           <PacketStats />
           <PacketFilter onFilter={handleFilter} />
@@ -214,9 +205,8 @@ export default function Home() {
             <PacketTable packets={packetData.packets} />
             <VulnerabilityAlert />
           </div>
-          {/* <PacketDetails packets={packetData.packets} /> */}
         </main>
       </div>
-    </Layout>
+    </>
   );
 }

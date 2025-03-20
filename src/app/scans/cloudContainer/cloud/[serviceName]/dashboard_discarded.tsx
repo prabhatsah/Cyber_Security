@@ -1578,22 +1578,22 @@ const data = {
           service: "Compute Engine",
         },
         "computeengine-loadbalancer-global-forwarding-rule-forwards-sensitive-port":
-          {
-            checked_items: 0,
-            compliance: null,
-            dashboard_name: "Forwarding Rule",
-            description:
-              "External Load Balancer Global Rule Forwards a Non-Standard Port",
-            flagged_items: 0,
-            items: [],
-            level: "warning",
-            path: "computeengine.projects.id.global_forwarding_rules.id",
-            rationale:
-              "The Load Balancer rule was found to be forwarding a non-standard port (80 or 443), potentially exposing a sensitive service. If such services need to be exposed, a restriction on the source address could help to reduce the attack surface of the infrastructure.",
-            references: null,
-            remediation: null,
-            service: "Compute Engine",
-          },
+        {
+          checked_items: 0,
+          compliance: null,
+          dashboard_name: "Forwarding Rule",
+          description:
+            "External Load Balancer Global Rule Forwards a Non-Standard Port",
+          flagged_items: 0,
+          items: [],
+          level: "warning",
+          path: "computeengine.projects.id.global_forwarding_rules.id",
+          rationale:
+            "The Load Balancer rule was found to be forwarding a non-standard port (80 or 443), potentially exposing a sensitive service. If such services need to be exposed, a restriction on the source address could help to reduce the attack surface of the infrastructure.",
+          references: null,
+          remediation: null,
+          service: "Compute Engine",
+        },
         "computeengine-network-default-in-use": {
           checked_items: 0,
           compliance: [
@@ -3176,72 +3176,72 @@ const data = {
       filters: {},
       findings: {
         "stackdriverlogging-metric-filter-does-not-exist-audit-config-changes":
-          {
-            checked_items: 1,
-            compliance: [
-              {
-                name: "CIS Google Cloud Platform Foundations",
-                reference: "2.5",
-                version: "1.1.0",
-              },
-            ],
-            dashboard_name: "Logging Configurations",
-            description:
-              "Log Metric Filter Doesn't Exist for Audit Configuration Changes",
-            flagged_items: 1,
-            id_suffix: "audit_config_change",
-            items: [
-              "stackdriverlogging.projects.cordova-358e9.logging_metrics.cordova-358e9.audit_config_change",
-            ],
-            level: "warning",
-            path: "stackdriverlogging.projects.id.logging_metrics.id",
-            rationale:
-              "Configuring the metric filter and alerts for audit configuration changes ensures the recommended state of audit configuration is maintained so that all activities in the project are audit-able at any point in time.",
-            references: [
-              "https://cloud.google.com/logging/docs/logs-based-metrics/",
-              "https://cloud.google.com/monitoring/custom-metrics/",
-              "https://cloud.google.com/monitoring/alerts/",
-              "https://cloud.google.com/logging/docs/reference/tools/gcloud-logging",
-              "https://cloud.google.com/logging/docs/audit/configure-data-access#getiampolicy-setiampolicy",
-            ],
-            remediation:
-              'From console: <ol><li>Go to <samp>Logging/Logs</samp> by visiting https://console.cloud.google.com/logs/metrics and click "CREATE METRIC".</li><li>Click the down arrow symbol on the <samp>Filter Bar</samp> at the rightmost corner and select <samp>Convert to Advanced Filter</samp>.</li><li>Clear any text and add: <br> <samp> protoPayload.methodName="SetIamPolicy" AND protoPayload.serviceData.policyDelta.auditConfigDeltas:*</samp></li><li>Click <samp>Submit Filter</samp>. The logs display based on the filter text entered by the user.</li><li>In the <samp>Metric Editor</samp> menu on the right,fill out the name field. Set <samp>Units</samp> to <samp>1</samp>(default) and the <samp>Type</samp> to <samp>Counter</samp>. This ensures that the log metric counts the number of log entries matching the advanced logs query.</li><li>Click <samp>CreateMetric</samp>.</li></ol>',
-            service: "Stackdriver Logging",
-          },
+        {
+          checked_items: 1,
+          compliance: [
+            {
+              name: "CIS Google Cloud Platform Foundations",
+              reference: "2.5",
+              version: "1.1.0",
+            },
+          ],
+          dashboard_name: "Logging Configurations",
+          description:
+            "Log Metric Filter Doesn't Exist for Audit Configuration Changes",
+          flagged_items: 1,
+          id_suffix: "audit_config_change",
+          items: [
+            "stackdriverlogging.projects.cordova-358e9.logging_metrics.cordova-358e9.audit_config_change",
+          ],
+          level: "warning",
+          path: "stackdriverlogging.projects.id.logging_metrics.id",
+          rationale:
+            "Configuring the metric filter and alerts for audit configuration changes ensures the recommended state of audit configuration is maintained so that all activities in the project are audit-able at any point in time.",
+          references: [
+            "https://cloud.google.com/logging/docs/logs-based-metrics/",
+            "https://cloud.google.com/monitoring/custom-metrics/",
+            "https://cloud.google.com/monitoring/alerts/",
+            "https://cloud.google.com/logging/docs/reference/tools/gcloud-logging",
+            "https://cloud.google.com/logging/docs/audit/configure-data-access#getiampolicy-setiampolicy",
+          ],
+          remediation:
+            'From console: <ol><li>Go to <samp>Logging/Logs</samp> by visiting https://console.cloud.google.com/logs/metrics and click "CREATE METRIC".</li><li>Click the down arrow symbol on the <samp>Filter Bar</samp> at the rightmost corner and select <samp>Convert to Advanced Filter</samp>.</li><li>Clear any text and add: <br> <samp> protoPayload.methodName="SetIamPolicy" AND protoPayload.serviceData.policyDelta.auditConfigDeltas:*</samp></li><li>Click <samp>Submit Filter</samp>. The logs display based on the filter text entered by the user.</li><li>In the <samp>Metric Editor</samp> menu on the right,fill out the name field. Set <samp>Units</samp> to <samp>1</samp>(default) and the <samp>Type</samp> to <samp>Counter</samp>. This ensures that the log metric counts the number of log entries matching the advanced logs query.</li><li>Click <samp>CreateMetric</samp>.</li></ol>',
+          service: "Stackdriver Logging",
+        },
         "stackdriverlogging-metric-filter-does-not-exist-cloud-storage-iam-permission-changes":
-          {
-            checked_items: 1,
-            compliance: [
-              {
-                name: "CIS Google Cloud Platform Foundations",
-                reference: "2.10",
-                version: "1.1.0",
-              },
-            ],
-            dashboard_name: "Logging Configurations",
-            description:
-              "Log Metric Filter Doesn't Exist for Cloud Storage IAM Permission Changes",
-            flagged_items: 1,
-            id_suffix: "cloud_storage_iam_permission_change",
-            items: [
-              "stackdriverlogging.projects.cordova-358e9.logging_metrics.cordova-358e9.cloud_storage_iam_permission_change",
-            ],
-            level: "warning",
-            path: "stackdriverlogging.projects.id.logging_metrics.id",
-            rationale:
-              "Monitoring changes to cloud storage bucket permissions may reduce the time needed to detect and correct permissions on sensitive cloud storage buckets and objects inside the bucket.",
-            references: [
-              "https://cloud.google.com/logging/docs/logs-based-metrics/",
-              "https://cloud.google.com/monitoring/custom-metrics/",
-              "https://cloud.google.com/monitoring/alerts/",
-              "https://cloud.google.com/logging/docs/reference/tools/gcloud-logging",
-              "https://cloud.google.com/storage/docs",
-              "https://cloud.google.com/storage/docs/access-control/iam-roles",
-            ],
-            remediation:
-              'From console: <ol><li>Go to <samp>Logging/Logs</samp> by visiting https://console.cloud.google.com/logs/metrics and click "CREATE METRIC".</li><li>Click the down arrow symbol on the <samp>Filter Bar</samp> at the rightmost corner and select <samp>Convert to Advanced Filter</samp>.</li><li>Clear any text and add: <br> <samp> resource.type=gcs_bucket AND protoPayload.methodName="storage.setIamPermissions"</samp></li><li>Click <samp>Submit Filter</samp>. The logs display based on the filter text entered by the user.</li><li>In the <samp>Metric Editor</samp> menu on the right,fill out the name field. Set <samp>Units</samp> to <samp>1</samp>(default) and the <samp>Type</samp> to <samp>Counter</samp>. This ensures that the log metric counts the number of log entries matching the advanced logs query.</li><li>Click <samp>CreateMetric</samp>.</li></ol>',
-            service: "Stackdriver Logging",
-          },
+        {
+          checked_items: 1,
+          compliance: [
+            {
+              name: "CIS Google Cloud Platform Foundations",
+              reference: "2.10",
+              version: "1.1.0",
+            },
+          ],
+          dashboard_name: "Logging Configurations",
+          description:
+            "Log Metric Filter Doesn't Exist for Cloud Storage IAM Permission Changes",
+          flagged_items: 1,
+          id_suffix: "cloud_storage_iam_permission_change",
+          items: [
+            "stackdriverlogging.projects.cordova-358e9.logging_metrics.cordova-358e9.cloud_storage_iam_permission_change",
+          ],
+          level: "warning",
+          path: "stackdriverlogging.projects.id.logging_metrics.id",
+          rationale:
+            "Monitoring changes to cloud storage bucket permissions may reduce the time needed to detect and correct permissions on sensitive cloud storage buckets and objects inside the bucket.",
+          references: [
+            "https://cloud.google.com/logging/docs/logs-based-metrics/",
+            "https://cloud.google.com/monitoring/custom-metrics/",
+            "https://cloud.google.com/monitoring/alerts/",
+            "https://cloud.google.com/logging/docs/reference/tools/gcloud-logging",
+            "https://cloud.google.com/storage/docs",
+            "https://cloud.google.com/storage/docs/access-control/iam-roles",
+          ],
+          remediation:
+            'From console: <ol><li>Go to <samp>Logging/Logs</samp> by visiting https://console.cloud.google.com/logs/metrics and click "CREATE METRIC".</li><li>Click the down arrow symbol on the <samp>Filter Bar</samp> at the rightmost corner and select <samp>Convert to Advanced Filter</samp>.</li><li>Clear any text and add: <br> <samp> resource.type=gcs_bucket AND protoPayload.methodName="storage.setIamPermissions"</samp></li><li>Click <samp>Submit Filter</samp>. The logs display based on the filter text entered by the user.</li><li>In the <samp>Metric Editor</samp> menu on the right,fill out the name field. Set <samp>Units</samp> to <samp>1</samp>(default) and the <samp>Type</samp> to <samp>Counter</samp>. This ensures that the log metric counts the number of log entries matching the advanced logs query.</li><li>Click <samp>CreateMetric</samp>.</li></ol>',
+          service: "Stackdriver Logging",
+        },
         "stackdriverlogging-metric-filter-does-not-exist-custom-role-changes": {
           checked_items: 1,
           compliance: [
@@ -3275,73 +3275,73 @@ const data = {
           service: "Stackdriver Logging",
         },
         "stackdriverlogging-metric-filter-does-not-exist-project-ownership-assignment":
-          {
-            checked_items: 1,
-            compliance: [
-              {
-                name: "CIS Google Cloud Platform Foundations",
-                reference: "2.4",
-                version: "1.1.0",
-              },
-            ],
-            dashboard_name: "Logging Configurations",
-            description:
-              "Log Metric Filter Doesn't Exist for Project Ownership Assignments/Changes",
-            flagged_items: 1,
-            id_suffix: "project_ownership_assignments",
-            items: [
-              "stackdriverlogging.projects.cordova-358e9.logging_metrics.cordova-358e9.project_ownership_assignments",
-            ],
-            level: "warning",
-            path: "stackdriverlogging.projects.id.logging_metrics.id",
-            rationale:
-              "Project ownership has the highest level of privileges on a project. To avoid misuse of project resources, the project ownership assignment/change actions mentioned above should be monitored and alerted to concerned recipients.",
-            references: [
-              "https://cloud.google.com/logging/docs/logs-based-metrics/",
-              "https://cloud.google.com/monitoring/custom-metrics/",
-              "https://cloud.google.com/monitoring/alerts/",
-              "https://cloud.google.com/logging/docs/reference/tools/gcloud-logging",
-            ],
-            remediation:
-              'From console: <ol><li>Go to <samp>Logging/Logs</samp> by visiting https://console.cloud.google.com/logs/metrics and click "CREATE METRIC".</li><li>Click the down arrow symbol on the <samp>Filter Bar</samp> at the rightmost corner and select <samp>Convert to Advanced Filter</samp>.</li><li>Clear any text and add: <br> <samp> (protoPayload.serviceName="cloudresourcemanager.googleapis.com") AND (ProjectOwnership OR projectOwnerInvitee) OR (protoPayload.serviceData.policyDelta.bindingDeltas.action="REMOVE" AND protoPayload.serviceData.policyDelta.bindingDeltas.role="roles/owner") OR (protoPayload.serviceData.policyDelta.bindingDeltas.action="ADD" AND protoPayload.serviceData.policyDelta.bindingDeltas.role="roles/owner")</samp></li><li>Click <samp>Submit Filter</samp>. The logs display based on the filter text entered by the user.</li><li>In the <samp>Metric Editor</samp> menu on the right,fill out the name field. Set <samp>Units</samp> to <samp>1</samp>(default) and the <samp>Type</samp> to <samp>Counter</samp>. This ensures that the log metric counts the number of log entries matching the advanced logs query.</li><li>Click <samp>CreateMetric</samp>.</li></ol>',
-            service: "Stackdriver Logging",
-          },
+        {
+          checked_items: 1,
+          compliance: [
+            {
+              name: "CIS Google Cloud Platform Foundations",
+              reference: "2.4",
+              version: "1.1.0",
+            },
+          ],
+          dashboard_name: "Logging Configurations",
+          description:
+            "Log Metric Filter Doesn't Exist for Project Ownership Assignments/Changes",
+          flagged_items: 1,
+          id_suffix: "project_ownership_assignments",
+          items: [
+            "stackdriverlogging.projects.cordova-358e9.logging_metrics.cordova-358e9.project_ownership_assignments",
+          ],
+          level: "warning",
+          path: "stackdriverlogging.projects.id.logging_metrics.id",
+          rationale:
+            "Project ownership has the highest level of privileges on a project. To avoid misuse of project resources, the project ownership assignment/change actions mentioned above should be monitored and alerted to concerned recipients.",
+          references: [
+            "https://cloud.google.com/logging/docs/logs-based-metrics/",
+            "https://cloud.google.com/monitoring/custom-metrics/",
+            "https://cloud.google.com/monitoring/alerts/",
+            "https://cloud.google.com/logging/docs/reference/tools/gcloud-logging",
+          ],
+          remediation:
+            'From console: <ol><li>Go to <samp>Logging/Logs</samp> by visiting https://console.cloud.google.com/logs/metrics and click "CREATE METRIC".</li><li>Click the down arrow symbol on the <samp>Filter Bar</samp> at the rightmost corner and select <samp>Convert to Advanced Filter</samp>.</li><li>Clear any text and add: <br> <samp> (protoPayload.serviceName="cloudresourcemanager.googleapis.com") AND (ProjectOwnership OR projectOwnerInvitee) OR (protoPayload.serviceData.policyDelta.bindingDeltas.action="REMOVE" AND protoPayload.serviceData.policyDelta.bindingDeltas.role="roles/owner") OR (protoPayload.serviceData.policyDelta.bindingDeltas.action="ADD" AND protoPayload.serviceData.policyDelta.bindingDeltas.role="roles/owner")</samp></li><li>Click <samp>Submit Filter</samp>. The logs display based on the filter text entered by the user.</li><li>In the <samp>Metric Editor</samp> menu on the right,fill out the name field. Set <samp>Units</samp> to <samp>1</samp>(default) and the <samp>Type</samp> to <samp>Counter</samp>. This ensures that the log metric counts the number of log entries matching the advanced logs query.</li><li>Click <samp>CreateMetric</samp>.</li></ol>',
+          service: "Stackdriver Logging",
+        },
         "stackdriverlogging-metric-filter-does-not-exist-sql-instance-config-changes":
-          {
-            checked_items: 1,
-            compliance: [
-              {
-                name: "CIS Google Cloud Platform Foundations",
-                reference: "2.11",
-                version: "1.1.0",
-              },
-            ],
-            dashboard_name: "Logging Configurations",
-            description:
-              "Log Metric Filter Doesn't Exist for SQL Instance Configuration Changes",
-            flagged_items: 1,
-            id_suffix: "sql_instance_conf_change",
-            items: [
-              "stackdriverlogging.projects.cordova-358e9.logging_metrics.cordova-358e9.sql_instance_conf_change",
-            ],
-            level: "warning",
-            path: "stackdriverlogging.projects.id.logging_metrics.id",
-            rationale:
-              "Monitoring changes to SQL instance configuration changes may reduce the time needed to detect and correct misconfigurations done on the SQL server.",
-            references: [
-              "https://cloud.google.com/logging/docs/logs-based-metrics/",
-              "https://cloud.google.com/monitoring/custom-metrics/",
-              "https://cloud.google.com/monitoring/alerts/",
-              "https://cloud.google.com/logging/docs/reference/tools/gcloud-logging",
-              "https://cloud.google.com/storage/docs",
-              "https://cloud.google.com/sql/docs/",
-              "https://cloud.google.com/sql/docs/mysql/",
-              "https://cloud.google.com/sql/docs/postgres/",
-            ],
-            remediation:
-              'From console: <ol><li>Go to <samp>Logging/Logs</samp> by visiting https://console.cloud.google.com/logs/metrics and click "CREATE METRIC".</li><li>Click the down arrow symbol on the <samp>Filter Bar</samp> at the rightmost corner and select <samp>Convert to Advanced Filter</samp>.</li><li>Clear any text and add: <br> <samp> protoPayload.methodName="cloudsql.instances.update"</samp></li><li>Click <samp>Submit Filter</samp>. The logs display based on the filter text entered by the user.</li><li>In the <samp>Metric Editor</samp> menu on the right,fill out the name field. Set <samp>Units</samp> to <samp>1</samp>(default) and the <samp>Type</samp> to <samp>Counter</samp>. This ensures that the log metric counts the number of log entries matching the advanced logs query.</li><li>Click <samp>CreateMetric</samp>.</li></ol>',
-            service: "Stackdriver Logging",
-          },
+        {
+          checked_items: 1,
+          compliance: [
+            {
+              name: "CIS Google Cloud Platform Foundations",
+              reference: "2.11",
+              version: "1.1.0",
+            },
+          ],
+          dashboard_name: "Logging Configurations",
+          description:
+            "Log Metric Filter Doesn't Exist for SQL Instance Configuration Changes",
+          flagged_items: 1,
+          id_suffix: "sql_instance_conf_change",
+          items: [
+            "stackdriverlogging.projects.cordova-358e9.logging_metrics.cordova-358e9.sql_instance_conf_change",
+          ],
+          level: "warning",
+          path: "stackdriverlogging.projects.id.logging_metrics.id",
+          rationale:
+            "Monitoring changes to SQL instance configuration changes may reduce the time needed to detect and correct misconfigurations done on the SQL server.",
+          references: [
+            "https://cloud.google.com/logging/docs/logs-based-metrics/",
+            "https://cloud.google.com/monitoring/custom-metrics/",
+            "https://cloud.google.com/monitoring/alerts/",
+            "https://cloud.google.com/logging/docs/reference/tools/gcloud-logging",
+            "https://cloud.google.com/storage/docs",
+            "https://cloud.google.com/sql/docs/",
+            "https://cloud.google.com/sql/docs/mysql/",
+            "https://cloud.google.com/sql/docs/postgres/",
+          ],
+          remediation:
+            'From console: <ol><li>Go to <samp>Logging/Logs</samp> by visiting https://console.cloud.google.com/logs/metrics and click "CREATE METRIC".</li><li>Click the down arrow symbol on the <samp>Filter Bar</samp> at the rightmost corner and select <samp>Convert to Advanced Filter</samp>.</li><li>Clear any text and add: <br> <samp> protoPayload.methodName="cloudsql.instances.update"</samp></li><li>Click <samp>Submit Filter</samp>. The logs display based on the filter text entered by the user.</li><li>In the <samp>Metric Editor</samp> menu on the right,fill out the name field. Set <samp>Units</samp> to <samp>1</samp>(default) and the <samp>Type</samp> to <samp>Counter</samp>. This ensures that the log metric counts the number of log entries matching the advanced logs query.</li><li>Click <samp>CreateMetric</samp>.</li></ol>',
+          service: "Stackdriver Logging",
+        },
         "stackdriverlogging-metric-filter-does-not-exist-vpc-network-changes": {
           checked_items: 1,
           compliance: [
@@ -3375,71 +3375,71 @@ const data = {
           service: "Stackdriver Logging",
         },
         "stackdriverlogging-metric-filter-does-not-exist-vpc-network-firewall-rule-changes":
-          {
-            checked_items: 1,
-            compliance: [
-              {
-                name: "CIS Google Cloud Platform Foundations",
-                reference: "2.7",
-                version: "1.1.0",
-              },
-            ],
-            dashboard_name: "Logging Configurations",
-            description:
-              "Log Metric Filter Doesn't Exist for VPC Network Firewall Rule Changes",
-            flagged_items: 1,
-            id_suffix: "vpc_network_firewall_rule_change",
-            items: [
-              "stackdriverlogging.projects.cordova-358e9.logging_metrics.cordova-358e9.vpc_network_firewall_rule_change",
-            ],
-            level: "warning",
-            path: "stackdriverlogging.projects.id.logging_metrics.id",
-            rationale:
-              "Monitoring for Create or Update Firewall rule events gives insight to network access changes and may reduce the time it takes to detect suspicious activity.",
-            references: [
-              "https://cloud.google.com/logging/docs/logs-based-metrics/",
-              "https://cloud.google.com/monitoring/custom-metrics/",
-              "https://cloud.google.com/monitoring/alerts/",
-              "https://cloud.google.com/logging/docs/reference/tools/gcloud-logging",
-              "https://cloud.google.com/vpc/docs/firewalls",
-            ],
-            remediation:
-              'From console: <ol><li>Go to <samp>Logging/Logs</samp> by visiting https://console.cloud.google.com/logs/metrics and click "CREATE METRIC".</li><li>Click the down arrow symbol on the <samp>Filter Bar</samp> at the rightmost corner and select <samp>Convert to Advanced Filter</samp>.</li><li>Clear any text and add: <br> <samp> resource.type="gce_firewall_rule" AND jsonPayload.event_subtype="compute.firewalls.patch" OR jsonPayload.event_subtype="compute.firewalls.insert"</samp></li><li>Click <samp>Submit Filter</samp>. The logs display based on the filter text entered by the user.</li><li>In the <samp>Metric Editor</samp> menu on the right,fill out the name field. Set <samp>Units</samp> to <samp>1</samp>(default) and the <samp>Type</samp> to <samp>Counter</samp>. This ensures that the log metric counts the number of log entries matching the advanced logs query.</li><li>Click <samp>CreateMetric</samp>.</li></ol>',
-            service: "Stackdriver Logging",
-          },
+        {
+          checked_items: 1,
+          compliance: [
+            {
+              name: "CIS Google Cloud Platform Foundations",
+              reference: "2.7",
+              version: "1.1.0",
+            },
+          ],
+          dashboard_name: "Logging Configurations",
+          description:
+            "Log Metric Filter Doesn't Exist for VPC Network Firewall Rule Changes",
+          flagged_items: 1,
+          id_suffix: "vpc_network_firewall_rule_change",
+          items: [
+            "stackdriverlogging.projects.cordova-358e9.logging_metrics.cordova-358e9.vpc_network_firewall_rule_change",
+          ],
+          level: "warning",
+          path: "stackdriverlogging.projects.id.logging_metrics.id",
+          rationale:
+            "Monitoring for Create or Update Firewall rule events gives insight to network access changes and may reduce the time it takes to detect suspicious activity.",
+          references: [
+            "https://cloud.google.com/logging/docs/logs-based-metrics/",
+            "https://cloud.google.com/monitoring/custom-metrics/",
+            "https://cloud.google.com/monitoring/alerts/",
+            "https://cloud.google.com/logging/docs/reference/tools/gcloud-logging",
+            "https://cloud.google.com/vpc/docs/firewalls",
+          ],
+          remediation:
+            'From console: <ol><li>Go to <samp>Logging/Logs</samp> by visiting https://console.cloud.google.com/logs/metrics and click "CREATE METRIC".</li><li>Click the down arrow symbol on the <samp>Filter Bar</samp> at the rightmost corner and select <samp>Convert to Advanced Filter</samp>.</li><li>Clear any text and add: <br> <samp> resource.type="gce_firewall_rule" AND jsonPayload.event_subtype="compute.firewalls.patch" OR jsonPayload.event_subtype="compute.firewalls.insert"</samp></li><li>Click <samp>Submit Filter</samp>. The logs display based on the filter text entered by the user.</li><li>In the <samp>Metric Editor</samp> menu on the right,fill out the name field. Set <samp>Units</samp> to <samp>1</samp>(default) and the <samp>Type</samp> to <samp>Counter</samp>. This ensures that the log metric counts the number of log entries matching the advanced logs query.</li><li>Click <samp>CreateMetric</samp>.</li></ol>',
+          service: "Stackdriver Logging",
+        },
         "stackdriverlogging-metric-filter-does-not-exist-vpc-network-route-changes":
-          {
-            checked_items: 1,
-            compliance: [
-              {
-                name: "CIS Google Cloud Platform Foundations",
-                reference: "2.8",
-                version: "1.1.0",
-              },
-            ],
-            dashboard_name: "Logging Configurations",
-            description:
-              "Log Metric Filter Doesn't Exist for VPC Network Route Changes",
-            flagged_items: 1,
-            id_suffix: "vpc_network_route_change",
-            items: [
-              "stackdriverlogging.projects.cordova-358e9.logging_metrics.cordova-358e9.vpc_network_route_change",
-            ],
-            level: "warning",
-            path: "stackdriverlogging.projects.id.logging_metrics.id",
-            rationale:
-              "Google Cloud Platform (GCP) routes define the paths network traffic takes from a VM instance to another destination. The other destination can be inside the organization VPC network (such as another VM) or outside of it. Every route consists of a destination and a next hop. Traffic whose destination IP is within the destination range is sent to the next hop for delivery. Monitoring changes to route tables will help ensure that all VPC traffic flows through an expected path.",
-            references: [
-              "https://cloud.google.com/logging/docs/logs-based-metrics/",
-              "https://cloud.google.com/monitoring/custom-metrics/",
-              "https://cloud.google.com/monitoring/alerts/",
-              "https://cloud.google.com/logging/docs/reference/tools/gcloud-logging",
-              "https://cloud.google.com/storage/docs/access-control/iam",
-            ],
-            remediation:
-              'From console: <ol><li>Go to <samp>Logging/Logs</samp> by visiting https://console.cloud.google.com/logs/metrics and click "CREATE METRIC".</li><li>Click the down arrow symbol on the <samp>Filter Bar</samp> at the rightmost corner and select <samp>Convert to Advanced Filter</samp>.</li><li>Clear any text and add: <br> <samp> resource.type="gce_route" AND jsonPayload.event_subtype="compute.routes.delete" OR jsonPayload.event_subtype="compute.routes.insert"</samp></li><li>Click <samp>Submit Filter</samp>. The logs display based on the filter text entered by the user.</li><li>In the <samp>Metric Editor</samp> menu on the right,fill out the name field. Set <samp>Units</samp> to <samp>1</samp>(default) and the <samp>Type</samp> to <samp>Counter</samp>. This ensures that the log metric counts the number of log entries matching the advanced logs query.</li><li>Click <samp>CreateMetric</samp>.</li></ol>',
-            service: "Stackdriver Logging",
-          },
+        {
+          checked_items: 1,
+          compliance: [
+            {
+              name: "CIS Google Cloud Platform Foundations",
+              reference: "2.8",
+              version: "1.1.0",
+            },
+          ],
+          dashboard_name: "Logging Configurations",
+          description:
+            "Log Metric Filter Doesn't Exist for VPC Network Route Changes",
+          flagged_items: 1,
+          id_suffix: "vpc_network_route_change",
+          items: [
+            "stackdriverlogging.projects.cordova-358e9.logging_metrics.cordova-358e9.vpc_network_route_change",
+          ],
+          level: "warning",
+          path: "stackdriverlogging.projects.id.logging_metrics.id",
+          rationale:
+            "Google Cloud Platform (GCP) routes define the paths network traffic takes from a VM instance to another destination. The other destination can be inside the organization VPC network (such as another VM) or outside of it. Every route consists of a destination and a next hop. Traffic whose destination IP is within the destination range is sent to the next hop for delivery. Monitoring changes to route tables will help ensure that all VPC traffic flows through an expected path.",
+          references: [
+            "https://cloud.google.com/logging/docs/logs-based-metrics/",
+            "https://cloud.google.com/monitoring/custom-metrics/",
+            "https://cloud.google.com/monitoring/alerts/",
+            "https://cloud.google.com/logging/docs/reference/tools/gcloud-logging",
+            "https://cloud.google.com/storage/docs/access-control/iam",
+          ],
+          remediation:
+            'From console: <ol><li>Go to <samp>Logging/Logs</samp> by visiting https://console.cloud.google.com/logs/metrics and click "CREATE METRIC".</li><li>Click the down arrow symbol on the <samp>Filter Bar</samp> at the rightmost corner and select <samp>Convert to Advanced Filter</samp>.</li><li>Clear any text and add: <br> <samp> resource.type="gce_route" AND jsonPayload.event_subtype="compute.routes.delete" OR jsonPayload.event_subtype="compute.routes.insert"</samp></li><li>Click <samp>Submit Filter</samp>. The logs display based on the filter text entered by the user.</li><li>In the <samp>Metric Editor</samp> menu on the right,fill out the name field. Set <samp>Units</samp> to <samp>1</samp>(default) and the <samp>Type</samp> to <samp>Counter</samp>. This ensures that the log metric counts the number of log entries matching the advanced logs query.</li><li>Click <samp>CreateMetric</samp>.</li></ol>',
+          service: "Stackdriver Logging",
+        },
         "stackdriverlogging-no-export-sinks": {
           checked_items: 1,
           compliance: null,
@@ -3521,39 +3521,39 @@ const data = {
           service: "Stackdriver Monitoring",
         },
         "stackdrivermonitoring-alerts-does-not-exist-cloud-storage-iam-permission-changes":
-          {
-            checked_items: 1,
-            compliance: [
-              {
-                name: "CIS Google Cloud Platform Foundations",
-                reference: "2.10",
-                version: "1.1.0",
-              },
-            ],
-            dashboard_name: "Monitoring Alerts",
-            description:
-              "Alerts Doesn't Exist for Cloud Storage IAM Permission Changes",
-            flagged_items: 1,
-            id_suffix: "cloud_storage_iam_permission_change",
-            items: [
-              "stackdrivermonitoring.projects.cordova-358e9.monitoring_alert_policies.cordova-358e9.cloud_storage_iam_permission_change",
-            ],
-            level: "warning",
-            path: "stackdrivermonitoring.projects.id.monitoring_alert_policies.id",
-            rationale:
-              "Monitoring changes to cloud storage bucket permissions may reduce the time needed to detect and correct permissions on sensitive cloud storage buckets and objects inside the bucket.",
-            references: [
-              "https://cloud.google.com/logging/docs/logs-based-metrics/",
-              "https://cloud.google.com/monitoring/custom-metrics/",
-              "https://cloud.google.com/monitoring/alerts/",
-              "https://cloud.google.com/logging/docs/reference/tools/gcloud-logging",
-              "https://cloud.google.com/storage/docs",
-              "https://cloud.google.com/storage/docs/access-control/iam-roles",
-            ],
-            remediation:
-              "From console: <ol><li>Identify the cloud storage IAM permission changes metric under the section <samp>User-defined Metrics</samp> at https://console.cloud.google.com/logs/metrics.</li><li>Click the 3-dot icon in the rightmost column for the desired metric and select <samp>Create alert from Metric</samp>. A new page opens.</li><li>Fill out the alert policy configuration and click <samp>Save</samp>. Choose the alerting threshold and configuration that makes sense for the user's organization. For example, a threshold of zero(0) for the most recent value will ensure that a notification is triggered for every owner change in the project:: <br> <samp>Set `Aggregator` to `Count`<br> Set `Configuration`: <br> -Condition: above <br> -Threshold: 0 <br> -For: most recent value </samp></li><li>Configure the desired notifications channels in the section <samp>Notifications.</samp></li><li>Name the policy and click <samp>Save</samp>.</li></ol>",
-            service: "Stackdriver Monitoring",
-          },
+        {
+          checked_items: 1,
+          compliance: [
+            {
+              name: "CIS Google Cloud Platform Foundations",
+              reference: "2.10",
+              version: "1.1.0",
+            },
+          ],
+          dashboard_name: "Monitoring Alerts",
+          description:
+            "Alerts Doesn't Exist for Cloud Storage IAM Permission Changes",
+          flagged_items: 1,
+          id_suffix: "cloud_storage_iam_permission_change",
+          items: [
+            "stackdrivermonitoring.projects.cordova-358e9.monitoring_alert_policies.cordova-358e9.cloud_storage_iam_permission_change",
+          ],
+          level: "warning",
+          path: "stackdrivermonitoring.projects.id.monitoring_alert_policies.id",
+          rationale:
+            "Monitoring changes to cloud storage bucket permissions may reduce the time needed to detect and correct permissions on sensitive cloud storage buckets and objects inside the bucket.",
+          references: [
+            "https://cloud.google.com/logging/docs/logs-based-metrics/",
+            "https://cloud.google.com/monitoring/custom-metrics/",
+            "https://cloud.google.com/monitoring/alerts/",
+            "https://cloud.google.com/logging/docs/reference/tools/gcloud-logging",
+            "https://cloud.google.com/storage/docs",
+            "https://cloud.google.com/storage/docs/access-control/iam-roles",
+          ],
+          remediation:
+            "From console: <ol><li>Identify the cloud storage IAM permission changes metric under the section <samp>User-defined Metrics</samp> at https://console.cloud.google.com/logs/metrics.</li><li>Click the 3-dot icon in the rightmost column for the desired metric and select <samp>Create alert from Metric</samp>. A new page opens.</li><li>Fill out the alert policy configuration and click <samp>Save</samp>. Choose the alerting threshold and configuration that makes sense for the user's organization. For example, a threshold of zero(0) for the most recent value will ensure that a notification is triggered for every owner change in the project:: <br> <samp>Set `Aggregator` to `Count`<br> Set `Configuration`: <br> -Condition: above <br> -Threshold: 0 <br> -For: most recent value </samp></li><li>Configure the desired notifications channels in the section <samp>Notifications.</samp></li><li>Name the policy and click <samp>Save</samp>.</li></ol>",
+          service: "Stackdriver Monitoring",
+        },
         "stackdrivermonitoring-alerts-does-not-exist-custom-role-changes": {
           checked_items: 1,
           compliance: [
@@ -3586,73 +3586,73 @@ const data = {
           service: "Stackdriver Monitoring",
         },
         "stackdrivermonitoring-alerts-does-not-exist-project-ownership-assignment":
-          {
-            checked_items: 1,
-            compliance: [
-              {
-                name: "CIS Google Cloud Platform Foundations",
-                reference: "2.4",
-                version: "1.1.0",
-              },
-            ],
-            dashboard_name: "Monitoring Alerts",
-            description:
-              "Alerts Doesn't Exist for Project Ownership Assignments/Changes",
-            flagged_items: 1,
-            id_suffix: "project_ownership_assignments",
-            items: [
-              "stackdrivermonitoring.projects.cordova-358e9.monitoring_alert_policies.cordova-358e9.project_ownership_assignments",
-            ],
-            level: "warning",
-            path: "stackdrivermonitoring.projects.id.monitoring_alert_policies.id",
-            rationale:
-              "Project ownership has the highest level of privileges on a project. To avoid misuse of project resources, the project ownership assignment/change actions mentioned above should be monitored and alerted to concerned recipients.",
-            references: [
-              "https://cloud.google.com/logging/docs/logs-based-metrics/",
-              "https://cloud.google.com/monitoring/custom-metrics/",
-              "https://cloud.google.com/monitoring/alerts/",
-              "https://cloud.google.com/logging/docs/reference/tools/gcloud-logging",
-            ],
-            remediation:
-              "From console: <ol><li>Identify the project ownership assignment/changes metric under the section <samp>User-defined Metrics</samp> at https://console.cloud.google.com/logs/metrics.</li><li>Click the 3-dot icon in the rightmost column for the desired metric and select <samp>Create alert from Metric</samp>. A new page opens.</li><li>Fill out the alert policy configuration and click <samp>Save</samp>. Choose the alerting threshold and configuration that makes sense for the user's organization. For example, a threshold of zero(0) for the most recent value will ensure that a notification is triggered for every owner change in the project:: <br> <samp>Set `Aggregator` to `Count`<br> Set `Configuration`: <br> -Condition: above <br> -Threshold: 0 <br> -For: most recent value </samp></li><li>Configure the desired notifications channels in the section <samp>Notifications.</samp></li><li>Name the policy and click <samp>Save</samp>.</li></ol>",
-            service: "Stackdriver Monitoring",
-          },
+        {
+          checked_items: 1,
+          compliance: [
+            {
+              name: "CIS Google Cloud Platform Foundations",
+              reference: "2.4",
+              version: "1.1.0",
+            },
+          ],
+          dashboard_name: "Monitoring Alerts",
+          description:
+            "Alerts Doesn't Exist for Project Ownership Assignments/Changes",
+          flagged_items: 1,
+          id_suffix: "project_ownership_assignments",
+          items: [
+            "stackdrivermonitoring.projects.cordova-358e9.monitoring_alert_policies.cordova-358e9.project_ownership_assignments",
+          ],
+          level: "warning",
+          path: "stackdrivermonitoring.projects.id.monitoring_alert_policies.id",
+          rationale:
+            "Project ownership has the highest level of privileges on a project. To avoid misuse of project resources, the project ownership assignment/change actions mentioned above should be monitored and alerted to concerned recipients.",
+          references: [
+            "https://cloud.google.com/logging/docs/logs-based-metrics/",
+            "https://cloud.google.com/monitoring/custom-metrics/",
+            "https://cloud.google.com/monitoring/alerts/",
+            "https://cloud.google.com/logging/docs/reference/tools/gcloud-logging",
+          ],
+          remediation:
+            "From console: <ol><li>Identify the project ownership assignment/changes metric under the section <samp>User-defined Metrics</samp> at https://console.cloud.google.com/logs/metrics.</li><li>Click the 3-dot icon in the rightmost column for the desired metric and select <samp>Create alert from Metric</samp>. A new page opens.</li><li>Fill out the alert policy configuration and click <samp>Save</samp>. Choose the alerting threshold and configuration that makes sense for the user's organization. For example, a threshold of zero(0) for the most recent value will ensure that a notification is triggered for every owner change in the project:: <br> <samp>Set `Aggregator` to `Count`<br> Set `Configuration`: <br> -Condition: above <br> -Threshold: 0 <br> -For: most recent value </samp></li><li>Configure the desired notifications channels in the section <samp>Notifications.</samp></li><li>Name the policy and click <samp>Save</samp>.</li></ol>",
+          service: "Stackdriver Monitoring",
+        },
         "stackdrivermonitoring-alerts-does-not-exist-sql-instance-config-changes":
-          {
-            checked_items: 1,
-            compliance: [
-              {
-                name: "CIS Google Cloud Platform Foundations",
-                reference: "2.11",
-                version: "1.1.0",
-              },
-            ],
-            dashboard_name: "Monitoring Alerts",
-            description:
-              "Alerts Doesn't Exist for SQL Instance Configuration Changes",
-            flagged_items: 1,
-            id_suffix: "sql_instance_conf_change",
-            items: [
-              "stackdrivermonitoring.projects.cordova-358e9.monitoring_alert_policies.cordova-358e9.sql_instance_conf_change",
-            ],
-            level: "warning",
-            path: "stackdrivermonitoring.projects.id.monitoring_alert_policies.id",
-            rationale:
-              "Monitoring changes to SQL instance configuration changes may reduce the time needed to detect and correct misconfigurations done on the SQL server.",
-            references: [
-              "https://cloud.google.com/logging/docs/logs-based-metrics/",
-              "https://cloud.google.com/monitoring/custom-metrics/",
-              "https://cloud.google.com/monitoring/alerts/",
-              "https://cloud.google.com/logging/docs/reference/tools/gcloud-logging",
-              "https://cloud.google.com/storage/docs",
-              "https://cloud.google.com/sql/docs/",
-              "https://cloud.google.com/sql/docs/mysql/",
-              "https://cloud.google.com/sql/docs/postgres/",
-            ],
-            remediation:
-              "From console: <ol><li>Identify the sql instance configuration changes metric under the section <samp>User-defined Metrics</samp> at https://console.cloud.google.com/logs/metrics.</li><li>Click the 3-dot icon in the rightmost column for the desired metric and select <samp>Create alert from Metric</samp>. A new page opens.</li><li>Fill out the alert policy configuration and click <samp>Save</samp>. Choose the alerting threshold and configuration that makes sense for the user's organization. For example, a threshold of zero(0) for the most recent value will ensure that a notification is triggered for every owner change in the project:: <br> <samp>Set `Aggregator` to `Count`<br> Set `Configuration`: <br> -Condition: above <br> -Threshold: 0 <br> -For: most recent value </samp></li><li>Configure the desired notifications channels in the section <samp>Notifications.</samp></li><li>Name the policy and click <samp>Save</samp>.</li></ol>",
-            service: "Stackdriver Monitoring",
-          },
+        {
+          checked_items: 1,
+          compliance: [
+            {
+              name: "CIS Google Cloud Platform Foundations",
+              reference: "2.11",
+              version: "1.1.0",
+            },
+          ],
+          dashboard_name: "Monitoring Alerts",
+          description:
+            "Alerts Doesn't Exist for SQL Instance Configuration Changes",
+          flagged_items: 1,
+          id_suffix: "sql_instance_conf_change",
+          items: [
+            "stackdrivermonitoring.projects.cordova-358e9.monitoring_alert_policies.cordova-358e9.sql_instance_conf_change",
+          ],
+          level: "warning",
+          path: "stackdrivermonitoring.projects.id.monitoring_alert_policies.id",
+          rationale:
+            "Monitoring changes to SQL instance configuration changes may reduce the time needed to detect and correct misconfigurations done on the SQL server.",
+          references: [
+            "https://cloud.google.com/logging/docs/logs-based-metrics/",
+            "https://cloud.google.com/monitoring/custom-metrics/",
+            "https://cloud.google.com/monitoring/alerts/",
+            "https://cloud.google.com/logging/docs/reference/tools/gcloud-logging",
+            "https://cloud.google.com/storage/docs",
+            "https://cloud.google.com/sql/docs/",
+            "https://cloud.google.com/sql/docs/mysql/",
+            "https://cloud.google.com/sql/docs/postgres/",
+          ],
+          remediation:
+            "From console: <ol><li>Identify the sql instance configuration changes metric under the section <samp>User-defined Metrics</samp> at https://console.cloud.google.com/logs/metrics.</li><li>Click the 3-dot icon in the rightmost column for the desired metric and select <samp>Create alert from Metric</samp>. A new page opens.</li><li>Fill out the alert policy configuration and click <samp>Save</samp>. Choose the alerting threshold and configuration that makes sense for the user's organization. For example, a threshold of zero(0) for the most recent value will ensure that a notification is triggered for every owner change in the project:: <br> <samp>Set `Aggregator` to `Count`<br> Set `Configuration`: <br> -Condition: above <br> -Threshold: 0 <br> -For: most recent value </samp></li><li>Configure the desired notifications channels in the section <samp>Notifications.</samp></li><li>Name the policy and click <samp>Save</samp>.</li></ol>",
+          service: "Stackdriver Monitoring",
+        },
         "stackdrivermonitoring-alerts-does-not-exist-vpc-network-changes": {
           checked_items: 1,
           compliance: [
@@ -3685,70 +3685,70 @@ const data = {
           service: "Stackdriver Monitoring",
         },
         "stackdrivermonitoring-alerts-does-not-exist-vpc-network-firewall-rule-changes":
-          {
-            checked_items: 1,
-            compliance: [
-              {
-                name: "CIS Google Cloud Platform Foundations",
-                reference: "2.7",
-                version: "1.1.0",
-              },
-            ],
-            dashboard_name: "Monitoring Alerts",
-            description:
-              "Alerts Doesn't Exist for VPC Network Firewall Rule Changes",
-            flagged_items: 1,
-            id_suffix: "vpc_network_firewall_rule_change",
-            items: [
-              "stackdrivermonitoring.projects.cordova-358e9.monitoring_alert_policies.cordova-358e9.vpc_network_firewall_rule_change",
-            ],
-            level: "warning",
-            path: "stackdrivermonitoring.projects.id.monitoring_alert_policies.id",
-            rationale:
-              "Monitoring for Create or Update Firewall rule events gives insight to network access changes and may reduce the time it takes to detect suspicious activity.",
-            references: [
-              "https://cloud.google.com/logging/docs/logs-based-metrics/",
-              "https://cloud.google.com/monitoring/custom-metrics/",
-              "https://cloud.google.com/monitoring/alerts/",
-              "https://cloud.google.com/logging/docs/reference/tools/gcloud-logging",
-              "https://cloud.google.com/vpc/docs/firewalls",
-            ],
-            remediation:
-              "From console: <ol><li>Identify the vpc network firewall rule changes metric under the section <samp>User-defined Metrics</samp> at https://console.cloud.google.com/logs/metrics.</li><li>Click the 3-dot icon in the rightmost column for the desired metric and select <samp>Create alert from Metric</samp>. A new page opens.</li><li>Fill out the alert policy configuration and click <samp>Save</samp>. Choose the alerting threshold and configuration that makes sense for the user's organization. For example, a threshold of zero(0) for the most recent value will ensure that a notification is triggered for every owner change in the project:: <br> <samp>Set `Aggregator` to `Count`<br> Set `Configuration`: <br> -Condition: above <br> -Threshold: 0 <br> -For: most recent value </samp></li><li>Configure the desired notifications channels in the section <samp>Notifications.</samp></li><li>Name the policy and click <samp>Save</samp>.</li></ol>",
-            service: "Stackdriver Monitoring",
-          },
+        {
+          checked_items: 1,
+          compliance: [
+            {
+              name: "CIS Google Cloud Platform Foundations",
+              reference: "2.7",
+              version: "1.1.0",
+            },
+          ],
+          dashboard_name: "Monitoring Alerts",
+          description:
+            "Alerts Doesn't Exist for VPC Network Firewall Rule Changes",
+          flagged_items: 1,
+          id_suffix: "vpc_network_firewall_rule_change",
+          items: [
+            "stackdrivermonitoring.projects.cordova-358e9.monitoring_alert_policies.cordova-358e9.vpc_network_firewall_rule_change",
+          ],
+          level: "warning",
+          path: "stackdrivermonitoring.projects.id.monitoring_alert_policies.id",
+          rationale:
+            "Monitoring for Create or Update Firewall rule events gives insight to network access changes and may reduce the time it takes to detect suspicious activity.",
+          references: [
+            "https://cloud.google.com/logging/docs/logs-based-metrics/",
+            "https://cloud.google.com/monitoring/custom-metrics/",
+            "https://cloud.google.com/monitoring/alerts/",
+            "https://cloud.google.com/logging/docs/reference/tools/gcloud-logging",
+            "https://cloud.google.com/vpc/docs/firewalls",
+          ],
+          remediation:
+            "From console: <ol><li>Identify the vpc network firewall rule changes metric under the section <samp>User-defined Metrics</samp> at https://console.cloud.google.com/logs/metrics.</li><li>Click the 3-dot icon in the rightmost column for the desired metric and select <samp>Create alert from Metric</samp>. A new page opens.</li><li>Fill out the alert policy configuration and click <samp>Save</samp>. Choose the alerting threshold and configuration that makes sense for the user's organization. For example, a threshold of zero(0) for the most recent value will ensure that a notification is triggered for every owner change in the project:: <br> <samp>Set `Aggregator` to `Count`<br> Set `Configuration`: <br> -Condition: above <br> -Threshold: 0 <br> -For: most recent value </samp></li><li>Configure the desired notifications channels in the section <samp>Notifications.</samp></li><li>Name the policy and click <samp>Save</samp>.</li></ol>",
+          service: "Stackdriver Monitoring",
+        },
         "stackdrivermonitoring-alerts-does-not-exist-vpc-network-route-changes":
-          {
-            checked_items: 1,
-            compliance: [
-              {
-                name: "CIS Google Cloud Platform Foundations",
-                reference: "2.8",
-                version: "1.1.0",
-              },
-            ],
-            dashboard_name: "Monitoring Alerts",
-            description: "Alerts Doesn't Exist for VPC Network Route Changes",
-            flagged_items: 1,
-            id_suffix: "vpc_network_route_change",
-            items: [
-              "stackdrivermonitoring.projects.cordova-358e9.monitoring_alert_policies.cordova-358e9.vpc_network_route_change",
-            ],
-            level: "warning",
-            path: "stackdrivermonitoring.projects.id.monitoring_alert_policies.id",
-            rationale:
-              "Google Cloud Platform (GCP) routes define the paths network traffic takes from a VM instance to another destination. The other destination can be inside the organization VPC network (such as another VM) or outside of it. Every route consists of a destination and a next hop. Traffic whose destination IP is within the destination range is sent to the next hop for delivery. Monitoring changes to route tables will help ensure that all VPC traffic flows through an expected path.",
-            references: [
-              "https://cloud.google.com/logging/docs/logs-based-metrics/",
-              "https://cloud.google.com/monitoring/custom-metrics/",
-              "https://cloud.google.com/monitoring/alerts/",
-              "https://cloud.google.com/logging/docs/reference/tools/gcloud-logging",
-              "https://cloud.google.com/storage/docs/access-control/iam",
-            ],
-            remediation:
-              "From console: <ol><li>Identify the vpc network route changes metric under the section <samp>User-defined Metrics</samp> at https://console.cloud.google.com/logs/metrics.</li><li>Click the 3-dot icon in the rightmost column for the desired metric and select <samp>Create alert from Metric</samp>. A new page opens.</li><li>Fill out the alert policy configuration and click <samp>Save</samp>. Choose the alerting threshold and configuration that makes sense for the user's organization. For example, a threshold of zero(0) for the most recent value will ensure that a notification is triggered for every owner change in the project:: <br> <samp>Set `Aggregator` to `Count`<br> Set `Configuration`: <br> -Condition: above <br> -Threshold: 0 <br> -For: most recent value </samp></li><li>Configure the desired notifications channels in the section <samp>Notifications.</samp></li><li>Name the policy and click <samp>Save</samp>.</li></ol>",
-            service: "Stackdriver Monitoring",
-          },
+        {
+          checked_items: 1,
+          compliance: [
+            {
+              name: "CIS Google Cloud Platform Foundations",
+              reference: "2.8",
+              version: "1.1.0",
+            },
+          ],
+          dashboard_name: "Monitoring Alerts",
+          description: "Alerts Doesn't Exist for VPC Network Route Changes",
+          flagged_items: 1,
+          id_suffix: "vpc_network_route_change",
+          items: [
+            "stackdrivermonitoring.projects.cordova-358e9.monitoring_alert_policies.cordova-358e9.vpc_network_route_change",
+          ],
+          level: "warning",
+          path: "stackdrivermonitoring.projects.id.monitoring_alert_policies.id",
+          rationale:
+            "Google Cloud Platform (GCP) routes define the paths network traffic takes from a VM instance to another destination. The other destination can be inside the organization VPC network (such as another VM) or outside of it. Every route consists of a destination and a next hop. Traffic whose destination IP is within the destination range is sent to the next hop for delivery. Monitoring changes to route tables will help ensure that all VPC traffic flows through an expected path.",
+          references: [
+            "https://cloud.google.com/logging/docs/logs-based-metrics/",
+            "https://cloud.google.com/monitoring/custom-metrics/",
+            "https://cloud.google.com/monitoring/alerts/",
+            "https://cloud.google.com/logging/docs/reference/tools/gcloud-logging",
+            "https://cloud.google.com/storage/docs/access-control/iam",
+          ],
+          remediation:
+            "From console: <ol><li>Identify the vpc network route changes metric under the section <samp>User-defined Metrics</samp> at https://console.cloud.google.com/logs/metrics.</li><li>Click the 3-dot icon in the rightmost column for the desired metric and select <samp>Create alert from Metric</samp>. A new page opens.</li><li>Fill out the alert policy configuration and click <samp>Save</samp>. Choose the alerting threshold and configuration that makes sense for the user's organization. For example, a threshold of zero(0) for the most recent value will ensure that a notification is triggered for every owner change in the project:: <br> <samp>Set `Aggregator` to `Count`<br> Set `Configuration`: <br> -Condition: above <br> -Threshold: 0 <br> -For: most recent value </samp></li><li>Configure the desired notifications channels in the section <samp>Notifications.</samp></li><li>Name the policy and click <samp>Save</samp>.</li></ol>",
+          service: "Stackdriver Monitoring",
+        },
       },
       monitoring_alert_policies_count: 1,
       projects: {
@@ -3782,22 +3782,22 @@ export default function Dashboard({
 }: {
   params: { serviceName: string };
 }) {
-  const { setItems } = useBreadcrumb();
+  // const { setItems } = useBreadcrumb();
 
-  useEffect(() => {
-    setItems([
-      { label: "Scans", href: "/scans" },
-      { label: "Cloud Security", href: "/scans/cloudContainer/cloud" },
-      {
-        label: params.serviceName,
-        href: `/scans/cloudContainer/cloud/${params.serviceName}`,
-      },
-      {
-        label: "Cyber Security Test Project",
-        href: `/scans/cloudContainer/cloud/${params.serviceName}/dashboard`,
-      },
-    ]);
-  }, []);
+  // useEffect(() => {
+  //   setItems([
+  //     { label: "Scans", href: "/scans" },
+  //     { label: "Cloud Security", href: "/scans/cloudContainer/cloud" },
+  //     {
+  //       label: params.serviceName,
+  //       href: `/scans/cloudContainer/cloud/${params.serviceName}`,
+  //     },
+  //     {
+  //       label: "Cyber Security Test Project",
+  //       href: `/scans/cloudContainer/cloud/${params.serviceName}/dashboard`,
+  //     },
+  //   ]);
+  // }, []);
 
   const services = data.services;
 

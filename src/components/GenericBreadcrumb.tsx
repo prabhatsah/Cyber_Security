@@ -1,9 +1,10 @@
 "use client";
-import { useBreadcrumb } from "@/contexts/BreadcrumbContext";
+// import { useBreadcrumb12 } from "@/contexts/BreadcrumbContext";
 import { ChevronRight } from "lucide-react";
+import { useBreadcrumb } from "./app-breadcrumb/BreadcrumbProvider";
 
 const GenericBreadcrumb = () => {
-  const { items } = useBreadcrumb();
+  const { breadcrumbItems } = useBreadcrumb();
 
   return (
     <nav aria-label="breadcrumb">
@@ -12,19 +13,19 @@ const GenericBreadcrumb = () => {
        
        text-sm ml-[-15px] "
       >
-        {items.map((item, index) => (
+        {breadcrumbItems.map((item, index) => (
           <li
             key={index}
             className="flex items-center space-x-1 hover:dark:text-gray-50 hover:text-gray-900"
           >
             {item.href ? (
               <a href={item.href} className="">
-                {item.label}
+                {item.title}
               </a>
             ) : (
-              <span className="">{item.label}</span>
+              <span className="">{item.title}</span>
             )}
-            {index < items.length - 1 && (
+            {index < breadcrumbItems.length - 1 && (
               <ChevronRight className="w-4 h-4 text-muted-foreground" />
             )}
           </li>

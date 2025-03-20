@@ -1,14 +1,17 @@
-"use client";
-
 import { Scans } from "@/app/scans/components/Scans";
-import { useBreadcrumb } from "@/contexts/BreadcrumbContext";
-import { useEffect } from "react";
+import { RenderAppBreadcrumb } from "@/components/app-breadcrumb";
 
 export default function ScansPage() {
-  const { setItems } = useBreadcrumb();
-  useEffect(() => {
-    setItems([{ label: "Scans", href: "/scans" }]);
-  }, []);
-
-  return <Scans />;
+  return (
+    <>
+      <RenderAppBreadcrumb
+        breadcrumb={{
+          level: 0,
+          title: "Scans",
+          href: "/scans",
+        }}
+      />
+      <Scans />
+    </>
+  );
 }
