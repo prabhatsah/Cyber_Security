@@ -4,6 +4,7 @@ import { FiSearch, FiXCircle } from "react-icons/fi";
 import { GiElectric } from "react-icons/gi";
 import { LuRefreshCw } from "react-icons/lu";
 import { Menu } from "@headlessui/react";
+import { Input } from "@/components/Input";
 
 interface SearchBarProps {
   query: string;
@@ -35,12 +36,12 @@ export default function SearchBar({
     <>
       <div className="bg-white dark:bg-gray-950 py-4 rounded-lg flex items-center gap-4 mb-6">
         {/* Input Field */}
-        <input
+        <Input
           type="text"
           placeholder={`Enter ${searchType}`}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="flex-grow p-2 rounded-lg border dark:bg-gray-950 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          className="flex-grow"
           disabled={isLoading}
         />
 
