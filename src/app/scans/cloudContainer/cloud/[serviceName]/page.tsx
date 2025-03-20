@@ -1,9 +1,14 @@
 "use client";
 
 import { useBreadcrumb } from "@/contexts/BreadcrumbContext";
-import { RiFileEditLine } from "@remixicon/react";
+import { RiCalendarScheduleLine, RiPlayLargeFill } from "@remixicon/react";
 import { Card } from "@tremor/react";
+import { redirect } from "next/navigation";
 import { useEffect } from "react";
+
+function startScan() {
+  redirect("/scans/cloudContainer/cloud/google-cloud-platform/dashboard");
+}
 
 const data = [
   {
@@ -187,7 +192,7 @@ export default function CloudServiceDetails({
                   <p className="truncate text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">
                     <a href={member.href} className="focus:outline-none">
                       {/* Extend link to entire card */}
-                      <span className="absolute inset-0" aria-hidden={true} />
+                      <span className="" aria-hidden={true} />
                       {member.name}
                     </a>
                   </p>
@@ -208,12 +213,27 @@ export default function CloudServiceDetails({
                   </div>
                 ))}
               </div>
-              {/* <span
-                className="pointer-events-none absolute right-4 top-4 text-tremor-content-subtle group-hover:text-tremor-content dark:text-dark-tremor-content-subtle group-hover:dark:text-dark-tremor-content"
+              <span
+                className="cursor-pointer absolute right-4 top-4 text-tremor-content-subtle 
+                dark:text-dark-tremor-content-subtle flex gap-3 "
                 aria-hidden={true}
               >
-                <RiFileEditLine className="size-4" aria-hidden={true} />
-              </span> */}
+                <span
+                  title="Schedule Scan"
+                  className="border-r border-dark-bgTertiary pr-3"
+                >
+                  <RiCalendarScheduleLine
+                    className="size-4 text-primary"
+                    aria-hidden={true}
+                  />
+                </span>
+                <span title="Run Scan" onClick={() => startScan()}>
+                  <RiPlayLargeFill
+                    className="size-4 text-primary"
+                    aria-hidden={true}
+                  />
+                </span>
+              </span>
             </Card>
           ))}
         </div>
