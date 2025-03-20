@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import ConfigHeader from "../components/ConfigHeader";
 import { useConfiguration } from "@/app/configuration/components/ConfigurationContext";
 import { EachConfigDataFromServer } from "@/app/configuration/components/type";
+import NoSavedConfigTemplate from "../components/NoSavedConfigTemplate";
 
 export default function OracleCloudConfig({
   serviceUrl,
@@ -35,7 +36,7 @@ export default function OracleCloudConfig({
         configDataLength={cloudConfigData.length}
       />
 
-      <div className="mt-6">Oracle Cloud Infrastructure Configurations</div>
+      {cloudConfigData.length === 0 ? <NoSavedConfigTemplate /> : <div className="mt-6">{serviceName} Configurations</div>}
     </>
   );
 }

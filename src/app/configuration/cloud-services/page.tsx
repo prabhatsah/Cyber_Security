@@ -8,16 +8,15 @@ import {
   RiGoogleFill,
   RiWindowsFill,
 } from "@remixicon/react";
-import * as api from "@/utils/api";
 import CloudWidget from "./EachCloudWidget";
 import { CloudSkeleton } from "../components/Skeleton";
-import { Suspense, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useConfiguration } from "../components/ConfigurationContext";
-import { useBreadcrumb } from "@/contexts/BreadcrumbContext";
 import {
   EachConfigDataFormatted,
   EachConfigDataFromServer,
 } from "../components/type";
+import { RenderAppBreadcrumb } from "@/components/app-breadcrumb";
 
 const cloudConfigList = [
   {
@@ -80,13 +79,13 @@ export default function CloudServicesConfig() {
   let currentTime = new Date();
   console.log("Comp called: " + currentTime.toISOString());
 
-  const { setItems } = useBreadcrumb();
-  useEffect(() => {
-    setItems([
-      { label: "Configurations", href: "" },
-      { label: "Cloud Services", href: "/configuration/cloud-services" },
-    ]);
-  }, []);
+  // const { setItems } = useBreadcrumb();
+  // useEffect(() => {
+  //   setItems([
+  //     { label: "Configurations", href: "" },
+  //     { label: "Cloud Services", href: "/configuration/cloud-services" },
+  //   ]);
+  // }, []);
 
   const [configData, setConfigData] = useState<
     Record<string, EachConfigDataFormatted>
@@ -137,6 +136,13 @@ export default function CloudServicesConfig() {
 
   return (
     <>
+      <RenderAppBreadcrumb
+        breadcrumb={{
+          level: 1,
+          title: "Cloud Services",
+          href: "/configuration/cloud-services",
+        }}
+      />
       <div className=" flex flex-col relative">
         <div className="flex items-center space-x-2">
           <h2 className="text-2xl font-semibold text-primary ">
