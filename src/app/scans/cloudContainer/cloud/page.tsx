@@ -1,6 +1,5 @@
 "use client";
 
-import { useBreadcrumb } from "@/contexts/BreadcrumbContext";
 import {
     RiAlibabaCloudFill,
     RiAmazonLine,
@@ -16,6 +15,7 @@ import {
     EachConfigDataFromServer,
 } from "../components/type";
 import CloudWidget from "./EachCloudWidget";
+
 const cloudConfigList = [
     {
         name: "Amazon Web Services",
@@ -74,24 +74,20 @@ const cloudConfigList = [
 ];
 
 export default function CloudServicesConfig() {
-    let currentTime = new Date();
-    console.log("Cloud widget starts, Current Time: " + currentTime.toISOString());
+  // const { setItems } = useBreadcrumb();
+  const fetchedData = useConfiguration();
+  console.log("configData in cloud service page.tsx - ");
+  console.log(fetchedData);
+  const [configData, setConfigData] = useState<
+    Record<string, EachConfigDataFormatted>
+  >({});
 
-    const { setItems } = useBreadcrumb();
-    const fetchedData = useConfiguration();
-    console.log("configData in cloud service page.tsx - ");
-    console.log(fetchedData);
-    const [configData, setConfigData] = useState<
-        Record<string, EachConfigDataFormatted>
-    >({});
-
-    useEffect(() => {
-        setItems([
-            { label: "Scans", href: "/scans" },
-            { label: "Cloud & Container", href: "" },
-            { label: "Cloud Security", href: "/scans/cloudContainer/cloud" },
-        ]);
-    }, []);
+  // useEffect(() => {
+  //   setItems([
+  //     { label: "Scans", href: "/scans" },
+  //     { label: "Cloud Security", href: "/scans/cloudContainer/cloud" },
+  //   ]);
+  // }, []);
 
     useEffect(() => {
         let formattedData: Record<string, EachConfigDataFormatted> = {};

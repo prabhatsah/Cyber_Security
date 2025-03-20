@@ -94,7 +94,7 @@ const comps: AIAgent[] = [
     ],
     description:
       "Ensuring security of web applications and APIs against vulnerabilities and attacks.",
-    route: "/scans/webApi",
+    route: "/scans/WebApi",
   },
   {
     id: "cloud-container-security",

@@ -48,22 +48,22 @@
 import { useEffect, useState } from "react";
 import SearchBar from "./SearchBar";
 import Widgets from "./Widgets";
-import { useBreadcrumb } from "@/contexts/BreadcrumbContext";
 import { ApiResponse, HarvesterData } from "./components/type";
 import PastScans from "@/components/PastScans";
+import { RenderAppBreadcrumb } from "@/components/app-breadcrumb";
 
 export default function TheHarvesterDashboard() {
   const [query, setQuery] = useState<string>("");
   const [data, setData] = useState<HarvesterData | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const { setItems } = useBreadcrumb();
-  useEffect(() => {
-    setItems([
-      { label: "Scans", href: "/scans" },
-      { label: "OSINT & Threat Intelligence", href: "/scans/OSINT" },
-    ]);
-  }, []);
+  // const { setItems } = useBreadcrumb();
+  // useEffect(() => {
+  //   setItems([
+  //     { label: "Scans", href: "/scans" },
+  //     { label: "OSINT & Threat Intelligence", href: "/scans/OSINT" },
+  //   ]);
+  // }, []);
 
   // Define the fetchData function with proper typing
   const fetchData = async (searchType: string): Promise<void> => {
@@ -95,20 +95,29 @@ export default function TheHarvesterDashboard() {
   };
 
   return (
-    <div className="">
-      <p className="font-bold text-gray-600">OSINT & Threat Intelligence</p>
-      <SearchBar query={query} setQuery={setQuery} fetchData={fetchData} />
-      {error && <p className="text-red-600 text-center">{error}</p>}
+    <>
+      <RenderAppBreadcrumb
+        breadcrumb={{
+          level: 1,
+          title: "OSINT & Threat Intelligence",
+          href: "/scans/OSINT",
+        }}
+      />
+      <div className="">
+        <p className="font-bold text-gray-600">OSINT & Threat Intelligence</p>
+        <SearchBar query={query} setQuery={setQuery} fetchData={fetchData} />
+        {error && <p className="text-red-600 text-center">{error}</p>}
 
-      {data && (
-        <div className="space-y-8">
-          <Widgets widgetData={data} queryUrl={query} />
+        {data && (
+          <div className="space-y-8">
+            <Widgets widgetData={data} queryUrl={query} />
+          </div>
+        )}
+
+        <div>
+          <PastScans />
         </div>
-      )}
-
-      <div>
-        <PastScans />
       </div>
-    </div>
+    </>
   );
 }

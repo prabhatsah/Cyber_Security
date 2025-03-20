@@ -8,6 +8,7 @@ import {
   GoogleCloudConfiguration,
 } from "@/app/configuration/components/type";
 import { useConfiguration } from "@/app/configuration/components/ConfigurationContext";
+import NoSavedConfigTemplate from "../components/NoSavedConfigTemplate";
 
 export default function GoogleCloudConfig({
   serviceUrl,
@@ -43,15 +44,15 @@ export default function GoogleCloudConfig({
         serviceName={serviceName}
         configDataLength={cloudConfigData.length}
       />
-
-      <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {cloudConfigData.map((eachConfigDetails) => (
-          <GoogleCloudConfigWidget
-            key={eachConfigDetails.configId}
-            eachConfigDetails={eachConfigDetails}
-          />
-        ))}
-      </div>
+      {cloudConfigData.length === 0 ? <NoSavedConfigTemplate /> :
+        <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {cloudConfigData.map((eachConfigDetails) => (
+            <GoogleCloudConfigWidget
+              key={eachConfigDetails.configId}
+              eachConfigDetails={eachConfigDetails}
+            />
+          ))}
+        </div>}
     </>
   );
 }

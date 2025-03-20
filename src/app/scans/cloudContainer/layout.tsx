@@ -1,3 +1,4 @@
+import { RenderAppBreadcrumb } from "@/components/app-breadcrumb";
 import CloudContainerTabs from "./components/CloudContainerTabs";
 
 export default function RootLayout({
@@ -7,6 +8,13 @@ export default function RootLayout({
 }) {
   return (
     <>
+      <RenderAppBreadcrumb
+        breadcrumb={{
+          level: 1,
+          title: "Cloud & Container",
+          href: "/scans/cloudContainer",
+        }}
+      />
       <div className="flex flex-col h-full">
         <CloudContainerTabs />
         {children}
