@@ -45,14 +45,14 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center">
+    <div className=" flex flex-col items-center">
       {selectedTool === "docker" ? (
         <DockerPage onBack={() => setSelectedTool(null)} />
       ) : selectedTool === "kubernetes" ? (
         <KubernetesPage onBack={() => setSelectedTool(null)} />
       ) : (
         <>
-          <h1 className="text-2xl mt-10 mb-8 text-blue-500">Container Tools</h1>
+          <h1 className="text-2xl  mb-8 text-blue-500">Container Tools</h1>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-6xl">
             <Card className="cursor-default transform transition-all rounded-lg p-0 duration-300 hover:scale-105 shadow-lg hover:shadow-2xl flex flex-col">
               <div className="flex flex-row items-center gap-4 p-6 w-full bg-blue-500 text-white rounded-t">

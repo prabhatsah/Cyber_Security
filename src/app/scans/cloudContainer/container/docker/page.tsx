@@ -693,7 +693,7 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
             <div className=" shadow-md bg-blue-50 dark:bg-gray-900 p-5 rounded-lg">
               <h2 className="text-2xl font-semibold mb-4">Images</h2>
 
-              <TableRoot className="my-table-container max-h-[500px] overflow-y-auto rounded-lg scrollbar-thin scrollbar-thumb-yellow-500 scrollbar-track-gray-200 dark:scrollbar-thumb-blue-400 dark:scrollbar-track-gray-800">
+              <TableRoot className="my-table-container max-h-[300px] overflow-y-auto  rounded-lg scrollbar-thin scrollbar-thumb-yellow-500 scrollbar-track-gray-200 dark:scrollbar-thumb-blue-400 dark:scrollbar-track-gray-800">
                 <Table className="my-table">
                   <TableHead className="sticky top-0 bg-gray-200 dark:bg-gray-800 z-10 rounded-lg">
                     <TableRow>
@@ -708,7 +708,7 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
                       </TableHeaderCell>
                     </TableRow>
                   </TableHead>
-                  <TableBody>
+                  <TableBody className="">
                     {output!.map((row: any) => (
                       <TableRow
                         key={row.ID}

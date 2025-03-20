@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { exec } from "child_process";
-import commands from "@/app/scans/cloudContainer/containers/docker-commands.json";
+import commands from "@/app/scans/cloudContainer/container/docker-commands.json";
 
 type CommandKey = keyof typeof commands;
 

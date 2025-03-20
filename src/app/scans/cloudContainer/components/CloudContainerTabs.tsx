@@ -1,6 +1,10 @@
 "use client";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { redirect, usePathname } from "next/navigation";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/Tabs"
+import { RiCloudFill } from "@remixicon/react";
+import { Box } from 'lucide-react';
+import { useState } from "react";
 
 const navigation = [
   {
@@ -16,9 +20,16 @@ const navigation = [
 export default function CloudContainerTabs() {
   const pathname = usePathname();
 
+  const [selectedTab, setSelectedTab] = useState("cloud");
+
+  const handleTabChange = (value: string) => {
+    setSelectedTab(value);
+    redirect(`/scans/cloudContainer/${value}`)
+  };
+
   return (
     <>
-      <div className="w-full">
+      {/* <div className="w-full">
         <div className="flex border-b border-gray-200 dark:border-gray-800 mb-6">
           {navigation.map((item) => (
             <Link
@@ -36,7 +47,33 @@ export default function CloudContainerTabs() {
             </Link>
           ))}
         </div>
-      </div>
+      </div> */}
+
+
+      <Tabs defaultValue="cloud" value={selectedTab} onValueChange={handleTabChange}>
+        <TabsList variant="solid" className="">
+          <TabsTrigger value="cloud" className="gap-1.5 flex ">
+            <RiCloudFill className="-ml-1 size-4" aria-hidden="true" />
+            Cloud
+          </TabsTrigger>
+          <TabsTrigger value="container" className="gap-1.5 flex " >
+            <Box className="-ml-1 size-4" aria-hidden="true" />
+            Container
+          </TabsTrigger>
+        </TabsList>
+        <div className="mt-4">
+          <TabsContent value="cloud">
+            <div>
+
+            </div>
+          </TabsContent>
+          <TabsContent value="container">
+            <div>
+
+            </div>
+          </TabsContent>
+        </div>
+      </Tabs>
     </>
   );
 }
