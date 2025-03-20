@@ -211,14 +211,22 @@ export default function WebApi() {
   };
 
   return (
-    <div className="">
-      <p className="font-bold ">Web & API Security</p>
-      <SearchBar
-        query={query}
-        setQuery={setQuery}
-        fetchData={fetchData}
-        isLoading={isLoading}
+    <>
+      <RenderAppBreadcrumb
+        breadcrumb={{
+          level: 1,
+          title: "Web & API Security",
+          href: "/scans/WebApi",
+        }}
       />
+      <div className="p-4">
+        <p className="font-bold text-gray-600">Web & API Security</p>
+        <SearchBar
+          query={query}
+          setQuery={setQuery}
+          fetchData={fetchData}
+          isLoading={isLoading}
+        />
 
         {error && <p className="text-red-600 text-center">{error}</p>}
 
