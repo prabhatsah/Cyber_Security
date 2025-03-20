@@ -52,6 +52,7 @@ export const ConfigurationProvider = ({
   children: React.ReactNode;
   configData: any;
 }) => {
+
   return (
     <ConfigurationContext.Provider value={configData}>
       {children}

@@ -1,7 +1,7 @@
 
 "use client";
 
-import Tabs from "@/components/Tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/Tabs"
 
 import Dashboard from "./dashboard";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -23,6 +23,12 @@ import { LiaSpiderSolid } from "react-icons/lia"; // Ensure this is the correct 
 import { FaFire } from "react-icons/fa";
 import SpiderScan from "./SpiderScan";
 import ActiveScan from "./ActiveScan";
+import { FaFire, FaSpider } from "react-icons/fa6";
+<<<<<<< HEAD
+
+=======
+import { RenderAppBreadcrumb } from "@/components/app-breadcrumb";
+>>>>>>> 24ead8bf151361bbc64084da26a8e6927d393582
 
 interface webApiData {
   [key: string]: any;
@@ -59,16 +65,16 @@ export default function WebApi() {
   const [numRequests, setNumRequests] = useState("");
   const [messages, setMessages] = useState([]);
   const [isScanning, setIsScanning] = useState(false); // Track scan status
-  const { setItems } = useBreadcrumb();
+  // const { setItems } = useBreadcrumb();
 
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || "/api/webApi/ZAP";
 
-  useEffect(() => {
-    setItems([
-      { label: "Scans", href: "/scans" },
-      { label: "Web & API Security", href: "/scans/webApi" },
-    ]);
-  }, [setItems]);
+  // useEffect(() => {
+  //   setItems([
+  //     { label: "Scans", href: "/scans" },
+  //     { label: "Web & API Security", href: "/scans/webApi" },
+  //   ]);
+  // }, [setItems]);
 
   const apiRequest = async (url, options = {}) => {
     try {
@@ -214,12 +220,13 @@ export default function WebApi() {
         isLoading={isLoading}
       />
 
-      {error && <p className="text-red-600 text-center">{error}</p>}
+        {error && <p className="text-red-600 text-center">{error}</p>}
 
-      <Tabs
+<<<<<<< HEAD
+      {/* <Tabs
         tabs={[
           {
-            icon: <LiaSpiderSolid />,
+            icon: <FaSpider />,
             label: "Spider",
             content: (
               <SpiderScan progress={spiderProgress} foundURI={foundURI} />
@@ -238,10 +245,65 @@ export default function WebApi() {
             ),
           },
         ]}
-      />
+      /> */}
+      <Tabs defaultValue="tab1">
+        <TabsList variant="solid" >
+          <TabsTrigger value="tab1" className="gap-1.5 flex ">
+            <FaSpider className="-ml-1 size-4" aria-hidden="true" />
+            Spider
+          </TabsTrigger>
+          <TabsTrigger value="tab2" className="gap-1.5 flex ">
+            <FaFire className="-ml-1 size-4" aria-hidden="true" />
+            Active Scan
+          </TabsTrigger>
+        </TabsList>
+        <div className="mt-4">
+          <TabsContent value="tab1">
+            <div>
+              <SpiderScan progress={spiderProgress} foundURI={foundURI} />
+            </div>
+          </TabsContent>
+          <TabsContent value="tab2">
+            <div>
+              <ActiveScan
+                progress={activeProgress}
+                newAlerts={newAlerts}
+                numRequests={numRequests}
+                messages={messages}
+              />
+            </div>
+          </TabsContent>
+        </div>
+      </Tabs>
+=======
+        <Tabs
+          tabs={[
+            {
+              icon: <FaSpider />,
+              label: "Spider",
+              content: (
+                <SpiderScan progress={spiderProgress} foundURI={foundURI} />
+              ),
+            },
+            {
+              icon: <FaFire />,
+              label: "Active Scan",
+              content: (
+                <ActiveScan
+                  progress={activeProgress}
+                  newAlerts={newAlerts}
+                  numRequests={numRequests}
+                  messages={messages}
+                />
+              ),
+            },
+          ]}
+        />
+>>>>>>> 24ead8bf151361bbc64084da26a8e6927d393582
 
-      {data && <Dashboard _data={data} />}
-      <PastScans />
-    </div>
+        {data && <Dashboard _data={data} />}
+        <PastScans />
+      </div>
+    </>
   );
 }
