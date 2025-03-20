@@ -36,7 +36,7 @@ export default function Navbar() {
   return (
     <header className="border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950">
       <div className="flex justify-between items-center py-2 px-6">
-        <div className="sticky top-0 z-10 py-2 px-4">
+        <div className="sticky top-0 z-10 py-2">
           {/* <GenericBreadcrumb /> */}
           <AppBreadcrumb />
         </div>

@@ -23,10 +23,12 @@ export default function GoogleCloudConfigFormModal({
   serviceUrl,
   isFormModalOpen,
   onClose,
+  savedDataToBePopulated,
 }: {
   serviceUrl: string;
   isFormModalOpen: boolean;
   onClose: () => void;
+  savedDataToBePopulated?: GoogleCloudConfiguration;
 }) {
   const serviceNameArray = serviceUrl.split("-");
   let serviceName = "";
@@ -293,6 +295,7 @@ export default function GoogleCloudConfigFormModal({
                     <Input
                       id="configurationName"
                       name="configurationName"
+                      value={savedDataToBePopulated && savedDataToBePopulated.configurationName ? savedDataToBePopulated.configurationName : ""}
                       className={
                         errors.configurationName
                           ? "w-full border border-red-500 rounded-md"
@@ -326,6 +329,7 @@ export default function GoogleCloudConfigFormModal({
                     <Input
                       id="projectId"
                       name="projectId"
+                      value={savedDataToBePopulated && savedDataToBePopulated.projectId ? savedDataToBePopulated.projectId : ""}
                       className={
                         errors.projectId
                           ? "w-full border border-red-500 rounded-md"
@@ -357,6 +361,7 @@ export default function GoogleCloudConfigFormModal({
                     <Input
                       id="serviceAccountKey"
                       name="serviceAccountKey"
+                      // value={savedDataToBePopulated && savedDataToBePopulated.serviceAccountKey ? savedDataToBePopulated.serviceAccountKey : ""}
                       type="file"
                       className={
                         errors.serviceAccountKey

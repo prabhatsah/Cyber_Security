@@ -1,9 +1,7 @@
 import { GoogleCloudConfiguration } from "@/app/configuration/components/type";
-import { RiEdit2Line } from "@remixicon/react";
+import { RiEdit2Line, RiPlayLargeFill } from "@remixicon/react";
 import { Card } from "@tremor/react";
 import { format } from "date-fns";
-import { useState } from "react";
-import GoogleCloudConfigFormModal from "../../config-forms/GoogleCloudConfigFormModal";
 
 export default function GoogleCloudConfigWidget({
   serviceUrl,
@@ -12,11 +10,6 @@ export default function GoogleCloudConfigWidget({
   serviceUrl: string;
   eachConfigDetails: GoogleCloudConfiguration;
 }) {
-  const [isEditFormOpen, setEditFormOpen] = useState(false);
-
-  const toggleFormModal = () => {
-    setEditFormOpen((prev) => !prev);
-  };
 
   const configNameWords = eachConfigDetails.configurationName
     .trim()
@@ -52,8 +45,8 @@ export default function GoogleCloudConfigWidget({
             </div>
           </div>
 
-          <button onClick={toggleFormModal} className="text-blue-700 dark:text-blue-700 hover:text-blue-800 hover:dark:text-blue-600 cursor-pointer">
-            <RiEdit2Line className="size-5" aria-hidden={true} />
+          <button title="Run Scan" className="text-blue-700 dark:text-blue-700 hover:text-blue-800 hover:dark:text-blue-600 cursor-pointer">
+            <RiPlayLargeFill className="size-5" aria-hidden={true} />
           </button>
         </div>
 
@@ -77,14 +70,6 @@ export default function GoogleCloudConfigWidget({
           </div>
         </div>
       </Card>
-
-      {/* Edit Form Modal */}
-      <GoogleCloudConfigFormModal
-        serviceUrl={serviceUrl}
-        isFormModalOpen={isEditFormOpen}
-        onClose={toggleFormModal}
-        savedDataToBePopulated={eachConfigDetails}
-      />
     </>
   );
 }
