@@ -96,7 +96,7 @@ export default function TheHarvesterDashboard() {
 
   return (
     <div className="">
-      <p className="font-bold text-gray-600">OSINT & Threat Intelligence</p>
+      <p className="font-bold ">OSINT & Threat Intelligence</p>
       <SearchBar query={query} setQuery={setQuery} fetchData={fetchData} />
       {error && <p className="text-red-600 text-center">{error}</p>}
 
