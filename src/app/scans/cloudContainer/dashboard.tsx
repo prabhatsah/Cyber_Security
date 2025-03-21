@@ -312,8 +312,8 @@ export default function Dashboard(data) {
                                       finding.level === "danger"
                                         ? "error"
                                         : finding.level === "warning"
-                                        ? "warning"
-                                        : "success"
+                                          ? "warning"
+                                          : "success"
                                     }
                                   >
                                     {finding.level}
