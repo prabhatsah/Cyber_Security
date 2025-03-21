@@ -132,6 +132,12 @@ const cloudConfigList = [
 export default async function CloudServicesConfig() {
 
     const fetchedData = (await fetchConfigDetails()).data;
+export default function CloudServicesConfig() {
+    const [configData, setConfigData] = useState<
+        Record<string, EachConfigDataFormatted>
+    >({});
+
+    const fetchedData = useConfiguration();
     console.log("configData in cloud service page.tsx - ");
     console.log(fetchedData);
 
