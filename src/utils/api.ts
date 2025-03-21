@@ -231,7 +231,7 @@ export async function updateColumn(
   const res = await fetch(`${baseUrl}/api/dbApi`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ query }),
+    body: JSON.stringify({ query, instruction: "update" }),
   });
 
   return res.json();

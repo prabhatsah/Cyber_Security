@@ -1,6 +1,5 @@
 import GoogleCloudConfigWidget from "./GoogleCloudConfigWidget";
 import {
-  EachConfigDataFromServer,
   GoogleCloudConfiguration,
 } from "@/app/configuration/components/type";
 import NoSavedConfigTemplate from "../../components/NoSavedConfigTemplate";
