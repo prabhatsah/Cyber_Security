@@ -35,7 +35,7 @@ const data = [
 export default function Header() {
     return (
         <>
-            <div className="grid grid-cols-4 gap-5">
+            <div className="grid grid-cols-4 gap-5 mt-3">
                 <ChartWidget />
                 <BasicInfo />
             </div>
