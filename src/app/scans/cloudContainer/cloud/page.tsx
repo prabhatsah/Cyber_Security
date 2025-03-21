@@ -1,5 +1,3 @@
-"use client";
-
 import {
     RiAlibabaCloudFill,
     RiAmazonLine,
@@ -9,12 +7,12 @@ import {
     RiWindowsFill,
 } from "@remixicon/react";
 import CloudWidget from "./EachCloudWidget";
-import { useEffect, useMemo, useState } from "react";
-import { useConfiguration } from "../components/ConfigurationContext";
 import {
     EachConfigDataFormatted,
     EachConfigDataFromServer,
 } from "../components/type";
+import { fetchConfigDetails } from "../components/fetchConfigDetails";
+import { configDataSetter } from "../components/configDataSaving";
 
 const cloudConfigList = [
     {
@@ -73,45 +71,38 @@ const cloudConfigList = [
     },
 ];
 
-export default function CloudServicesConfig() {
-    const [configData, setConfigData] = useState<
-        Record<string, EachConfigDataFormatted>
-    >({});
+export default async function CloudServicesConfig() {
 
-    const fetchedData = useConfiguration();
+    const fetchedData = (await fetchConfigDetails()).data;
     console.log("configData in cloud service page.tsx - ");
     console.log(fetchedData);
 
-    useEffect(() => {
-        let configDataFormatted: Record<string, EachConfigDataFormatted> = {};
-        if (fetchedData && fetchedData.length > 0) {
-            fetchedData.forEach((element: EachConfigDataFromServer) => {
-                configDataFormatted[element.name] = {
-                    id: element.id,
-                    data: element.data,
-                };
-            });
-            setConfigData(configDataFormatted);
-            console.log("configData updated", configDataFormatted);
-        }
-    }, [fetchedData]);
-
-    const updatedCloudConfigList = useMemo(() => {
-        return cloudConfigList.map((cloudService) => {
-            const cloudServiceName = cloudService.href.split("/")[4];
-
-            if (configData[cloudServiceName]) {
-                return {
-                    ...cloudService,
-                    configurationCount: Object.keys(configData[cloudServiceName].data)
-                        .length,
-                    configurations: Object.values(configData[cloudServiceName].data),
-                };
-            }
-
-            return { ...cloudService, configurationCount: 0, configurations: [] };
+    let configDataFormatted: Record<string, EachConfigDataFormatted> = {};
+    if (fetchedData && fetchedData.length > 0) {
+        fetchedData.forEach((element: EachConfigDataFromServer) => {
+            configDataFormatted[element.name] = {
+                id: element.id,
+                data: element.data,
+            };
         });
-    }, [configData]);
+        console.log("configData updated", configDataFormatted);
+    }
+    configDataSetter(fetchedData);
+
+    const updatedCloudConfigList = cloudConfigList.map((cloudService) => {
+        const cloudServiceName = cloudService.href.split("/")[4];
+
+        if (configDataFormatted[cloudServiceName]) {
+            return {
+                ...cloudService,
+                configurationCount: Object.keys(configDataFormatted[cloudServiceName].data)
+                    .length,
+                configurations: Object.values(configDataFormatted[cloudServiceName].data),
+            };
+        }
+
+        return { ...cloudService, configurationCount: 0, configurations: [] };
+    });
 
     return (
         <>
