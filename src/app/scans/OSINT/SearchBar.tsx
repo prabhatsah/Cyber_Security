@@ -4,6 +4,7 @@ import { FiSearch, FiXCircle } from "react-icons/fi";
 import { Menu } from "@headlessui/react";
 import { LuRefreshCw } from "react-icons/lu";
 import { Input } from "@/components/ui/input";
+import { GiElectric } from "react-icons/gi";
 
 interface SearchBarProps {
   query: string;
@@ -76,19 +77,18 @@ export default function SearchBar({
         {/* Search Button */}
         <button
           onClick={handleSearch}
-          // disabled={isLoading || !query}
-          className={`flex items-center gap-2 px-4 py-2 btn-primary text-white rounded-lg ${
-            isLoading ? "cursor-not-allowed" : ""
-          }`}
+          disabled={isLoading || !query}
+          className={`flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg ${isLoading ? "opacity-50 cursor-not-allowed" : ""
+            }`}
         >
           {isLoading ? (
-            <span className="animate-spin">
-              <LuRefreshCw />
-            </span>
+            <span className="animate-spin"><LuRefreshCw /></span>
           ) : (
-            <FiSearch size={20} />
+            <GiElectric size={20} style={{ transform: 'rotate(-20deg)' }} />
           )}
-          {isLoading ? "Scanning ..." : "Scan"}
+
+          {isLoading ? "Scanning..." : "Scan"}
+
         </button>
       </div>
     </>
