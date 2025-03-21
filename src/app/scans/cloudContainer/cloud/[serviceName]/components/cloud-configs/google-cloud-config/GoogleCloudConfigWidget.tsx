@@ -5,7 +5,6 @@ import { RiCalendarScheduleLine, RiPlayLargeFill } from "@remixicon/react";
 import { Card } from "@tremor/react";
 import { format } from "date-fns";
 import { redirect } from "next/navigation";
-// import { redirect } from "next/navigation";
 
 export default function GoogleCloudConfigWidget({
   eachConfigDetails,
