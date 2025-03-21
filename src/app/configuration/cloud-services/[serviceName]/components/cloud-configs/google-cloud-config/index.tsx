@@ -1,14 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import ConfigHeader from "../components/ConfigHeader";
+import ConfigHeader from "../../components/ConfigHeader";
 import GoogleCloudConfigWidget from "./GoogleCloudConfigWidget";
 import {
   EachConfigDataFromServer,
   GoogleCloudConfiguration,
 } from "@/app/configuration/components/type";
 import { useConfiguration } from "@/app/configuration/components/ConfigurationContext";
-import NoSavedConfigTemplate from "../components/NoSavedConfigTemplate";
+import NoSavedConfigTemplate from "../../components/NoSavedConfigTemplate";
 
 export default function GoogleCloudConfig({
   serviceUrl,
@@ -20,7 +20,6 @@ export default function GoogleCloudConfig({
   const [cloudConfigData, setCloudConfigData] = useState<
     Array<GoogleCloudConfiguration>
   >([]);
-  const [isLoading, setIsLoading] = useState(false);
 
   let fetchedData = useConfiguration();
 
@@ -49,6 +48,7 @@ export default function GoogleCloudConfig({
           {cloudConfigData.map((eachConfigDetails) => (
             <GoogleCloudConfigWidget
               key={eachConfigDetails.configId}
+              serviceUrl={serviceUrl}
               eachConfigDetails={eachConfigDetails}
             />
           ))}

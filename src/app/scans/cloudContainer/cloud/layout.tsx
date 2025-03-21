@@ -1,6 +1,7 @@
 import * as api from "@/utils/api";
-import { ConfigurationProvider } from "../components/ConfigurationContext";
 import { RenderAppBreadcrumb } from "@/components/app-breadcrumb";
+import { ConfigurationProvider } from "../components/ConfigurationContext";
+import { fetchParticularConfigDetails } from "./[serviceName]/[configId]/fetchParticularConfigDetails";
 
 export async function fetchdata() {
   const tableName = "cloud_config";
@@ -21,24 +22,20 @@ export default async function RootLayout({
   console.log("configData - ");
   console.log(configData.data);
 
-  currentTime = new Date();
-  console.log("Cloud layout ends, Current Time: " + currentTime.toISOString());
-
-  let tempData = {};
   return (
     <>
-      <RenderAppBreadcrumb
-        breadcrumb={{
-          level: 2,
-          title: "Cloud Security",
-          href: "/scans/cloudContainer/cloud",
-        }}
-      />
-      <div className="flex h-full">
-        <ConfigurationProvider configData={configData.data}>
+      <ConfigurationProvider configData={configData.data}>
+        <RenderAppBreadcrumb
+          breadcrumb={{
+            level: 2,
+            title: "Cloud Security",
+            href: "/scans/cloudContainer/cloud",
+          }}
+        />
+        <div className="flex h-full">
           {children}
-        </ConfigurationProvider>
-      </div>
+        </div>
+      </ConfigurationProvider>
     </>
   );
 }

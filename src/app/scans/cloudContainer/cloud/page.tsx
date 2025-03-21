@@ -8,72 +8,73 @@ import {
     RiGoogleFill,
     RiWindowsFill,
 } from "@remixicon/react";
+import CloudWidget from "./EachCloudWidget";
 import { useEffect, useMemo, useState } from "react";
 import { useConfiguration } from "../components/ConfigurationContext";
 import {
     EachConfigDataFormatted,
     EachConfigDataFromServer,
 } from "../components/type";
-import CloudWidget from "./EachCloudWidget";
 
 const cloudConfigList = [
     {
         name: "Amazon Web Services",
         description:
             "AWS CloudFormation is a service that enables infrastructure as code, allowing users to define and provision AWS resources using templates.",
+        configurationCount: 0,
         icon: <RiAmazonLine className="size-5" aria-hidden={true} />,
         href: "/scans/cloudContainer/cloud/amazon-web-services",
         configurations: [],
-        configurationCount: 0,
     },
     {
         name: "Microsoft Azure",
         description:
             "Azure Resource Manager (ARM) is a service that enables infrastructure as code, allowing users to deploy, manage, and organize Azure resources using declarative templates.",
+        configurationCount: 0,
         icon: <RiWindowsFill className="size-5" aria-hidden={true} />,
         href: "/scans/cloudContainer/cloud/microsoft-azure",
         configurations: [],
-        configurationCount: 0,
     },
     {
         name: "Google Cloud Platform",
         description:
             "Google Cloud Deployment Manager is a service that enables infrastructure as code, allowing users to define, deploy, and manage Google Cloud resources using configuration templates.",
+        configurationCount: 0,
         icon: <RiGoogleFill className="size-5" aria-hidden={true} />,
         href: "/scans/cloudContainer/cloud/google-cloud-platform",
         configurations: [],
-        configurationCount: 0,
     },
     {
         name: "IBM Cloud",
         description:
             "IBM Cloud Schematics enables infrastructure as code, automating the deployment and management of IBM Cloud resources using Terraform.",
+        configurationCount: 0,
         icon: <RiCloudLine className="size-5" aria-hidden={true} />,
         href: "/scans/cloudContainer/cloud/ibm-cloud",
         configurations: [],
-        configurationCount: 0,
     },
     {
         name: "Oracle Cloud Infrastructure",
         description:
             "Oracle Cloud Infrastructure (OCI) Resource Manager enables infrastructure as code, allowing users to automate resource deployment and management using Terraform.",
+        configurationCount: 0,
         icon: <RiCloudy2Line className="size-5" aria-hidden={true} />,
         href: "/scans/cloudContainer/cloud/oracle-cloud-infrastructure",
         configurations: [],
-        configurationCount: 0,
     },
     {
         name: "Alibaba Cloud",
         description:
             "Alibaba Cloud Resource Orchestration Service (ROS) enables infrastructure as code, allowing users to define and manage cloud resources using templates.",
+        configurationCount: 0,
         icon: <RiAlibabaCloudFill className="size-5" aria-hidden={true} />,
         href: "/scans/cloudContainer/cloud/alibaba-cloud",
         configurations: [],
-        configurationCount: 0,
     },
 ];
 
 export default function CloudServicesConfig() {
+<<<<<<< HEAD
     // const { setItems } = useBreadcrumb();
     const fetchedData = useConfiguration();
     console.log("configData in cloud service page.tsx - ");
@@ -81,18 +82,27 @@ export default function CloudServicesConfig() {
     const [configData, setConfigData] = useState<
         Record<string, EachConfigDataFormatted>
     >({});
+=======
+    const [configData, setConfigData] = useState<
+        Record<string, EachConfigDataFormatted>
+    >({});
+
+    const fetchedData = useConfiguration();
+    console.log("configData in cloud service page.tsx - ");
+    console.log(fetchedData);
+>>>>>>> e17f880f188189eed3785bd6cc37a99a9e27cd46
 
     useEffect(() => {
-        let formattedData: Record<string, EachConfigDataFormatted> = {};
+        let configDataFormatted: Record<string, EachConfigDataFormatted> = {};
         if (fetchedData && fetchedData.length > 0) {
             fetchedData.forEach((element: EachConfigDataFromServer) => {
-                formattedData[element.name] = {
+                configDataFormatted[element.name] = {
                     id: element.id,
                     data: element.data,
                 };
             });
-            setConfigData(formattedData);
-            console.log("configData updated", formattedData);
+            setConfigData(configDataFormatted);
+            console.log("configData updated", configDataFormatted);
         }
     }, [fetchedData]);
 
