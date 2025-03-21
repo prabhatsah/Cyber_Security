@@ -1,4 +1,4 @@
-let previousScannedResults: any;
+export let previousScannedResults: any;
 let vulnerabilities: Record<string, any> | null = null;
 
 export function setter(OGdata: any) {

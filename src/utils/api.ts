@@ -41,7 +41,9 @@ const columnArr: Record<string, string>[] = [
 import { tableData } from "@/app/scans/WebApi/data";
 import { Buffer } from "buffer";
 
-const baseUrl = typeof window === "undefined" ? "http://localhost:3000" : "";
+const baseUrl =
+  process.env.NEXT_PUBLIC_BASE_URL ||
+  `http://localhost:${process.env.PORT || 3000}`;
 
 export async function createTable(
   tableName: string,
