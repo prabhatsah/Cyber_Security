@@ -11,10 +11,6 @@ export default function CloudWidget({ item }: { item: any }) {
   return (
     <Card
       key={item.name}
-<<<<<<< HEAD
-      // onClick={() => clickHandle(item.href)}
-=======
->>>>>>> e17f880f188189eed3785bd6cc37a99a9e27cd46
       className="relative flex flex-col rounded-lg justify-between 
      hover:bg-tremor-background-muted 
      hover:dark:bg-dark-tremor-background-muted"

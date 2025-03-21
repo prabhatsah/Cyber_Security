@@ -56,6 +56,6 @@ export default function TheHarvesterDashboard() {
           <PastScans />
         </div>
       </div>
-    </>
+    
   );
 }
