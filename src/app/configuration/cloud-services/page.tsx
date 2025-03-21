@@ -76,17 +76,6 @@ const cloudConfigList = [
 ];
 
 export default function CloudServicesConfig() {
-  let currentTime = new Date();
-  console.log("Comp called: " + currentTime.toISOString());
-
-  // const { setItems } = useBreadcrumb();
-  // useEffect(() => {
-  //   setItems([
-  //     { label: "Configurations", href: "" },
-  //     { label: "Cloud Services", href: "/configuration/cloud-services" },
-  //   ]);
-  // }, []);
-
   const [configData, setConfigData] = useState<
     Record<string, EachConfigDataFormatted>
   >({});
@@ -126,9 +115,6 @@ export default function CloudServicesConfig() {
       return { ...cloudService, configurationCount: 0, configurations: [] };
     });
   }, [configData]);
-
-  currentTime = new Date();
-  console.log("Now returning: " + currentTime.toISOString());
 
   if (isLoading) {
     return <CloudSkeleton />;

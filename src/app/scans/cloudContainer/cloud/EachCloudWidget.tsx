@@ -7,8 +7,7 @@ function clickHandle(url: string) {
 }
 
 export default function CloudWidget({ item }: { item: any }) {
-  // const currentTime = new Date();
-  // console.log("Current Time: " + currentTime.toISOString());
+
   return (
     <Card
       key={item.name}

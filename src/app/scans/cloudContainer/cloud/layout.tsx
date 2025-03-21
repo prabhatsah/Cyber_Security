@@ -1,6 +1,7 @@
 import * as api from "@/utils/api";
 import { RenderAppBreadcrumb } from "@/components/app-breadcrumb";
 import { ConfigurationProvider } from "../components/ConfigurationContext";
+import { fetchParticularConfigDetails } from "./[serviceName]/[configId]/fetchParticularConfigDetails";
 
 export async function fetchdata() {
   const tableName = "cloud_config";
@@ -21,10 +22,6 @@ export default async function RootLayout({
   console.log("configData - ");
   console.log(configData.data);
 
-  currentTime = new Date();
-  console.log("Cloud layout ends, Current Time: " + currentTime.toISOString());
-
-  let tempData = {};
   return (
     <>
       <ConfigurationProvider configData={configData.data}>

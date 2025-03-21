@@ -1,8 +1,5 @@
-"use client";
-
-import React, { useEffect } from "react";
+import React from "react";
 import DataTable from "react-data-table-component";
-import { useBreadcrumb } from "@/contexts/BreadcrumbContext";
 
 //A SAMPLE version of your data.
 const data = {
@@ -3782,45 +3779,29 @@ export default function Dashboard({
 }: {
   params: { serviceName: string };
 }) {
-  // const { setItems } = useBreadcrumb();
-
-  // useEffect(() => {
-  //   setItems([
-  //     { label: "Scans", href: "/scans" },
-  //     { label: "Cloud Security", href: "/scans/cloudContainer/cloud" },
-  //     {
-  //       label: params.serviceName,
-  //       href: `/scans/cloudContainer/cloud/${params.serviceName}`,
-  //     },
-  //     {
-  //       label: "Cyber Security Test Project",
-  //       href: `/scans/cloudContainer/cloud/${params.serviceName}/dashboard`,
-  //     },
-  //   ]);
-  // }, []);
 
   const services = data.services;
 
   //Columns for the "Resource Counts" DataTable.
   const countColumns = [
-    { name: "Count Key", selector: (row) => row.key, sortable: true },
-    { name: "Value", selector: (row) => row.value, sortable: true },
+    { name: "Count Key", selector: (row: any) => row.key, sortable: true },
+    { name: "Value", selector: (row: any) => row.value, sortable: true },
   ];
 
   //Columns for the "Findings" DataTable.
   const findingsColumns = [
-    { name: "Name / ID", selector: (row) => row.findingKey, sortable: true },
-    { name: "Description", selector: (row) => row.description, wrap: true },
+    { name: "Name / ID", selector: (row: any) => row.findingKey, sortable: true },
+    { name: "Description", selector: (row: any) => row.description, wrap: true },
     {
       name: "Flagged Items",
-      selector: (row) => row.flagged_items,
+      selector: (row: any) => row.flagged_items,
       sortable: true,
     },
-    { name: "Level", selector: (row) => row.level, sortable: true },
+    { name: "Level", selector: (row: any) => row.level, sortable: true },
   ];
 
   //Transform *_count properties into an array for DataTable.
-  const transformCountsToArray = (serviceData) => {
+  const transformCountsToArray = (serviceData: any) => {
     return Object.keys(serviceData)
       .filter((key) => key.endsWith("_count"))
       .map((key) => ({
@@ -3830,7 +3811,7 @@ export default function Dashboard({
   };
 
   //Transform the "findings" object into an array.
-  const transformFindingsToArray = (serviceData) => {
+  const transformFindingsToArray = (serviceData: any) => {
     if (!serviceData.findings) return [];
     return Object.keys(serviceData.findings).map((fKey) => ({
       findingKey: fKey,

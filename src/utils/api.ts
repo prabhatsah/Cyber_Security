@@ -214,7 +214,7 @@ export async function updateColumn(
   provider: string
 ) {
   const jsonString = JSON.stringify(data).replace(/'/g, "");
-  console.log(jsonString)
+  console.log(jsonString);
   const query = `
     UPDATE "${tableName}"
     SET "${columnName}" = jsonb_set(
@@ -236,7 +236,6 @@ export async function updateColumn(
 
   return res.json();
 }
-
 
 //////////////////////////
 export async function updateColumnGeneralised(
@@ -262,15 +261,14 @@ export async function updateColumnGeneralised(
 
   //console.log(query);
 
-   const res = await fetch(`${baseUrl}/api/dbApi`, {
-     method: "POST",
-     headers: { "Content-Type": "application/json" },
-     body: JSON.stringify({ query  , instruction : "update" }),
+  const res = await fetch(`${baseUrl}/api/dbApi`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ query, instruction: "update" }),
   });
 
   return res.json();
 }
-
 
 export async function deleteObjectWithKey(
   key: string,
@@ -299,17 +297,21 @@ api.fetchData(name,null,null,null,{'projectId' : ['gcp-project-98341', 'gcp-proj
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 export async function fetchData(
   tableName: string,
-  orderByColumn : string,
+  orderByColumn: string,
   columnFilter?: { column: string; value: string | number },
-  jsonFilter?: { column: string; key: string; value: string | number }) {
-  
-  const query = {tableName,orderByColumn,columnFilter,jsonFilter}
+  jsonFilter?: {
+    column: string;
+    keyPath: string[];
+    value: string | number;
+  }[]
+) {
+  const query = { tableName, orderByColumn, columnFilter, jsonFilter };
   console.log(query);
 
   const res = await fetch(`${baseUrl}/api/dbApi`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ query , instruction : "fetch" }),
+    body: JSON.stringify({ query, instruction: "fetch" }),
   });
 
   return res.json();

@@ -1,5 +1,3 @@
-"use client";
-
 import React from "react";
 import GoogleCloudConfig from "./components/cloud-configs/google-cloud-config";
 import AmazonWebServicesConfig from "./components/cloud-configs/amazon-web-services-config";
@@ -24,7 +22,7 @@ const globalConfigMap: Record<
   "alibaba-cloud": AlibabaCloudConfig,
 };
 
-export default function CloudServiceDetails({
+export default async function CloudServiceDetails({
   params,
 }: {
   params: Promise<{ serviceName: string }>;
@@ -49,7 +47,7 @@ export default function CloudServiceDetails({
         breadcrumb={{
           level: 2,
           title: serviceName,
-          href: `/configuration/cloud-services/${serviceUrl}`
+          href: `/scans/cloudContainer/cloud/${serviceUrl}`
         }}
       />
       <div className=" flex flex-col flex-grow">
