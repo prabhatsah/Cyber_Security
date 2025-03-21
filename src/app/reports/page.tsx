@@ -2,6 +2,7 @@
 
 import { RenderAppBreadcrumb } from "@/components/app-breadcrumb";
 import { Reports } from "../../components/Reports";
+import UnderMaintenance from "@/components/UnderMaintenance";
 
 export default function ReportsPage() {
   return (
@@ -13,7 +14,8 @@ export default function ReportsPage() {
           href: "/reports",
         }}
       />
-      <Reports />
+      {/* <Reports /> */}
+      <UnderMaintenance />
     </>
   );
 }

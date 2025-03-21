@@ -1,16 +1,7 @@
 "use client";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableFoot,
-  TableHead,
-  TableHeaderCell,
-  TableRoot,
-  TableRow,
-} from "@/components/Table";
-import Tabs from "@/components/Tabs";
+import { Table, TableBody, TableCaption, TableCell, TableFoot, TableHead, TableHeaderCell, TableRoot, TableRow, } from "@/components/Table";
+//import Tabs from "@/components/Tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/Tabs"
 import { useState, useRef, useEffect } from "react";
 import dockerCommands from "../docker-commands.json";
 import VulnerabilitiesStats from "./stats";
@@ -21,7 +12,9 @@ import { Card, Title, Text, Button } from "@tremor/react";
 import { TextInput } from "@tremor/react";
 import { Badge } from "@tremor/react";
 import * as prevScans from "./scanHistory";
-import { getTotalVulnerabilitiesForImages, ScannedImages, returnImageDetails } from "./sideMenuHistory";
+import { getTotalVulnerabilitiesForImages, ScannedImages } from "./sideMenuHistory";
+import { FaChartPie } from "react-icons/fa6";
+import { AiFillDashboard } from "react-icons/ai";
 
 type CommandKey = keyof typeof dockerCommands;
 
@@ -245,16 +238,16 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
     }
   };
 
-  const tabs = [
-    {
-      label: "Card-based",
-      content: <VulnerabilitiesStats severityArray={currSeverity} />,
-    },
-    {
-      label: "Chart-based",
-      content: <CustomPieChart data={currSeverity} />,
-    },
-  ];
+  // const tabs = [
+  //   {
+  //     label: "Card-based",
+  //     content: <VulnerabilitiesStats severityArray={currSeverity} />,
+  //   },
+  //   {
+  //     label: "Chart-based",
+  //     content: <CustomPieChart data={currSeverity} />,
+  //   },
+  // ];
 
   return (
     <>
@@ -826,7 +819,32 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
                         <h4 className="text-lg font-semibold text-gray-00 mb-4">
                           Stats
                         </h4>
-                        <Tabs tabs={tabs} />
+                        {/* <Tabs tabs={tabs} /> */}
+
+                        <Tabs defaultValue="tab1">
+                          <TabsList variant="solid" >
+                            <TabsTrigger value="tab1" className="gap-1.5 flex ">
+                              <AiFillDashboard className="-ml-1 size-4" aria-hidden="true" />
+                              Card
+                            </TabsTrigger>
+                            <TabsTrigger value="tab2" className="gap-1.5 flex ">
+                              <FaChartPie className="-ml-1 size-4" aria-hidden="true" />
+                              Visualization
+                            </TabsTrigger>
+                          </TabsList>
+                          <div className="mt-4">
+                            <TabsContent value="tab1">
+                              <div>
+                                <VulnerabilitiesStats severityArray={currSeverity} />
+                              </div>
+                            </TabsContent>
+                            <TabsContent value="tab2">
+                              <div>
+                                <CustomPieChart data={currSeverity} />
+                              </div>
+                            </TabsContent>
+                          </div>
+                        </Tabs>
                       </div>
 
                       <div
