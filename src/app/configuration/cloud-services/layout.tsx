@@ -17,16 +17,16 @@ export default async function RootLayout({
   let currentTime = new Date();
   console.log("Layout called: " + currentTime.toISOString());
 
-  // const configData = await fetchdata();
-  // console.log("configData - ");
-  // console.log(configData.data);
+  const configData = await fetchdata();
+  console.log("configData - ");
+  console.log(configData.data);
 
   return (
     <>
       <div className="flex h-full">
-        {/* <ConfigurationProvider configData={configData.data}> */}
-        {children}
-        {/* </ConfigurationProvider> */}
+        <ConfigurationProvider configData={configData.data}>
+          {children}
+        </ConfigurationProvider>
       </div>
     </>
   );

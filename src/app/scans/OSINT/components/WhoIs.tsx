@@ -55,7 +55,7 @@ export default function WhoIs({ whoisText }: { whoisText: string }) {
 
   return (
     <>
-      <h2 className="text-md font-semibold text-gray-900 ">Whois Lookup</h2>
+      <h2 className="text-md font-semibold ">Whois Lookup</h2>
 
       <div className="mt-2 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3 text-sm border p-4 rounded-md">
         <div key="registrarInfo" className="flex flex-col gap-3">
@@ -72,7 +72,8 @@ export default function WhoIs({ whoisText }: { whoisText: string }) {
           <div className="flex flex-col gap-2">
             {Object.entries(whoisData.registrar).map(([key, value]) => (
               <p className="text-tremor-default leading-6 text-tremor-content dark:text-dark-tremor-content">
-                <strong>{key}:</strong> {value}
+                {key} : &nbsp;
+                <span className="text-sm font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">{value}</span>
               </p>
             ))}
           </div>
@@ -92,7 +93,8 @@ export default function WhoIs({ whoisText }: { whoisText: string }) {
           <div className="flex flex-col gap-2">
             {Object.entries(whoisData.admin).map(([key, value]) => (
               <p className="text-tremor-default leading-6 text-tremor-content dark:text-dark-tremor-content">
-                <strong>{key}:</strong> {value}
+                {key} : &nbsp;
+                <span className="text-sm font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">{value}</span> 
               </p>
             ))}
           </div>
@@ -112,7 +114,8 @@ export default function WhoIs({ whoisText }: { whoisText: string }) {
           <div className="flex flex-col gap-2">
             {Object.entries(whoisData.domain).map(([key, value]) => (
               <p className="text-tremor-default leading-6 text-tremor-content dark:text-dark-tremor-content">
-                <strong>{key}:</strong> {value}
+                {key} : &nbsp;
+                 <span className="text-sm font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">{value}</span> 
               </p>
             ))}
           </div>
