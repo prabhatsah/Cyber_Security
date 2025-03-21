@@ -27,8 +27,8 @@ export default async function CloudServiceDetails({
 }: {
   params: Promise<{ serviceName: string }>;
 }) {
-  const unwrappedParams = React.use(params); // Unwrap the Promise here
-  const serviceUrl = unwrappedParams.serviceName;
+  const serviceUrl = (await params).serviceName;
+
   const serviceName = serviceUrl
     .split("-") // Split the string at hyphens
     .map((word) =>
