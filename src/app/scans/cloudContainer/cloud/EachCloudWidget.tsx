@@ -15,7 +15,7 @@ export default function CloudWidget({ item }: { item: any }) {
   return (
     <Card
       key={item.name}
-      onClick={() => clickHandle(item.href)}
+      // onClick={() => clickHandle(item.href)}
       className="relative flex flex-col rounded-lg justify-between 
      hover:bg-tremor-background-muted 
      hover:dark:bg-dark-tremor-background-muted"
@@ -32,7 +32,7 @@ export default function CloudWidget({ item }: { item: any }) {
           className="text-tremor-default font-medium 
       text-tremor-content-strong dark:text-dark-tremor-content-strong"
         >
-          <a href="#" className="focus:outline-none">
+          <a href={item.href} className="focus:outline-none">
             <span className="absolute inset-0" aria-hidden={true} />
             {item.name}
           </a>

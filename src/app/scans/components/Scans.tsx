@@ -1,9 +1,6 @@
 "use client";
 import { RiRobot2Fill, RiStackFill } from "@remixicon/react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/Tabs"
-
-
-
 import { useState } from "react";
 import {
   Plus,
@@ -11,8 +8,6 @@ import {
   Network,
   Upload,
   Book,
-  Activity,
-  ShieldEllipsis,
 } from "lucide-react";
 import ScanModal from "./ScanModal";
 import PortScanModal from "./PortScanModal";
@@ -64,24 +59,6 @@ export function Scans() {
     setShowComplianceScan(false);
   };
 
-  // if (true) {
-  //   return (
-  //     <div className="flex items-center justify-center min-h-[50vh] animate-pulse duration-1000 text-primary ">
-  //       <ShieldEllipsis className="h-12 w-12  " />
-  //       <p className="text-2xl ml-2">Loading ...</p>
-  //     </div>
-  //   );
-  // }
-
-  // const { withLoading } = useGlobalLoading();
-  // const loadSpinner = async () => {
-  //   await withLoading(async () => {
-  //     // Simulate an API call
-  //     await new Promise((resolve) => setTimeout(resolve, 123000));
-  //     console.log("Data fetched successfully!");
-  //   });
-  // };
-
   return (
     <div>
       <div className="flex justify-between items-center mb-8">
@@ -126,37 +103,6 @@ export function Scans() {
           </button>
         </div>
       </div>
-      {/* <div className="flex space-x-4  mb-6">
-        <button
-          className={`py-2 px-4 font-medium ${
-            activeTab === "cyberSecurity"
-              ? "border-b-2 border-blue-500 text-blue-500"
-              : "text-gray-600"
-          }`}
-          onClick={() => setActiveTab("cyberSecurity")}
-        >
-          Cyber Security Components
-        </button>
-        <button
-          className={`py-2 px-4 font-medium ${
-            activeTab === "specializedAIAgents"
-              ? "border-b-2 border-blue-500 text-blue-500"
-              : "text-gray-600"
-          }`}
-          onClick={() => setActiveTab("specializedAIAgents")}
-        >
-          Specialized AI Agents
-        </button>
-      </div>
-      {activeTab === "cyberSecurity" ? (
-        <div>
-          <CyberSecurityComponents />
-        </div>
-      ) : (
-        <div>
-          <SpecializedAIAgents />
-        </div>
-      )} */}
       <Tabs defaultValue="tab1">
         <TabsList variant="solid" >
           <TabsTrigger value="tab1" className="gap-1.5 flex ">
