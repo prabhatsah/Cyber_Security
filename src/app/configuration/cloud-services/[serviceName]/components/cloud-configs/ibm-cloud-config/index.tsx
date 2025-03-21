@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useState } from "react";
 import ConfigHeader from "../../components/ConfigHeader";
 import { useConfiguration } from "@/app/configuration/components/ConfigurationContext";

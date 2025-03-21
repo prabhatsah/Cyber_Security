@@ -1,4 +1,7 @@
-import { GoogleCloudConfig } from "@/app/configuration/components/type";
+import {
+  AmazonWebServicesConfiguration,
+  GoogleCloudConfiguration,
+} from "@/app/configuration/components/type";
 import * as api from "@/utils/api";
 
 const name = "cloud_config";
@@ -46,7 +49,16 @@ export function addCloudEntry() {
   api.addColumn(name, valuesArr);
 }
 
-export function addNewConfiguration(newConfigData: GoogleCloudConfig) {
+export function addNewConfiguration(
+  newConfigData: GoogleCloudConfiguration | AmazonWebServicesConfiguration,
+  cloudProvider: string
+) {
   console.log("New Config Data: ", newConfigData);
-  api.updateColumn(name,"data",newConfigData,newConfigData.configId,"google-cloud-platform");
+  api.updateColumn(
+    name,
+    "data",
+    newConfigData,
+    newConfigData.configId,
+    cloudProvider
+  );
 }
