@@ -6,8 +6,8 @@ import {
   EachConfigDataFromServer,
   GoogleCloudConfiguration,
 } from "@/app/configuration/components/type";
-import { useConfiguration } from "@/app/configuration/components/ConfigurationContext";
 import NoSavedConfigTemplate from "../components/NoSavedConfigTemplate";
+import { useConfiguration } from "@/app/scans/cloudContainer/components/ConfigurationContext";
 
 export default function GoogleCloudConfig({
   serviceUrl,
@@ -42,7 +42,6 @@ export default function GoogleCloudConfig({
           {cloudConfigData.map((eachConfigDetails) => (
             <GoogleCloudConfigWidget
               key={eachConfigDetails.configId}
-              serviceUrl={serviceUrl}
               eachConfigDetails={eachConfigDetails}
             />
           ))}

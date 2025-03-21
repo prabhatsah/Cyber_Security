@@ -1,7 +1,9 @@
+"use client";
+
 import { useEffect, useState } from "react";
-import { useConfiguration } from "@/app/configuration/components/ConfigurationContext";
 import { EachConfigDataFromServer } from "@/app/configuration/components/type";
 import NoSavedConfigTemplate from "../components/NoSavedConfigTemplate";
+import { useConfiguration } from "@/app/scans/cloudContainer/components/ConfigurationContext";
 
 export default function AlibabaCloudConfig({
   serviceUrl,

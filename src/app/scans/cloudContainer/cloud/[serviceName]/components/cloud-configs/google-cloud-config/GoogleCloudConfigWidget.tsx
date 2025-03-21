@@ -1,13 +1,12 @@
 import { GoogleCloudConfiguration } from "@/app/configuration/components/type";
-import { RiEdit2Line, RiPlayLargeFill } from "@remixicon/react";
+import { RiCalendarScheduleLine, RiPlayLargeFill } from "@remixicon/react";
 import { Card } from "@tremor/react";
 import { format } from "date-fns";
+import { redirect } from "next/navigation";
 
 export default function GoogleCloudConfigWidget({
-  serviceUrl,
   eachConfigDetails,
 }: {
-  serviceUrl: string;
   eachConfigDetails: GoogleCloudConfiguration;
 }) {
 
@@ -22,6 +21,10 @@ export default function GoogleCloudConfigWidget({
     const lastInitial =
       configNameWords[configNameWords.length - 1][0].toUpperCase();
     configNameInitial = firstInitial + lastInitial;
+  }
+
+  function startScan() {
+    redirect(`/scans/cloudContainer/cloud/google-cloud-platform/${eachConfigDetails.configId}`);
   }
 
   return (
@@ -45,9 +48,14 @@ export default function GoogleCloudConfigWidget({
             </div>
           </div>
 
-          <button title="Run Scan" className="text-blue-700 dark:text-blue-700 hover:text-blue-800 hover:dark:text-blue-600 cursor-pointer">
-            <RiPlayLargeFill className="size-5" aria-hidden={true} />
-          </button>
+          <div className="flex justify-between items-center">
+            <button title="Schedule Scan" className="border-r border-dark-bgTertiary pr-3 text-blue-700 dark:text-blue-700 hover:text-blue-800 hover:dark:text-blue-600 cursor-pointer">
+              <RiCalendarScheduleLine className="size-5" aria-hidden={true} />
+            </button>
+            <button onClick={() => startScan()} title="Run Scan" className="pl-3 text-blue-700 dark:text-blue-700 hover:text-blue-800 hover:dark:text-blue-600 cursor-pointer">
+              <RiPlayLargeFill className="size-5" aria-hidden={true} />
+            </button>
+          </div>
         </div>
 
         <div className="mt-6 grid grid-cols-2 divide-x divide-tremor-border border-t border-tremor-border dark:divide-dark-tremor-border dark:border-dark-tremor-border">
