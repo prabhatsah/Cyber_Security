@@ -76,12 +76,6 @@ const cloudConfigList = [
 ];
 
 export default function CloudServicesConfig() {
-<<<<<<< HEAD
-  let currentTime = new Date();
-  console.log("Comp called: " + currentTime.toISOString());
-
-=======
->>>>>>> e17f880f188189eed3785bd6cc37a99a9e27cd46
   const [configData, setConfigData] = useState<
     Record<string, EachConfigDataFormatted>
   >({});

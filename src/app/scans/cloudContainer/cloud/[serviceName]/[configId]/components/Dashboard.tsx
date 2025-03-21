@@ -6,6 +6,7 @@ import PastScans from "@/components/PastScans";
 import { useConfiguration } from "@/app/scans/cloudContainer/components/ConfigurationContext";
 import ServiceSummary from "./ServiceSummary";
 import ServiceBreakdown from "./ServiceBreakdowns";
+import { Label } from "@radix-ui/react-label";
 
 export default function Dashboard() {
     const fetchedData = useConfiguration();
@@ -19,17 +20,11 @@ export default function Dashboard() {
             }}
         />
         <div className="w-full">
-            <p className="font-bold mb-3">Cloud Scan</p>
-            <div><Header /></div>
-            <div className="space-y-8">
-                <ServiceSummary />
-            </div>
-            <div className="space-y-8">
-                <ServiceBreakdown />
-            </div>
-            <div>
-                <PastScans />
-            </div>
+            <Label className="text-[20px] font-bold text-gray-900 dark:text-gray-50">Cloud Scan</Label>
+            <Header />
+            <ServiceSummary />
+            <ServiceBreakdown />
+            <PastScans />
         </div>
     </>;
 }

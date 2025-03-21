@@ -8,7 +8,10 @@ import {
     TableRoot,
     TableRow,
 } from "@/components/Table";
+import { Label } from "@radix-ui/react-label";
 import { Badge } from "lucide-react";
+import FetchGCPData from "./FetchData";
+import { useEffect, useState } from "react";
 
 const services = {
     bigquery: {
@@ -80,56 +83,74 @@ const services = {
 };
 
 export default function ServiceBreakdown() {
-    debugger;
+    const [data, setData] = useState(null);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const result = await FetchGCPData();
+            setData(result);
+        };
+
+        fetchData();
+
+    }, []);
+
+    if (!data) {
+        return <div>Loading...</div>;
+    }
+
+    const services = data.services;
+
     return (
-        <Accordion type="multiple" className="">
-            {Object.keys(services).map((serviceKey) => {
-                const service = services[serviceKey];
-                return (
-                    <AccordionItem value={serviceKey}>
-                        <AccordionTrigger>
-                            <span className="flex items-center gap-2 h-8">
-                                {serviceKey}
-                            </span>
-                        </AccordionTrigger>
-                        <AccordionContent className="max-h-80 overflow-auto">
-                            <h1>Hello</h1>
-                            <TableRoot className="mt-3">
-                                <Table>
-                                    <TableHead>
-                                        <TableRow >
-                                            <TableHeaderCell className="w-64 ">Finding Name</TableHeaderCell>
-                                            <TableHeaderCell className="w-24">Dashboard Name</TableHeaderCell>
-                                            <TableHeaderCell className="w-52">Description</TableHeaderCell>
-                                            <TableHeaderCell className="w-12">Flagged Items</TableHeaderCell>
-                                            <TableHeaderCell className="w-32">Level</TableHeaderCell>
-                                            <TableHeaderCell className="w-52">Remediation</TableHeaderCell>
-                                        </TableRow>
-                                    </TableHead>
-                                </Table>
-                            </TableRoot>
-                            <TableRoot className="max-h-96">
-                                <Table>
-                                    <TableBody>
-                                        {Object.entries(service.findings).map(([findingKey, finding]) => (
-                                            <TableRow key={findingKey}>
-                                                <TableCell className="w-64">{findingKey}</TableCell>
-                                                <TableCell className="w-24">{finding.dashboard_name}</TableCell>
-                                                <TableCell className="w-52">{finding.description}</TableCell>
-                                                <TableCell className="w-12">{finding.flagged_items}</TableCell>
-                                                <TableCell className="w-32">
-                                                    <Badge >{finding.level}</Badge>
-                                                </TableCell>
+        <div className="w-full mt-8">
+            <Label className="text-[17px] font-bold text-gray-900 dark:text-gray-50">Services Level Breakdown</Label>
+            <div className="">
+                <Accordion type="multiple" className="">
+                    {Object.keys(services).map((serviceKey) => {
+                        const service = services[serviceKey];
+                        return (
+                            <AccordionItem value={serviceKey}>
+                                <AccordionTrigger>
+                                    <span className="flex items-center gap-2 h-8">
+                                        {serviceKey}
+                                    </span>
+                                </AccordionTrigger>
+                                <AccordionContent className="max-h-80 overflow-auto">
+                                    <TableRoot className="mt-3">
+                                        <Table>
+                                            <TableHead>
+                                                <TableRow >
+                                                    <TableHeaderCell className="w-24">Dashboard</TableHeaderCell>
+                                                    <TableHeaderCell className="w-64 ">Finding</TableHeaderCell>
+                                                    <TableHeaderCell className="w-52">Description</TableHeaderCell>
+                                                    <TableHeaderCell className="w-12">Flagged Items</TableHeaderCell>
+                                                    <TableHeaderCell className="w-32">Level</TableHeaderCell>
+                                                    <TableHeaderCell className="w-52">Remediation</TableHeaderCell>
+                                                </TableRow>
+                                            </TableHead>
+                                        </Table>
+                                    </TableRoot>
+                                    <TableRoot className="max-h-96">
+                                        <Table>
+                                            <TableBody>
+                                                {Object.entries(service.findings).map(([findingKey, finding]) => (
+                                                    <TableRow >
+                                                        <TableCell className="w-24">{finding.dashboard_name}</TableCell>
+                                                        <TableCell className="w-64">{findingKey}</TableCell>
+                                                        <TableCell className="w-52">{finding.description}</TableCell>
+                                                        <TableCell className="w-12">{finding.flagged_items}</TableCell>
+                                                        <TableCell className="w-32">
+                                                            <Badge >{finding.level}</Badge>
+                                                        </TableCell>
+                                                        <TableCell className="w-52">{finding.remediation}</TableCell>
+                                                    </TableRow>
+                                                ))
+                                                }
 
-                                                <TableCell className="w-52">{finding.remediation}</TableCell>
-                                            </TableRow>
-                                        ))
-                                        }
-
-                                    </TableBody>
-                                </Table>
-                            </TableRoot>
-                            {/* <Table>
+                                            </TableBody>
+                                        </Table>
+                                    </TableRoot>
+                                    {/* <Table>
                                 <TableHead>
                                     <TableRow>
                                         <TableHead>Finding Name</TableHead>
@@ -153,13 +174,13 @@ export default function ServiceBreakdown() {
                                     ))}
                                 </TableBody>
                             </Table> */}
-                        </AccordionContent>
-                    </AccordionItem>
-                );
-            })}
-        </Accordion>
-
-
+                                </AccordionContent>
+                            </AccordionItem>
+                        );
+                    })}
+                </Accordion>
+            </div>
+        </div>
 
         // <Accordion>
         //     {Object.keys(services).map((serviceKey) => {

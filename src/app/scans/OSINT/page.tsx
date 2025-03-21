@@ -41,21 +41,29 @@ export default function TheHarvesterDashboard() {
   };
 
   return (
-    <div className="">
-      <p className="font-bold ">OSINT & Threat Intelligence</p>
-      <SearchBar query={query} setQuery={setQuery} fetchData={fetchData} />
-      {error && <p className="text-red-600 text-center">{error}</p>}
+    <>
+      <RenderAppBreadcrumb
+        breadcrumb={{
+          level: 1,
+          title: "OSINT & Threat Intelligence",
+          href: "/scans/OSINT",
+        }}
+      />
+      <div className="">
+        <p className="font-bold ">OSINT & Threat Intelligence</p>
+        <SearchBar query={query} setQuery={setQuery} fetchData={fetchData} />
+        {error && <p className="text-red-600 text-center">{error}</p>}
 
-        {data && (
-          <div className="space-y-8">
-            <Widgets widgetData={data} queryUrl={query} />
-          </div>
-        )}
+      {data && (
+        <div className="space-y-8">
+          <Widgets widgetData={data} queryUrl={query} />
+        </div>
+      )}
 
         <div>
           <PastScans />
         </div>
       </div>
-    
+    </>
   );
 }
