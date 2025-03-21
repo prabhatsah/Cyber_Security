@@ -22,22 +22,7 @@ const cloudConfigList = [
         configurationCount: 1,
         icon: <RiAmazonLine className="size-5" aria-hidden={true} />,
         href: "/scans/cloudContainer/cloud/amazon-web-services",
-        configurations: [
-            {
-                "region": "us-central",
-                "configId": "fe5d0c7c-5891-4dc3-9cc6-4aac4d19ba0f",
-                "createdBy": {
-                    "userId": "be7a0ece-f3d8-4c5b-84dc-52c32c4adff4",
-                    "userName": "Sayan Roy",
-                    "userEmail": "sayan.roy@keross.com"
-                },
-                "createdOn": "2025-Mar-21 17:40:35",
-                "accessKeyId": "R8O4gSTCFyGebPYrBOAxvFTRp21HFBfafjbasjdf1u21",
-                "cloudProvider": "aws",
-                "secretAccessKey": "",
-                "configurationName": "AWS test"
-            }
-        ],
+        configurations: [],
     },
     {
         name: "Microsoft Azure",
@@ -132,12 +117,6 @@ const cloudConfigList = [
 export default async function CloudServicesConfig() {
 
     const fetchedData = (await fetchConfigDetails()).data;
-export default function CloudServicesConfig() {
-    const [configData, setConfigData] = useState<
-        Record<string, EachConfigDataFormatted>
-    >({});
-
-    const fetchedData = useConfiguration();
     console.log("configData in cloud service page.tsx - ");
     console.log(fetchedData);
 
@@ -172,7 +151,7 @@ export default function CloudServicesConfig() {
         <>
             <div className=" flex flex-col relative">
                 <div className=" grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 h-fit">
-                    {cloudConfigList.map((item) => (
+                    {updatedCloudConfigList.map((item) => (
                         <CloudWidget key={item.name} item={item} />
                     ))}
                 </div>
