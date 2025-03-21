@@ -1,5 +1,15 @@
 "use client";
-import { Table, TableBody, TableCaption, TableCell, TableFoot, TableHead, TableHeaderCell, TableRoot, TableRow, } from "@/components/Table";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableFoot,
+  TableHead,
+  TableHeaderCell,
+  TableRoot,
+  TableRow,
+} from "@/components/Table";
 import Tabs from "@/components/Tabs";
 import { useState, useRef, useEffect } from "react";
 import dockerCommands from "../docker-commands.json";
@@ -11,46 +21,13 @@ import { Card, Title, Text, Button } from "@tremor/react";
 import { TextInput } from "@tremor/react";
 import { Badge } from "@tremor/react";
 import * as prevScans from "./scanHistory";
-import { getTotalVulnerabilitiesForImages, ScannedImages } from "./sideMenuHistory";
+import { getTotalVulnerabilitiesForImages, ScannedImages, returnImageDetails } from "./sideMenuHistory";
 
 type CommandKey = keyof typeof dockerCommands;
 
-const fetchHistoryScans = async () => {
-  const tableName = "image_file_scanning";
-  const orderByColumn = "slno"
-  const scans = await api.fetchData(tableName, orderByColumn);
-  prevScans.setter(scans);
-};
 
 
-async function fetchAndProcessHistory() {
-  let temp;
-  await fetchHistoryScans();
-  return getTotalVulnerabilitiesForImages(prevScans.getter()?.data);
-}
-
-let SHflag = false;
 export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
-  const [scannedImages, setScannedImages] = useState<any>(null);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      if (!SHflag && !hasFetched.current) {
-        hasFetched.current = true;
-        try {
-          const result = await fetchAndProcessHistory();
-          setScannedImages(result);
-        } catch (err: any) {
-          console.error("Error:", err);
-          setError(err.message);
-        }
-      }
-    };
-
-    fetchData();
-  }, []);
-
   const [tableType, setTableType] = useState("");
   const [imageScan, setImageScan] = useState(0);
   const [imageScanLocal, setImageScanLocal] = useState(0);
@@ -58,14 +35,13 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
   const [imageVersion, setImageVersion] = useState("");
   const [output, setOutput] = useState<any>(null);
   const [outputScan, setOutputScan] = useState<any>(null);
+  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<CommandKey | null>(null);
   const [scanResults, setScanResults] = useState<Record<string, any>>({});
   const [scanningItem, setScanningItem] = useState<string | null>(null);
   const [latestResult, setLatestResult] = useState<any>(null);
-  const [currSeverity, setCurrSeverity] = useState<
-    { severity: string; count: number }[]
-  >([]);
-  const hasFetched = useRef(false)
+  const [currSeverity, setCurrSeverity] = useState<{ severity: string; count: number }[]>([]);
+
   const [fileScan, setFileScan] = useState(0);
   const [imageFiles, setImageFiles] = useState<string | null>(null);
   const [fileSystemResult, setfileSystemResult] = useState<Record<string, any>>(
@@ -73,7 +49,7 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
   );
 
   //console.log(prevScans.getter().data);
-  //fetchAndProcessHistory().then(setScannedImages);
+  const [scannedImages, setScannedImages] = useState<any>(null);
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [tableResult, setTableResult] = useState<any>();
   const toggleFullScreen = () => {
@@ -84,17 +60,52 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
     jsonString = jsonString.replace(/\"\/bin\/sh\"/g, "");
     return JSON.stringify(JSON.parse(jsonString), null, 2);
   }
+  useEffect(() => {
+    console.log(tableResult);
+  }, [tableResult]);
 
   useEffect(() => {
-    console.log(scannedImages);
-  }, [scannedImages]);
+    if (prevScans.Vulnerabilitiesgetter()) {
+      console.log(prevScans.Vulnerabilitiesgetter())
+      setScannedImages(prevScans.Vulnerabilitiesgetter());
+    }
+  }, [])
+
+  //dummy////////////////////////////////
+  // function creatingTable() {
+  //   const name = "Image_File_Scanning";
+
+  //   const columnArr: Record<string, string>[] = [
+  //     { column: "SLNO", dataType: "Serial", constraints: "PRIMARY KEY" },
+  //     { column: "type", dataType: "VARCHAR(100)", constraints: "NOT NULL" },
+  //     {
+  //       column: "data",
+  //       dataType: "jsonb",
+  //       defaultValue: "'{}'",
+  //     },
+  //   ];
+
+  //   const valuesArr: Record<string, any>[] = [
+  //     { column: "slno" },
+  //     {
+  //       column: "type",
+  //       value: ["Image", "File"],
+  //     },
+  //     {
+  //       column: "data",
+  //       value: ["{}", "{}"],
+  //     },
+  //   ];
+
+  //   return api.addColumn(name, valuesArr);
+  // }
+  //creatingTable().then(setTableResult);
+  //api.fetchData('image_file_scanning',"slno",{column : "type" , value: "Image"}).then(setTableResult);
+  ///////////////////////////////////////
 
   useEffect(() => {
     console.log(fileSystemResult);
   }, [fileSystemResult]);
-
-
-
 
   const getSeverityStyles = (severity: string) => {
     switch (severity.toLowerCase()) {
@@ -210,7 +221,7 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
           finalResult = JSON.parse(formattedString);
           finalResult["fileName"] = itemId;
           saveHistoryScans(commandKey, finalResult).then(setTableResult);
-          fetchAndProcessHistory();
+          //fetchAndProcessHistory();
           setfileSystemResult(finalResult);
         } else {
           console.log("Entering else")
@@ -532,8 +543,9 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
           )}
 
           <h2 className="ms-3 mt-3 text-black dark:text-white">Previosuly Scanned Images</h2>
-          {/*<ScannedImages data={scannedImages} />*/}
+          <ScannedImages data={prevScans.Vulnerabilitiesgetter()} />
 
+          {/*returnImageDetails() && <div>{returnImageDetails().ArtifactName}</div>*/}
           {imageScan !== 0 && (
             <div className="mt-4 px-3">
               <div className="mb-4 flex space-x-2">
@@ -681,7 +693,7 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
             <div className=" shadow-md bg-blue-50 dark:bg-gray-900 p-5 rounded-lg">
               <h2 className="text-2xl font-semibold mb-4">Images</h2>
 
-              <TableRoot className="my-table-container max-h-[500px] overflow-y-auto rounded-lg scrollbar-thin scrollbar-thumb-yellow-500 scrollbar-track-gray-200 dark:scrollbar-thumb-blue-400 dark:scrollbar-track-gray-800">
+              <TableRoot className="my-table-container max-h-[300px] overflow-y-auto  rounded-lg scrollbar-thin scrollbar-thumb-yellow-500 scrollbar-track-gray-200 dark:scrollbar-thumb-blue-400 dark:scrollbar-track-gray-800">
                 <Table className="my-table">
                   <TableHead className="sticky top-0 bg-gray-200 dark:bg-gray-800 z-10 rounded-lg">
                     <TableRow>
@@ -696,7 +708,7 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
                       </TableHeaderCell>
                     </TableRow>
                   </TableHead>
-                  <TableBody>
+                  <TableBody className="">
                     {output!.map((row: any) => (
                       <TableRow
                         key={row.ID}

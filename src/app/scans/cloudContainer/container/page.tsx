@@ -1,24 +1,57 @@
 "use client";
-import { useState } from "react";
-//import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { useState, useEffect, useRef } from "react";
 import { Card, Title, Text, Button } from "@tremor/react";
 import { Boxes, Server } from "lucide-react";
 import DockerPage from "./docker/page";
 import KubernetesPage from "./kubernetes/page";
+import { getTotalVulnerabilitiesForImages } from "./docker/sideMenuHistory";
+import * as api from "@/utils/api";
+import * as prevScans from "./docker/scanHistory";
 
+const fetchHistoryScans = async () => {
+  const tableName = "image_file_scanning";
+  const orderByColumn = "slno"
+  const scans = await api.fetchData(tableName, orderByColumn);
+  console.log(scans);
+  prevScans.setter(scans);
+};
+async function fetchAndProcessHistory() {
+  await fetchHistoryScans();
+  return getTotalVulnerabilitiesForImages(prevScans.getter()?.data);
+}
 
 export default function Dashboard() {
+  const hasFetched = useRef(false);
   const [selectedTool, setSelectedTool] = useState<string | null>(null);
+  const [historyData, setHistoryData] = useState<any>(null);
+
+
+  useEffect(() => {
+    if (!hasFetched.current) {
+      fetchAndProcessHistory().then((data) => {
+        console.log(data)
+        setHistoryData(data);
+        prevScans.VulnerabilitiesSetter(data);
+      });
+
+      hasFetched.current = true;
+    }
+  }, []);
+
+
+  if (!prevScans.Vulnerabilitiesgetter()) {
+    return <p>Loading...</p>;
+  }
 
   return (
-    <div className="min-h-screen flex flex-col items-center">
+    <div className=" flex flex-col items-center">
       {selectedTool === "docker" ? (
         <DockerPage onBack={() => setSelectedTool(null)} />
       ) : selectedTool === "kubernetes" ? (
         <KubernetesPage onBack={() => setSelectedTool(null)} />
       ) : (
         <>
-          <h1 className="text-2xl mt-10 mb-8 text-blue-500">Container Tools</h1>
+          <h1 className="text-2xl  mb-8 text-blue-500">Container Tools</h1>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-6xl">
             <Card className="cursor-default transform transition-all rounded-lg p-0 duration-300 hover:scale-105 shadow-lg hover:shadow-2xl flex flex-col">
               <div className="flex flex-row items-center gap-4 p-6 w-full bg-blue-500 text-white rounded-t">

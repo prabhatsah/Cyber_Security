@@ -24,7 +24,6 @@ export async function POST(req: NextRequest) {
 
     console.log("Executing Command:", command);
 
-    // Execute command
     return new Promise((resolve) => {
       exec(command, (error, stdout, stderr) => {
         if (error) {

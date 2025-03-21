@@ -61,6 +61,7 @@ export async function POST(req: Request) {
         query.columnFilter,
         query.jsonFilter
       );
+      console.log(fetchedResult);
       return NextResponse.json({
         success: true,
         fullData: result,
