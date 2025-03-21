@@ -15,7 +15,7 @@ import * as prevScans from "./scanHistory";
 import { getTotalVulnerabilitiesForImages, ScannedImages } from "./sideMenuHistory";
 import { FaChartPie } from "react-icons/fa6";
 import { AiFillDashboard } from "react-icons/ai";
-
+import DynamicResultRendering from "./dynamicResultRendering";
 type CommandKey = keyof typeof dockerCommands;
 
 
@@ -42,6 +42,7 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
   );
 
   //console.log(prevScans.getter().data);
+  const [scannedImagesDetails, setScannedImagesDetails] = useState<any>();
   const [scannedImages, setScannedImages] = useState<any>(null);
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [tableResult, setTableResult] = useState<any>();
@@ -49,6 +50,8 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
     setIsFullScreen(!isFullScreen);
   };
 
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [scanDetails, setScanDetails] = useState(null);
   function cleanAndFormatJson(jsonString: string): string {
     jsonString = jsonString.replace(/\"\/bin\/sh\"/g, "");
     return JSON.stringify(JSON.parse(jsonString), null, 2);
@@ -248,6 +251,22 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
   //     content: <CustomPieChart data={currSeverity} />,
   //   },
   // ];
+  function showImageDetails(imageName: string) {
+    console.log("Clicked image:", imageName);
+    setScannedImagesDetails(imageName)
+    // console.log(prevScans.fetchDetailsOfParticularImage(imageName));
+
+    // Fetch details
+    const details = prevScans.fetchDetailsOfParticularImage(imageName);
+    console.log(details);
+
+    // Update state with fetched details
+    setScanDetails(details);
+    console.log(getTotalVulnerabilitiesForImages(details));
+    // Fetch details if needed:
+    // const data = prevScans.fetchDetailsOfParticularImage(imageName);
+    // console.log(data);
+  }
 
   return (
     <>
@@ -302,6 +321,7 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
                   setImageScanLocal(0);
                   setImageScan(0);
                   setTableType("Images");
+                  setScanDetails(null);
                 }}
                 disabled={loading === "showALLImgs"}
               >
@@ -361,6 +381,7 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
                   setImageScanLocal(0);
                   setImageScan(0);
                   setTableType("Containers");
+                  setScanDetails(null);
                 }}
                 disabled={loading === "listDockerContainers"}
               >
@@ -413,6 +434,7 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
                 onClick={() => {
                   setImageScan(1);
                   setTableType("scanRemote");
+                  setScanDetails(null);
                 }}
               >
                 {loading === "scanRemoteImg" ? (
@@ -463,6 +485,7 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
                   setFileScan(1);
                   setImageScan(0);
                   setTableType("FileScanning");
+                  setScanDetails(null);
                 }}
               >
                 {loading === "scanFileSystem" ? (
@@ -535,8 +558,15 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
             </div>
           )}
 
-          <h2 className="ms-3 mt-3 text-black dark:text-white">Previosuly Scanned Images</h2>
-          <ScannedImages data={prevScans.Vulnerabilitiesgetter()} />
+
+          {/* Render DynamicResultRendering when an image is selected */}
+          {/* {scannedImagesDetails && scanDetails && (
+            <DynamicResultRendering
+              scanningItem={scannedImagesDetails}
+              outputScan={scanDetails}
+              latestResult={scanDetails.Results}
+            />
+          )} */}
 
           {/*returnImageDetails() && <div>{returnImageDetails().ArtifactName}</div>*/}
           {imageScan !== 0 && (
@@ -752,7 +782,13 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
             <pre className="p-4 bg-red-100 text-red-600 border border-red-300 rounded-lg">
               {error}
             </pre>
-          ) : null}
+          ) : scannedImagesDetails && scanDetails && (
+            <DynamicResultRendering
+              scanningItem={scannedImagesDetails}
+              outputScan={scanDetails}
+              latestResult={scanDetails.Results}
+            />
+          )}
 
           {Object.keys(scanResults).length > 0 &&
             scanningItem &&
@@ -966,6 +1002,9 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
                 </div>
               </>
             )}
+
+          <h2 className="ms-3 mt-3 text-black dark:text-white">Previosuly Scanned Images</h2>
+          <ScannedImages data={prevScans.Vulnerabilitiesgetter()} onImageClick={showImageDetails} />
 
           {/* {fileSystemResult && (<>
                   <div className="mt-3 p-6 bg-grey-300  rounded-lg shadow-lg bg-gray-100">

@@ -12,5 +12,6 @@ export async function fetchConfigDetails(
     ? [{ column: "data", keyPath: ["configId"], value: configId }]
     : null;
 
+  console.log(providerFilter, dataFilter);
   return await fetchData("cloud_config", "id", providerFilter, dataFilter);
 }
