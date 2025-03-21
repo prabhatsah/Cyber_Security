@@ -74,15 +74,6 @@ const cloudConfigList = [
 ];
 
 export default function CloudServicesConfig() {
-<<<<<<< HEAD
-    // const { setItems } = useBreadcrumb();
-    const fetchedData = useConfiguration();
-    console.log("configData in cloud service page.tsx - ");
-    console.log(fetchedData);
-    const [configData, setConfigData] = useState<
-        Record<string, EachConfigDataFormatted>
-    >({});
-=======
     const [configData, setConfigData] = useState<
         Record<string, EachConfigDataFormatted>
     >({});
@@ -90,7 +81,6 @@ export default function CloudServicesConfig() {
     const fetchedData = useConfiguration();
     console.log("configData in cloud service page.tsx - ");
     console.log(fetchedData);
->>>>>>> e17f880f188189eed3785bd6cc37a99a9e27cd46
 
     useEffect(() => {
         let configDataFormatted: Record<string, EachConfigDataFormatted> = {};
