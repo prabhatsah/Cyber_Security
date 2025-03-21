@@ -140,7 +140,7 @@ export default function GoogleCloudConfigFormModal({
       },
     };
 
-    addNewConfiguration(dataToBeSaved);
+    addNewConfiguration(dataToBeSaved, serviceUrl);
 
     // setConfigurationData((prevConfigData) => {
     //   const updatedConfigData = {

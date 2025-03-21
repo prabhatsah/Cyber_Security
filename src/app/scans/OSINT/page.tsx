@@ -60,9 +60,10 @@ export default function TheHarvesterDashboard() {
         </div>
       )}
 
-      <div>
-        <PastScans />
+        <div>
+          <PastScans />
+        </div>
       </div>
-    </div>
+    </>
   );
 }

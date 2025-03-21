@@ -4,7 +4,7 @@ import { GoogleCloudConfiguration } from "@/app/configuration/components/type";
 import { RiCalendarScheduleLine, RiPlayLargeFill } from "@remixicon/react";
 import { Card } from "@tremor/react";
 import { format } from "date-fns";
-// import { redirect } from "next/navigation";
+import { redirect } from "next/navigation";
 
 export default function GoogleCloudConfigWidget({
   eachConfigDetails,
@@ -25,7 +25,7 @@ export default function GoogleCloudConfigWidget({
   }
 
   function startScan() {
-    // redirect(`/scans/cloudContainer/cloud/google-cloud-platform/${eachConfigDetails.configId}`);
+    redirect(`/scans/cloudContainer/cloud/google-cloud-platform/${eachConfigDetails.configId}`);
   }
 
   return (
