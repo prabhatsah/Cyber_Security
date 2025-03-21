@@ -70,7 +70,7 @@ export default function InfoWidget({
       <Card className="col-span-3 rounded-md">
         <div className="flex justify-between">
           <div className="flex gap-5">
-            <h3 className=" font-semibold text-gray-700 ">{queryUrl}</h3>
+            <h3 className=" font-semibold  ">{queryUrl}</h3>
             <div className="flex flex-wrap justify-center gap-4">
               {categoriesLabelArray.map((tag) => (
                 <span className="inline-flex items-center gap-x-1 rounded-md bg-gray-200/50 px-2 py-1 text-xs font-semibold text-gray-700">
@@ -87,9 +87,9 @@ export default function InfoWidget({
         </div>
         <div className="flex gap-5 mt-2">
           {registrar && (
-            <p className="text-sm text-tremor-default leading-6 text-tremor-content dark:text-dark-tremor-content">
+            <p className="text-sm font-medium text-tremor-content dark:text-dark-tremor-content">
               Registrar:&nbsp;
-              <span className="font-semibold text-gray-700 text-xs">
+              <span className=" text-sm font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">
                 {registrar}
               </span>
             </p>
@@ -116,31 +116,31 @@ export default function InfoWidget({
             <p className="text-sm font-medium">Last HTTPS Certificate</p>
 
             <div className="grid grid-cols-2 gap-2 mt-2 text-sm">
-              <p className="text-tremor-default leading-6 text-tremor-content dark:text-dark-tremor-content">
-                <strong>Validity:</strong>&nbsp;
-                {`${lastHttpsCertificateObj.validFrom} to ${lastHttpsCertificateObj.validTill}`}
+              <p className=" leading-6 text-tremor-content dark:text-dark-tremor-content">
+                Validity :&nbsp;
+                <span className="text-sm font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">{`${lastHttpsCertificateObj.validFrom} to ${lastHttpsCertificateObj.validTill}`}</span>
               </p>
 
               <p className="text-tremor-default leading-6 text-tremor-content dark:text-dark-tremor-content">
-                <strong>Size:</strong>&nbsp;
-                {lastHttpsCertificateObj.size}
+                Size :&nbsp;
+                <span className="text-sm font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">{lastHttpsCertificateObj.size}</span>
               </p>
               <p className="text-tremor-default leading-6 text-tremor-content dark:text-dark-tremor-content">
-                <strong>Version:</strong>&nbsp;
-                {lastHttpsCertificateObj.version}
+                Version :&nbsp;
+                <span className="text-sm font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">{lastHttpsCertificateObj.version}</span>
               </p>
               <p className="text-tremor-default leading-6 text-tremor-content dark:text-dark-tremor-content">
-                <strong>Public Key Algorithm:</strong>&nbsp;
-                {lastHttpsCertificateObj.publicKeyAlgorithm}
+                Public Key Algorithm :&nbsp;
+                <span className="text-sm font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">{lastHttpsCertificateObj.publicKeyAlgorithm}</span>
               </p>
 
               <div className="flex gap-2 col-span-2">
                 <p className="text-tremor-default leading-6 text-tremor-content dark:text-dark-tremor-content">
-                  <strong>Issuer:</strong>&nbsp;
+                  Issuer:&nbsp;
                 </p>
-                <div className="flex flex-wrap justify-start gap-2">
+                <div className="flex flex-wrap justify-start gap-2 ">
                   {lastHttpsCertificateObj.issuer.map((eachAlternativeName) => (
-                    <span className="inline-flex items-center gap-x-1 rounded-md bg-gray-200/50 px-2 py-1 text-xs font-semibold text-gray-700">
+                    <span className="inline-flex items-center gap-x-1 rounded-md bg-gray-200/50 px-2 py-1 text-sm font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">
                       {eachAlternativeName}
                     </span>
                   ))}
