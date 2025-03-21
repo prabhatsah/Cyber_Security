@@ -61,7 +61,7 @@ export function Scans() {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-8">
+      {/* <div className="flex justify-between items-center mb-8">
         <div>
           <h1 className="text-2xl font-semibold text-primary">
             Security Scans
@@ -102,7 +102,7 @@ export function Scans() {
             Add Target
           </button>
         </div>
-      </div>
+      </div> */}
       <Tabs defaultValue="tab1">
         <TabsList variant="solid" >
           <TabsTrigger value="tab1" className="gap-1.5 flex ">

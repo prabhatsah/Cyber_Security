@@ -117,12 +117,6 @@ const cloudConfigList = [
 export default async function CloudServicesConfig() {
 
     const fetchedData = (await fetchConfigDetails()).data;
-export default function CloudServicesConfig() {
-    const [configData, setConfigData] = useState<
-        Record<string, EachConfigDataFormatted>
-    >({});
-
-    const fetchedData = useConfiguration();
     console.log("configData in cloud service page.tsx - ");
     console.log(fetchedData);
 
@@ -138,21 +132,20 @@ export default function CloudServicesConfig() {
     }
     configDataSetter(fetchedData);
 
-    const updatedCloudConfigList = cloudConfigList;
-    // const updatedCloudConfigList = cloudConfigList.map((cloudService) => {
-    //     const cloudServiceName = cloudService.href.split("/")[4];
+    const updatedCloudConfigList = cloudConfigList.map((cloudService) => {
+        const cloudServiceName = cloudService.href.split("/")[4];
 
-    //     if (configDataFormatted[cloudServiceName]) {
-    //         return {
-    //             ...cloudService,
-    //             configurationCount: Object.keys(configDataFormatted[cloudServiceName].data)
-    //                 .length,
-    //             configurations: Object.values(configDataFormatted[cloudServiceName].data),
-    //         };
-    //     }
+        if (configDataFormatted[cloudServiceName]) {
+            return {
+                ...cloudService,
+                configurationCount: Object.keys(configDataFormatted[cloudServiceName].data)
+                    .length,
+                configurations: Object.values(configDataFormatted[cloudServiceName].data),
+            };
+        }
 
-    //     return { ...cloudService };
-    // });
+        return { ...cloudService };
+    });
 
     return (
         <>

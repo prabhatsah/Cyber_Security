@@ -78,17 +78,15 @@ export default function SearchBar({
         <button
           onClick={handleSearch}
           disabled={isLoading || !query}
-          className={`flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg ${isLoading ? "opacity-50 cursor-not-allowed" : ""
+          className={`flex items-center gap-1 px-4 py-2 bg-primary text-white rounded-lg ${isLoading ? "opacity-50 cursor-not-allowed" : ""
             }`}
         >
           {isLoading ? (
             <span className="animate-spin"><LuRefreshCw /></span>
           ) : (
-            <GiElectric size={20} style={{ transform: 'rotate(-20deg)' }} />
+            <GiElectric size={20} style={{ transform: 'rotate(15deg)' }} />
           )}
-
           {isLoading ? "Scanning..." : "Scan"}
-
         </button>
       </div>
     </>

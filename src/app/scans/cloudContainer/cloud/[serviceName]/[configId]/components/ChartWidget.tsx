@@ -34,16 +34,6 @@ const widgetData = [
 
 export default function ChartWidget() {
 
-  // const chartData: WidgetDataItem[] = Object.entries(last_analysis_stats)
-  //   .filter(([key]) => key !== "timeout") // Exclude "timeout"
-  //   .map(([key, value]) => ({
-  //     name: key.charAt(0).toUpperCase() + key.slice(1), // Capitalize first letter
-  //     amount: value,
-  //     borderColor: colorMap[key] || "bg-gray-500", // Default color if not mapped
-  //   }));
-
-
-
   return (
     <>
       <Card className="col-span-1 rounded-md">
