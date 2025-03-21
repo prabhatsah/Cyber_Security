@@ -76,9 +76,12 @@ const cloudConfigList = [
 ];
 
 export default function CloudServicesConfig() {
+<<<<<<< HEAD
   let currentTime = new Date();
   console.log("Comp called: " + currentTime.toISOString());
 
+=======
+>>>>>>> e17f880f188189eed3785bd6cc37a99a9e27cd46
   const [configData, setConfigData] = useState<
     Record<string, EachConfigDataFormatted>
   >({});
@@ -118,9 +121,6 @@ export default function CloudServicesConfig() {
       return { ...cloudService, configurationCount: 0, configurations: [] };
     });
   }, [configData]);
-
-  currentTime = new Date();
-  console.log("Now returning: " + currentTime.toISOString());
 
   if (isLoading) {
     return <CloudSkeleton />;

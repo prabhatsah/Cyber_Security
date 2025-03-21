@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import ConfigHeader from "../components/ConfigHeader";
+import ConfigHeader from "../../components/ConfigHeader";
 import { useConfiguration } from "@/app/configuration/components/ConfigurationContext";
 import { EachConfigDataFromServer } from "@/app/configuration/components/type";
-import NoSavedConfigTemplate from "../components/NoSavedConfigTemplate";
+import NoSavedConfigTemplate from "../../components/NoSavedConfigTemplate";
 
 export default function MicrosoftAzureConfig({
   serviceUrl,
