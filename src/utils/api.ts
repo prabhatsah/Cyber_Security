@@ -298,12 +298,14 @@ api.fetchData(name,null,null,null,{'projectId' : ['gcp-project-98341', 'gcp-proj
 export async function fetchData(
   tableName: string,
   orderByColumn: string,
-  columnFilter?: { column: string; value: string | number },
-  jsonFilter?: {
-    column: string;
-    keyPath: string[];
-    value: string | number;
-  }[]
+  columnFilter?: { column: string; value: string | number } | null,
+  jsonFilter?:
+    | {
+        column: string;
+        keyPath: string[];
+        value: string | number;
+      }[]
+    | null
 ) {
   const query = { tableName, orderByColumn, columnFilter, jsonFilter };
   console.log(query);

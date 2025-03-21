@@ -1,45 +1,49 @@
-"use client";
-
-import { useEffect, useState } from "react";
 import GoogleCloudConfigWidget from "./GoogleCloudConfigWidget";
 import {
   EachConfigDataFromServer,
   GoogleCloudConfiguration,
 } from "@/app/configuration/components/type";
 import NoSavedConfigTemplate from "../components/NoSavedConfigTemplate";
-import { useConfiguration } from "@/app/scans/cloudContainer/components/ConfigurationContext";
+import { fetchConfigDetails } from "@/app/scans/cloudContainer/components/fetchConfigDetails";
+import { configDataGetter } from "@/app/scans/cloudContainer/components/configDataSaving";
 
-export default function GoogleCloudConfig({
+export default async function GoogleCloudConfig({
   serviceUrl,
   serviceName,
 }: {
   serviceUrl: string;
   serviceName: string;
 }) {
-  const [cloudConfigData, setCloudConfigData] = useState<
-    Array<GoogleCloudConfiguration>
-  >([]);
+  // const [cloudConfigData, setCloudConfigData] = useState<
+  //   Array<GoogleCloudConfiguration>
+  // >([]);
 
-  let fetchedData = useConfiguration();
+  console.log("Service URL: ", serviceUrl);
+  // const fetchedData = (await fetchConfigDetails(serviceUrl)).data;
+  let fetchedData: any = configDataGetter();
+  fetchedData = fetchedData.filter((eachData: EachConfigDataFromServer) => eachData.name === serviceUrl);
+  console.log("Fetched data ", fetchedData);
+  const eachConfigDataFormatted: Array<GoogleCloudConfiguration | any> = [...Object.values(fetchedData[0].data)];
+  console.log(serviceName, " Data updated ", eachConfigDataFormatted);
 
-  useEffect(() => {
-    let eachConfigDataFormatted: Array<GoogleCloudConfiguration | any> = [];
-    if (fetchedData && fetchedData.length > 0) {
-      fetchedData = fetchedData.filter(
-        (eachData: EachConfigDataFromServer) => eachData.name === serviceUrl
-      );
+  // useEffect(() => {
+  //   let eachConfigDataFormatted: Array<GoogleCloudConfiguration | any> = [];
+  //   if (fetchedData && fetchedData.length > 0) {
+  //     fetchedData = fetchedData.filter(
+  //       (eachData: EachConfigDataFromServer) => eachData.name === serviceUrl
+  //     );
 
-      eachConfigDataFormatted = [...Object.values(fetchedData[0].data)];
-      setCloudConfigData(eachConfigDataFormatted);
-      console.log(serviceName, " Data updated ", eachConfigDataFormatted);
-    }
-  }, [fetchedData]);
+  //     eachConfigDataFormatted = [...Object.values(fetchedData[0].data)];
+  //     setCloudConfigData(eachConfigDataFormatted);
+  //     console.log(serviceName, " Data updated ", eachConfigDataFormatted);
+  //   }
+  // }, [fetchedData]);
 
   return (
     <>
-      {cloudConfigData.length === 0 ? <NoSavedConfigTemplate /> :
+      {eachConfigDataFormatted.length === 0 ? <NoSavedConfigTemplate /> :
         <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {cloudConfigData.map((eachConfigDetails) => (
+          {eachConfigDataFormatted.map((eachConfigDetails) => (
             <GoogleCloudConfigWidget
               key={eachConfigDetails.configId}
               eachConfigDetails={eachConfigDetails}
