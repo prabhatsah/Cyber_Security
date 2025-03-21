@@ -79,14 +79,6 @@ export default function CloudServicesConfig() {
   let currentTime = new Date();
   console.log("Comp called: " + currentTime.toISOString());
 
-  // const { setItems } = useBreadcrumb();
-  // useEffect(() => {
-  //   setItems([
-  //     { label: "Configurations", href: "" },
-  //     { label: "Cloud Services", href: "/configuration/cloud-services" },
-  //   ]);
-  // }, []);
-
   const [configData, setConfigData] = useState<
     Record<string, EachConfigDataFormatted>
   >({});

@@ -1,7 +1,7 @@
 import { RenderAppBreadcrumb } from "@/components/app-breadcrumb";
 import CloudContainerTabs from "./components/CloudContainerTabs";
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -22,3 +22,8 @@ export default function RootLayout({
     </>
   );
 }
+
+
+
+
+
