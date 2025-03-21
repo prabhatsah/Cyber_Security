@@ -78,7 +78,12 @@ export default function Navbar() {
                       className="flex size-8 shrink-0 items-center justify-center rounded-full border border-gray-300 bg-white text-xs text-gray-700 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300"
                       aria-hidden="true"
                     >
-                      {profileData?.USER_THUMBNAIL}
+                      {profileData?.USER_THUMBNAIL ? (
+                        profileData.USER_THUMBNAIL
+                      ) : (
+                        // If USER_THUMBNAIL is null or undefined, show the first letter of USER_NAME or a fallback
+                        profileData?.USER_NAME?.[0]?.toUpperCase() || "U"
+                      )}
                     </span>
                     <span>{profileData?.USER_NAME}</span>
                   </span>
