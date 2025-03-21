@@ -10,8 +10,8 @@ import {
 } from "@/components/Table";
 import { Label } from "@radix-ui/react-label";
 import { Badge } from "lucide-react";
-import FetchGCPData from "./FetchData";
 import { useEffect, useState } from "react";
+import FetchCloudScanData from "./FetchCloudScanData";
 
 const services = {
     bigquery: {
@@ -82,12 +82,12 @@ const services = {
     }
 };
 
-export default function ServiceBreakdown() {
+export default function ServiceBreakdown({ service }) {
     const [data, setData] = useState(null);
 
     useEffect(() => {
         const fetchData = async () => {
-            const result = await FetchGCPData();
+            const result = await FetchCloudScanData(service);
             setData(result);
         };
 
@@ -108,11 +108,15 @@ export default function ServiceBreakdown() {
                 <Accordion type="multiple" className="">
                     {Object.keys(services).map((serviceKey) => {
                         const service = services[serviceKey];
+                        if (Object.values(service.findings).length == 0) {
+                            return;
+                        }
+                        const serviceName = Object.values(service.findings)[0].service;
                         return (
                             <AccordionItem value={serviceKey}>
                                 <AccordionTrigger>
                                     <span className="flex items-center gap-2 h-8">
-                                        {serviceKey}
+                                        {serviceName}
                                     </span>
                                 </AccordionTrigger>
                                 <AccordionContent className="max-h-80 overflow-auto">

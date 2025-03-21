@@ -9,17 +9,18 @@ import {
     TableRoot,
     TableRow,
 } from "@/components/Table";
-import FetchGCPData from "./FetchData";
+
 import { Badge } from "@tremor/react";
 import { Label } from "@radix-ui/react-label";
 import { useEffect, useState } from "react";
+import FetchCloudScanData from "./FetchCloudScanData";
 
-export default function ServiceSummary() {
+export default function ServiceSummary({ service }) {
     const [data, setData] = useState(null);
 
     useEffect(() => {
         const fetchData = async () => {
-            const result = await FetchGCPData();
+            const result = await FetchCloudScanData(service);
             setData(result);
         };
 

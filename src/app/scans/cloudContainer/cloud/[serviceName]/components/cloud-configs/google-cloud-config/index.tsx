@@ -21,6 +21,8 @@ export default async function GoogleCloudConfig({
   console.log("Service URL: ", serviceUrl);
   // const fetchedData = (await fetchConfigDetails(serviceUrl)).data;
   let fetchedData: any = configDataGetter();
+  console.log("fetchedData - ");
+  console.log(fetchedData);
   fetchedData = fetchedData.filter((eachData: EachConfigDataFromServer) => eachData.name === serviceUrl);
   console.log("Fetched data ", fetchedData);
   const eachConfigDataFormatted: Array<GoogleCloudConfiguration | any> = [...Object.values(fetchedData[0].data)];

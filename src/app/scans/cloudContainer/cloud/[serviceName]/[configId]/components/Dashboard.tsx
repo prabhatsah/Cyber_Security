@@ -8,8 +8,19 @@ import ServiceSummary from "./ServiceSummary";
 import ServiceBreakdown from "./ServiceBreakdowns";
 import { Label } from "@radix-ui/react-label";
 
-export default function Dashboard() {
-    const fetchedData = useConfiguration();
+const cloudNameMap = {
+    "google-cloud-platform": {
+        name: "Google Cloud Platform",
+        code: "gcp"
+    },
+    "amazon-web-services": {
+        name: "Amazon Web Services",
+        code: "aws"
+    },
+}
+
+export default function Dashboard({ service }) {
+    //const fetchedData = useConfiguration();
 
     return <>
         <RenderAppBreadcrumb
@@ -20,10 +31,10 @@ export default function Dashboard() {
             }}
         />
         <div className="w-full">
-            <Label className="text-[20px] font-bold text-gray-900 dark:text-gray-50">Cloud Scan</Label>
+            <Label className="text-[20px] font-bold text-gray-900 dark:text-gray-50">{cloudNameMap[service].name} Scan</Label>
             <Header />
-            <ServiceSummary />
-            <ServiceBreakdown />
+            <ServiceSummary service={cloudNameMap[service].code} />
+            <ServiceBreakdown service={cloudNameMap[service].code} />
             <PastScans />
         </div>
     </>;
