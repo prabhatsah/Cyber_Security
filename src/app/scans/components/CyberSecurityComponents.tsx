@@ -94,7 +94,7 @@ const comps: AIAgent[] = [
     ],
     description:
       "Ensuring security of web applications and APIs against vulnerabilities and attacks.",
-    route: "/scans/WebApi",
+    route: "/scans/webApi",
   },
   {
     id: "cloud-container-security",
@@ -233,7 +233,7 @@ export default function CyberSecurityComponents() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 2000);
+    }, 1000);
 
     // Cleanup the timeout in case the component unmounts before 3 seconds
     return () => clearTimeout(timer);
@@ -241,7 +241,7 @@ export default function CyberSecurityComponents() {
 
   if (isLoading) {
     //return <SkeletonCard />;
-    return <FullPageLoading />
+    //return <FullPageLoading />
   }
 
   return (
