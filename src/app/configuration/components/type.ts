@@ -1,3 +1,18 @@
+export interface AmazonWebServicesConfiguration {
+  configId: string;
+  cloudProvider: string;
+  configurationName: string;
+  accessKeyId: string;
+  secretAccessKey: string;
+  region: string | null;
+  createdOn: string;
+  createdBy: {
+    userName: string;
+    userId: string;
+    userEmail: string;
+  };
+}
+
 export interface GoogleCloudConfiguration {
   configId: string;
   cloudProvider: string;

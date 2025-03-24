@@ -94,7 +94,7 @@ const comps: AIAgent[] = [
     ],
     description:
       "Ensuring security of web applications and APIs against vulnerabilities and attacks.",
-    route: "/scans/WebApi",
+    route: "/scans/webApi",
   },
   {
     id: "cloud-container-security",
@@ -240,8 +240,8 @@ export default function CyberSecurityComponents() {
   }, []);
 
   if (isLoading) {
-    //return <SkeletonCard />;
-    return <FullPageLoading />
+    return <SkeletonCard />;
+    //return <FullPageLoading />
   }
 
   return (

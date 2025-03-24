@@ -1,9 +1,6 @@
 "use client";
 import { RiRobot2Fill, RiStackFill } from "@remixicon/react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/Tabs"
-
-
-
 import { useState } from "react";
 import {
   Plus,
@@ -11,8 +8,6 @@ import {
   Network,
   Upload,
   Book,
-  Activity,
-  ShieldEllipsis,
 } from "lucide-react";
 import ScanModal from "./ScanModal";
 import PortScanModal from "./PortScanModal";
@@ -84,7 +79,7 @@ export function Scans() {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-8">
+      {/* <div className="flex justify-between items-center mb-8">
         <div>
           <h1 className="text-2xl font-semibold text-primary">
             Security Scans
@@ -125,38 +120,7 @@ export function Scans() {
             Add Target
           </button>
         </div>
-      </div>
-      {/* <div className="flex space-x-4  mb-6">
-        <button
-          className={`py-2 px-4 font-medium ${
-            activeTab === "cyberSecurity"
-              ? "border-b-2 border-blue-500 text-blue-500"
-              : "text-gray-600"
-          }`}
-          onClick={() => setActiveTab("cyberSecurity")}
-        >
-          Cyber Security Components
-        </button>
-        <button
-          className={`py-2 px-4 font-medium ${
-            activeTab === "specializedAIAgents"
-              ? "border-b-2 border-blue-500 text-blue-500"
-              : "text-gray-600"
-          }`}
-          onClick={() => setActiveTab("specializedAIAgents")}
-        >
-          Specialized AI Agents
-        </button>
-      </div>
-      {activeTab === "cyberSecurity" ? (
-        <div>
-          <CyberSecurityComponents />
-        </div>
-      ) : (
-        <div>
-          <SpecializedAIAgents />
-        </div>
-      )} */}
+      </div> */}
       <Tabs defaultValue="tab1">
         <TabsList variant="solid" >
           <TabsTrigger value="tab1" className="gap-1.5 flex ">

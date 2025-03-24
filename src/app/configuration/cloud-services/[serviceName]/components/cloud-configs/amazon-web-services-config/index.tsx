@@ -1,8 +1,11 @@
+"use client";
+
 import { useEffect, useState } from "react";
 import ConfigHeader from "../../components/ConfigHeader";
 import { useConfiguration } from "@/app/configuration/components/ConfigurationContext";
 import { EachConfigDataFromServer } from "@/app/configuration/components/type";
 import NoSavedConfigTemplate from "../../components/NoSavedConfigTemplate";
+import AmazonWebServicesConfigWidget from "./AmazonWebServicesConfigWidget";
 
 export default function AmazonWebServicesConfig({
   serviceUrl,
@@ -36,7 +39,17 @@ export default function AmazonWebServicesConfig({
         configDataLength={cloudConfigData.length}
       />
 
-      {cloudConfigData.length === 0 ? <NoSavedConfigTemplate /> : <div className="mt-6">{serviceName} Configurations</div>}
+      {/* {cloudConfigData.length === 0 ? <NoSavedConfigTemplate /> : <div className="mt-6">{serviceName} Configurations</div>} */}
+      {cloudConfigData.length === 0 ? <NoSavedConfigTemplate /> :
+        <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {cloudConfigData.map((eachConfigDetails) => (
+            <AmazonWebServicesConfigWidget
+              key={eachConfigDetails.configId}
+              serviceUrl={serviceUrl}
+              eachConfigDetails={eachConfigDetails}
+            />
+          ))}
+        </div>}
     </>
   );
 }

@@ -11,6 +11,7 @@ interface Vulnerability {
 }
 
 export function getTotalVulnerabilitiesForImages(historyData: any): Vulnerability[] | null {
+    console.log(historyData);
     if (!historyData) return null;
 
     const historyImages = historyData[0]?.data;
@@ -54,28 +55,23 @@ export function returnImageDetails() {
 
 
 let imageDetails: any = null;
-export function ScannedImages({ data }: { data: any }) {
-
-    function showImageDetails(imageName: string) {
-        console.log(imageName)
-        const data = prevScans.fetchDetailsOfParticularImage(imageName);
-        console.log(data)
-        imageDetails = data;
-    }
+export function ScannedImages({ data, onImageClick }: { data: any; onImageClick: (imageName: string) => void }) {
 
     return (
         <div className="w-full p-4">
             {data.map((vul: any, index: any) => (
                 <Card key={index} className="relative mt-3 p-4 rounded-lg shadow-lg">
                     <div className="absolute top-2 right-2 cursor-pointer">
-                        <ExternalLink className="w-4 h-4 text-gray-600 hover:text-gray-800 transition" onClick={() => showImageDetails(vul.Image)} />
+                        <ExternalLink
+                            className="w-4 h-4 text-gray-600 hover:text-gray-800 transition"
+                            onClick={() => onImageClick(vul.Image)}
+                        />
                     </div>
-
                     <Title className="">{vul.Image}</Title>
 
-                    {/* Flex container with consistent spacing */}
+
                     <div className="flex justify-between items-center gap-6 mt-4">
-                        {/* LOW */}
+
                         <div className="flex items-center gap-2">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -92,7 +88,6 @@ export function ScannedImages({ data }: { data: any }) {
                             <Text className="!text-green-600">{vul.LOW}</Text>
                         </div>
 
-                        {/* MEDIUM */}
                         <div className="flex items-center gap-2">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -111,7 +106,6 @@ export function ScannedImages({ data }: { data: any }) {
                             <Text className="!text-yellow-500">{vul.MEDIUM}</Text>
                         </div>
 
-                        {/* HIGH */}
                         <div className="flex items-center gap-2">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -130,7 +124,6 @@ export function ScannedImages({ data }: { data: any }) {
                             <Text className="!text-orange-600">{vul.HIGH}</Text>
                         </div>
 
-                        {/* CRITICAL */}
                         <div className="flex items-center gap-2">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"

@@ -1,5 +1,3 @@
-"use client";
-
 import React from "react";
 import GoogleCloudConfig from "./components/cloud-configs/google-cloud-config";
 import AmazonWebServicesConfig from "./components/cloud-configs/amazon-web-services-config";

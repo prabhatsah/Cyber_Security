@@ -1,3 +1,5 @@
+"use client";
+
 import { GoogleCloudConfiguration } from "@/app/configuration/components/type";
 import { RiCalendarScheduleLine, RiPlayLargeFill } from "@remixicon/react";
 import { Card } from "@tremor/react";
@@ -10,8 +12,7 @@ export default function GoogleCloudConfigWidget({
   eachConfigDetails: GoogleCloudConfiguration;
 }) {
 
-  const configNameWords = eachConfigDetails.configurationName
-    .trim()
+  const configNameWords = eachConfigDetails.configurationName.trim()
     .split(/\s+/);
   let configNameInitial = "";
   if (configNameWords.length === 1) {

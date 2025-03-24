@@ -41,7 +41,9 @@ const columnArr: Record<string, string>[] = [
 import { tableData } from "@/app/scans/WebApi/data";
 import { Buffer } from "buffer";
 
-const baseUrl = typeof window === "undefined" ? "http://localhost:3000" : "";
+const baseUrl =
+  process.env.NEXT_PUBLIC_BASE_URL ||
+  `http://localhost:${process.env.PORT || 3000}`;
 
 export async function createTable(
   tableName: string,
@@ -231,7 +233,7 @@ export async function updateColumn(
   const res = await fetch(`${baseUrl}/api/dbApi`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ query }),
+    body: JSON.stringify({ query, instruction: "update" }),
   });
 
   return res.json();
@@ -298,12 +300,14 @@ api.fetchData(name,null,null,null,{'projectId' : ['gcp-project-98341', 'gcp-proj
 export async function fetchData(
   tableName: string,
   orderByColumn: string,
-  columnFilter?: { column: string; value: string | number },
-  jsonFilter?: {
-    column: string;
-    keyPath: string[];
-    value: string | number;
-  }[]
+  columnFilter?: { column: string; value: string | number } | null,
+  jsonFilter?:
+    | {
+        column: string;
+        keyPath: string[];
+        value: string | number;
+      }[]
+    | null
 ) {
   const query = { tableName, orderByColumn, columnFilter, jsonFilter };
   console.log(query);
