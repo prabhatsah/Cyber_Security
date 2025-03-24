@@ -59,6 +59,24 @@ export function Scans() {
     setShowComplianceScan(false);
   };
 
+  // if (true) {
+  //   return (
+  //     <div className="flex items-center justify-center min-h-[50vh] animate-pulse duration-1000 text-primary ">
+  //       <ShieldEllipsis className="h-12 w-12  " />
+  //       <p className="text-2xl ml-2">Loading ...</p>
+  //     </div>
+  //   );
+  // }
+
+  // const { withLoading } = useGlobalLoading();
+  // const loadSpinner = async () => {
+  //   await withLoading(async () => {
+  //     // Simulate an API call
+  //     await new Promise((resolve) => setTimeout(resolve, 123000));
+  //     console.log("Data fetched successfully!");
+  //   });
+  // };
+
   return (
     <div>
 <<<<<<< HEAD

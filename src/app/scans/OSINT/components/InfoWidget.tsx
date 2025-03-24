@@ -26,10 +26,10 @@ export default function InfoWidget({
     widgetData.attributes.last_dns_records ?? [];
   const selectedUrlIPRecords: LastDnsRecords = last_dns_records
     ? last_dns_records.filter((eachRecord: LastDnsRecords) => {
-        if (eachRecord.type === "A") {
-          return eachRecord;
-        }
-      })[0]
+      if (eachRecord.type === "A") {
+        return eachRecord;
+      }
+    })[0]
     : "";
 
   const registrar = widgetData.attributes.registrar ?? undefined;
@@ -43,17 +43,17 @@ export default function InfoWidget({
   const voteMsgObj: VoteMsg =
     votedMalicious >= totalVotesCount / 3
       ? {
-          cssVariant: `bg-red-100 text-red-900`,
-          iconHTML: <RiInformationLine className="-ml-0.5 size-4" />,
-          fraction: `${votedMalicious}/${totalVotesCount}`,
-          flagText: "malicious",
-        }
+        cssVariant: `bg-red-100 text-red-900`,
+        iconHTML: <RiInformationLine className="-ml-0.5 size-4" />,
+        fraction: `${votedMalicious}/${totalVotesCount}`,
+        flagText: "malicious",
+      }
       : {
-          cssVariant: `bg-green-100 text-green-900`,
-          iconHTML: <RiShieldCheckLine className="-ml-0.5 size-4" />,
-          fraction: `${votedHarmless}/${totalVotesCount}`,
-          flagText: "harmless",
-        };
+        cssVariant: `bg-green-100 text-green-900`,
+        iconHTML: <RiShieldCheckLine className="-ml-0.5 size-4" />,
+        fraction: `${votedHarmless}/${totalVotesCount}`,
+        flagText: "harmless",
+      };
 
   const lastHttpsCertificate = widgetData.attributes.last_https_certificate;
   const lastHttpsCertificateObj: LastHttpsCertificate = {

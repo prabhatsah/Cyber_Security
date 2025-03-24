@@ -94,7 +94,7 @@ export default function WhoIs({ whoisText }: { whoisText: string }) {
             {Object.entries(whoisData.admin).map(([key, value]) => (
               <p className="text-tremor-default leading-6 text-tremor-content dark:text-dark-tremor-content">
                 {key} : &nbsp;
-                <span className="text-sm font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">{value}</span> 
+                <span className="text-sm font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">{value}</span>
               </p>
             ))}
           </div>
@@ -115,7 +115,7 @@ export default function WhoIs({ whoisText }: { whoisText: string }) {
             {Object.entries(whoisData.domain).map(([key, value]) => (
               <p className="text-tremor-default leading-6 text-tremor-content dark:text-dark-tremor-content">
                 {key} : &nbsp;
-                 <span className="text-sm font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">{value}</span> 
+                <span className="text-sm font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">{value}</span>
               </p>
             ))}
           </div>
