@@ -7,22 +7,8 @@ import {
   AccordionTrigger,
 } from "@/components/Accordion";
 
-import { RiAlertLine, RiCheckboxMultipleFill, RiLink } from "@remixicon/react";
-
+import { RiAlertLine, RiLink } from "@remixicon/react";
 import { Badge } from "@/components/Badge";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeaderCell,
-  TableRoot,
-  TableRow,
-} from "@/components/Table";
-import { data, severity, tableData, alertsCount } from "./data";
-import Link from "next/link";
-
-console.log(severity);
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -36,23 +22,23 @@ const ristCodeVsDesc = {
   4: "Critical",
 };
 
-function removePTags(htmlString) {
+function removePTags(htmlString: string) {
   return htmlString.replace(/<\/?p>/g, "");
 }
 
-function extractTextFromPTags(htmlString) {
+function extractTextFromPTags(htmlString: string) {
   const matches = htmlString.match(/<p>(.*?)<\/p>/gs); // Use 's' flag to match multi-line content
   return matches ? matches.map((p) => p.replace(/<\/?p>/g, "")) : [];
 }
 
-const getBadgeVariant = (value) => {
+const getBadgeVariant = (value: string) => {
   return value === "Critical" || value === "High"
     ? "error"
     : value === "Medium"
-    ? "warning"
-    : value === "Low"
-    ? "success"
-    : "default";
+      ? "warning"
+      : value === "Low"
+        ? "success"
+        : "default";
 };
 
 export default function Dashboard({ _data }) {
@@ -193,29 +179,28 @@ export default function Dashboard({ _data }) {
                 <AccordionTrigger>
                   <span className="flex items-center gap-2 h-8">
                     <RiAlertLine
-                      className={`size-4 ${
-                        ristCodeVsDesc[dataItem.riskcode] === "Critical"
-                          ? "text-red-900 dark:text-red-400"
-                          : ristCodeVsDesc[dataItem.riskcode] === "High"
+                      className={`size-4 ${ristCodeVsDesc[dataItem.riskcode] === "Critical"
+                        ? "text-red-900 dark:text-red-400"
+                        : ristCodeVsDesc[dataItem.riskcode] === "High"
                           ? "text-red-900 dark:text-red-400"
                           : ristCodeVsDesc[dataItem.riskcode] === "Medium"
-                          ? "text-yellow-900 dark:text-yellow-400"
-                          : ristCodeVsDesc[dataItem.riskcode] === "Low"
-                          ? "text-emerald-900 dark:text-emerald-400"
-                          : "text-blue-900 dark:text-blue-400"
-                      }`}
+                            ? "text-yellow-900 dark:text-yellow-400"
+                            : ristCodeVsDesc[dataItem.riskcode] === "Low"
+                              ? "text-emerald-900 dark:text-emerald-400"
+                              : "text-blue-900 dark:text-blue-400"
+                        }`}
                     />
                     {dataItem.alert}
                     <Badge
                       variant={
                         ristCodeVsDesc[dataItem.riskcode] === "Critical" ||
-                        ristCodeVsDesc[dataItem.riskcode] === "High"
+                          ristCodeVsDesc[dataItem.riskcode] === "High"
                           ? "error"
                           : ristCodeVsDesc[dataItem.riskcode] === "Medium"
-                          ? "warning"
-                          : ristCodeVsDesc[dataItem.riskcode] === "Low"
-                          ? "success"
-                          : "default"
+                            ? "warning"
+                            : ristCodeVsDesc[dataItem.riskcode] === "Low"
+                              ? "success"
+                              : "default"
                       }
                     >
                       {ristCodeVsDesc[dataItem.riskcode]}
@@ -339,3 +324,4 @@ export default function Dashboard({ _data }) {
     </div>
   );
 }
+
