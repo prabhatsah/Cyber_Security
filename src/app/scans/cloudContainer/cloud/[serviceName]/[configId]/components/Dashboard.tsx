@@ -7,9 +7,36 @@ import { useConfiguration } from "@/app/scans/cloudContainer/components/Configur
 import ServiceSummary from "./ServiceSummary";
 import ServiceBreakdown from "./ServiceBreakdowns";
 import { Label } from "@radix-ui/react-label";
+import { useEffect, useState } from "react";
+import FetchCloudScanData from "./FetchCloudScanData";
 
-export default function Dashboard() {
-    const fetchedData = useConfiguration();
+const cloudNameMap = {
+    "google-cloud-platform": {
+        name: "Google Cloud Platform",
+        code: "GCP"
+    },
+    "amazon-web-services": {
+        name: "Amazon Web Services",
+        code: "AWS"
+    },
+}
+
+export default function Dashboard({ serviceName }) {
+    const [data, setData] = useState(null);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const result = await FetchCloudScanData(serviceName);
+            setData(result);
+        };
+
+        fetchData();
+
+    }, []);
+
+    if (!data) {
+        return <div>Loading...</div>;
+    }
 
     return <>
         <RenderAppBreadcrumb
@@ -20,10 +47,10 @@ export default function Dashboard() {
             }}
         />
         <div className="w-full">
-            <Label className="text-[20px] font-bold text-gray-900 dark:text-gray-50">Cloud Scan</Label>
-            <Header />
-            <ServiceSummary />
-            <ServiceBreakdown />
+            <Label className="text-[20px] font-bold text-gray-900 dark:text-gray-50">{cloudNameMap[serviceName].name} Scan</Label>
+            <Header summary={data.last_run.summary} scanTime={data.last_run.time} serviceName={serviceName} serviceCode={cloudNameMap[serviceName].code} />
+            <ServiceSummary serviceName={serviceName} />
+            <ServiceBreakdown serviceName={serviceName} />
             <PastScans />
         </div>
     </>;

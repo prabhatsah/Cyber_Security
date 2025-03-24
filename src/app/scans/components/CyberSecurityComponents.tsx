@@ -233,14 +233,14 @@ export default function CyberSecurityComponents() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 1000);
+    }, 2000);
 
     // Cleanup the timeout in case the component unmounts before 3 seconds
     return () => clearTimeout(timer);
   }, []);
 
   if (isLoading) {
-    //return <SkeletonCard />;
+    return <SkeletonCard />;
     //return <FullPageLoading />
   }
 

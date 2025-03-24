@@ -1,5 +1,7 @@
+"use client"
 import { Card, DonutChart } from "@tremor/react";
 import { AnalysisResult, HarvesterData, WidgetDataItem } from "./type";
+import { Label } from "@radix-ui/react-label";
 
 /// For Border Color
 const colorMap: Record<string, string> = {
@@ -36,6 +38,7 @@ const widgetData = [
     },
 ];
 
+<<<<<<< HEAD
 const basicInfo = [
     {
         name: "Provider Code",
@@ -86,6 +89,64 @@ export default function BasicInfo() {
     return (
         <>
             <Card className="col-span-3 rounded-md">
+=======
+export default function BasicInfo({ scanTime, serviceName, serviceCode, summary }: {
+    scanTime: string;
+    params: Promise<string>
+}) {
+
+    let serviceScanned = 0;
+    let rulesCount = 0;
+    let flaggedItems = 0;
+    let resourcesCount = 0;
+    for (let key in summary) {
+        serviceScanned++;
+        rulesCount += summary[key].rules_count;
+        flaggedItems += summary[key].flagged_items;
+        resourcesCount += summary[key].resources_count;
+    }
+
+    const basicInfo = [
+        {
+            name: "Provider Code",
+            value: serviceCode
+        },
+        {
+            name: "Project ID",
+            value: (serviceCode === "GCP") ? "meta-sensor-447310-c0" : "n/a"
+        },
+        {
+            name: "Resources Count",
+            value: resourcesCount
+        },
+
+        {
+            name: "Services Scanned",
+            value: serviceScanned
+        },
+        {
+            name: "Provider Name",
+            value: serviceName
+        },
+        {
+            name: "Flagged Items",
+            value: flaggedItems
+        },
+        {
+            name: "Rules Evaluated",
+            value: rulesCount
+        },
+        {
+            name: "Scan Time",
+            value: "n/a"
+        },
+    ]
+
+    return (
+        <div className="col-span-3 space-y-2">
+            <Label className="text-lg font-bold text-gray-900 dark:text-gray-50">Basic Information</Label>
+            <Card className=" rounded-md">
+>>>>>>> 31e96a83980fa29181cecba9362a351adac9ae2a
                 <div className=" h-full">
                     <ul
                         role="list"
@@ -110,6 +171,10 @@ export default function BasicInfo() {
                     </ul>
                 </div>
             </Card>
+<<<<<<< HEAD
         </>
+=======
+        </div>
+>>>>>>> 31e96a83980fa29181cecba9362a351adac9ae2a
     );
 }

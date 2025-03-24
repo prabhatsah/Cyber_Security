@@ -54,11 +54,11 @@ export default function TheHarvesterDashboard() {
         <SearchBar query={query} setQuery={setQuery} fetchData={fetchData} />
         {error && <p className="text-red-600 text-center">{error}</p>}
 
-      {data && (
-        <div className="space-y-8">
-          <Widgets widgetData={data} queryUrl={query} />
-        </div>
-      )}
+        {data && (
+          <div className="space-y-8">
+            <Widgets widgetData={data} queryUrl={query} />
+          </div>
+        )}
 
         <div>
           <PastScans />
