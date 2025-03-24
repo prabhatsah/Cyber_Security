@@ -1,6 +1,7 @@
 "use client"
 import { Card, DonutChart } from "@tremor/react";
 import { AnalysisResult, HarvesterData, WidgetDataItem } from "./type";
+import { Label } from "@radix-ui/react-label";
 
 /// For Border Color
 const colorMap: Record<string, string> = {
@@ -37,58 +38,62 @@ const widgetData = [
     },
 ];
 
-
-
-export default function BasicInfo({ scanTime, service }: {
+export default function BasicInfo({ scanTime, serviceName, serviceCode, summary }: {
     scanTime: string;
     params: Promise<string>
 }) {
+
+    let serviceScanned = 0;
+    let rulesCount = 0;
+    let flaggedItems = 0;
+    let resourcesCount = 0;
+    for (let key in summary) {
+        serviceScanned++;
+        rulesCount += summary[key].rules_count;
+        flaggedItems += summary[key].flagged_items;
+        resourcesCount += summary[key].resources_count;
+    }
+
     const basicInfo = [
         {
             name: "Provider Code",
-            value: service
+            value: serviceCode
         },
         {
             name: "Project ID",
-            value: "meta-sensor-447310-c0"
+            value: (serviceCode === "GCP") ? "meta-sensor-447310-c0" : "n/a"
         },
         {
-            name: "Scan Time",
-            value: scanTime
+            name: "Resources Count",
+            value: resourcesCount
         },
+
         {
             name: "Services Scanned",
-            value: 12
+            value: serviceScanned
         },
         {
             name: "Provider Name",
-            value: service
+            value: serviceName
         },
         {
-            name: "Issue Detected",
-            value: 25
-        },
-        {
-            name: "Rules Evaluated",
-            value: 25
+            name: "Flagged Items",
+            value: flaggedItems
         },
         {
             name: "Rules Evaluated",
-            value: 25
+            value: rulesCount
+        },
+        {
+            name: "Scan Time",
+            value: "n/a"
         },
     ]
 
-    // const chartData: WidgetDataItem[] = Object.entries(last_analysis_stats)
-    //   .filter(([key]) => key !== "timeout") // Exclude "timeout"
-    //   .map(([key, value]) => ({
-    //     name: key.charAt(0).toUpperCase() + key.slice(1), // Capitalize first letter
-    //     amount: value,
-    //     borderColor: colorMap[key] || "bg-gray-500", // Default color if not mapped
-    //   }));
-
     return (
-        <>
-            <Card className="col-span-3 rounded-md">
+        <div className="col-span-3 space-y-2">
+            <Label className="text-lg font-bold text-gray-900 dark:text-gray-50">Basic Information</Label>
+            <Card className=" rounded-md">
                 <div className=" h-full">
                     <ul
                         role="list"
@@ -113,6 +118,6 @@ export default function BasicInfo({ scanTime, service }: {
                     </ul>
                 </div>
             </Card>
-        </>
+        </div>
     );
 }

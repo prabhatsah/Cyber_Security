@@ -1,5 +1,6 @@
 import { Card, DonutChart } from "@tremor/react";
 import { AnalysisResult, HarvesterData, WidgetDataItem } from "./type";
+import { Label } from "@radix-ui/react-label";
 
 /// For Border Color
 const colorMap: Record<string, string> = {
@@ -9,35 +10,88 @@ const colorMap: Record<string, string> = {
   Low: "bg-green-800",
 };
 
-const widgetData = [
-  {
-    name: 'Danger',
-    amount: 10,
-    borderColor: 'bg-red-900',
-  },
-  {
-    name: 'Warning',
-    amount: 9,
-    borderColor: 'bg-red-500',
-  },
-  {
-    name: 'Medium',
-    amount: 6,
-    borderColor: 'bg-amber-500',
-  },
-  {
-    name: 'Low',
-    amount: 2,
-    borderColor: 'bg-green-800',
-  },
-];
+// const widgetData = [
+//   {
+//     name: 'Danger',
+//     amount: 10,
+//     borderColor: 'bg-red-900',
+//   },
+//   {
+//     name: 'Warning',
+//     amount: 9,
+//     borderColor: 'bg-red-500',
+//   },
+//   {
+//     name: 'Medium',
+//     amount: 6,
+//     borderColor: 'bg-amber-500',
+//   },
+//   {
+//     name: 'Low',
+//     amount: 2,
+//     borderColor: 'bg-green-800',
+//   },
+// ];
 
-export default function ChartWidget() {
+export default function ChartWidget({ summary }) {
+
+  // Initialize maxLevelSum with default 0 values for all levels
+  const maxLevelSum = {
+    danger: 0,
+    warning: 0,
+    medium: 0,
+    low: 0
+  };
+
+  // Iterate over the summary object and sum the rules_count by max_level
+  for (const key in summary) {
+    const maxLevel = summary[key].max_level;
+    const rulesCount = summary[key].rules_count;
+
+    // Sum rules_count based on max_level
+    if (maxLevelSum[maxLevel] !== undefined) {
+      maxLevelSum[maxLevel] += rulesCount;
+    }
+  }
+
+  // Create the widgetData array
+  const widgetData = Object.keys(maxLevelSum).map((level) => {
+    let borderColor = '';
+
+    // Assign border colors based on the level
+    switch (level) {
+      case 'danger':
+        borderColor = 'bg-red-900';
+        break;
+      case 'warning':
+        borderColor = 'bg-red-500';
+        break;
+      case 'medium':
+        borderColor = 'bg-amber-500';
+        break;
+      case 'low':
+        borderColor = 'bg-green-800';
+        break;
+      default:
+        borderColor = 'bg-gray-500';
+    }
+
+    return {
+      name: level.charAt(0).toUpperCase() + level.slice(1), // Capitalize first letter
+      amount: maxLevelSum[level],  // Use the sum from maxLevelSum
+      borderColor: borderColor
+    };
+  });
+
+  console.log(widgetData);
+
 
   return (
-    <>
-      <Card className="col-span-1 rounded-md">
+    <div className="col-span-1 space-y-2">
+      <Label className="text-lg font-bold text-gray-900 dark:text-gray-50">Flag</Label>
+      <Card className="rounded-md">
         <div className="flex flex-col items-center justify-center h-full">
+
           <div className="mt-2 grid grid-cols-8 gap-8 items-center">
             <div className="relative col-span-3">
               <DonutChart
@@ -51,7 +105,7 @@ export default function ChartWidget() {
 
             </div>
             <div className="col-span-5">
-              <p className="text-xs">Levels</p>
+              {/* <p className="text-xs">Levels</p> */}
               <ul className="space-y-1 grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
                 {widgetData.map((item) => (
                   <li key={item.name} className="flex space-x-3">
@@ -73,6 +127,6 @@ export default function ChartWidget() {
           </div>
         </div>
       </Card>
-    </>
+    </div>
   );
 }

@@ -13,11 +13,11 @@ import FetchCloudScanData from "./FetchCloudScanData";
 const cloudNameMap = {
     "google-cloud-platform": {
         name: "Google Cloud Platform",
-        code: "gcp"
+        code: "GCP"
     },
     "amazon-web-services": {
         name: "Amazon Web Services",
-        code: "aws"
+        code: "AWS"
     },
 }
 
@@ -48,7 +48,7 @@ export default function Dashboard({ serviceName }) {
         />
         <div className="w-full">
             <Label className="text-[20px] font-bold text-gray-900 dark:text-gray-50">{cloudNameMap[serviceName].name} Scan</Label>
-            <Header summary={data.last_run.summary} scanTime={data.last_run.time} serviceName={serviceName} />
+            <Header summary={data.last_run.summary} scanTime={data.last_run.time} serviceName={serviceName} serviceCode={cloudNameMap[serviceName].code} />
             <ServiceSummary serviceName={serviceName} />
             <ServiceBreakdown serviceName={serviceName} />
             <PastScans />
