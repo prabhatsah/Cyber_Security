@@ -79,7 +79,11 @@ export function Scans() {
 
   return (
     <div>
+<<<<<<< HEAD
+      <div className="flex justify-between items-center mb-8">
+=======
       {/* <div className="flex justify-between items-center mb-8">
+>>>>>>> 31e96a83980fa29181cecba9362a351adac9ae2a
         <div>
           <h1 className="text-2xl font-semibold text-primary">
             Security Scans
@@ -120,7 +124,11 @@ export function Scans() {
             Add Target
           </button>
         </div>
+<<<<<<< HEAD
+      </div>
+=======
       </div> */}
+>>>>>>> 31e96a83980fa29181cecba9362a351adac9ae2a
       <Tabs defaultValue="tab1">
         <TabsList variant="solid" >
           <TabsTrigger value="tab1" className="gap-1.5 flex ">
