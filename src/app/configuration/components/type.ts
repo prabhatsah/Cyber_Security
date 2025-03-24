@@ -18,7 +18,7 @@ export interface GoogleCloudConfiguration {
   cloudProvider: string;
   configurationName: string;
   projectId: string;
-  serviceAccountKey: File | null;
+  serviceAccountKey: string | ArrayBuffer | null;
   region: string | null;
   createdOn: string;
   createdBy: {

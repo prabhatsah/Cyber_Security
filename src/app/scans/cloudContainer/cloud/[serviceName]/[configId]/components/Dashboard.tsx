@@ -21,7 +21,11 @@ const cloudNameMap = {
     },
 }
 
-export default function Dashboard({ serviceName }) {
+export default function Dashboard({ serviceName, serviceNameFromUrl, configId }: {
+    serviceName: string;
+    serviceNameFromUrl: string;
+    configId: string;
+}) {
     const [data, setData] = useState(null);
 
     useEffect(() => {
@@ -39,15 +43,8 @@ export default function Dashboard({ serviceName }) {
     }
 
     return <>
-        <RenderAppBreadcrumb
-            breadcrumb={{
-                level: 4,
-                title: "Dashboard",
-                href: "/scans/cloudContainer/cloud/google-cloud-platform/dashboard",
-            }}
-        />
         <div className="w-full">
-            <Label className="text-[20px] font-bold text-gray-900 dark:text-gray-50">{cloudNameMap[serviceName].name} Scan</Label>
+            <Label className="text-[20px] font-bold text-gray-900 dark:text-gray-50">{serviceNameFromUrl} Scan</Label>
             <Header summary={data.last_run.summary} scanTime={data.last_run.time} serviceName={serviceName} serviceCode={cloudNameMap[serviceName].code} />
             <ServiceSummary serviceName={serviceName} />
             <ServiceBreakdown serviceName={serviceName} />

@@ -124,23 +124,33 @@ export default function GoogleCloudConfigFormModal({
 
     if (!validateForm()) return;
 
-    const configId = crypto.randomUUID();
-    const dataToBeSaved: GoogleCloudConfiguration = {
-      configId: configId,
-      cloudProvider: "gcp",
-      configurationName: formData.configurationName,
-      projectId: formData.projectId,
-      serviceAccountKey: formData.serviceAccountKey,
-      region: formData.region,
-      createdOn: format(new Date(), "yyyy-MMM-dd HH:mm:ss"),
-      createdBy: {
-        userName: "Sayan Roy",
-        userId: "be7a0ece-f3d8-4c5b-84dc-52c32c4adff4",
-        userEmail: "sayan.roy@keross.com",
-      },
-    };
+    if (formData.serviceAccountKey) {
+      const reader = new FileReader();
+      reader.readAsDataURL(formData.serviceAccountKey);
+      reader.onloadend = () => {
+        const uploadedJsonBase64 = reader.result;
+        const configId = crypto.randomUUID();
 
-    addNewConfiguration(dataToBeSaved, serviceUrl);
+        const dataToBeSaved: GoogleCloudConfiguration = {
+          configId: configId,
+          cloudProvider: "gcp",
+          configurationName: formData.configurationName,
+          projectId: formData.projectId,
+          serviceAccountKey: uploadedJsonBase64,
+          region: formData.region,
+          createdOn: format(new Date(), "yyyy-MMM-dd HH:mm:ss"),
+          createdBy: {
+            userName: "Sayan Roy",
+            userId: "be7a0ece-f3d8-4c5b-84dc-52c32c4adff4",
+            userEmail: "sayan.roy@keross.com",
+          },
+        };
+
+        addNewConfiguration(dataToBeSaved, serviceUrl);
+        handleClose();
+      };
+    }
+
 
     // setConfigurationData((prevConfigData) => {
     //   const updatedConfigData = {
@@ -157,8 +167,6 @@ export default function GoogleCloudConfigFormModal({
 
     //creating table
     // describeTable("cloud-config").then(setCloudConfigData);
-
-    handleClose();
   };
 
   const handleClose = () => {
@@ -295,7 +303,7 @@ export default function GoogleCloudConfigFormModal({
                     <Input
                       id="configurationName"
                       name="configurationName"
-                      value={savedDataToBePopulated && savedDataToBePopulated.configurationName ? savedDataToBePopulated.configurationName : ""}
+                      value={savedDataToBePopulated && savedDataToBePopulated.configurationName ? savedDataToBePopulated.configurationName : formData.configurationName}
                       className={
                         errors.configurationName
                           ? "w-full border border-red-500 rounded-md"
@@ -329,7 +337,7 @@ export default function GoogleCloudConfigFormModal({
                     <Input
                       id="projectId"
                       name="projectId"
-                      value={savedDataToBePopulated && savedDataToBePopulated.projectId ? savedDataToBePopulated.projectId : ""}
+                      value={savedDataToBePopulated && savedDataToBePopulated.projectId ? savedDataToBePopulated.projectId : formData.projectId}
                       className={
                         errors.projectId
                           ? "w-full border border-red-500 rounded-md"

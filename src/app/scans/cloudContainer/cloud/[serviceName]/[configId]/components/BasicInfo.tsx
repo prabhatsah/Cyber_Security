@@ -38,61 +38,8 @@ const widgetData = [
     },
 ];
 
-<<<<<<< HEAD
-const basicInfo = [
-    {
-        name: "Provider Code",
-        value: "GCP"
-    },
-    {
-        name: "Project ID",
-        value: "meta-sensor-447310-c0"
-    },
-    {
-        name: "Scan Time",
-        value: "2025-12-05 16:20"
-    },
-    {
-        name: "Services Scanned",
-        value: 12
-    },
-    {
-        name: "Provider Name",
-        value: "Google Cloud Platform"
-    },
-    {
-        name: "Issue Detected",
-        value: 25
-    },
-    {
-        name: "Rules Evaluated",
-        value: 25
-    },
-    {
-        name: "Rules Evaluated",
-        value: 25
-    },
-]
-
-export default function BasicInfo() {
-
-    // const chartData: WidgetDataItem[] = Object.entries(last_analysis_stats)
-    //   .filter(([key]) => key !== "timeout") // Exclude "timeout"
-    //   .map(([key, value]) => ({
-    //     name: key.charAt(0).toUpperCase() + key.slice(1), // Capitalize first letter
-    //     amount: value,
-    //     borderColor: colorMap[key] || "bg-gray-500", // Default color if not mapped
-    //   }));
-
-
-
-    return (
-        <>
-            <Card className="col-span-3 rounded-md">
-=======
 export default function BasicInfo({ scanTime, serviceName, serviceCode, summary }: {
     scanTime: string;
-    params: Promise<string>
 }) {
 
     let serviceScanned = 0;
@@ -146,7 +93,6 @@ export default function BasicInfo({ scanTime, serviceName, serviceCode, summary 
         <div className="col-span-3 space-y-2">
             <Label className="text-lg font-bold text-gray-900 dark:text-gray-50">Basic Information</Label>
             <Card className=" rounded-md">
->>>>>>> 31e96a83980fa29181cecba9362a351adac9ae2a
                 <div className=" h-full">
                     <ul
                         role="list"
@@ -171,10 +117,6 @@ export default function BasicInfo({ scanTime, serviceName, serviceCode, summary 
                     </ul>
                 </div>
             </Card>
-<<<<<<< HEAD
-        </>
-=======
         </div>
->>>>>>> 31e96a83980fa29181cecba9362a351adac9ae2a
     );
 }

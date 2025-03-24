@@ -45,6 +45,13 @@ export default function CloudServiceDetails({
     <>
       <RenderAppBreadcrumb
         breadcrumb={{
+          level: 1,
+          title: "Cloud Services",
+          href: "/configuration/cloud-services",
+        }}
+      />
+      <RenderAppBreadcrumb
+        breadcrumb={{
           level: 2,
           title: serviceName,
           href: `/configuration/cloud-services/${serviceUrl}`

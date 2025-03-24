@@ -254,7 +254,7 @@ export default function AmazonWebServicesConfigFormModal({
                     <Input
                       id="configurationName"
                       name="configurationName"
-                      value={savedDataToBePopulated && savedDataToBePopulated.configurationName ? savedDataToBePopulated.configurationName : ""}
+                      value={savedDataToBePopulated && savedDataToBePopulated.configurationName ? savedDataToBePopulated.configurationName : formData.configurationName}
                       className={
                         errors.configurationName
                           ? "w-full border border-red-500 rounded-md"
@@ -288,7 +288,7 @@ export default function AmazonWebServicesConfigFormModal({
                     <Input
                       id="accessKeyId"
                       name="accessKeyId"
-                      value={savedDataToBePopulated && savedDataToBePopulated.accessKeyId ? savedDataToBePopulated.accessKeyId : ""}
+                      value={savedDataToBePopulated && savedDataToBePopulated.accessKeyId ? savedDataToBePopulated.accessKeyId : formData.accessKeyId}
                       type="password"
                       className={
                         errors.accessKeyId
@@ -321,7 +321,7 @@ export default function AmazonWebServicesConfigFormModal({
                     <Input
                       id="accessKeyId"
                       name="accessKeyId"
-                      value={savedDataToBePopulated && savedDataToBePopulated.secretAccessKey ? savedDataToBePopulated.secretAccessKey : ""}
+                      value={savedDataToBePopulated && savedDataToBePopulated.secretAccessKey ? savedDataToBePopulated.secretAccessKey : formData.secretAccessKey}
                       type="password"
                       className={
                         errors.secretAccessKey
