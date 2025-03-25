@@ -48,10 +48,10 @@ export default function GoogleCloudConfigFormModal({
   // const { setConfigurationData } = useConfiguration();
 
   const [formData, setFormData] = useState({
-    configurationName: "",
-    projectId: "",
+    configurationName: savedDataToBePopulated?.configurationName ?? "",
+    projectId: savedDataToBePopulated?.projectId ?? "",
     serviceAccountKey: null as File | null,
-    region: "",
+    region: savedDataToBePopulated?.region ?? "",
   });
 
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
@@ -285,7 +285,7 @@ export default function GoogleCloudConfigFormModal({
                     <Button isLoading>Loading</Button>
                   ) : (
                     <Button variant="primary">
-                      {isConnected ? "Save" : "Connect"}
+                      {savedDataToBePopulated ? "Update" : (isConnected ? "Save" : "Connect")}
                     </Button>
                   )}
                 </div>
@@ -303,7 +303,7 @@ export default function GoogleCloudConfigFormModal({
                     <Input
                       id="configurationName"
                       name="configurationName"
-                      value={savedDataToBePopulated && savedDataToBePopulated.configurationName ? savedDataToBePopulated.configurationName : formData.configurationName}
+                      value={formData.configurationName}
                       className={
                         errors.configurationName
                           ? "w-full border border-red-500 rounded-md"
@@ -337,7 +337,7 @@ export default function GoogleCloudConfigFormModal({
                     <Input
                       id="projectId"
                       name="projectId"
-                      value={savedDataToBePopulated && savedDataToBePopulated.projectId ? savedDataToBePopulated.projectId : formData.projectId}
+                      value={formData.projectId}
                       className={
                         errors.projectId
                           ? "w-full border border-red-500 rounded-md"

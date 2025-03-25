@@ -1,9 +1,12 @@
+"use client";
+
 import { AmazonWebServicesConfiguration, GoogleCloudConfiguration } from "@/app/configuration/components/type";
-import { RiEdit2Line } from "@remixicon/react";
+import { RiDeleteBin6Line, RiEdit2Line } from "@remixicon/react";
 import { Card } from "@tremor/react";
 import { format } from "date-fns";
 import { useState } from "react";
 import AmazonWebServicesConfigFormModal from "../../config-forms/AmazonWebServicesConfigFormModal";
+import { deleteConfigWithKey } from "@/utils/api";
 
 export default function AmazonWebServicesConfigWidget({
     serviceUrl,
@@ -14,8 +17,12 @@ export default function AmazonWebServicesConfigWidget({
 }) {
     const [isEditFormOpen, setEditFormOpen] = useState(false);
 
-    const toggleFormModal = () => {
+    function toggleFormModal() {
         setEditFormOpen((prev) => !prev);
+    };
+
+    async function handleDeleteConfig(configId: string) {
+        await deleteConfigWithKey("cloud_config", "configId", configId);
     };
 
     const configNameWords = eachConfigDetails.configurationName
@@ -52,9 +59,15 @@ export default function AmazonWebServicesConfigWidget({
                         </div>
                     </div>
 
-                    <button onClick={toggleFormModal} className="text-blue-700 dark:text-blue-700 hover:text-blue-800 hover:dark:text-blue-600 cursor-pointer">
-                        <RiEdit2Line className="size-5" aria-hidden={true} />
-                    </button>
+
+                    <div className="flex justify-between items-center">
+                        <button title="Edit Configuration" onClick={toggleFormModal} className="border-r border-dark-bgTertiary pr-3 text-blue-700 dark:text-blue-700 hover:text-blue-800 hover:dark:text-blue-600 cursor-pointer">
+                            <RiEdit2Line className="size-5" aria-hidden={true} />
+                        </button>
+                        <button title="Delete Configuration" onClick={() => handleDeleteConfig(eachConfigDetails.configId)} className="pl-3 text-blue-700 dark:text-blue-700 hover:text-blue-800 hover:dark:text-blue-600 cursor-pointer">
+                            <RiDeleteBin6Line className="size-5" aria-hidden={true} />
+                        </button>
+                    </div>
                 </div>
 
                 <div className="mt-6 grid grid-cols-2 divide-x divide-tremor-border border-t border-tremor-border dark:divide-dark-tremor-border dark:border-dark-tremor-border">

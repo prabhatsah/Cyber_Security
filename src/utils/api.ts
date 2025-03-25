@@ -272,6 +272,35 @@ export async function updateColumnGeneralised(
   return res.json();
 }
 
+export async function updateDataObject(
+  tableName: string,
+  object: { key: string; value: any }[] | null,
+  filterColumn: string,
+  filterColumnValue: string
+) {
+  if (!object || object.length === 0) return;
+
+  let query = `UPDATE ${tableName} SET data = `;
+
+  const jsonbSetChain = object.reduce(
+    (acc, { key, value }) =>
+      `jsonb_set(${acc}, '{${key}}', '${JSON.stringify(value)}')`,
+    "data"
+  );
+
+  query += `${jsonbSetChain} WHERE data->>'${filterColumn}' = '${filterColumnValue}';`;
+
+  console.log("this is the query --> " + query);
+
+  const res = await fetch(`${baseUrl}/api/dbApi`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ query }),
+  });
+
+  return res.json();
+}
+
 export async function deleteObjectWithKey(
   key: string,
   tableName: string,
@@ -332,7 +361,7 @@ export async function deleteConfigWithKey(
               SET data = data - key
               FROM (
                   SELECT key
-                  FROM ${tableName}, jsonb_each(data)                    //data ---> columnName fixed
+                  FROM ${tableName}, jsonb_each(data)
                   WHERE value->>'${key}' = '${value}'
               ) subquery`;
   }

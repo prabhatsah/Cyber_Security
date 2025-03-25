@@ -1,5 +1,3 @@
-"use client";
-
 import {
   RiAlibabaCloudFill,
   RiAmazonLine,
@@ -9,14 +7,12 @@ import {
   RiWindowsFill,
 } from "@remixicon/react";
 import CloudWidget from "./EachCloudWidget";
-import { CloudSkeleton } from "../components/Skeleton";
-import { useEffect, useMemo, useState } from "react";
-import { useConfiguration } from "../components/ConfigurationContext";
 import {
   EachConfigDataFormatted,
   EachConfigDataFromServer,
 } from "../components/type";
 import { RenderAppBreadcrumb } from "@/components/app-breadcrumb";
+import { fetchData } from "@/utils/api";
 
 const cloudConfigList = [
   {
@@ -26,7 +22,6 @@ const cloudConfigList = [
     configurationCount: 0,
     icon: <RiAmazonLine className="size-5" aria-hidden={true} />,
     href: "/configuration/cloud-services/amazon-web-services",
-    configurations: [],
   },
   {
     name: "Microsoft Azure",
@@ -35,7 +30,6 @@ const cloudConfigList = [
     configurationCount: 0,
     icon: <RiWindowsFill className="size-5" aria-hidden={true} />,
     href: "/configuration/cloud-services/microsoft-azure",
-    configurations: [],
   },
   {
     name: "Google Cloud Platform",
@@ -44,7 +38,6 @@ const cloudConfigList = [
     configurationCount: 0,
     icon: <RiGoogleFill className="size-5" aria-hidden={true} />,
     href: "/configuration/cloud-services/google-cloud-platform",
-    configurations: [],
   },
   {
     name: "IBM Cloud",
@@ -53,7 +46,6 @@ const cloudConfigList = [
     configurationCount: 0,
     icon: <RiCloudLine className="size-5" aria-hidden={true} />,
     href: "/configuration/cloud-services/ibm-cloud",
-    configurations: [],
   },
   {
     name: "Oracle Cloud Infrastructure",
@@ -62,7 +54,6 @@ const cloudConfigList = [
     configurationCount: 0,
     icon: <RiCloudy2Line className="size-5" aria-hidden={true} />,
     href: "/configuration/cloud-services/oracle-cloud-infrastructure",
-    configurations: [],
   },
   {
     name: "Alibaba Cloud",
@@ -71,54 +62,35 @@ const cloudConfigList = [
     configurationCount: 0,
     icon: <RiAlibabaCloudFill className="size-5" aria-hidden={true} />,
     href: "/configuration/cloud-services/alibaba-cloud",
-    configurations: [],
   },
 ];
 
-export default function CloudServicesConfig() {
-  const [configData, setConfigData] = useState<
-    Record<string, EachConfigDataFormatted>
-  >({});
-  const [isLoading, setIsLoading] = useState(false);
+export default async function CloudServicesConfig() {
+  const fetchedData = (await fetchData("cloud_config", "id")).data;
 
-  const fetchedData = useConfiguration();
-  console.log("configData in cloud service page.tsx - ");
-  console.log(fetchedData);
-
-  useEffect(() => {
-    let configDataFormatted: Record<string, EachConfigDataFormatted> = {};
-    if (fetchedData && fetchedData.length > 0) {
-      fetchedData.forEach((element: EachConfigDataFromServer) => {
-        configDataFormatted[element.name] = {
-          id: element.id,
-          data: element.data,
-        };
-      });
-      setConfigData(configDataFormatted);
-      console.log("configData updated", configDataFormatted);
-    }
-  }, [fetchedData]);
-
-  const updatedCloudConfigList = useMemo(() => {
-    return cloudConfigList.map((cloudService) => {
-      const cloudServiceName = cloudService.href.split("/")[3];
-
-      if (configData[cloudServiceName]) {
-        return {
-          ...cloudService,
-          configurationCount: Object.keys(configData[cloudServiceName].data)
-            .length,
-          configurations: Object.values(configData[cloudServiceName].data),
-        };
-      }
-
-      return { ...cloudService, configurationCount: 0, configurations: [] };
+  let configDataFormatted: Record<string, EachConfigDataFormatted> = {};
+  if (fetchedData && fetchedData.length > 0) {
+    fetchedData.forEach((element: EachConfigDataFromServer) => {
+      configDataFormatted[element.name] = {
+        id: element.id,
+        data: element.data,
+      };
     });
-  }, [configData]);
-
-  if (isLoading) {
-    return <CloudSkeleton />;
   }
+
+  const updatedCloudConfigList = cloudConfigList.map((cloudService) => {
+    const cloudServiceName = cloudService.href.split("/")[3];
+
+    if (configDataFormatted[cloudServiceName]) {
+      return {
+        ...cloudService,
+        configurationCount: Object.keys(configDataFormatted[cloudServiceName].data)
+          .length,
+      };
+    }
+
+    return { ...cloudService, configurationCount: 0 };
+  });
 
   return (
     <>
