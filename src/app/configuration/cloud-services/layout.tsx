@@ -14,19 +14,23 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  let currentTime = new Date();
-  console.log("Layout called: " + currentTime.toISOString());
-
-  const configData = await fetchdata();
-  console.log("configData - ");
-  console.log(configData.data);
+  // const configData = await fetchdata();
+  // console.log("configData - ");
+  // console.log(configData.data);
 
   return (
     <>
+      <RenderAppBreadcrumb
+        breadcrumb={{
+          level: 1,
+          title: "Cloud Services",
+          href: "/configuration/cloud-services",
+        }}
+      />
       <div className="flex h-full">
-        <ConfigurationProvider configData={configData.data}>
-          {children}
-        </ConfigurationProvider>
+        {/* <ConfigurationProvider configData={configData.data}> */}
+        {children}
+        {/* </ConfigurationProvider> */}
       </div>
     </>
   );

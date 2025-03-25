@@ -1,9 +1,8 @@
-import { EachConfigDataFromServer } from "@/app/configuration/components/type";
 import NoSavedConfigTemplate from "../../components/NoSavedConfigTemplate";
-import { configDataGetter } from "@/app/scans/cloudContainer/components/configDataSaving";
 import ConfigHeader from "../../components/ConfigHeader";
+import { fetchData } from "@/utils/api";
 
-export default function MicrosoftAzureConfig({
+export default async function MicrosoftAzureConfig({
   serviceUrl,
   serviceName,
 }: {
@@ -11,9 +10,10 @@ export default function MicrosoftAzureConfig({
   serviceName: string;
 }) {
   // const [cloudConfigData, setCloudConfigData] = useState<Array<any>>([]);
+  // let fetchedData: any = configDataGetter();
+  // fetchedData = fetchedData.filter((eachData: EachConfigDataFromServer) => eachData.name === serviceUrl);
 
-  let fetchedData: any = configDataGetter();
-  fetchedData = fetchedData.filter((eachData: EachConfigDataFromServer) => eachData.name === serviceUrl);
+  const fetchedData = (await fetchData("cloud_config", "id", { column: "name", value: serviceUrl }, null)).data;
   console.log("Fetched data ", fetchedData);
   const eachConfigDataFormatted: Array<any> = [...Object.values(fetchedData[0].data)];
   console.log(serviceName, " Data updated ", eachConfigDataFormatted);
