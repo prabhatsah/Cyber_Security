@@ -264,14 +264,13 @@ export default function CyberSecurityComponents() {
                   <agent.icon className="" />
                 </span>
                 <dt
-                  className="text-tremor-default font-medium 
-                text-tremor-content-strong dark:text-widget-dark-mainHeader"
+                  className="text-widget-mainHeader"
                 >
                   <a className="focus:outline-none">
                     <span className="absolute " aria-hidden={true} />
                     {agent.name}
                   </a>
-                  <p className="text-sm text-gray-500">{agent.role}</p>
+                  <p className="text-sm text-widget-mainDesc">{agent.role}</p>
                 </dt>
               </div>
               <button
@@ -284,8 +283,7 @@ export default function CyberSecurityComponents() {
 
             <div className="mt-4">
               <h4
-                className="text-tremor-default leading-6 
-                  text-tremor-content dark:text-dark-tremor-content-emphasis"
+                className="text-widget-secondaryheader"
               >
                 Expertise
               </h4>

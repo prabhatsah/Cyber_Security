@@ -2,6 +2,7 @@
 
 import colors from "tailwindcss/colors";
 import formsPlugin from "@tailwindcss/forms";
+import { title } from "process";
 
 module.exports = {
   content: [
@@ -73,37 +74,25 @@ module.exports = {
             strong: colors.gray[50],
             inverted: colors.gray[950],
           },
-          widget: {
-            mainHeader: colors.red[600],
-          },
-        },
-        widget: {
-          light: {
-            mainHeader: "red",
-          },
-          dark: {
-            mainHeader: "red",
-          },
+
         },
         dark: {
           bgPrimary: "#030712",
           bgSecondary: "#131a2b",
-          bgTertiary:"#2e3851",
-         },
-        widget: {
-          light: {
-            mainHeader: "#171d2c",
-            mainDesc: "#6b7280",
-            secondaryheader: "#3a3e45",
-            secondaryDesc: "#6b7280",
-          },
-          dark: {
-            mainHeader: "#d4d6d9",
-            mainDesc: "#6b7280",
-            secondaryheader: "#e5e7eb",
-            secondaryDesc: "#6b7280",
-          },
+          bgTertiary: "#2e3851",
         },
+        widget: {
+          title: "var(--title)",
+          mainHeader: "var(--mainHeader)",
+          mainDesc: "var(--mainDesc)",
+          secondaryheader: "var(--secondaryheader)",
+          secondaryDesc: "var(--secondaryDesc)",
+        },
+        table:{
+          tableHeader: "var(--tableHeader)",
+          tableDesc: "var(--tableDesc)",
+        },
+
         primary: {
           DEFAULT: "var(--primary)",
           foreground: "hsl(var(--primary-foreground))",

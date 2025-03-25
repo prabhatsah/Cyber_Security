@@ -105,7 +105,7 @@ export default function ServiceBreakdown({ serviceName }) {
 
 
         <div className="w-full mt-8">
-            <Label className="text-lg font-bold text-gray-900 dark:text-gray-50">Services Level Breakdown</Label>
+            <Label className="text-lg font-bold text-widget-title">Services Level Breakdown</Label>
             <Accordion type="multiple" className="border px-3 mt-2 rounded">
                 {Object.keys(services).map((serviceKey) => {
                     const service = services[serviceKey];
