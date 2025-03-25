@@ -275,22 +275,46 @@ export async function updateColumnGeneralised(
 export async function updateDataObject(
   tableName: string,
   object: { key: string; value: any }[] | null,
-  filterColumn: string,
-  filterColumnValue: string
+  fixedKey: string,
+  fixedKeyValue: string
 ) {
   if (!object || object.length === 0) return;
 
-  let query = `UPDATE ${tableName} SET data = `;
+  let jsonbSetExpressions: string = "value";
 
-  const jsonbSetChain = object.reduce(
-    (acc, { key, value }) =>
-      `jsonb_set(${acc}, '{${key}}', '${JSON.stringify(value)}')`,
-    "data"
-  );
+  object.forEach((eachFilter) => {
+    const valueType =
+      typeof eachFilter.value === "string"
+        ? `'${eachFilter.value}'::text`
+        : typeof eachFilter.value === "number"
+        ? `${eachFilter.value}::numeric`
+        : `to_jsonb('${JSON.stringify(eachFilter.value)}'::jsonb)`;
 
-  query += `${jsonbSetChain} WHERE data->>'${filterColumn}' = '${filterColumnValue}';`;
+    jsonbSetExpressions = `jsonb_set(
+      ${jsonbSetExpressions}, 
+      '{${eachFilter.key}}', 
+      to_jsonb(${valueType}), 
+      false
+    )`;
+  });
 
-  console.log("this is the query --> " + query);
+  let query = `
+    UPDATE ${tableName} 
+    SET data = (
+        SELECT jsonb_object_agg(
+            key, 
+            CASE 
+                WHEN value->>'${fixedKey}' = '${fixedKeyValue}'
+                THEN ${jsonbSetExpressions}
+                ELSE value 
+            END
+        )
+        FROM jsonb_each(data)
+    ) 
+    WHERE data::text LIKE '%${fixedKeyValue}%';
+  `;
+
+  console.log("Generated Query -->", query);
 
   const res = await fetch(`${baseUrl}/api/dbApi`, {
     method: "POST",

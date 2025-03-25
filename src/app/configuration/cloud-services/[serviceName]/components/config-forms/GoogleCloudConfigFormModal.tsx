@@ -18,6 +18,7 @@ import { Button } from "@/components/Button";
 import { format } from "date-fns";
 import { addNewConfiguration } from "../apis/cloudConfigDataHandler";
 import { GoogleCloudConfiguration } from "@/app/configuration/components/type";
+import { updateDataObject } from "@/utils/api";
 
 export default function GoogleCloudConfigFormModal({
   serviceUrl,
@@ -169,6 +170,31 @@ export default function GoogleCloudConfigFormModal({
     // describeTable("cloud-config").then(setCloudConfigData);
   };
 
+  async function handleConfigUpdate(event: React.FormEvent) {
+    event.preventDefault();
+
+    if (!validateForm()) return;
+
+    if (savedDataToBePopulated) {
+      const updatedConfigData = [
+        {
+          key: "configurationName",
+          value: formData.configurationName
+        },
+        {
+          key: "region",
+          value: formData.region
+        }
+      ];
+
+      const tableName = "cloud_config";
+      const filterColumn = "configId";
+      const filterColumnValue = savedDataToBePopulated.configId;
+      await updateDataObject(tableName, updatedConfigData, filterColumn, filterColumnValue);
+    }
+    handleClose();
+  }
+
   const handleClose = () => {
     setFormData({
       configurationName: "",
@@ -195,7 +221,7 @@ export default function GoogleCloudConfigFormModal({
           <form
             action="#"
             method="POST"
-            onSubmit={!isConnected ? handleFormSave : handleTestConnection}
+            onSubmit={savedDataToBePopulated ? handleConfigUpdate : (!isConnected ? handleFormSave : handleTestConnection)}
           >
             <div className="absolute right-0 top-0 pr-3 pt-3">
               <button
@@ -338,6 +364,7 @@ export default function GoogleCloudConfigFormModal({
                       id="projectId"
                       name="projectId"
                       value={formData.projectId}
+                      disabled={savedDataToBePopulated ? true : false}
                       className={
                         errors.projectId
                           ? "w-full border border-red-500 rounded-md"
@@ -370,6 +397,7 @@ export default function GoogleCloudConfigFormModal({
                       id="serviceAccountKey"
                       name="serviceAccountKey"
                       // value={savedDataToBePopulated && savedDataToBePopulated.serviceAccountKey ? savedDataToBePopulated.serviceAccountKey : ""}
+                      disabled={savedDataToBePopulated ? true : false}
                       type="file"
                       className={
                         errors.serviceAccountKey

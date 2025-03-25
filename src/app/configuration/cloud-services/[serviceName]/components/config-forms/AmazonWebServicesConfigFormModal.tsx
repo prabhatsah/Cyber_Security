@@ -138,14 +138,6 @@ export default function AmazonWebServicesConfigFormModal({
           value: formData.configurationName
         },
         {
-          key: "accessKeyId",
-          value: formData.accessKeyId
-        },
-        {
-          key: "secretAccessKey",
-          value: formData.secretAccessKey
-        },
-        {
           key: "region",
           value: formData.region
         }
@@ -323,6 +315,7 @@ export default function AmazonWebServicesConfigFormModal({
                       id="accessKeyId"
                       name="accessKeyId"
                       value={formData.accessKeyId}
+                      disabled={savedDataToBePopulated ? true : false}
                       type="password"
                       className={
                         errors.accessKeyId
@@ -356,6 +349,7 @@ export default function AmazonWebServicesConfigFormModal({
                       id="secretAccessKey"
                       name="secretAccessKey"
                       value={formData.secretAccessKey}
+                      disabled={savedDataToBePopulated ? true : false}
                       type="password"
                       className={
                         errors.secretAccessKey
