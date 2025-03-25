@@ -91,7 +91,7 @@ export default function BasicInfo({ scanTime, serviceName, serviceCode, summary 
 
     return (
         <div className="col-span-3 space-y-2">
-            <Label className="text-lg font-bold text-gray-900 dark:text-gray-50">Basic Information</Label>
+            <Label className="text-lg font-bold text-widget-title">Basic Information</Label>
             <Card className=" rounded-md">
                 <div className=" h-full">
                     <ul
@@ -105,10 +105,10 @@ export default function BasicInfo({ scanTime, serviceName, serviceCode, summary 
                                 className=" px-0 py-3 lg:px-4 lg:py-2 lg:text-left "
                             >
                                 <div className="border-l-2 border-l-white/70 pl-2">
-                                    <p className="text-sm font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong">
+                                    <p className="text-sm font-semibold text-widget-mainHeader">
                                         {item.value}
                                     </p>
-                                    <p className="text-sm text-tremor-content dark:text-dark-tremor-content">
+                                    <p className="text-sm text-widget-mainDesc">
                                         {item.name}
                                     </p>
                                 </div>
