@@ -400,7 +400,7 @@
 
 import { NextResponse } from "next/server";
 
-const zapApiUrl = "http://localhost:8080";
+const zapApiUrl = "https://ikoncloud-dev.keross.com/scan";
 
 export async function POST(req: Request) {
   try {

@@ -144,7 +144,6 @@ async function fetchPaginatedData(
         SELECT ${selectClause}
         FROM ${fromClause}
         ${whereClause}
-        ORDER BY ${orderByColumn}
         LIMIT ${limit} OFFSET ${offset}
       ) t;
     `;
