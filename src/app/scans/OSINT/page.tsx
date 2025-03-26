@@ -10,40 +10,6 @@ import { addColumn, fetchData, updateColumn } from "@/utils/api";
 import { saveData } from "@/ikon/utils/api/processRuntimeService";
 import { getProfileData } from "@/ikon/utils/actions/auth";
 
-const getDomainSafetyMessage = (report) => {
-  const last_analysis_stats = report.attributes.last_analysis_stats;
-
-  // Thresholds for safety
-  const harmlessCount = last_analysis_stats.harmless || 0;
-  const maliciousCount = last_analysis_stats.malicious || 0;
-  const suspiciousCount = last_analysis_stats.suspicious || 0;
-
-  // Safety conditions
-  if (suspiciousCount > 0) {
-    // return "⚠️ This domain has suspicious activity. Be careful.";
-    return {
-      risk: "Critical",
-      message: "This domain has suspicious activity. Be careful."
-    }
-  }
-  if (maliciousCount > 0) {
-    // return "✅ This is a trusted and safe domain.";
-    return {
-      risk: "Warning",
-      message: "This domain has some malicious activity. Proceed with caution."
-    }
-  }
-  if (harmlessCount > 0) {
-    return {
-      risk: "No Issue",
-      message: "This is a trusted and safe domain."
-    }
-  }
-  return {
-    risk: "Unclear",
-    message: "Further investigation recommended."
-  }
-};
 
 // async function addRow() {
 //   const values: Record<string, any>[] = [
@@ -75,13 +41,8 @@ async function insertScanData(scanData) {
 
 async function fetchPastScan(scanData) {
 
-  const uniqueKey = URL.createObjectURL(new Blob()).split('/').pop();
-  console.log("uniqueKey----------", uniqueKey);
-  let resp;
-  if (uniqueKey) {
-    resp = await updateColumn("osint_scandata", "scandata", scanData, uniqueKey, "Rizwan Ansari");
-  }
-  // return await resp.json();
+  const resp = await fetchData("osint_scandata", "");
+
   return resp;
 }
 
@@ -105,7 +66,7 @@ export default function TheHarvesterDashboard() {
     const getPastScans = async () => {
       const profile = await getProfileData();
       setProfileData(profile);
-      const data = await fetchData("osint_scandata", "userId");
+      const data = await fetchData("osint_scandata", null);
       setPastScans(data);
     };
 
@@ -143,6 +104,9 @@ export default function TheHarvesterDashboard() {
       }
     }
   };
+
+  console.log(pastScans);
+  console.log("profile - ", profileData);
 
   return (
     <>
@@ -202,7 +166,7 @@ export default function TheHarvesterDashboard() {
         )}
 
         <div>
-          <PastScans />
+          <PastScans pastScans={pastScans} />
         </div>
       </div>
     </>

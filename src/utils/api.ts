@@ -40,6 +40,7 @@ const columnArr: Record<string, string>[] = [
 
 import { tableData } from "@/app/scans/WebApi/data";
 import { Buffer } from "buffer";
+import { getLoggedInUserProfile } from "@/ikon/utils/api/loginService/index";
 
 const baseUrl =
   process.env.NEXT_PUBLIC_BASE_URL ||
@@ -105,7 +106,6 @@ export async function showTables() {
   return res.json();
 }
 
-//insert into table with values
 export async function addColumn(
   tableName: string,
   values: Record<string, any>[]
@@ -161,13 +161,13 @@ export async function addColumn(
   const query = `INSERT INTO ${tableName} (${columnDefinitions}) VALUES ${valuesString};`;
   console.log(query);
 
-  const res = await fetch(`${baseUrl}/api/dbApi`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ query }),
-  });
+  // const res = await fetch(`${baseUrl}/api/dbApi`, {
+  //   method: "POST",
+  //   headers: { "Content-Type": "application/json" },
+  //   body: JSON.stringify({ query }),
+  // });
 
-  return res.json();
+  // return res.json();
 }
 
 //delete table
@@ -352,7 +352,7 @@ api.fetchData(name,null,null,null,{'projectId' : ['gcp-project-98341', 'gcp-proj
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 export async function fetchData(
   tableName: string,
-  orderByColumn: string,
+  orderByColumn: string | null,
   columnFilter?: { column: string; value: string | number } | null,
   jsonFilter?:
     | {
@@ -395,6 +395,41 @@ export async function deleteConfigWithKey(
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ query }),
+  });
+
+  return res.json();
+}
+
+///////////////////////////save data///////////////////////////////////////////
+export async function saveScannedData(
+  tableName: string,
+  values: { key: string; value: any }
+) {
+  const userId = (await getLoggedInUserProfile()).USER_ID;
+  console.log("this is the userId---> " + userId);
+  const jsonString = JSON.stringify(values.value).replace(/'/g, "");
+
+  const query = `
+                  INSERT INTO ${tableName} (id, userid, data, scanondata)
+                  VALUES (
+                      gen_random_uuid(), 
+                      '${userId}', 
+                      jsonb_build_object('${values.key}', '${jsonString}'::jsonb), 
+                      CURRENT_TIMESTAMP
+                  )
+                  ON CONFLICT (userid) 
+                  DO UPDATE SET 
+                      data = ${tableName}.data || jsonb_build_object('${values.key}', '${jsonString}'::jsonb),
+                      scanondata = CURRENT_TIMESTAMP
+                  RETURNING *;
+                  `;
+
+  console.log(query);
+
+  const res = await fetch(`${baseUrl}/api/dbApi`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ query, instruction: "update" }),
   });
 
   return res.json();
