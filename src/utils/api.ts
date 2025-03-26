@@ -328,7 +328,7 @@ api.fetchData(name,null,null,null,{'projectId' : ['gcp-project-98341', 'gcp-proj
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 export async function fetchData(
   tableName: string,
-  orderByColumn: string,
+  orderByColumn: string | null,
   columnFilter?: { column: string; value: string | number } | null,
   jsonFilter?:
     | {

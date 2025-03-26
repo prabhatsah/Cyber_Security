@@ -60,7 +60,74 @@ function cx(...classes: (string | boolean | undefined | null)[]) {
     return classes.filter(Boolean).join(' ');
 }
 
-export default function Example() {
+const getDomainSafetyMessage = (report) => {
+    const last_analysis_stats = report.attributes.last_analysis_stats;
+
+    // Thresholds for safety
+    const harmlessCount = last_analysis_stats.harmless || 0;
+    const maliciousCount = last_analysis_stats.malicious || 0;
+    const suspiciousCount = last_analysis_stats.suspicious || 0;
+
+    // Safety conditions
+    if (suspiciousCount > 0) {
+        // return "⚠️ This domain has suspicious activity. Be careful.";
+        return {
+            risk: "Critical",
+            message: "This domain has suspicious activity. Be careful."
+        }
+    }
+    if (maliciousCount > 0) {
+        // return "✅ This is a trusted and safe domain.";
+        return {
+            risk: "Warning",
+            message: "This domain has some malicious activity. Proceed with caution."
+        }
+    }
+    if (harmlessCount > 0) {
+        return {
+            risk: "No Issue",
+            message: "This is a trusted and safe domain."
+        }
+    }
+    return {
+        risk: "Unclear",
+        message: "Further investigation recommended."
+    }
+};
+
+function formatTimestamp(timestamp: string) {
+    const date = new Date(Number(timestamp));
+
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = String(date.getFullYear()).slice(2);
+
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+
+    return `${day}.${month}.${year} • ${hours}:${minutes}`;
+}
+
+export default function Example({ pastScans }) {
+
+    // const _data = [];
+    // for (let i = 0; i < pastScans.data.length; i++) {
+    //     for (const key in pastScans.data[i].scandata) {
+    //         const { risk, message } = getDomainSafetyMessage(pastScans.data[0].scandata[key])
+    //         _data.push({
+    //             titleHeading: pastScans.data[0].scandata[key]["id"],
+    //             title: message,
+    //             totalIssues: pastScans.data[0].scandata[key].last_analysis_stats.harmless + pastScans.data[0].scandata[key].last_analysis_stats.malicious + pastScans.data[0].scandata[key].last_analysis_stats.suspicious,
+    //             noOfIssue: risk === "Critical" ? pastScans.data[0].scandata[key].last_analysis_stats.suspicious : risk === "Warning" ? pastScans.data[0].scandata[key].last_analysis_stats.malicious : risk === "No Issue" ? pastScans.data[0].scandata[key].last_analysis_stats.harmless : 0,
+    //             status: risk,
+    //             scanBy: pastScans.data[i].name,
+    //             scanOn: formatTimestamp(key),
+    //             href: '#',
+
+    //         })
+    //     }
+    // }
+
     return (
         <div className="">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 mt-4">Scan History</h2>
