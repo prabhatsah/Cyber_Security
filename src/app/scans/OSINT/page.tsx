@@ -82,8 +82,6 @@ export default function TheHarvesterDashboard() {
 
   useEffect(() => {
     const getPastScans = async () => {
-      // const profile = await getProfileData();
-      // setProfileData(profile);
       const data = await fetchData("osint_threat_intelligence_scan", null);
       if (data && data.data) {
         setPastScans(data.data);
@@ -92,6 +90,14 @@ export default function TheHarvesterDashboard() {
 
     getPastScans();
   }, [data]);
+
+  // useEffect(() => {
+  //   const fetchUserProfileData = async () => {
+  //     const profile = await getProfileData();
+  //     setProfileData(profile);
+  //   }
+  //   fetchUserProfileData();
+  // }, [])
 
   const fetchData1 = async (searchType: string): Promise<void> => {
     try {

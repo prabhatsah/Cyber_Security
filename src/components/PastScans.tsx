@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card } from "@tremor/react";
 import { AlertCircle, CheckCircle2, Eye, ArrowRight, User, Calendar } from 'lucide-react';
+import { getProfileData } from '@/ikon/utils/actions/auth';
+import { Badge } from './ui/badge';
 
 const data = [
     {
@@ -118,6 +120,26 @@ function formatTimestamp(timestamp: string) {
 
 export default function Example({ pastScans, onOpenPastScan }) {
 
+    const [profileData, setProfileData] = useState<any>();
+    const [openedScan, setOpenedScan] = useState<any>()
+
+    useEffect(() => {
+        const fetchUserProfileData = async () => {
+            const profile = await getProfileData();
+            setProfileData(profile);
+        }
+        fetchUserProfileData();
+    }, []);
+
+    console.log("profile - ", profileData);
+
+    function handleClick(key) {
+        setOpenedScan(key);
+        onOpenPastScan(key);
+    }
+
+
+
     const _data = [];
     for (let i = 0; i < pastScans.length; i++) {
         for (const key in pastScans[i].data) {
@@ -129,7 +151,7 @@ export default function Example({ pastScans, onOpenPastScan }) {
                 totalIssue: totalIssue,
                 noOfIssue: noOfIssue,
                 status: risk,
-                scanBy: pastScans[i].userid,
+                scanBy: profileData.USER_NAME,
                 scanOn: pastScans[i].data[key].scanned_at,
                 href: '#',
 
@@ -145,12 +167,13 @@ export default function Example({ pastScans, onOpenPastScan }) {
                     const StatusIcon = statusConfig[item.status as keyof typeof statusConfig]?.icon;
                     const statusLabel = statusConfig[item.status as keyof typeof statusConfig]?.label;
                     return (
-                        <Card key={item.titleHeading} className="relative overflow-hidden hover:shadow-lg transition-shadow duration-300 rounded-lg">
+                        <Card key={item.key} className="relative overflow-hidden hover:shadow-lg transition-shadow duration-300 rounded-lg">
                             <div className="absolute top-0 right-0 w-24 h-24 -mr-8 -mt-8 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 rounded-full opacity-50"></div>
 
                             <div className="relative">
                                 <dt className="flex items-center space-x-2 text-sm font-medium text-gray-500 dark:text-gray-400">
                                     <span>{item.titleHeading}</span>
+                                    {item.key === openedScan && <Badge className='text-white'>opened</Badge>}
                                 </dt>
                                 <dd className="mt-1 text-xl font-bold text-gray-900 dark:text-white">
                                     {item.title}
@@ -193,7 +216,7 @@ export default function Example({ pastScans, onOpenPastScan }) {
                                 </div>
                             </div>
 
-                            <a href={item.href} className="absolute inset-0" aria-hidden="true" onClick={() => onOpenPastScan(item.key)} />
+                            <a href={item.href} className="absolute inset-0" aria-hidden="true" onClick={() => handleClick(item.key)} />
                         </Card>
                     );
                 })}
