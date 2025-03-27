@@ -7,7 +7,7 @@ export default function WebApi() {
     <div className="">
       <p className="font-bold text-widget-title text-pageheader">Web & API Security</p>
       <CurrentScan />
-      <PastScans />
+      {/* <PastScans /> */}
     </div >
   );
 }

@@ -83,7 +83,7 @@ export default function ChartWidget({
 
 
       <div className="col-span-4 space-y-2">
-        <Label className="text-lg font-bold text-gray-900 dark:text-gray-50">Security Vendors Flag</Label>
+        <Label className="text-lg font-bold text-widget-title text-widgetHeader">Security Vendors Flag</Label>
 
         <Card className="rounded-md">
           <div className="flex flex-col items-center justify-center h-full">
