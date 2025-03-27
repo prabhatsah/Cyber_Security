@@ -410,7 +410,7 @@ export async function saveScannedData(
   const jsonString = JSON.stringify(values.value).replace(/'/g, "");
 
   const query = `
-                  INSERT INTO ${tableName} (id, userid, data, scanondata)
+                  INSERT INTO ${tableName} (id, userid, data, lastscanon)
                   VALUES (
                       gen_random_uuid(), 
                       '${userId}', 

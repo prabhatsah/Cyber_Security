@@ -22,6 +22,12 @@ export default async function RootLayout({
     <>
       <RenderAppBreadcrumb
         breadcrumb={{
+          level: 0,
+          title: "Configuration",
+        }}
+      />
+      <RenderAppBreadcrumb
+        breadcrumb={{
           level: 1,
           title: "Cloud Services",
           href: "/configuration/cloud-services",

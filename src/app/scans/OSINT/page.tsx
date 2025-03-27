@@ -6,7 +6,7 @@ import Widgets from "./Widgets";
 import { ApiResponse, HarvesterData } from "./components/type";
 import PastScans from "@/components/PastScans";
 import { RenderAppBreadcrumb } from "@/components/app-breadcrumb";
-import { addColumn, fetchData, updateColumn } from "@/utils/api";
+import { addColumn, fetchData, saveScannedData, updateColumn } from "@/utils/api";
 import { saveData } from "@/ikon/utils/api/processRuntimeService";
 import { getProfileData } from "@/ikon/utils/actions/auth";
 
@@ -26,20 +26,38 @@ import { getProfileData } from "@/ikon/utils/actions/auth";
 //   return resp;
 // }
 
+function formatTimestamp(timestamp: string) {
+  const date = new Date(Number(timestamp));
+
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = String(date.getFullYear()).slice(2);
+
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+
+  return `${day}-${month}-${year} ${hours}:${minutes}`;
+}
+
 async function insertScanData(scanData) {
 
   // const uniqueKey = URL.createObjectURL(new Blob()).split('/').pop();
   const uniqueKey = new Date().getTime().toString();
   console.log("uniqueKey----------", uniqueKey);
-  let resp;
-  if (uniqueKey) {
-    resp = await updateColumn("osint_scandata", "scandata", scanData, uniqueKey, "Rizwan Ansari");
-  }
+
+  scanData.scanned_at = formatTimestamp(uniqueKey);
+
+  const resp = saveScannedData("osint_threat_intelligence_scan", { key: uniqueKey, value: scanData });
+
+  // let resp;
+  // if (uniqueKey) {
+  //   resp = await updateColumn("osint_threat_intelligence_scan", "scandata", scanData, uniqueKey, "Rizwan Ansari");
+  // }
   // return await resp.json();
   return resp;
 }
 
-async function fetchPastScan() {
+async function fetchPastScan(scanData) {
 
   const resp = await fetchData("osint_scandata", "");
 
@@ -52,8 +70,8 @@ export default function TheHarvesterDashboard() {
   const [query, setQuery] = useState<string>("");
   const [data, setData] = useState<HarvesterData | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [pastScans, setPastScans] = useState<any>();
-  const [profileData, setProfileData] = useState<any>();
+  const [pastScans, setPastScans] = useState([]);
+  // const [profileData, setProfileData] = useState<any>();
 
   // console.log("hello..........");
   // fetchData("osint_scandata", null).then(setPastScans)
@@ -64,14 +82,22 @@ export default function TheHarvesterDashboard() {
 
   useEffect(() => {
     const getPastScans = async () => {
-      const profile = await getProfileData();
-      setProfileData(profile);
-      const data = await fetchData("osint_scandata", null);
-      setPastScans(data);
+      const data = await fetchData("osint_threat_intelligence_scan", null);
+      if (data && data.data) {
+        setPastScans(data.data);
+      }
     };
 
     getPastScans();
-  }, []);
+  }, [data]);
+
+  // useEffect(() => {
+  //   const fetchUserProfileData = async () => {
+  //     const profile = await getProfileData();
+  //     setProfileData(profile);
+  //   }
+  //   fetchUserProfileData();
+  // }, [])
 
   const fetchData1 = async (searchType: string): Promise<void> => {
     try {
@@ -105,8 +131,19 @@ export default function TheHarvesterDashboard() {
     }
   };
 
+  console.log("past scans ---------");
   console.log(pastScans);
-  console.log("profile - ", profileData);
+  console.log("current scan ---------");
+  console.log(data);
+  // console.log("profile - ", profileData);
+
+  function handleOpenPastScan(key: string) {
+    for (let i = 0; i < pastScans.length; i++) {
+      if (pastScans[i]?.data[key]) {
+        setData(pastScans[i]?.data[key]);
+      }
+    }
+  }
 
   return (
     <>
@@ -122,6 +159,43 @@ export default function TheHarvesterDashboard() {
         <SearchBar query={query} setQuery={setQuery} fetchData={fetchData1} />
         {error && <p className="text-red-600 text-center">{error}</p>}
 
+        {/* New Section with Styled Text and Links */}
+        <div className="text-gray-900 text-xs dark:text-white">
+          By submitting data above, you are agreeing to our{" "}
+          <a
+            href="https://cloud.google.com/terms"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-400 hover:underline"
+          >
+            Terms of Service
+          </a>{" "}
+          and{" "}
+          <a
+            href="https://cloud.google.com/terms/secops/privacy-notice"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-400 hover:underline"
+          >
+            Privacy Notice
+          </a>
+          , and to the{" "}
+          <strong className="text-white ">
+            sharing of your Sample submission with the security community.
+          </strong>{" "}
+          Please do not submit any personal information; we are not responsible
+          for the contents of your submission.{" "}
+          <a
+            href="https://docs.virustotal.com/docs/how-it-works"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-400 hover:underline"
+          >
+            Learn more
+          </a>
+          .
+        </div>
+
         {data && (
           <div className="space-y-8">
             <Widgets widgetData={data} queryUrl={query} />
@@ -129,7 +203,7 @@ export default function TheHarvesterDashboard() {
         )}
 
         <div>
-          <PastScans />
+          <PastScans pastScans={pastScans} onOpenPastScan={handleOpenPastScan} />
         </div>
       </div>
     </>

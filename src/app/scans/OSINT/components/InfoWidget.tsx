@@ -9,6 +9,57 @@ import { Badge, badgeVariants } from "@/components/Badge";
 import { ReactNode } from "react";
 import { RiInformationLine, RiShieldCheckLine } from "@remixicon/react";
 import { format } from "date-fns";
+import { Label } from "@radix-ui/react-label";
+
+interface WhoisData {
+  admin: Record<string, string>;
+  registrar: Record<string, string>;
+  domain: Record<string, string>;
+  nameServers: string[];
+}
+
+function parseWhois(whoisText: string): WhoisData {
+  if (!whoisText) return { admin: {}, registrar: {}, domain: {}, nameServers: [] };
+
+  const whoisLines = whoisText.split("\n").map((line) => line.trim());
+  const whoisData: WhoisData = {
+    admin: {},
+    registrar: {},
+    domain: {},
+    nameServers: [],
+  };
+
+  whoisLines.forEach((line) => {
+    if (!line.includes(": ")) return;
+
+    const [key, value] = line.split(": ").map((part) => part.trim());
+    if (!value) return;
+
+    if (key.startsWith("Admin")) {
+      const cleanKey = key.replace("Admin ", "");
+      whoisData.admin[cleanKey] = value;
+    } else if (key.startsWith("Registrar")) {
+      const cleanKey = key.replace("Registrar ", "");
+      whoisData.registrar[cleanKey] = value;
+
+      // Format expiration date if found
+      if (cleanKey.includes("Expiration")) {
+        try {
+          whoisData.registrar[cleanKey] = format(new Date(value), "yyyy-MMM-dd");
+        } catch {
+          whoisData.registrar[cleanKey] = value;
+        }
+      }
+    } else if (key.startsWith("Domain")) {
+      const cleanKey = key.replace("Domain ", "");
+      whoisData.domain[cleanKey] = value;
+    } else if (key.startsWith("Name Server")) {
+      whoisData.nameServers.push(value);
+    }
+  });
+
+  return whoisData;
+}
 
 export default function InfoWidget({
   widgetData,
@@ -17,13 +68,14 @@ export default function InfoWidget({
   widgetData: HarvesterData;
   queryUrl: string;
 }) {
-  const categoriesObj: Record<string, string> =
-    widgetData.attributes.categories ?? {};
+  // Parse the whois data
+  const rawWhois = widgetData?.attributes?.whois;
+  const whoisData = typeof rawWhois === 'string'
+    ? parseWhois(rawWhois)
+    : rawWhois || { admin: {}, registrar: {}, domain: {}, nameServers: [] };
 
-  const categoriesLabelArray: Array<string> = Object.values(categoriesObj);
-
-  const last_dns_records: LastDnsRecords[] =
-    widgetData.attributes.last_dns_records ?? [];
+  // Get DNS records
+  const last_dns_records: LastDnsRecords[] = widgetData.attributes.last_dns_records ?? [];
   const selectedUrlIPRecords: LastDnsRecords = last_dns_records
     ? last_dns_records.filter((eachRecord: LastDnsRecords) => {
       if (eachRecord.type === "A") {
@@ -57,13 +109,55 @@ export default function InfoWidget({
 
   const lastHttpsCertificate = widgetData.attributes.last_https_certificate;
   const lastHttpsCertificateObj: LastHttpsCertificate = {
-    validFrom: format(lastHttpsCertificate.validity.not_before, "yyyy-MMM-dd"),
-    validTill: format(lastHttpsCertificate.validity.not_after, "yyyy-MMM-dd"),
-    size: lastHttpsCertificate.size,
-    version: lastHttpsCertificate.version,
-    publicKeyAlgorithm: lastHttpsCertificate.public_key.algorithm,
-    issuer: Object.values(lastHttpsCertificate.issuer),
+    validFrom: lastHttpsCertificate.validity?.not_before
+      ? format(lastHttpsCertificate.validity.not_before, "yyyy-MMM-dd")
+      : "N/A",
+    validTill: lastHttpsCertificate.validity?.not_after
+      ? format(lastHttpsCertificate.validity.not_after, "yyyy-MMM-dd")
+      : "N/A",
+    size: lastHttpsCertificate.size || "N/A",
+    version: lastHttpsCertificate.version || "N/A",
+    publicKeyAlgorithm: lastHttpsCertificate.public_key?.algorithm || "N/A",
+    issuer: lastHttpsCertificate.issuer
+      ? Object.values(lastHttpsCertificate.issuer)
+      : ["N/A"],
   };
+
+  // Prepare basic info
+  const basicInfo = [
+    {
+      name: "URL/IP address/domain",
+      value: queryUrl || "N/A"
+    },
+    {
+      name: "WHOIS Server",
+      value: whoisData.registrar["WHOIS Server"] || whoisData.registrar["Whois Server"] || "N/A"
+    },
+    {
+      name: "HTTPS Certificate Validity",
+      value: `${lastHttpsCertificateObj.validFrom} to ${lastHttpsCertificateObj.validTill}`
+    },
+    {
+      name: "Country",
+      value: whoisData.admin["Country"] || "N/A"
+    },
+    {
+      name: "IP Address",
+      value: selectedUrlIPRecords.value || "N/A"
+    },
+    {
+      name: "Registrar",
+      value: whoisData.registrar["Registrar"] || whoisData.registrar["Name"] || "N/A"
+    },
+    {
+      name: "Registration Expiration Date",
+      value: whoisData.registrar["Registration Expiration Date"] || "N/A"
+    },
+    {
+      name: "Organization",
+      value: whoisData.admin["Organization"] || whoisData.admin["Organisation"] || "N/A"
+    }
+  ];
 
   return (
     <>
@@ -148,8 +242,8 @@ export default function InfoWidget({
               </div>
             </div>
           </div>
-        </div>
-      </Card>
+        </Card>
+      </div>
     </>
   );
 }
