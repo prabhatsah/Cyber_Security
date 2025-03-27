@@ -66,10 +66,10 @@ export default function ChartWidget({
                       className={`${item.borderColor} w-1 shrink-0 rounded`}
                     />
                     <div>
-                      <p className="text-sm font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">
+                      <p className="text-sm font-medium text-widget-mainHeader">
                         {item.amount}
                       </p>
-                      <p className="mt-0.5 whitespace-nowrap text-sm text-tremor-content dark:text-dark-tremor-content">
+                      <p className="mt-0.5 whitespace-nowrap text-sm text-widget-mainDesc">
                         {item.name}
                       </p>
                     </div>

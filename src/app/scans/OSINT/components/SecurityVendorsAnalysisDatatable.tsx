@@ -26,12 +26,12 @@ export function SecurityVendorsAnalysisDataTable({
       <TableRoot>
         <Table>
           <TableHead>
-            <TableRow>
+            <TableRow className="text-table-tableHeader">
               <TableHeaderCell>Vendor</TableHeaderCell>
               <TableHeaderCell>Flag</TableHeaderCell>
             </TableRow>
           </TableHead>
-          <TableBody>
+          <TableBody className="text-table-tableBody">
             {vendorsAnalysisDataTableData.map((item) => {
               let iconHTML: ReactNode =
                 item.flag === "unrated" ? (

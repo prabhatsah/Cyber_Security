@@ -161,33 +161,86 @@ export default function InfoWidget({
 
   return (
     <>
-      <div className="col-span-8 h-full space-y-2">
-        <Label className="text-lg font-bold h-full text-gray-900 dark:text-gray-50">
-          Basic Information
-        </Label>
-
-        <Card className="rounded-md">
-          <div className="h-full">
-            <ul
-              role="list"
-              className=" grid grid-cols-1 h-full gap-6 lg:mt-0 lg:grid-cols-4"
-            >
-              {basicInfo.map((item) => (
-                <li
-                  key={item.name}
-                  className="px-0 py-3 lg:px-4 lg:py-2 lg:text-left"
-                >
-                  <div className="border-l-2 border-l-white/70 pl-2">
-                    <p className="text-sm font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong">
-                      {item.value}
-                    </p>
-                    <p className="text-sm text-tremor-content dark:text-dark-tremor-content">
-                      {item.name}
-                    </p>
-                  </div>
-                </li>
+      <Card className="col-span-3 rounded-md">
+        <div className="flex justify-between">
+          <div className="flex gap-5">
+            <h3 className=" font-semibold  ">{queryUrl}</h3>
+            <div className="flex flex-wrap justify-center gap-4">
+              {categoriesLabelArray.map((tag) => (
+                <span className="inline-flex items-center gap-x-1 rounded-md bg-gray-200/50 px-2 py-1 text-xs font-semibold text-gray-700">
+                  {tag}
+                </span>
               ))}
-            </ul>
+            </div>
+          </div>
+          {selectedUrlIPRecords && (
+            <span className="inline-flex items-center gap-x-1 rounded-md font-semibold bg-success text-stone-100 px-2 text-xs dark:bg-gray-500/30 dark:text-gray-300">
+              {selectedUrlIPRecords.value}
+            </span>
+          )}
+        </div>
+        <div className="flex gap-5 mt-2">
+          {registrar && (
+            <p className="text-sm font-medium text-widget-mainHeader">
+              Registrar:&nbsp;
+              <span className=" text-sm font-medium text-widget-mainDesc">
+                {registrar}
+              </span>
+            </p>
+          )}
+        </div>
+
+        <div className="mt-3 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+          {/* <div key="totalVotes" className=" dark:border-blue-400/10">
+            <p className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">
+              Total Votes
+            </p>
+            <p className="mt-2 text-tremor-default leading-6 text-tremor-content dark:text-dark-tremor-content">
+              <Badge
+                className={`rounded-md text-sm px-2 font-bold ring-0 ${voteMsgObj.cssVariant}`}
+              >
+                {voteMsgObj.iconHTML}
+                {voteMsgObj.fraction}
+              </Badge>{" "}
+              security vendors flagged this URL as {voteMsgObj.flagText}
+            </p>
+          </div> */}
+
+          <div key="lastHttpsCertificate" className="col-span-2 ">
+            <p className="text-sm font-medium text-widget-mainHeader">Last HTTPS Certificate</p>
+
+            <div className="grid grid-cols-2 gap-2 mt-2 text-sm">
+              <p className=" leading-6 text-widget-mainHeader">
+                Validity :&nbsp;
+                <span className="text-sm font-medium text-widget-mainDesc">{`${lastHttpsCertificateObj.validFrom} to ${lastHttpsCertificateObj.validTill}`}</span>
+              </p>
+
+              <p className="text-tremor-default leading-6 text-widget-mainHeader">
+                Size :&nbsp;
+                <span className="text-sm font-medium text-widget-mainDesc">{lastHttpsCertificateObj.size}</span>
+              </p>
+              <p className="text-tremor-default leading-6 text-widget-mainHeader">
+                Version :&nbsp;
+                <span className="text-sm font-medium text-widget-mainDesc">{lastHttpsCertificateObj.version}</span>
+              </p>
+              <p className="text-tremor-default leading-6 text-widget-mainHeader">
+                Public Key Algorithm :&nbsp;
+                <span className="text-sm font-medium text-widget-mainDesc">{lastHttpsCertificateObj.publicKeyAlgorithm}</span>
+              </p>
+
+              <div className="flex gap-2 col-span-2">
+                <p className="text-tremor-default leading-6 text-widget-mainHeader">
+                  Issuer:&nbsp;
+                </p>
+                <div className="flex flex-wrap justify-start gap-2 ">
+                  {lastHttpsCertificateObj.issuer.map((eachAlternativeName) => (
+                    <span className="inline-flex items-center gap-x-1 rounded-md bg-gray-200/50 px-2 py-1 text-sm font-medium ">
+                      {eachAlternativeName}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
         </Card>
       </div>
