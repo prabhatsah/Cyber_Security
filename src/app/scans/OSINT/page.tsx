@@ -6,7 +6,7 @@ import Widgets from "./Widgets";
 import { ApiResponse, HarvesterData } from "./components/type";
 import PastScans from "@/components/PastScans";
 import { RenderAppBreadcrumb } from "@/components/app-breadcrumb";
-import { addColumn, fetchData, updateColumn } from "@/utils/api";
+import { addColumn, fetchData, saveScannedData, updateColumn } from "@/utils/api";
 import { saveData } from "@/ikon/utils/api/processRuntimeService";
 import { getProfileData } from "@/ikon/utils/actions/auth";
 
@@ -26,15 +26,33 @@ import { getProfileData } from "@/ikon/utils/actions/auth";
 //   return resp;
 // }
 
+function formatTimestamp(timestamp: string) {
+  const date = new Date(Number(timestamp));
+
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = String(date.getFullYear()).slice(2);
+
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+
+  return `${day}-${month}-${year} ${hours}:${minutes}`;
+}
+
 async function insertScanData(scanData) {
 
   // const uniqueKey = URL.createObjectURL(new Blob()).split('/').pop();
   const uniqueKey = new Date().getTime().toString();
   console.log("uniqueKey----------", uniqueKey);
-  let resp;
-  if (uniqueKey) {
-    resp = await updateColumn("osint_scandata", "scandata", scanData, uniqueKey, "Rizwan Ansari");
-  }
+
+  scanData.scanned_at = formatTimestamp(uniqueKey);
+
+  const resp = saveScannedData("osint_threat_intelligence_scan", { key: uniqueKey, value: scanData });
+
+  // let resp;
+  // if (uniqueKey) {
+  //   resp = await updateColumn("osint_threat_intelligence_scan", "scandata", scanData, uniqueKey, "Rizwan Ansari");
+  // }
   // return await resp.json();
   return resp;
 }
@@ -52,8 +70,8 @@ export default function TheHarvesterDashboard() {
   const [query, setQuery] = useState<string>("");
   const [data, setData] = useState<HarvesterData | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [pastScans, setPastScans] = useState<any>();
-  const [profileData, setProfileData] = useState<any>();
+  const [pastScans, setPastScans] = useState([]);
+  // const [profileData, setProfileData] = useState<any>();
 
   // console.log("hello..........");
   // fetchData("osint_scandata", null).then(setPastScans)
@@ -64,14 +82,16 @@ export default function TheHarvesterDashboard() {
 
   useEffect(() => {
     const getPastScans = async () => {
-      const profile = await getProfileData();
-      setProfileData(profile);
-      const data = await fetchData("osint_scandata", null);
-      setPastScans(data);
+      // const profile = await getProfileData();
+      // setProfileData(profile);
+      const data = await fetchData("osint_threat_intelligence_scan", null);
+      if (data && data.data) {
+        setPastScans(data.data);
+      }
     };
 
     getPastScans();
-  }, []);
+  }, [data]);
 
   const fetchData1 = async (searchType: string): Promise<void> => {
     try {
@@ -105,8 +125,19 @@ export default function TheHarvesterDashboard() {
     }
   };
 
+  console.log("past scans ---------");
   console.log(pastScans);
-  console.log("profile - ", profileData);
+  console.log("current scan ---------");
+  console.log(data);
+  // console.log("profile - ", profileData);
+
+  function handleOpenPastScan(key: string) {
+    for (let i = 0; i < pastScans.length; i++) {
+      if (pastScans[i]?.data[key]) {
+        setData(pastScans[i]?.data[key]);
+      }
+    }
+  }
 
   return (
     <>
@@ -166,7 +197,7 @@ export default function TheHarvesterDashboard() {
         )}
 
         <div>
-          <PastScans pastScans={pastScans} />
+          <PastScans pastScans={pastScans} onOpenPastScan={handleOpenPastScan} />
         </div>
       </div>
     </>

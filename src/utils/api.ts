@@ -410,7 +410,7 @@ export async function saveScannedData(
   const jsonString = JSON.stringify(values.value).replace(/'/g, "");
 
   const query = `
-                  INSERT INTO ${tableName} (id, userid, data, scanondata)
+                  INSERT INTO ${tableName} (id, userid, data, lastscanon)
                   VALUES (
                       gen_random_uuid(), 
                       '${userId}', 
@@ -420,7 +420,7 @@ export async function saveScannedData(
                   ON CONFLICT (userid) 
                   DO UPDATE SET 
                       data = ${tableName}.data || jsonb_build_object('${values.key}', '${jsonString}'::jsonb),
-                      scanondata = CURRENT_TIMESTAMP
+                      lastscanon = CURRENT_TIMESTAMP
                   RETURNING *;
                   `;
 
