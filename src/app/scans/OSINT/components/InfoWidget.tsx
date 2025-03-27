@@ -87,9 +87,9 @@ export default function InfoWidget({
         </div>
         <div className="flex gap-5 mt-2">
           {registrar && (
-            <p className="text-sm font-medium text-tremor-content dark:text-dark-tremor-content">
+            <p className="text-sm font-medium text-widget-mainHeader">
               Registrar:&nbsp;
-              <span className=" text-sm font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">
+              <span className=" text-sm font-medium text-widget-mainDesc">
                 {registrar}
               </span>
             </p>
@@ -113,34 +113,34 @@ export default function InfoWidget({
           </div> */}
 
           <div key="lastHttpsCertificate" className="col-span-2 ">
-            <p className="text-sm font-medium">Last HTTPS Certificate</p>
+            <p className="text-sm font-medium text-widget-mainHeader">Last HTTPS Certificate</p>
 
             <div className="grid grid-cols-2 gap-2 mt-2 text-sm">
-              <p className=" leading-6 text-tremor-content dark:text-dark-tremor-content">
+              <p className=" leading-6 text-widget-mainHeader">
                 Validity :&nbsp;
-                <span className="text-sm font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">{`${lastHttpsCertificateObj.validFrom} to ${lastHttpsCertificateObj.validTill}`}</span>
+                <span className="text-sm font-medium text-widget-mainDesc">{`${lastHttpsCertificateObj.validFrom} to ${lastHttpsCertificateObj.validTill}`}</span>
               </p>
 
-              <p className="text-tremor-default leading-6 text-tremor-content dark:text-dark-tremor-content">
+              <p className="text-tremor-default leading-6 text-widget-mainHeader">
                 Size :&nbsp;
-                <span className="text-sm font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">{lastHttpsCertificateObj.size}</span>
+                <span className="text-sm font-medium text-widget-mainDesc">{lastHttpsCertificateObj.size}</span>
               </p>
-              <p className="text-tremor-default leading-6 text-tremor-content dark:text-dark-tremor-content">
+              <p className="text-tremor-default leading-6 text-widget-mainHeader">
                 Version :&nbsp;
-                <span className="text-sm font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">{lastHttpsCertificateObj.version}</span>
+                <span className="text-sm font-medium text-widget-mainDesc">{lastHttpsCertificateObj.version}</span>
               </p>
-              <p className="text-tremor-default leading-6 text-tremor-content dark:text-dark-tremor-content">
+              <p className="text-tremor-default leading-6 text-widget-mainHeader">
                 Public Key Algorithm :&nbsp;
-                <span className="text-sm font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">{lastHttpsCertificateObj.publicKeyAlgorithm}</span>
+                <span className="text-sm font-medium text-widget-mainDesc">{lastHttpsCertificateObj.publicKeyAlgorithm}</span>
               </p>
 
               <div className="flex gap-2 col-span-2">
-                <p className="text-tremor-default leading-6 text-tremor-content dark:text-dark-tremor-content">
+                <p className="text-tremor-default leading-6 text-widget-mainHeader">
                   Issuer:&nbsp;
                 </p>
                 <div className="flex flex-wrap justify-start gap-2 ">
                   {lastHttpsCertificateObj.issuer.map((eachAlternativeName) => (
-                    <span className="inline-flex items-center gap-x-1 rounded-md bg-gray-200/50 px-2 py-1 text-sm font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">
+                    <span className="inline-flex items-center gap-x-1 rounded-md bg-gray-200/50 px-2 py-1 text-sm font-medium ">
                       {eachAlternativeName}
                     </span>
                   ))}

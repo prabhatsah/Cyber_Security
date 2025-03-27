@@ -130,20 +130,20 @@ export default function Example({ pastScans }) {
 
     return (
         <div className="">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 mt-4">Scan History</h2>
+            <h2 className=" font-bold text-widget-title text-widgetHeader">Scan History</h2>
             <dl className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 mt-4">
                 {data.map((item) => {
                     const StatusIcon = statusConfig[item.status as keyof typeof statusConfig].icon;
                     const statusLabel = statusConfig[item.status as keyof typeof statusConfig].label;
                     return (
                         <Card key={item.titleHeading} className="relative overflow-hidden hover:shadow-lg transition-shadow duration-300 rounded-lg">
-                            <div className="absolute top-0 right-0 w-24 h-24 -mr-8 -mt-8 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 rounded-full opacity-50"></div>
+                            <div className="absolute top-0 right-0 w-24 h-24 -mr-8 -mt-8 from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 rounded-full opacity-50"></div>
 
                             <div className="relative">
-                                <dt className="flex items-center space-x-2 text-sm font-medium text-gray-500 dark:text-gray-400">
+                                <dt className="flex items-center space-x-2 text-sm font-medium text-widget-mainHeader">
                                     <span>{item.titleHeading}</span>
                                 </dt>
-                                <dd className="mt-1 text-3xl font-bold text-gray-900 dark:text-white">
+                                <dd className="mt-1 text-lg font-bold text-widget-mainDesc">
                                     {item.title}
                                 </dd>
                             </div>
@@ -158,7 +158,7 @@ export default function Example({ pastScans }) {
                                             <StatusIcon className="h-5 w-5" />
                                         </span>
                                         <div>
-                                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                                            <p className="text-sm text-widget-secondaryheader">
                                                 Issues: {item.noOfIssue}/{item.totalIssue}
                                             </p>
                                             <p className={cx(
@@ -172,7 +172,7 @@ export default function Example({ pastScans }) {
                                     <ArrowRight className="h-5 w-5 text-gray-400" />
                                 </div>
 
-                                <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
+                                <div className="flex items-center justify-between text-sm text-widget-secondaryDesc">
                                     <div className="flex items-center space-x-2">
                                         <User className="h-4 w-4" />
                                         <span>{item.scanBy}</span>
