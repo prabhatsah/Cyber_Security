@@ -57,7 +57,7 @@ async function insertScanData(scanData) {
   return resp;
 }
 
-async function fetchPastScan() {
+async function fetchPastScan(scanData) {
 
   const resp = await fetchData("osint_scandata", "");
 
@@ -152,6 +152,43 @@ export default function TheHarvesterDashboard() {
         <p className="font-bold ">OSINT & Threat Intelligence</p>
         <SearchBar query={query} setQuery={setQuery} fetchData={fetchData1} />
         {error && <p className="text-red-600 text-center">{error}</p>}
+
+        {/* New Section with Styled Text and Links */}
+        <div className="text-gray-900 text-xs dark:text-white">
+          By submitting data above, you are agreeing to our{" "}
+          <a
+            href="https://cloud.google.com/terms"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-400 hover:underline"
+          >
+            Terms of Service
+          </a>{" "}
+          and{" "}
+          <a
+            href="https://cloud.google.com/terms/secops/privacy-notice"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-400 hover:underline"
+          >
+            Privacy Notice
+          </a>
+          , and to the{" "}
+          <strong className="text-white ">
+            sharing of your Sample submission with the security community.
+          </strong>{" "}
+          Please do not submit any personal information; we are not responsible
+          for the contents of your submission.{" "}
+          <a
+            href="https://docs.virustotal.com/docs/how-it-works"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-400 hover:underline"
+          >
+            Learn more
+          </a>
+          .
+        </div>
 
         {data && (
           <div className="space-y-8">

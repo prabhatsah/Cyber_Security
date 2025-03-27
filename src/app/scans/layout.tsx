@@ -7,13 +7,13 @@ export default function RootLayout({
 }) {
   return (
     <>
-      <RenderAppBreadcrumb
+      {/* <RenderAppBreadcrumb
         breadcrumb={{
           level: 1,
           title: "Cloud & Container",
           href: "/scans/cloudContainer",
         }}
-      />
+      /> */}
       <div className="flex flex-col h-full">
         {children}
       </div>

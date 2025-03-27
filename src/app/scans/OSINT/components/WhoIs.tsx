@@ -57,7 +57,7 @@ export default function WhoIs({ whoisText }: { whoisText: string }) {
     <>
       <h2 className="text-md font-semibold ">Whois Lookup</h2>
 
-      <div className="mt-2 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3 text-sm border p-4 rounded-md">
+      <div className="mt-2 grid grid-cols-1 gap-8 dark:bg-dark-tremor-background md:grid-cols-2 lg:grid-cols-3 text-sm border p-4 rounded-md">
         <div key="registrarInfo" className="flex flex-col gap-3">
           <div className="flex items-center gap-2 h-8">
             <div className="w-fit rounded-lg p-2 ring-1 ring-black/5 dark:ring-white/5">

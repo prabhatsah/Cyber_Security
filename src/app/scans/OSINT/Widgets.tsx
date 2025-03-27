@@ -86,7 +86,7 @@ export default function Widgets({
 
   return (
     <section>
-      <div className="grid grid-cols-4 gap-5">
+      <div className="grid grid-cols-12 gap-5 mt-5">
         <ChartWidget widgetData={widgetData} />
 
         <InfoWidget queryUrl={queryUrl} widgetData={widgetData} />
