@@ -22,15 +22,38 @@ export default async function CloudConfigScanningMainDashboard({
     )
     .join(" ");
 
-  const fetchedData = (await fetchData("cloud_config", "id", { column: "name", value: serviceName })).data;
+  const fetchedData = (await fetchData("cloud_config", "id", { column: "name", value: serviceName }, [{ column: "data", keyPath: ["configId"], value: configId }])).data;
+  console.log("Fetched Data: ", fetchedData);
+
+  const specificConfigData: GoogleCloudConfiguration | AmazonWebServicesConfiguration | any = fetchedData[0]['config_filtered'];
   console.log("Data for Config Id (", configId, "): ", fetchedData);
 
-  const specificConfigData: GoogleCloudConfiguration | AmazonWebServicesConfiguration | any = fetchedData[0]['data'][configId];
 
-  let apiBodyJson: Record<string, any> = {};
+  // let apiBodyJson: Record<string, any> = {};
   if (serviceName === "google-cloud-platform") {
-    const projectId = specificConfigData.projectId;
-    const base64String = specificConfigData.serviceAccountKey;
+    // const projectId = specificConfigData.projectId;
+    // const serviceAccountKeyData = specificConfigData.serviceAccountKey;
+
+    const apiBodyJson = {
+      "cloudProvider": "gcp",
+      "credentials": specificConfigData.serviceAccountKey
+    }
+
+    const response = await fetch("http://localhost:3000/src/app/api/cloud-container/scan", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(apiBodyJson), // This should include serviceAccountKey
+    });
+
+    const text = await response.text(); // Get response as text
+    try {
+      const result = JSON.parse(text);
+      console.log("GCP Scan Result: ", result);
+    } catch (error) {
+      console.log("Failed to parse JSON.");
+    }
 
     // const byteCharacters = atob(base64String.split(",")[1]); // Decode Base64 (remove data URL prefix)
     // const byteNumbers = new Array(byteCharacters.length);
@@ -42,57 +65,27 @@ export default async function CloudConfigScanningMainDashboard({
     // const fileName = "service-account-key_" + projectId + ".json";
     // const serviceAccountKeyFile: File | null = new File([blob], fileName, { type: "application/json", lastModified: Date.now(), });
 
-    const fileName = "service-account-key_" + projectId + ".json";
-    const response = await fetch(base64String);
-    const buffer = await response.arrayBuffer();
-    const serviceAccountKeyFile = new File([buffer], fileName, { type: "application/json" })
-
-    const result = await testGoogleCloudConnection(
-      projectId,
-      serviceAccountKeyFile
-    );
-    console.log("Result: ", result);
-
-    // function base64toFile(base64Str: string, fileName: string, mimeType: string) {
-    //   if (base64Str.startsWith('data:')) {
-    //     const arr = base64String.split(',');
-    //     const bstr = atob(arr[arr.length - 1]);
-    //     let n = bstr.length;
-    //     const u8arr = new Uint8Array(n);
-    //     while (n--) {
-    //       u8arr[n] = bstr.charCodeAt(n);
-    //     }
-    //     var file = new File([u8arr], fileName, { type: mimeType });
-    //     return Promise.resolve(file);
-    //   }
-    //   return fetch(base64Str).then(res => res.arrayBuffer()).then(buf => new File([buf], fileName, { type: mimeType }));
-    // }
-
     // const fileName = "service-account-key_" + projectId + ".json";
-    // base64toFile(base64String, fileName, 'application/json').then((serviceAccountKeyFile) => {
-    //   apiBodyJson = {
-    //     serviceAccountKey: serviceAccountKeyFile,
-    //     projectId: projectId,
-    //   }
+    // const response = await fetch(base64String);
+    // const buffer = await response.arrayBuffer();
+    // const serviceAccountKeyFile = new File([buffer], fileName, { type: "application/json" });
 
-    //   console.log("API JSON: ", apiBodyJson);
-    // });
-    // 
-    // let serviceAccountKeyFile: File | Promise<File> | null = null;
-    // if (base64String.startsWith('data:')) {
-    //   const arr = base64String.split(',');
-    //   const mime = arr[0].match(/:(.*?);/)[1];
-    //   const bstr = atob(arr[arr.length - 1]);
-    //   let n = bstr.length;
-    //   const u8arr = new Uint8Array(n);
-    //   while (n--) {
-    //     u8arr[n] = bstr.charCodeAt(n);
-    //   }
+    // const blob = new Blob([serviceAccountKeyData.data], { type: serviceAccountKeyData.mimeType });
+    // const serviceAccountKeyFile = new File([blob], serviceAccountKeyData.fileName, { type: serviceAccountKeyData.mimeType });
 
-    //   const derivedFile = new File([u8arr], fileName, { type: "application/json" });
-    //   serviceAccountKeyFile = Promise.resolve(derivedFile);
+
+    // const result = await testGoogleCloudConnection(
+    //   projectId,
+    //   serviceAccountKeyFile
+    // );
+    // console.log("Result: ", result);
+
+    // apiBodyJson = {
+    //   serviceAccountKey: serviceAccountKeyFile,
+    //   projectId: projectId,
     // }
-    // serviceAccountKeyFile = fetch(base64String).then(res => res.arrayBuffer()).then(buf => new File([buf], fileName, { type: "application/json" }));
+
+    // console.log("API Body Json: ", apiBodyJson);
 
   }
 
