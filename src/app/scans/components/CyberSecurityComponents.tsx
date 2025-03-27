@@ -18,7 +18,6 @@ import {
 import { useRouter } from "next/navigation";
 import { Card } from "@tremor/react";
 import { SkeletonCard } from "./Skeleton";
-import FullPageLoading from "@/components/FullPageLoading";
 import CustomisedLoading from "@/components/CustomisedLoading";
 
 interface AIAgent {
