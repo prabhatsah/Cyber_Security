@@ -11,9 +11,8 @@ import {
     EachConfigDataFormatted,
     EachConfigDataFromServer,
 } from "../components/type";
-import { fetchConfigDetails } from "../components/fetchConfigDetails";
-import { configDataSetter } from "../components/configDataSaving";
 import { fetchData } from "@/utils/api";
+import { RenderAppBreadcrumb } from "@/components/app-breadcrumb";
 
 const cloudConfigList = [
     {
@@ -23,7 +22,6 @@ const cloudConfigList = [
         configurationCount: 0,
         icon: <RiAmazonLine className="size-5" aria-hidden={true} />,
         href: "/scans/cloudContainer/cloud/amazon-web-services",
-        configurations: [],
     },
     {
         name: "Microsoft Azure",
@@ -32,7 +30,6 @@ const cloudConfigList = [
         configurationCount: 0,
         icon: <RiWindowsFill className="size-5" aria-hidden={true} />,
         href: "/scans/cloudContainer/cloud/microsoft-azure",
-        configurations: [],
     },
     {
         name: "Google Cloud Platform",
@@ -41,7 +38,6 @@ const cloudConfigList = [
         configurationCount: 0,
         icon: <RiGoogleFill className="size-5" aria-hidden={true} />,
         href: "/scans/cloudContainer/cloud/google-cloud-platform",
-        configurations: [],
     },
     {
         name: "IBM Cloud",
@@ -50,7 +46,6 @@ const cloudConfigList = [
         configurationCount: 0,
         icon: <RiCloudLine className="size-5" aria-hidden={true} />,
         href: "/scans/cloudContainer/cloud/ibm-cloud",
-        configurations: [],
     },
     {
         name: "Oracle Cloud Infrastructure",
@@ -59,7 +54,6 @@ const cloudConfigList = [
         configurationCount: 0,
         icon: <RiCloudy2Line className="size-5" aria-hidden={true} />,
         href: "/scans/cloudContainer/cloud/oracle-cloud-infrastructure",
-        configurations: [],
     },
     {
         name: "Alibaba Cloud",
@@ -68,16 +62,11 @@ const cloudConfigList = [
         configurationCount: 0,
         icon: <RiAlibabaCloudFill className="size-5" aria-hidden={true} />,
         href: "/scans/cloudContainer/cloud/alibaba-cloud",
-        configurations: [],
     },
 ];
 
 export default async function CloudServicesConfig() {
-
-    // const fetchedData = (await fetchConfigDetails()).data;
     const fetchedData = (await fetchData("cloud_config", "id")).data;
-    console.log("configData in cloud service page.tsx - ");
-    console.log(fetchedData);
 
     let configDataFormatted: Record<string, EachConfigDataFormatted> = {};
     if (fetchedData && fetchedData.length > 0) {
@@ -87,9 +76,7 @@ export default async function CloudServicesConfig() {
                 data: element.data,
             };
         });
-        console.log("configData updated", configDataFormatted);
     }
-    configDataSetter(fetchedData);
 
     const updatedCloudConfigList = cloudConfigList.map((cloudService) => {
         const cloudServiceName = cloudService.href.split("/")[4];
@@ -99,15 +86,21 @@ export default async function CloudServicesConfig() {
                 ...cloudService,
                 configurationCount: Object.keys(configDataFormatted[cloudServiceName].data)
                     .length,
-                configurations: Object.values(configDataFormatted[cloudServiceName].data),
             };
         }
 
-        return { ...cloudService };
+        return { ...cloudService, configurationCount: 0 };
     });
 
     return (
         <>
+            <RenderAppBreadcrumb
+                breadcrumb={{
+                    level: 2,
+                    title: "Cloud Security",
+                    href: "/scans/cloudContainer/cloud",
+                }}
+            />
             <div className=" flex flex-col relative">
                 <div className=" grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 h-fit">
                     {updatedCloudConfigList.map((item) => (

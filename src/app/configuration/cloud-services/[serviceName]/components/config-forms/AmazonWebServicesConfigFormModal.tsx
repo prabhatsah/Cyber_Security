@@ -7,6 +7,7 @@ import { useState } from "react";
 import { testGoogleCloudConnection } from "../apis/googleCloud";
 import { addNewConfiguration } from "../apis/cloudConfigDataHandler";
 import { Input } from "@/components/Input";
+import { updateDataObject } from "@/utils/api";
 
 export default function AmazonWebServicesConfigFormModal({
   serviceUrl,
@@ -30,10 +31,10 @@ export default function AmazonWebServicesConfigFormModal({
   serviceName.trim();
 
   const [formData, setFormData] = useState({
-    configurationName: "",
-    accessKeyId: "",
-    secretAccessKey: "",
-    region: "",
+    configurationName: savedDataToBePopulated?.configurationName ?? "",
+    accessKeyId: savedDataToBePopulated?.accessKeyId ?? "",
+    secretAccessKey: savedDataToBePopulated?.secretAccessKey ?? "",
+    region: savedDataToBePopulated?.region ?? "",
   });
 
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
@@ -125,6 +126,31 @@ export default function AmazonWebServicesConfigFormModal({
     handleClose();
   };
 
+  async function handleConfigUpdate(event: React.FormEvent) {
+    event.preventDefault();
+
+    if (!validateForm()) return;
+
+    if (savedDataToBePopulated) {
+      const updatedConfigData = [
+        {
+          key: "configurationName",
+          value: formData.configurationName
+        },
+        {
+          key: "region",
+          value: formData.region
+        }
+      ];
+
+      const tableName = "cloud_config";
+      const filterColumn = "configId";
+      const filterColumnValue = savedDataToBePopulated.configId;
+      await updateDataObject(tableName, updatedConfigData, filterColumn, filterColumnValue);
+    }
+    handleClose();
+  }
+
   const handleClose = () => {
     setFormData({
       configurationName: "",
@@ -148,7 +174,7 @@ export default function AmazonWebServicesConfigFormModal({
         className="z-[100]"
       >
         <DialogPanel className="overflow-visible rounded-md p-0 sm:max-w-5xl">
-          <form action="#" method="POST" onSubmit={!isConnected ? handleFormSave : handleTestConnection}>
+          <form action="#" method="POST" onSubmit={savedDataToBePopulated ? handleConfigUpdate : (!isConnected ? handleFormSave : handleTestConnection)}>
             <div className="absolute right-0 top-0 pr-3 pt-3">
               <button
                 type="button"
@@ -236,7 +262,7 @@ export default function AmazonWebServicesConfigFormModal({
                     <Button isLoading>Loading</Button>
                   ) : (
                     <Button variant="primary">
-                      {isConnected ? "Save" : "Connect"}
+                      {savedDataToBePopulated ? "Update" : (isConnected ? "Save" : "Connect")}
                     </Button>
                   )}
                 </div>
@@ -254,7 +280,7 @@ export default function AmazonWebServicesConfigFormModal({
                     <Input
                       id="configurationName"
                       name="configurationName"
-                      value={savedDataToBePopulated && savedDataToBePopulated.configurationName ? savedDataToBePopulated.configurationName : formData.configurationName}
+                      value={formData.configurationName}
                       className={
                         errors.configurationName
                           ? "w-full border border-red-500 rounded-md"
@@ -288,7 +314,8 @@ export default function AmazonWebServicesConfigFormModal({
                     <Input
                       id="accessKeyId"
                       name="accessKeyId"
-                      value={savedDataToBePopulated && savedDataToBePopulated.accessKeyId ? savedDataToBePopulated.accessKeyId : formData.accessKeyId}
+                      value={formData.accessKeyId}
+                      disabled={savedDataToBePopulated ? true : false}
                       type="password"
                       className={
                         errors.accessKeyId
@@ -319,9 +346,10 @@ export default function AmazonWebServicesConfigFormModal({
                     </label>
 
                     <Input
-                      id="accessKeyId"
-                      name="accessKeyId"
-                      value={savedDataToBePopulated && savedDataToBePopulated.secretAccessKey ? savedDataToBePopulated.secretAccessKey : formData.secretAccessKey}
+                      id="secretAccessKey"
+                      name="secretAccessKey"
+                      value={formData.secretAccessKey}
+                      disabled={savedDataToBePopulated ? true : false}
                       type="password"
                       className={
                         errors.secretAccessKey
@@ -359,7 +387,7 @@ export default function AmazonWebServicesConfigFormModal({
                           ? "w-full border border-red-500 rounded-md"
                           : "w-full"
                       }
-                      value={savedDataToBePopulated && savedDataToBePopulated.region ? savedDataToBePopulated.region : formData.region}
+                      value={formData.region}
                       onValueChange={(val) =>
                         setFormData((prev) => ({ ...prev, region: val }))
                       }

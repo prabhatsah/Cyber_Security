@@ -56,7 +56,6 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
     {}
   );
 
-  //console.log(prevScans.getter().data);
   const [scannedImagesDetails, setScannedImagesDetails] = useState<any>();
   const [scannedImages, setScannedImages] = useState<any>(null);
   const [isFullScreen, setIsFullScreen] = useState(false);
@@ -81,38 +80,6 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
       setScannedImages(prevScans.Vulnerabilitiesgetter());
     }
   }, []);
-
-  //dummy////////////////////////////////
-  // function creatingTable() {
-  //   const name = "Image_File_Scanning";
-
-  //   const columnArr: Record<string, string>[] = [
-  //     { column: "SLNO", dataType: "Serial", constraints: "PRIMARY KEY" },
-  //     { column: "type", dataType: "VARCHAR(100)", constraints: "NOT NULL" },
-  //     {
-  //       column: "data",
-  //       dataType: "jsonb",
-  //       defaultValue: "'{}'",
-  //     },
-  //   ];
-
-  //   const valuesArr: Record<string, any>[] = [
-  //     { column: "slno" },
-  //     {
-  //       column: "type",
-  //       value: ["Image", "File"],
-  //     },
-  //     {
-  //       column: "data",
-  //       value: ["{}", "{}"],
-  //     },
-  //   ];
-
-  //   return api.addColumn(name, valuesArr);
-  // }
-  //creatingTable().then(setTableResult);
-  //api.fetchData('image_file_scanning',"slno",{column : "type" , value: "Image"}).then(setTableResult);
-  ///////////////////////////////////////
 
   useEffect(() => {
     console.log(fileSystemResult);
@@ -256,21 +223,11 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
       setLoading(null);
     }
   };
-
-  // const tabs = [
-  //   {
-  //     label: "Card-based",
-  //     content: <VulnerabilitiesStats severityArray={currSeverity} />,
-  //   },
-  //   {
-  //     label: "Chart-based",
-  //     content: <CustomPieChart data={currSeverity} />,
-  //   },
-  // ];
   function showImageDetails(imageName: string) {
     console.log("Clicked image:", imageName);
     setScannedImagesDetails(imageName);
     // console.log(prevScans.fetchDetailsOfParticularImage(imageName));
+    setScannedImagesDetails(imageName);
 
     // Fetch details
     const details = prevScans.fetchDetailsOfParticularImage(imageName);
@@ -279,9 +236,6 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
     // Update state with fetched details
     setScanDetails(details);
     console.log(getTotalVulnerabilitiesForImages(details));
-    // Fetch details if needed:
-    // const data = prevScans.fetchDetailsOfParticularImage(imageName);
-    // console.log(data);
   }
 
   return (

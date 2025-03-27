@@ -86,7 +86,7 @@ export default function Widgets({
 
   return (
     <section>
-      <div className="grid grid-cols-4 gap-5">
+      <div className="grid grid-cols-12 gap-5 mt-5">
         <ChartWidget widgetData={widgetData} />
 
         <InfoWidget queryUrl={queryUrl} widgetData={widgetData} />
@@ -97,7 +97,7 @@ export default function Widgets({
       </div>
 
       <div className="w-full mt-8">
-        <h2 className="text-md font-semibold text-gray-900 dark:text-gray-50">
+        <h2 className=" font-semibold text-widgetHeader">
           More insights
         </h2>
         <Accordion type="multiple" className="">

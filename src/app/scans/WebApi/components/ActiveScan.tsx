@@ -57,7 +57,7 @@ export default function ActiveScan({
         </div>
       </div>
       <div className="w-full mt-8">
-        <h1 className="text-md font-semibold text-gray-900 dark:text-gray-50">
+        <h1 className=" font-semibold text-widget-title text-widgetHeader">
           Messages
         </h1>
         <TableRoot className="mt-3">
