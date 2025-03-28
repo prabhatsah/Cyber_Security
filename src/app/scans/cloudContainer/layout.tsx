@@ -10,6 +10,13 @@ export default async function RootLayout({
     <>
       <RenderAppBreadcrumb
         breadcrumb={{
+          level: 0,
+          title: "Scans",
+          href: "/scans",
+        }}
+      />
+      <RenderAppBreadcrumb
+        breadcrumb={{
           level: 1,
           title: "Cloud & Container",
           href: "/scans/cloudContainer",

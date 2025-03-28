@@ -1,23 +1,16 @@
-"use client";
-
 import { RiSettings5Line } from "@remixicon/react";
 import { Card } from "@tremor/react";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 
 function clickHandle(url: string) {
   //redirect(url);
-  console.log("Hello2");
-  redirect("/configuration/cloud-services/google-cloud-platform");
 }
 
 export default function CloudWidget({ item }: { item: any }) {
-  // const currentTime = new Date();
-  // console.log("Current Time: " + currentTime.toISOString());
+
   return (
     <Card
       key={item.name}
-      // onClick={() => clickHandle(item.href)}
       className="relative flex flex-col rounded-lg justify-between 
      hover:bg-tremor-background-muted 
      hover:dark:bg-dark-tremor-background-muted"

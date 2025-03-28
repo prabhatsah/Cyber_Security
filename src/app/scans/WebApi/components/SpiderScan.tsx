@@ -55,7 +55,7 @@ export default function SpiderScan({ progress, foundURI }) {
         </div>
       </div>
       <div className="w-full mt-8">
-        <h1 className="text-md font-semibold text-gray-900 dark:text-gray-50">
+        <h1 className="text-widgetHeader font-semibold text-widget-title ">
           URLs
         </h1>
         <TableRoot className="mt-3">

@@ -5,10 +5,10 @@ import { FaFire, FaSpider } from "react-icons/fa6";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/Tabs";
 
-import SearchBar from "../SearchBar";
+import SearchBar from "./SearchBar";
 import SpiderScan from "./SpiderScan";
 import ActiveScan from "./ActiveScan";
-import Dashboard from "../dashboard";
+import Dashboard from "./dashboard";
 import { usePolling } from "../hooks/usePolling";
 import { useInterval } from "../hooks/useInterval";
 import { apiRequest } from "../utils/api";
@@ -31,24 +31,25 @@ export default function CurrentScan() {
   } = usePolling(apiUrl, query, setData);
 
   const fetchMessages = useCallback(async () => {
-    if (!query || !isScanning) return; // Stop fetching when not scanning
+    if (!query || spiderProgress != 100) return; // Stop fetching when not scanning
     try {
       const messagesData = await apiRequest(
-        `${apiUrl}/messages?baseurl=${encodeURIComponent(query)}`
+        `${apiUrl}/messages?baseurl=${encodeURIComponent(query)}&start=${messages.length}`,
       );
-      setMessages(messagesData.messages);
+      // setMessages(messagesData.messages);
+      setMessages((prev) => [...prev, ...messagesData.messages]);
     } catch (err) {
       console.error("Error fetching messages:", err);
     }
-  }, [query, isScanning]);
+  }, [query, messages.length, spiderProgress]);
 
   // Interval runs only when scanning is active
   useInterval(
     () => {
-      fetchMessages();
+      if (isScanning && spiderProgress == 100)
+        fetchMessages();
     },
-    3000,
-    isScanning
+    isScanning && spiderProgress == 100 ? 5000 : null
   );
 
 

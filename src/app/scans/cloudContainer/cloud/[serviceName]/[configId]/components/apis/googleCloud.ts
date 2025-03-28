@@ -1,6 +1,6 @@
 export async function testGoogleCloudConnection(
   projectId: string,
-  serviceAccountKey: File | null
+  serviceAccountKey: Record<string, any> | string | ArrayBuffer | File | null
 ) {
   if (!serviceAccountKey) {
     return { success: false, error: "Service account key file is required." };

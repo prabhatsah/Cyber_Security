@@ -9,9 +9,11 @@ import * as prevScans from "./docker/scanHistory";
 import { FaDocker } from "react-icons/fa";
 import { BiLogoKubernetes } from "react-icons/bi";
 
+import Loading from "./loading";
+
 const fetchHistoryScans = async () => {
   const tableName = "image_file_scanning";
-  const orderByColumn = "slno"
+  const orderByColumn = "slno";
   const scans = await api.fetchData(tableName, orderByColumn);
   console.log(scans);
   prevScans.setter(scans);
@@ -26,11 +28,10 @@ export default function Dashboard() {
   const [selectedTool, setSelectedTool] = useState<string | null>(null);
   const [historyData, setHistoryData] = useState<any>(null);
 
-
   useEffect(() => {
     if (!hasFetched.current) {
       fetchAndProcessHistory().then((data) => {
-        console.log(data)
+        console.log(data);
         setHistoryData(data);
         prevScans.VulnerabilitiesSetter(data);
       });
@@ -39,9 +40,8 @@ export default function Dashboard() {
     }
   }, []);
 
-
   if (!prevScans.Vulnerabilitiesgetter()) {
-    return <p>Loading...</p>;
+    return <Loading />;
   }
 
   return (
@@ -52,16 +52,16 @@ export default function Dashboard() {
         <KubernetesPage onBack={() => setSelectedTool(null)} />
       ) : (
         <>
-          <h1 className="text-2xl  mb-8 text-blue-500">Container Tools</h1>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-6xl">
-            <Card className="cursor-default transform transition-all rounded-lg p-0 duration-300 hover:scale-105 shadow-lg hover:shadow-2xl flex flex-col">
-              <div className="flex flex-row items-center gap-4 p-6 w-full bg-blue-500 text-white rounded-t">
+          <h1 className="text-2xl  mb-8 text-widget-title">Container Tools</h1>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full ">
+            <Card className="cursor-default  rounded-lg p-0 duration-300  shadow-lg hover:shadow-2xl flex flex-col">
+              <div className="flex flex-row items-center gap-4 p-6 w-full  text-white rounded-t">
                 <FaDocker className="w-10 h-10" />
-                <p className="text-2xl font-semibold">Docker</p>
+                <p className="text-2xl font-semibold text-widget-mainHeader">Docker</p>
               </div>
 
-              <div className="px-6 py-4 text-gray-600 text-sm leading-relaxed dark:text-gray-300 flex-grow min-h-[200px]">
-                <Text>
+              <div className="px-6 py-4  text-sm leading-relaxed  flex-grow min-h-[200px]">
+                <span className="text-widget-mainDesc">
                   Docker is an open-source platform designed to simplify the
                   deployment, scaling, and management of applications using
                   containerization. By encapsulating applications and their
@@ -71,14 +71,14 @@ export default function Dashboard() {
                   operating system for each instance, Docker utilizes the host
                   OS kernel, making containers faster, more efficient, and
                   resource-friendly.
-                </Text>
+                </span>
               </div>
 
               <div className="flex mt-auto justify-center p-5 w-full rounded-b-lg">
                 <Button
                   color="blue"
                   size="lg"
-                  className="rounded-full px-8 py-3"
+                  className="rounded-sm px-8 py-3"
                   onClick={() => setSelectedTool("docker")}
                 >
                   Scan Docker
@@ -86,14 +86,14 @@ export default function Dashboard() {
               </div>
             </Card>
 
-            <Card className="cursor-default transform transition-all rounded-lg p-0 duration-300 hover:scale-105 shadow-lg hover:shadow-2xl flex flex-col">
-              <div className="flex flex-row items-center gap-4 p-6 w-full bg-blue-500 text-white rounded-t">
+            <Card className="cursor-default trounded-lg p-0  shadow-lg hover:shadow-2xl flex flex-col">
+              <div className="flex flex-row items-center gap-4 p-6 w-full text-white rounded-t">
                 <BiLogoKubernetes className="w-10 h-10" />
-                <p className="text-2xl text-white font-semibold">Kubernetes</p>
+                <p className="text-2xl text-widget-mainHeader font-semibold">Kubernetes</p>
               </div>
 
-              <div className="px-6 py-4 text-gray-600 text-sm leading-relaxed dark:text-gray-300 flex-grow min-h-[200px]">
-                <Text>
+              <div className="px-6 py-4  text-sm leading-relaxed flex-grow min-h-[200px]">
+                <span className="text-widget-mainDesc">
                   Kubernetes is an open-source container orchestration system
                   that automates the deployment, scaling, and management of
                   containerized applications. It provides a robust framework for
@@ -102,14 +102,14 @@ export default function Dashboard() {
                   organizations can ensure high availability, fault tolerance,
                   and seamless application performance, whether running on
                   cloud, on-premise, or hybrid infrastructure.
-                </Text>
+                </span>
               </div>
 
               <div className="flex mt-auto justify-center p-5 w-full rounded-b-lg">
                 <Button
                   color="blue"
                   size="lg"
-                  className="rounded-full px-8 py-3"
+                  className="rounded-sm px-8 py-3"
                   onClick={() => setSelectedTool("docker")}
                 >
                   Scan Kubernetes

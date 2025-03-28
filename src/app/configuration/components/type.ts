@@ -9,7 +9,7 @@ export interface AmazonWebServicesConfiguration {
   createdBy: {
     userName: string;
     userId: string;
-    userEmail: string;
+    userEmail?: string;
   };
 }
 
@@ -18,13 +18,13 @@ export interface GoogleCloudConfiguration {
   cloudProvider: string;
   configurationName: string;
   projectId: string;
-  serviceAccountKey: File | null;
+  serviceAccountKey: Record<string, any> | string | ArrayBuffer | null;
   region: string | null;
   createdOn: string;
   createdBy: {
     userName: string;
     userId: string;
-    userEmail: string;
+    userEmail?: string;
   };
 }
 

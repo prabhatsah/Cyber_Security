@@ -32,11 +32,11 @@ export default function SearchBar({
 
   return (
     <>
-      <div className="bg-white   dark:bg-gray-950 py-4 rounded-lg flex items-center gap-4 mb-6">
+      <div className="bg-white dark:bg-gray-950 py-4 rounded-lg flex items-center gap-4">
         {/* Input Field */}
         <Input
           type="text"
-          placeholder={`Enter ${searchType}`}
+          placeholder="URL, IP address, or domain"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           className="flex-grow "
@@ -89,6 +89,7 @@ export default function SearchBar({
           {isLoading ? "Scanning..." : "Scan"}
         </button>
       </div>
+
     </>
   );
 }

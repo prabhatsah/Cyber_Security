@@ -1,7 +1,17 @@
 "use client";
-import { Table, TableBody, TableCaption, TableCell, TableFoot, TableHead, TableHeaderCell, TableRoot, TableRow, } from "@/components/Table";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableFoot,
+  TableHead,
+  TableHeaderCell,
+  TableRoot,
+  TableRow,
+} from "@/components/Table";
 //import Tabs from "@/components/Tabs";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/Tabs"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/Tabs";
 import { useState, useRef, useEffect } from "react";
 import dockerCommands from "../docker-commands.json";
 import VulnerabilitiesStats from "./stats";
@@ -12,13 +22,16 @@ import { Card, Title, Text, Button } from "@tremor/react";
 import { TextInput } from "@tremor/react";
 import { Badge } from "@tremor/react";
 import * as prevScans from "./scanHistory";
-import { getTotalVulnerabilitiesForImages, ScannedImages } from "./sideMenuHistory";
+import {
+  getTotalVulnerabilitiesForImages,
+  ScannedImages,
+} from "./sideMenuHistory";
 import { FaChartPie } from "react-icons/fa6";
 import { AiFillDashboard } from "react-icons/ai";
 import DynamicResultRendering from "./dynamicResultRendering";
+
+import Loading from "../loading";
 type CommandKey = keyof typeof dockerCommands;
-
-
 
 export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
   const [tableType, setTableType] = useState("");
@@ -33,7 +46,9 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
   const [scanResults, setScanResults] = useState<Record<string, any>>({});
   const [scanningItem, setScanningItem] = useState<string | null>(null);
   const [latestResult, setLatestResult] = useState<any>(null);
-  const [currSeverity, setCurrSeverity] = useState<{ severity: string; count: number }[]>([]);
+  const [currSeverity, setCurrSeverity] = useState<
+    { severity: string; count: number }[]
+  >([]);
 
   const [fileScan, setFileScan] = useState(0);
   const [imageFiles, setImageFiles] = useState<string | null>(null);
@@ -41,7 +56,6 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
     {}
   );
 
-  //console.log(prevScans.getter().data);
   const [scannedImagesDetails, setScannedImagesDetails] = useState<any>();
   const [scannedImages, setScannedImages] = useState<any>(null);
   const [isFullScreen, setIsFullScreen] = useState(false);
@@ -62,42 +76,10 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
 
   useEffect(() => {
     if (prevScans.Vulnerabilitiesgetter()) {
-      console.log(prevScans.Vulnerabilitiesgetter())
+      console.log(prevScans.Vulnerabilitiesgetter());
       setScannedImages(prevScans.Vulnerabilitiesgetter());
     }
-  }, [])
-
-  //dummy////////////////////////////////
-  // function creatingTable() {
-  //   const name = "Image_File_Scanning";
-
-  //   const columnArr: Record<string, string>[] = [
-  //     { column: "SLNO", dataType: "Serial", constraints: "PRIMARY KEY" },
-  //     { column: "type", dataType: "VARCHAR(100)", constraints: "NOT NULL" },
-  //     {
-  //       column: "data",
-  //       dataType: "jsonb",
-  //       defaultValue: "'{}'",
-  //     },
-  //   ];
-
-  //   const valuesArr: Record<string, any>[] = [
-  //     { column: "slno" },
-  //     {
-  //       column: "type",
-  //       value: ["Image", "File"],
-  //     },
-  //     {
-  //       column: "data",
-  //       value: ["{}", "{}"],
-  //     },
-  //   ];
-
-  //   return api.addColumn(name, valuesArr);
-  // }
-  //creatingTable().then(setTableResult);
-  //api.fetchData('image_file_scanning',"slno",{column : "type" , value: "Image"}).then(setTableResult);
-  ///////////////////////////////////////
+  }, []);
 
   useEffect(() => {
     console.log(fileSystemResult);
@@ -125,7 +107,8 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
 
     let history = data?.Metadata?.ImageConfig?.history;
 
-    const key = type === "Image" ? data?.Metadata?.RepoTags[0] : data?.Results[0].Target;
+    const key =
+      type === "Image" ? data?.Metadata?.RepoTags[0] : data?.Results[0].Target;
 
     if (type === "Image") {
       data.Metadata.ImageConfig.history = history.map((entry: any) => {
@@ -173,7 +156,7 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
           let finalResult: any;
           finalResult = JSON.parse(formattedString);
           saveHistoryScans(commandKey, finalResult).then(setTableResult);
-          console.log("after saveHistory line 187-->")
+          console.log("after saveHistory line 187-->");
           //console.log(finalResult);
           setOutputScan(finalResult);
           setScanResults((prevResults) => ({
@@ -220,7 +203,7 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
           //fetchAndProcessHistory();
           setfileSystemResult(finalResult);
         } else {
-          console.log("Entering else")
+          console.log("Entering else");
           const parsedData = data.output
             .trim()
             .split("\n")
@@ -240,21 +223,11 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
       setLoading(null);
     }
   };
-
-  // const tabs = [
-  //   {
-  //     label: "Card-based",
-  //     content: <VulnerabilitiesStats severityArray={currSeverity} />,
-  //   },
-  //   {
-  //     label: "Chart-based",
-  //     content: <CustomPieChart data={currSeverity} />,
-  //   },
-  // ];
   function showImageDetails(imageName: string) {
     console.log("Clicked image:", imageName);
-    setScannedImagesDetails(imageName)
+    setScannedImagesDetails(imageName);
     // console.log(prevScans.fetchDetailsOfParticularImage(imageName));
+    setScannedImagesDetails(imageName);
 
     // Fetch details
     const details = prevScans.fetchDetailsOfParticularImage(imageName);
@@ -263,9 +236,6 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
     // Update state with fetched details
     setScanDetails(details);
     console.log(getTotalVulnerabilitiesForImages(details));
-    // Fetch details if needed:
-    // const data = prevScans.fetchDetailsOfParticularImage(imageName);
-    // console.log(data);
   }
 
   return (
@@ -326,7 +296,7 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
                 disabled={loading === "showALLImgs"}
               >
                 {loading === "showALLImgs" ? (
-                  "Loading..."
+                  <Loading />
                 ) : (
                   <span className="flex items-center gap-1">
                     <Play className="w-3 h-3 text-white" />
@@ -386,7 +356,7 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
                 disabled={loading === "listDockerContainers"}
               >
                 {loading === "listDockerContainers" ? (
-                  "Loading..."
+                  <Loading />
                 ) : (
                   <span className="flex items-center gap-1">
                     <Play className="w-3 h-3 text-white" />
@@ -438,7 +408,7 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
                 }}
               >
                 {loading === "scanRemoteImg" ? (
-                  "Loading..."
+                  <Loading />
                 ) : (
                   <span className="flex items-center gap-1">
                     <Play className="w-3 h-3 text-white" />
@@ -489,7 +459,7 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
                 }}
               >
                 {loading === "scanFileSystem" ? (
-                  "Loading..."
+                  <Loading />
                 ) : (
                   <span className="flex items-center gap-1">
                     <Play className="w-3 h-3 text-white" />
@@ -533,10 +503,11 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
                     }
                   }}
                   disabled={loading === "scanFileSystem"}
-                  className={`flex items-center px-4 py-2 text-white font-semibold rounded-lg transition-all ${loading === "scanFileSystem"
-                    ? "bg-gray-500 cursor-not-allowed"
-                    : "bg-blue-600 hover:bg-blue-700"
-                    }`}
+                  className={`flex items-center px-4 py-2 text-white font-semibold rounded-lg transition-all ${
+                    loading === "scanFileSystem"
+                      ? "bg-gray-500 cursor-not-allowed"
+                      : "bg-blue-600 hover:bg-blue-700"
+                  }`}
                 >
                   {loading === "scanFileSystem" ? (
                     "Scanning..."
@@ -557,7 +528,6 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
               </div>
             </div>
           )}
-
 
           {/* Render DynamicResultRendering when an image is selected */}
           {/* {scannedImagesDetails && scanDetails && (
@@ -611,10 +581,11 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
                       }
                     }}
                     disabled={loading === "scanRemoteImg"}
-                    className={`flex items-center px-2 py-2 text-white font-semibold rounded-lg transition-all ${loading === "scanRemoteImg"
-                      ? "bg-grey-800 cursor-not-allowed"
-                      : "bg-blue-600 hover:bg-blue-700"
-                      }`}
+                    className={`flex items-center px-2 py-2 text-white font-semibold rounded-lg transition-all ${
+                      loading === "scanRemoteImg"
+                        ? "bg-grey-800 cursor-not-allowed"
+                        : "bg-blue-600 hover:bg-blue-700"
+                    }`}
                   >
                     {loading === "scanRemoteImg" ? (
                       "Scanning..."
@@ -638,7 +609,7 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
           )}
 
           {loading ? (
-            <p>Loading...</p>
+            <Loading />
           ) : tableType === "Containers" && output ? (
             <div className="bg-blue-50 dark:bg-gray-900 p-5 rounded-lg">
               <h2 className="text-2xl font-semibold mb-4">Containers</h2>
@@ -689,10 +660,11 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
                                 );
                               }}
                               disabled={loading === row.Image}
-                              className={`flex items-center justify-center gap-1 px-2 py-2 w-18 rounded-lg font-xs transition ${loading === row.Image
-                                ? "bg-gray-400 dark:bg-gray-600 cursor-not-allowed"
-                                : "bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
-                                } text-white`}
+                              className={`flex items-center justify-center gap-1 px-2 py-2 w-18 rounded-lg font-xs transition ${
+                                loading === row.Image
+                                  ? "bg-gray-400 dark:bg-gray-600 cursor-not-allowed"
+                                  : "bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
+                              } text-white`}
                             >
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -754,10 +726,11 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
                               );
                             }}
                             disabled={loading === row.Repository}
-                            className={`bg-blue-600 text-white px-2 py-2 rounded hover:bg-blue-700 ${loading === row.Repository
-                              ? "bg-gray-400 cursor-not-allowed"
-                              : ""
-                              }`}
+                            className={`bg-blue-600 text-white px-2 py-2 rounded hover:bg-blue-700 ${
+                              loading === row.Repository
+                                ? "bg-gray-400 cursor-not-allowed"
+                                : ""
+                            }`}
                           >
                             <div className="flex items-center gap-1">
                               <svg
@@ -782,12 +755,15 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
             <pre className="p-4 bg-red-100 text-red-600 border border-red-300 rounded-lg">
               {error}
             </pre>
-          ) : scannedImagesDetails && scanDetails && (
-            <DynamicResultRendering
-              scanningItem={scannedImagesDetails}
-              outputScan={scanDetails}
-              latestResult={scanDetails.Results}
-            />
+          ) : (
+            scannedImagesDetails &&
+            scanDetails && (
+              <DynamicResultRendering
+                scanningItem={scannedImagesDetails}
+                outputScan={scanDetails}
+                latestResult={scanDetails.Results}
+              />
+            )
           )}
 
           {Object.keys(scanResults).length > 0 &&
@@ -848,8 +824,8 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
                   </div>
 
                   {latestResult &&
-                    latestResult.Vulnerabilities &&
-                    latestResult.Vulnerabilities.length > 0 ? (
+                  latestResult.Vulnerabilities &&
+                  latestResult.Vulnerabilities.length > 0 ? (
                     <>
                       <div className="mt-6 bg-gray-100 dark:bg-[#0f172a] p-4 rounded-lg shadow-md">
                         <h4 className="text-lg font-semibold text-gray-00 mb-4">
@@ -858,20 +834,28 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
                         {/* <Tabs tabs={tabs} /> */}
 
                         <Tabs defaultValue="tab1">
-                          <TabsList variant="solid" >
+                          <TabsList variant="solid">
                             <TabsTrigger value="tab1" className="gap-1.5 flex ">
-                              <AiFillDashboard className="-ml-1 size-4" aria-hidden="true" />
+                              <AiFillDashboard
+                                className="-ml-1 size-4"
+                                aria-hidden="true"
+                              />
                               Card
                             </TabsTrigger>
                             <TabsTrigger value="tab2" className="gap-1.5 flex ">
-                              <FaChartPie className="-ml-1 size-4" aria-hidden="true" />
+                              <FaChartPie
+                                className="-ml-1 size-4"
+                                aria-hidden="true"
+                              />
                               Visualization
                             </TabsTrigger>
                           </TabsList>
                           <div className="mt-4">
                             <TabsContent value="tab1">
                               <div>
-                                <VulnerabilitiesStats severityArray={currSeverity} />
+                                <VulnerabilitiesStats
+                                  severityArray={currSeverity}
+                                />
                               </div>
                             </TabsContent>
                             <TabsContent value="tab2">
@@ -884,10 +868,11 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
                       </div>
 
                       <div
-                        className={`mt-6 bg-gray-100 dark:bg-[#0f172a] p-4 rounded-lg shadow-md ${isFullScreen
-                          ? "fixed top-0 left-0 w-full h-full z-50 bg-white dark:bg-[#0f172a] p-8"
-                          : ""
-                          }`}
+                        className={`mt-6 bg-gray-100 dark:bg-[#0f172a] p-4 rounded-lg shadow-md ${
+                          isFullScreen
+                            ? "fixed top-0 left-0 w-full h-full z-50 bg-white dark:bg-[#0f172a] p-8"
+                            : ""
+                        }`}
                       >
                         <div className="relative">
                           <a
@@ -908,8 +893,9 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
                           </div>
                         </div>
                         <TableRoot
-                          className={`overflow-x-auto overflow-y-auto rounded-lg scrollbar-thin scrollbar-thumb-yellow-500 scrollbar-track-gray-200 dark:scrollbar-thumb-blue-400 dark:scrollbar-track-gray-800 ${isFullScreen ? "max-h-[90vh]" : "max-h-80"
-                            }`}
+                          className={`overflow-x-auto overflow-y-auto rounded-lg scrollbar-thin scrollbar-thumb-yellow-500 scrollbar-track-gray-200 dark:scrollbar-thumb-blue-400 dark:scrollbar-track-gray-800 ${
+                            isFullScreen ? "max-h-[90vh]" : "max-h-80"
+                          }`}
                         >
                           <Table>
                             <TableHead className="sticky top-0 bg-gray-200 dark:bg-gray-800 z-10 rounded-lg">
@@ -1003,8 +989,13 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
               </>
             )}
 
-          <h2 className="ms-3 mt-3 text-black dark:text-white">Previosuly Scanned Images</h2>
-          <ScannedImages data={prevScans.Vulnerabilitiesgetter()} onImageClick={showImageDetails} />
+          <h2 className="ms-3 mt-3 text-black dark:text-white">
+            Previosuly Scanned Images
+          </h2>
+          <ScannedImages
+            data={prevScans.Vulnerabilitiesgetter()}
+            onImageClick={showImageDetails}
+          />
 
           {/* {fileSystemResult && (<>
                   <div className="mt-3 p-6 bg-grey-300  rounded-lg shadow-lg bg-gray-100">

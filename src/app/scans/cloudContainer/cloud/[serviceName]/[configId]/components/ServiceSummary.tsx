@@ -37,7 +37,7 @@ export default function ServiceSummary({ serviceName }) {
     return (
 
         <div className="w-full mt-8">
-            <Label className="text-[17px] font-bold text-gray-900 dark:text-gray-50">Services Level Summary</Label>
+            <Label className="text-[17px] font-bold text-widget-title">Services Level Summary</Label>
             <div className="border rounded-md mt-2">
                 <TableRoot className="">
                     <Table>

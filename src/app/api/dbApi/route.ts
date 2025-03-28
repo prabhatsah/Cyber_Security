@@ -99,11 +99,7 @@ async function fetchPaginatedData(
   limit: number | null,
   columnFilter?: { column: string; value: string | number } | null,
   jsonFilters?:
-    | {
-        column: string;
-        keyPath: string[];
-        value: string | number;
-      }[]
+    | { column: string; keyPath: string[]; value: string | number }[]
     | null
 ) {
   let hasMore = true;
@@ -114,12 +110,17 @@ async function fetchPaginatedData(
 
   while (hasMore) {
     let whereClauses: string[] = [];
+    let selectClause = "*";
+    let fromClause = tableName;
 
     if (columnFilter) {
       whereClauses.push(`"${columnFilter.column}" = '${columnFilter.value}'`);
     }
 
     if (jsonFilters && jsonFilters.length > 0) {
+      selectClause = "configs.value AS config_filtered";
+      fromClause = `${tableName}, jsonb_each(data) AS configs`;
+
       jsonFilters.forEach((jsonFilter) => {
         let keyPathQuery = jsonFilter.keyPath
           .map((key, index) =>
@@ -129,12 +130,9 @@ async function fetchPaginatedData(
           )
           .join("");
 
-        whereClauses.push(`
-          EXISTS (
-            SELECT 1 FROM jsonb_each("${jsonFilter.column}") AS configs
-            WHERE configs.value${keyPathQuery} = '${jsonFilter.value}'
-          )
-        `);
+        whereClauses.push(
+          `configs.value${keyPathQuery} = '${jsonFilter.value}'`
+        );
       });
     }
 
@@ -143,14 +141,14 @@ async function fetchPaginatedData(
 
     const query = `
       SELECT COALESCE(jsonb_agg(t), '[]') FROM (
-        SELECT * FROM "${tableName}"
+        SELECT ${selectClause}
+        FROM ${fromClause}
         ${whereClause}
-        ORDER BY ${orderByColumn}
         LIMIT ${limit} OFFSET ${offset}
       ) t;
     `;
 
-    console.log(query);
+    console.log("Query: ", query);
 
     const result = await ssh.execCommand(
       `PGPASSWORD="postgres" psql -h localhost -U postgres -p 5436 -d cyber_security -A -t -c "${query}"`

@@ -88,7 +88,6 @@ export function ScannedImages({ data, onImageClick }: { data: any; onImageClick:
                             <Text className="!text-green-600">{vul.LOW}</Text>
                         </div>
 
-
                         <div className="flex items-center gap-2">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -107,7 +106,6 @@ export function ScannedImages({ data, onImageClick }: { data: any; onImageClick:
                             <Text className="!text-yellow-500">{vul.MEDIUM}</Text>
                         </div>
 
-
                         <div className="flex items-center gap-2">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -125,7 +123,6 @@ export function ScannedImages({ data, onImageClick }: { data: any; onImageClick:
                             </svg>
                             <Text className="!text-orange-600">{vul.HIGH}</Text>
                         </div>
-
 
                         <div className="flex items-center gap-2">
                             <svg

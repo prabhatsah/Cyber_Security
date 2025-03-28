@@ -1,168 +1,226 @@
-'use client';
-
-import {
-  RiArrowRightUpLine,
-  RiBuildingLine,
-  RiMapPin2Line,
-  RiSettings3Line,
-  RiTimeLine,
-  RiTruckLine,
-  RiUserLine,
-} from "@remixicon/react";
-import {
-  Card,
-  ProgressCircle,
-  Tab,
-  TabGroup,
-  TabList,
-  TabPanel,
-  TabPanels,
-} from "@tremor/react";
-
-import { GoDotFill } from "react-icons/go";
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
+import React, { useEffect, useState } from 'react';
+import { Card } from "@tremor/react";
+import { AlertCircle, CheckCircle2, Eye, ArrowRight, User, Calendar } from 'lucide-react';
+import { getProfileData } from '@/ikon/utils/actions/auth';
+import { Badge } from './ui/badge';
 
 const data = [
-  {
-    item: "http://malware.wicar.org/",
-    company: "wicar.org",
-    location: "Paris, France",
-    contact: "Lena Stone",
-    status: "malicious",
-    fulfillmentActual: 8,
-    fulfillmentTotal: 10,
-    lastUpdated: "2min ago",
-  },
-  {
-    item: "https://juice-shop.herokuapp.com/",
-    company: "Bitclick Holding",
-    location: "Zurich, Switzerland",
-    contact: "Matthias Ruedi",
-    status: "malicious",
-    fulfillmentActual: 3,
-    fulfillmentTotal: 4,
-    lastUpdated: "5min ago",
-  },
-  {
-    item: "https://www.hackthebox.com",
-    company: "Cornerstone LLC",
-    location: "Frankfurt, Germany",
-    contact: "David Mueller",
-    status: "clean",
-    fulfillmentActual: 2,
-    fulfillmentTotal: 4,
-    lastUpdated: "10d ago",
-  },
+    {
+        titleHeading: 'Europe',
+        title: '$10,023',
+        noOfIssue: 3,
+        totalIssue: 5,
+        status: 'warning',
+        scanBy: 'John Doe',
+        scanOn: '13.03.25 • 14:30',
+        href: '#',
+    },
+    {
+        titleHeading: 'Asia',
+        title: '$15,789',
+        noOfIssue: 2,
+        totalIssue: 5,
+        status: 'critical',
+        scanBy: 'Jane Smith',
+        scanOn: '13.03.25 • 15:45',
+        href: '#',
+    },
+    {
+        titleHeading: 'Americas',
+        title: '$8,456',
+        noOfIssue: 5,
+        totalIssue: 5,
+        status: 'success',
+        scanBy: 'Mike Johnson',
+        scanOn: '13.03.25 • 16:20',
+        href: '#',
+    },
 ];
 
-const statusColor = {
-  malicious: "bg-red-50 text-red-700 ring-red-600/20 ",
-  clean:
-    "bg-emerald-50 text-emerald-700 ring-emerald-600/20 dark:bg-emerald-400/10 dark:text-emerald-400 dark:ring-emerald-400/20",
-  Delayed:
-    "bg-orange-50 text-orange-700 ring-orange-600/20 dark:bg-orange-400/10 dark:text-orange-400 dark:ring-orange-400/20",
+const statusConfig = {
+    success: {
+        icon: CheckCircle2,
+        bgColor: 'bg-emerald-500',
+        textColor: 'text-emerald-800 dark:text-emerald-500',
+        label: 'No Issue', // Update the label here
+    },
+    warning: {
+        icon: Eye,
+        bgColor: 'bg-yellow-500',
+        textColor: 'text-yellow-800 dark:text-yellow-500',
+        label: 'Warning', // You can keep the existing label or change it
+    },
+    critical: {
+        icon: AlertCircle,
+        bgColor: 'bg-red-500',
+        textColor: 'text-red-800 dark:text-red-500',
+        label: 'Critical', // Keep or change this label as needed
+    },
 };
 
-export default function PastScans() {
-  return (
-    <>
-      <div className="py-6">
-        <h3 className="text-tremor-title font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong">
-          Past Scans
-        </h3>
-        <p
-          className="text-tremor-default dark:text-gray-400 text-gray-700
-        "
-        >
-          Briefly analyze past scans
-        </p>
-      </div>
+function cx(...classes: (string | boolean | undefined | null)[]) {
+    return classes.filter(Boolean).join(' ');
+}
 
-      {data.map((order) => (
-        <Card
-          key={order.item}
-          className="p-2 mb-5
-        bg-tremor-background ring-tremor-ring shadow-tremor-card dark:ring-dark-tremor-ring dark:shadow-dark-tremor-card border-tremor-brand dark:border-dark-tremor-brand relative  flex-col rounded-lg justify-between
-           dark:bg-dark-bgPrimary hover:bg-tremor-background-muted hover:dark:bg-dark-tremor-background-mute"
-        >
-          <div className="rounded-sm border border-tremor-border bg-tremor-background-muted p-4 dark:border-dark-tremor-border dark:bg-dark-tremor-background-muted">
-            <div className="flex items-center justify-between space-x-4 sm:justify-start sm:space-x-2">
-              <h4 className="truncate text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">
-                {order.item}
-              </h4>
-              <span
-                className={classNames(
-                  statusColor[order.status],
-                  "inline-flex items-center whitespace-nowrap rounded px-1.5 py-0.5 text-tremor-label font-medium ring-1 ring-inset"
-                )}
-                aria-hidden={true}
-              >
-                {order.status}
-              </span>
-              <span
-                className="cursor-pointer absolute right-4 top-4 "
-                aria-hidden={true}
-              >
-                <RiArrowRightUpLine className="size-4" aria-hidden={true} />
-              </span>
-            </div>
-            <div className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-4">
-              <div className="flex items-center space-x-1.5">
-                <RiBuildingLine
-                  className="size-5 text-tremor-content-subtle dark:text-dark-tremor-content-subtle"
-                  aria-hidden={true}
-                />
-                <p className="text-tremor-default text-tremor-content dark:text-gray-50">
-                  {order.company}
-                </p>
-              </div>
-              <div className="flex items-center space-x-1.5">
-                <RiMapPin2Line
-                  className="size-5 text-tremor-content-subtle dark:text-dark-tremor-content-subtle"
-                  aria-hidden={true}
-                />
-                <p className="text-tremor-default text-tremor-content dark:text-gray-50">
-                  {order.location}
-                </p>
-              </div>
-              <div className="flex items-center space-x-1.5">
-                <RiUserLine
-                  className="size-5 text-tremor-content-subtle dark:text-dark-tremor-content-subtle"
-                  aria-hidden={true}
-                />
-                <p className="text-tremor-default text-tremor-content dark:text-gray-50">
-                  {order.contact}
-                </p>
-              </div>
-            </div>
-          </div>
-          <div className="px-2 pb-2 pt-4">
-            <div className="block sm:flex sm:items-end sm:justify-between">
-              <div className="flex items-center space-x-2">
-                <ProgressCircle
-                  className="stroke-error"
-                  color="#fff"
-                  value={
-                    (order.fulfillmentActual / order.fulfillmentTotal) * 100
-                  }
-                  radius={9}
-                  strokeWidth={3.5}
-                />
+const getDomainSafetyMessage = (report) => {
+    const last_analysis_stats = report.attributes.last_analysis_stats;
 
-                <p className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">
-                  Alerts ({order.fulfillmentActual}/{order.fulfillmentTotal})
-                </p>
-              </div>
-              <p className="mt-2 text-tremor-default text-tremor-content dark:text-gray-50 sm:mt-0">
-                Scanned <strong>{order.lastUpdated}</strong>
-              </p>
-            </div>
-          </div>
-        </Card>
-      ))}
-    </>
-  );
+    // Thresholds for safety
+    const harmlessCount = last_analysis_stats.harmless || 0;
+    const maliciousCount = last_analysis_stats.malicious || 0;
+    const suspiciousCount = last_analysis_stats.suspicious || 0;
+    const undetected = last_analysis_stats.undetected || 0;
+
+    const returnObj = {
+        totalIssue: 0,
+        noOfIssue: 0,
+        risk: "",
+        message: ""
+    };
+    returnObj.totalIssue = harmlessCount + maliciousCount + suspiciousCount + undetected;
+
+    // Safety conditions
+    if (suspiciousCount > 0) {
+
+        returnObj.risk = "critical";
+        returnObj.message = `This ${report.type} has suspicious activity. Be careful.`;
+        returnObj.noOfIssue = suspiciousCount;
+    }
+    else if (maliciousCount > 0) {
+        returnObj.risk = "warning";
+        returnObj.message = `This ${report.type} has some malicious activity. Proceed with caution.`;
+        returnObj.noOfIssue = maliciousCount;
+    }
+    else if (harmlessCount > 0) {
+        returnObj.risk = "success";
+        returnObj.message = `This is a trusted and safe ${report.type}.`;
+        returnObj.noOfIssue = 0;
+    }
+    else {
+        returnObj.risk = "unclear";
+        returnObj.message = "Further investigation recommended.";
+        returnObj.noOfIssue = undetected;
+    }
+
+    return returnObj;
+};
+
+function formatTimestamp(timestamp: string) {
+    const date = new Date(Number(timestamp));
+
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = String(date.getFullYear()).slice(2);
+
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+
+    return `${day}.${month}.${year} • ${hours}:${minutes}`;
+}
+
+export default function Example({ pastScans, onOpenPastScan }) {
+
+    const [profileData, setProfileData] = useState<any>();
+    const [openedScan, setOpenedScan] = useState<any>()
+
+    useEffect(() => {
+        const fetchUserProfileData = async () => {
+            const profile = await getProfileData();
+            setProfileData(profile);
+        }
+        fetchUserProfileData();
+    }, []);
+
+    console.log("profile - ", profileData);
+
+    function handleClick(key) {
+        setOpenedScan(key);
+        onOpenPastScan(key);
+    }
+
+
+
+    const _data = [];
+    for (let i = 0; i < pastScans.length; i++) {
+        for (const key in pastScans[i].data) {
+            const { totalIssue, noOfIssue, risk, message } = getDomainSafetyMessage(pastScans[i].data[key])
+            _data.push({
+                key: key,
+                titleHeading: pastScans[i].data[key]["id"],
+                title: message,
+                totalIssue: totalIssue,
+                noOfIssue: noOfIssue,
+                status: risk,
+                scanBy: profileData.USER_NAME,
+                scanOn: pastScans[i].data[key].scanned_at,
+                href: '#',
+
+            })
+        }
+    }
+
+    return (
+        <div className="">
+            <h2 className=" font-bold text-widget-title text-widgetHeader">Scan History</h2>
+            <dl className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 mt-4">
+                {_data.map((item) => {
+                    const StatusIcon = statusConfig[item.status as keyof typeof statusConfig]?.icon;
+                    const statusLabel = statusConfig[item.status as keyof typeof statusConfig]?.label;
+                    return (
+                        <Card key={item.titleHeading} className="relative overflow-hidden hover:shadow-lg transition-shadow duration-300 rounded-lg">
+                            <div className="absolute top-0 right-0 w-24 h-24 -mr-8 -mt-8 from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 rounded-full opacity-50"></div>
+
+                            <div className="relative">
+                                <dt className="flex items-center space-x-2 text-sm font-medium text-widget-mainHeader">
+                                    <span>{item.titleHeading}</span>
+                                    {item.key === openedScan && <Badge className='text-white'>opened</Badge>}
+                                </dt>
+                                <dd className="mt-1 text-lg font-bold text-widget-mainDesc">
+                                    {item.title}
+                                </dd>
+                            </div>
+
+                            <div className="mt-6 space-y-4">
+                                <div className="flex items-center justify-between p-3 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+                                    <div className="flex items-center space-x-3">
+                                        <span className={cx(
+                                            statusConfig[item.status as keyof typeof statusConfig]?.bgColor,
+                                            'flex h-10 w-10 items-center justify-center rounded-lg text-white'
+                                        )}>
+                                            {StatusIcon && <StatusIcon className="h-5 w-5" />}
+                                        </span>
+                                        <div>
+                                            <p className="text-sm text-widget-secondaryheader">
+                                                Issues: {item.noOfIssue}/{item.totalIssue}
+                                            </p>
+                                            <p className={cx(
+                                                statusConfig[item.status as keyof typeof statusConfig]?.textColor,
+                                                'text-sm font-medium capitalize'
+                                            )}>
+                                                {statusLabel} {/* Display the new status label */}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <ArrowRight className="h-5 w-5 text-gray-400" />
+                                </div>
+
+                                <div className="flex items-center justify-between text-sm text-widget-secondaryDesc">
+                                    <div className="flex items-center space-x-2">
+                                        <User className="h-4 w-4" />
+                                        <span>{item.scanBy}</span>
+                                    </div>
+                                    <div className="flex items-center space-x-2">
+                                        <Calendar className="h-4 w-4" />
+                                        <span className="font-medium">{item.scanOn}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <a href={item.href} className="absolute inset-0" aria-hidden="true" onClick={() => handleClick(item.key)} />
+                        </Card>
+                    );
+                })}
+            </dl>
+        </div>
+    );
 }

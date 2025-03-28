@@ -9,7 +9,7 @@ export function SkeletonCard() {
       {skeletons.map((_, index) => (
         <Card
           className="flex flex-col space-y-5 w-full rounded-lg justify-between !bg-dark-bgPrimary
-         hover:bg-tremor-background-muted 
+         hover:bg-tremor-background-muted
          hover:dark:bg-dark-tremor-background-muted"
         >
           {/* Header */}

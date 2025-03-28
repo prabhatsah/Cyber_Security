@@ -27,8 +27,8 @@ export default async function CloudServiceDetails({
 }: {
   params: Promise<{ serviceName: string }>;
 }) {
-  const serviceUrl = (await params).serviceName;
 
+  const serviceUrl = (await params).serviceName;
   const serviceName = serviceUrl
     .split("-") // Split the string at hyphens
     .map((word) =>
@@ -45,7 +45,7 @@ export default async function CloudServiceDetails({
     <>
       <RenderAppBreadcrumb
         breadcrumb={{
-          level: 2,
+          level: 3,
           title: serviceName,
           href: `/scans/cloudContainer/cloud/${serviceUrl}`
         }}

@@ -69,7 +69,7 @@
 
 import { NextResponse } from "next/server";
 
-const zapApiUrl = "http://localhost:8080";
+const zapApiUrl = "https://ikoncloud-dev.keross.com/scan";
 
 function formatTimestamp(timestamp: string | number | null) {
   if (!timestamp) return "N/A";
@@ -126,7 +126,7 @@ export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
     const baseurl = searchParams.get("baseurl");
-    // const start = searchParams.get("start") || "0";
+    const start = searchParams.get("start") || "0";
     // const count = searchParams.get("count") || "5"; // Allow dynamic count
 
     console.log("inside fetch messages api");
@@ -141,7 +141,7 @@ export async function GET(req: Request) {
     const response = await fetch(
       `${zapApiUrl}/JSON/core/view/messages/?baseurl=${encodeURIComponent(
         baseurl
-      )}&start=0`
+      )}&start=${start}`
     );
 
     if (!response.ok) {
