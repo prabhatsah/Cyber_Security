@@ -48,7 +48,7 @@ export default function Dashboard({ serviceName, serviceNameFromUrl, configId }:
             <Header summary={data.last_run.summary} scanTime={data.last_run.time} serviceName={serviceName} serviceCode={cloudNameMap[serviceName].code} />
             <ServiceSummary serviceName={serviceName} />
             <ServiceBreakdown serviceName={serviceName} />
-            <PastScans />
+            {/* <PastScans pastScans={[]} onOpenPastScan={() => { console.log("Past Scans"); }} /> */}
         </div>
     </>;
 }
