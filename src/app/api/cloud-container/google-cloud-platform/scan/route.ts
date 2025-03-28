@@ -2,9 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {
+    console.log("Route called");
     const body = await req.json();
-    debugger;
-
     console.log("body - ");
     console.log(body);
 
@@ -13,7 +12,7 @@ export async function POST(req: NextRequest) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(body),
+      body: JSON.stringify(body), // This should include serviceAccountKey
     });
 
     const result = await scoutRes.json();
