@@ -420,7 +420,7 @@ export async function saveScannedData(
                   ON CONFLICT (userid) 
                   DO UPDATE SET 
                       data = ${tableName}.data || jsonb_build_object('${values.key}', '${jsonString}'::jsonb),
-                      scanondata = CURRENT_TIMESTAMP
+                      lastscanon = CURRENT_TIMESTAMP
                   RETURNING *;
                   `;
 
