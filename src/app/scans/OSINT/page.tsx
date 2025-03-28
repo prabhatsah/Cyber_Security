@@ -1,30 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import SearchBar from "./SearchBar";
 import Widgets from "./Widgets";
 import { ApiResponse, HarvesterData } from "./components/type";
 import PastScans from "@/components/PastScans";
 import { RenderAppBreadcrumb } from "@/components/app-breadcrumb";
-import { addColumn, fetchData, saveScannedData, updateColumn } from "@/utils/api";
-import { saveData } from "@/ikon/utils/api/processRuntimeService";
-import { getProfileData } from "@/ikon/utils/actions/auth";
-
-
-// async function addRow() {
-//   const values: Record<string, any>[] = [
-//     { column: "userId", value: ["K2303109"] },
-//     {
-//       column: "name",
-//       value: ["Rizwan Ansari"],
-//     },
-//     { column: "scanData", value: [{}] }
-//   ];
-
-//   const resp = await addColumn("OSINT_scanData", values);
-//   // return await resp.json();
-//   return resp;
-// }
+import { fetchData, saveScannedData } from "@/utils/api";
 
 function formatTimestamp(timestamp: string) {
   const date = new Date(Number(timestamp));
@@ -41,44 +23,62 @@ function formatTimestamp(timestamp: string) {
 
 async function insertScanData(scanData) {
 
-  // const uniqueKey = URL.createObjectURL(new Blob()).split('/').pop();
   const uniqueKey = new Date().getTime().toString();
   console.log("uniqueKey----------", uniqueKey);
-
   scanData.scanned_at = formatTimestamp(uniqueKey);
 
   const resp = saveScannedData("osint_threat_intelligence_scan", { key: uniqueKey, value: scanData });
-
-  // let resp;
-  // if (uniqueKey) {
-  //   resp = await updateColumn("osint_threat_intelligence_scan", "scandata", scanData, uniqueKey, "Rizwan Ansari");
-  // }
-  // return await resp.json();
   return resp;
 }
 
-async function fetchPastScan(scanData) {
+const getDomainSafetyMessage = (report) => {
+  const last_analysis_stats = report.attributes.last_analysis_stats;
 
-  const resp = await fetchData("osint_scandata", "");
+  // Thresholds for safety
+  const harmlessCount = last_analysis_stats.harmless || 0;
+  const maliciousCount = last_analysis_stats.malicious || 0;
+  const suspiciousCount = last_analysis_stats.suspicious || 0;
+  const undetected = last_analysis_stats.undetected || 0;
 
-  return resp;
-}
+  const returnObj = {
+    totalIssue: 0,
+    noOfIssue: 0,
+    risk: "",
+    message: ""
+  };
+  returnObj.totalIssue = harmlessCount + maliciousCount + suspiciousCount + undetected;
 
+  // Safety conditions
+  if (suspiciousCount > 0) {
 
+    returnObj.risk = "critical";
+    returnObj.message = `This ${report.type} has suspicious activity. Be careful.`;
+    returnObj.noOfIssue = suspiciousCount;
+  }
+  else if (maliciousCount > 0) {
+    returnObj.risk = "warning";
+    returnObj.message = `This ${report.type} has some malicious activity. Proceed with caution.`;
+    returnObj.noOfIssue = maliciousCount;
+  }
+  else if (harmlessCount > 0) {
+    returnObj.risk = "success";
+    returnObj.message = `This is a trusted and safe ${report.type}.`;
+    returnObj.noOfIssue = 0;
+  }
+  else {
+    returnObj.risk = "unclear";
+    returnObj.message = "Further investigation recommended.";
+    returnObj.noOfIssue = undetected;
+  }
+
+  return returnObj;
+};
 
 export default function TheHarvesterDashboard() {
   const [query, setQuery] = useState<string>("");
   const [data, setData] = useState<HarvesterData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [pastScans, setPastScans] = useState([]);
-  // const [profileData, setProfileData] = useState<any>();
-
-  // console.log("hello..........");
-  // fetchData("osint_scandata", null).then(setPastScans)
-
-  // useEffect(() => {
-  //   console.log(pastScans);
-  // }, [pastScans])
 
   useEffect(() => {
     const getPastScans = async () => {
@@ -90,14 +90,6 @@ export default function TheHarvesterDashboard() {
 
     getPastScans();
   }, [data]);
-
-  // useEffect(() => {
-  //   const fetchUserProfileData = async () => {
-  //     const profile = await getProfileData();
-  //     setProfileData(profile);
-  //   }
-  //   fetchUserProfileData();
-  // }, [])
 
   const fetchData1 = async (searchType: string): Promise<void> => {
     try {
@@ -116,8 +108,6 @@ export default function TheHarvesterDashboard() {
       const result: ApiResponse = await response.json();
 
       if (result.error) throw new Error(result.error);
-      // const addRowResp = await addRow();
-      // if (addRowResp.error) throw new Error(addRowResp.error);
       const insertScanDataResp = await insertScanData(result.data);
       if (insertScanDataResp.error) throw new Error(insertScanDataResp.error);
       setData(result.data);
@@ -135,15 +125,31 @@ export default function TheHarvesterDashboard() {
   console.log(pastScans);
   console.log("current scan ---------");
   console.log(data);
-  // console.log("profile - ", profileData);
 
   function handleOpenPastScan(key: string) {
-    for (let i = 0; i < pastScans.length; i++) {
-      if (pastScans[i]?.data[key]) {
-        setData(pastScans[i]?.data[key]);
-      }
+    const pastScan = pastScans.find(scan => scan.data[key]);
+    if (pastScan) {
+      setData(pastScan.data[key]);
     }
   }
+
+  const pastScansForWidget = useMemo(() => {
+    return pastScans.flatMap(scan =>
+      Object.entries(scan.data).map(([key, value]) => {
+        const { totalIssue, noOfIssue, risk, message } = getDomainSafetyMessage(value);
+        return {
+          key,
+          titleHeading: value.id,
+          title: message,
+          totalIssue,
+          noOfIssue,
+          status: risk,
+          scanOn: value.scanned_at,
+          href: '#',
+        };
+      })
+    );
+  }, [pastScans]);
 
   return (
     <>
@@ -203,7 +209,7 @@ export default function TheHarvesterDashboard() {
         )}
 
         <div>
-          <PastScans pastScans={pastScans} onOpenPastScan={handleOpenPastScan} />
+          <PastScans pastScans={pastScansForWidget} onOpenPastScan={handleOpenPastScan} />
         </div>
       </div>
     </>
