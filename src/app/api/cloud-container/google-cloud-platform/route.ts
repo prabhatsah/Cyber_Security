@@ -1,4 +1,3 @@
-import { NextApiRequest, NextApiResponse } from "next";
 import { google } from "googleapis";
 import { NextRequest, NextResponse } from "next/server";
 

@@ -162,7 +162,7 @@ export default function InfoWidget({
   return (
     <>
       <div className="col-span-8 h-full space-y-2">
-        <Label className="text-lg font-bold h-full text-gray-900 dark:text-gray-50">
+        <Label className="text-lg font-bold h-full text-widget-title text-widgetHeader">
           Basic Information
         </Label>
 
@@ -178,10 +178,10 @@ export default function InfoWidget({
                   className="px-0 py-3 lg:px-4 lg:py-2 lg:text-left"
                 >
                   <div className="border-l-2 border-l-white/70 pl-2">
-                    <p className="text-sm font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong">
+                    <p className="text-sm font-semibold text-widget-mainHeader">
                       {item.value}
                     </p>
-                    <p className="text-sm text-tremor-content dark:text-dark-tremor-content">
+                    <p className="text-sm text-widget-mainDesc">
                       {item.name}
                     </p>
                   </div>
@@ -194,3 +194,4 @@ export default function InfoWidget({
     </>
   );
 }
+

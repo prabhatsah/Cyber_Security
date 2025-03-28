@@ -9,9 +9,11 @@ import * as prevScans from "./docker/scanHistory";
 import { FaDocker } from "react-icons/fa";
 import { BiLogoKubernetes } from "react-icons/bi";
 
+import Loading from "./loading";
+
 const fetchHistoryScans = async () => {
   const tableName = "image_file_scanning";
-  const orderByColumn = "slno"
+  const orderByColumn = "slno";
   const scans = await api.fetchData(tableName, orderByColumn);
   console.log(scans);
   prevScans.setter(scans);
@@ -26,11 +28,10 @@ export default function Dashboard() {
   const [selectedTool, setSelectedTool] = useState<string | null>(null);
   const [historyData, setHistoryData] = useState<any>(null);
 
-
   useEffect(() => {
     if (!hasFetched.current) {
       fetchAndProcessHistory().then((data) => {
-        console.log(data)
+        console.log(data);
         setHistoryData(data);
         prevScans.VulnerabilitiesSetter(data);
       });
@@ -39,9 +40,8 @@ export default function Dashboard() {
     }
   }, []);
 
-
   if (!prevScans.Vulnerabilitiesgetter()) {
-    return <p>Loading...</p>;
+    return <Loading />;
   }
 
   return (

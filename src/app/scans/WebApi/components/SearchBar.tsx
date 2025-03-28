@@ -66,7 +66,7 @@ export default function SearchBar({
           {isLoading ? (
             <span className="animate-spin"><LuRefreshCw /></span>
           ) : (
-            <GiElectric    size={20} /> 
+            <GiElectric size={20} style={{ transform: 'rotate(15deg)' }} />
           )}
           
           {isLoading ? "Attacking...": "Attack"}

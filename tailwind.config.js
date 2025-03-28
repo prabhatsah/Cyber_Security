@@ -82,6 +82,7 @@ module.exports = {
           bgTertiary: "#2e3851",
         },
         widget: {
+          
           title: "var(--title)",
           mainHeader: "var(--mainHeader)",
           mainDesc: "var(--mainDesc)",
@@ -167,6 +168,8 @@ module.exports = {
         sans: ["Inter", "system-ui", "sans-serif"],
       },
       fontSize: {
+        pageheader:"var(--pageheader)",
+        widgetHeader: "var(--widgetHeader)",
         xs: [
           "0.75rem",
           {
