@@ -1,6 +1,10 @@
-import React from 'react';
+"use client";
+
+import React, { useEffect, useState } from 'react';
 import { Card } from "@tremor/react";
 import { AlertCircle, CheckCircle2, Eye, ArrowRight, User, Calendar } from 'lucide-react';
+import { getProfileData } from '@/ikon/utils/actions/auth';
+import { Badge } from './ui/badge';
 
 const data = [
     {
@@ -60,90 +64,44 @@ function cx(...classes: (string | boolean | undefined | null)[]) {
     return classes.filter(Boolean).join(' ');
 }
 
-const getDomainSafetyMessage = (report) => {
-    const last_analysis_stats = report.attributes.last_analysis_stats;
+export default function Example({ pastScans, onOpenPastScan }) {
 
-    // Thresholds for safety
-    const harmlessCount = last_analysis_stats.harmless || 0;
-    const maliciousCount = last_analysis_stats.malicious || 0;
-    const suspiciousCount = last_analysis_stats.suspicious || 0;
+    const [profileData, setProfileData] = useState<any>();
+    const [openedScan, setOpenedScan] = useState<any>()
 
-    // Safety conditions
-    if (suspiciousCount > 0) {
-        // return "⚠️ This domain has suspicious activity. Be careful.";
-        return {
-            risk: "Critical",
-            message: "This domain has suspicious activity. Be careful."
+    useEffect(() => {
+        const fetchUserProfileData = async () => {
+            const profile = await getProfileData();
+            setProfileData(profile);
         }
+        fetchUserProfileData();
+    }, []);
+
+    console.log("profile - ", profileData);
+    console.log("Scan history data - ", pastScans);
+
+    function handleClick(key) {
+        setOpenedScan(key);
+        onOpenPastScan(key);
     }
-    if (maliciousCount > 0) {
-        // return "✅ This is a trusted and safe domain.";
-        return {
-            risk: "Warning",
-            message: "This domain has some malicious activity. Proceed with caution."
-        }
-    }
-    if (harmlessCount > 0) {
-        return {
-            risk: "No Issue",
-            message: "This is a trusted and safe domain."
-        }
-    }
-    return {
-        risk: "Unclear",
-        message: "Further investigation recommended."
-    }
-};
-
-function formatTimestamp(timestamp: string) {
-    const date = new Date(Number(timestamp));
-
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const year = String(date.getFullYear()).slice(2);
-
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-
-    return `${day}.${month}.${year} • ${hours}:${minutes}`;
-}
-
-export default function Example({ pastScans }) {
-
-    // const _data = [];
-    // for (let i = 0; i < pastScans.data.length; i++) {
-    //     for (const key in pastScans.data[i].scandata) {
-    //         const { risk, message } = getDomainSafetyMessage(pastScans.data[0].scandata[key])
-    //         _data.push({
-    //             titleHeading: pastScans.data[0].scandata[key]["id"],
-    //             title: message,
-    //             totalIssues: pastScans.data[0].scandata[key].last_analysis_stats.harmless + pastScans.data[0].scandata[key].last_analysis_stats.malicious + pastScans.data[0].scandata[key].last_analysis_stats.suspicious,
-    //             noOfIssue: risk === "Critical" ? pastScans.data[0].scandata[key].last_analysis_stats.suspicious : risk === "Warning" ? pastScans.data[0].scandata[key].last_analysis_stats.malicious : risk === "No Issue" ? pastScans.data[0].scandata[key].last_analysis_stats.harmless : 0,
-    //             status: risk,
-    //             scanBy: pastScans.data[i].name,
-    //             scanOn: formatTimestamp(key),
-    //             href: '#',
-
-    //         })
-    //     }
-    // }
 
     return (
         <div className="">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 mt-4">Scan History</h2>
+            <h2 className=" font-bold text-widget-title text-widgetHeader">Scan History</h2>
             <dl className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 mt-4">
-                {data.map((item) => {
-                    const StatusIcon = statusConfig[item.status as keyof typeof statusConfig].icon;
-                    const statusLabel = statusConfig[item.status as keyof typeof statusConfig].label;
+                {pastScans.map((item) => {
+                    const StatusIcon = statusConfig[item.status as keyof typeof statusConfig]?.icon;
+                    const statusLabel = statusConfig[item.status as keyof typeof statusConfig]?.label;
                     return (
                         <Card key={item.titleHeading} className="relative overflow-hidden hover:shadow-lg transition-shadow duration-300 rounded-lg">
-                            <div className="absolute top-0 right-0 w-24 h-24 -mr-8 -mt-8 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 rounded-full opacity-50"></div>
+                            <div className="absolute top-0 right-0 w-24 h-24 -mr-8 -mt-8 from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 rounded-full opacity-50"></div>
 
                             <div className="relative">
-                                <dt className="flex items-center space-x-2 text-sm font-medium text-gray-500 dark:text-gray-400">
+                                <dt className="flex items-center space-x-2 text-sm font-medium text-widget-mainHeader">
                                     <span>{item.titleHeading}</span>
+                                    {item.key === openedScan && <Badge className='text-white'>opened</Badge>}
                                 </dt>
-                                <dd className="mt-1 text-3xl font-bold text-gray-900 dark:text-white">
+                                <dd className="mt-1 text-lg font-bold text-widget-mainDesc">
                                     {item.title}
                                 </dd>
                             </div>
@@ -152,17 +110,17 @@ export default function Example({ pastScans }) {
                                 <div className="flex items-center justify-between p-3 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
                                     <div className="flex items-center space-x-3">
                                         <span className={cx(
-                                            statusConfig[item.status as keyof typeof statusConfig].bgColor,
+                                            statusConfig[item.status as keyof typeof statusConfig]?.bgColor,
                                             'flex h-10 w-10 items-center justify-center rounded-lg text-white'
                                         )}>
-                                            <StatusIcon className="h-5 w-5" />
+                                            {StatusIcon && <StatusIcon className="h-5 w-5" />}
                                         </span>
                                         <div>
-                                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                                            <p className="text-sm text-widget-secondaryheader">
                                                 Issues: {item.noOfIssue}/{item.totalIssue}
                                             </p>
                                             <p className={cx(
-                                                statusConfig[item.status as keyof typeof statusConfig].textColor,
+                                                statusConfig[item.status as keyof typeof statusConfig]?.textColor,
                                                 'text-sm font-medium capitalize'
                                             )}>
                                                 {statusLabel} {/* Display the new status label */}
@@ -172,10 +130,10 @@ export default function Example({ pastScans }) {
                                     <ArrowRight className="h-5 w-5 text-gray-400" />
                                 </div>
 
-                                <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
+                                <div className="flex items-center justify-between text-sm text-widget-secondaryDesc">
                                     <div className="flex items-center space-x-2">
                                         <User className="h-4 w-4" />
-                                        <span>{item.scanBy}</span>
+                                        <span>{profileData.USER_NAME}</span>
                                     </div>
                                     <div className="flex items-center space-x-2">
                                         <Calendar className="h-4 w-4" />
@@ -184,7 +142,7 @@ export default function Example({ pastScans }) {
                                 </div>
                             </div>
 
-                            <a href={item.href} className="absolute inset-0" aria-hidden="true" />
+                            <a href={item.href} className="absolute inset-0" aria-hidden="true" onClick={() => handleClick(item.key)} />
                         </Card>
                     );
                 })}

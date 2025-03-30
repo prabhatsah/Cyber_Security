@@ -81,7 +81,7 @@ export default function Widgets({
   }));
 
   const subject_alternative_names: Array<string> =
-    widgetData.attributes.last_https_certificate.extensions
+    widgetData.attributes.last_https_certificate?.extensions
       .subject_alternative_name ?? [];
 
   return (
@@ -97,7 +97,7 @@ export default function Widgets({
       </div>
 
       <div className="w-full mt-8">
-        <h2 className="text-md font-semibold text-gray-900 dark:text-gray-50">
+        <h2 className=" font-semibold text-widgetHeader">
           More insights
         </h2>
         <Accordion type="multiple" className="">

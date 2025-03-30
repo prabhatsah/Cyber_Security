@@ -118,10 +118,37 @@
 import { useState, useEffect, useRef } from "react";
 import { apiRequest } from "../utils/api";
 import { Scan } from "../types/scanTypes";
+import { saveScannedData } from "@/utils/api";
+
+function formatTimestamp(timestamp: string) {
+  const date = new Date(Number(timestamp));
+
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const year = String(date.getFullYear()).slice(2);
+
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+
+  return `${day}-${month}-${year} ${hours}:${minutes}`;
+}
+
+async function insertScanData(scanData) {
+  const uniqueKey = new Date().getTime().toString();
+  console.log("uniqueKey----------", uniqueKey);
+  scanData.scanned_at = formatTimestamp(uniqueKey);
+
+  const resp = await saveScannedData("web_api_scan", {
+    key: uniqueKey,
+    value: scanData,
+  });
+  return resp;
+}
 
 export const usePolling = (
   apiUrl: string,
   query: string,
+  setOpenTabs,
   onComplete: (report: any) => void
 ) => {
   const [isScanning, setIsScanning] = useState(false);
@@ -144,6 +171,7 @@ export const usePolling = (
   };
 
   const startScan = async () => {
+    setOpenTabs(true);
     resetScan();
     setIsScanning(true);
     try {
@@ -228,7 +256,12 @@ export const usePolling = (
           clearInterval(activeIntervalRef.current!);
 
           const report = await apiRequest(`${apiUrl}/report`);
-          onComplete(report.report);
+          const insertScanDataResp = await insertScanData(
+            report.report.site[0]
+          );
+          if (insertScanDataResp.error)
+            throw new Error(insertScanDataResp.error);
+          onComplete(report.report.site[0]);
           setIsScanning(false);
         }
       } catch (err) {

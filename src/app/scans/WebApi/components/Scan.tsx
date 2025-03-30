@@ -1,9 +1,10 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { FaFire, FaSpider } from "react-icons/fa6";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/Tabs";
+import PastScans from "@/components/PastScans";
 
 import SearchBar from "./SearchBar";
 import SpiderScan from "./SpiderScan";
@@ -12,13 +13,59 @@ import Dashboard from "./dashboard";
 import { usePolling } from "../hooks/usePolling";
 import { useInterval } from "../hooks/useInterval";
 import { apiRequest } from "../utils/api";
+import { fetchData } from "@/utils/api";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || "/api/webApi/ZAP";
 
-export default function CurrentScan() {
+const ristCodeVsDesc = {
+  0: "Info",
+  1: "Low",
+  2: "Medium",
+  3: "High",
+  4: "Critical",
+};
+
+const getRiskAndIssues = (alerts) => {
+  const returnObj = {
+    risk: "", issues: 0
+  }
+
+  const riskCount = {
+    critical: 0,
+    warning: 0,
+    success: 0
+  }
+
+  for (let i = 0; i < alerts.length; i++) {
+    if (alerts[i].riskcode == "0" || alerts[i].riskcode == "1") {
+      riskCount.success += 1;
+    } else if (alerts[i].riskcode == "2") {
+      riskCount.warning += 1;
+    } else {
+      riskCount.critical += 1;
+    }
+  }
+
+  if (riskCount.critical) {
+    returnObj.issues = riskCount.critical;
+    returnObj.risk = "critical";
+  } else if (riskCount.warning) {
+    returnObj.issues = riskCount.warning;
+    returnObj.risk = "warning";
+  } else {
+    returnObj.issues = riskCount.success;
+    returnObj.risk = "success";
+  }
+
+  return returnObj;
+};
+
+export default function Scan() {
   const [query, setQuery] = useState("");
   const [data, setData] = useState(null);
   const [messages, setMessages] = useState([]);
+  const [pastScans, setPastScans] = useState([]);
+  const [openTabs, setOpenTabs] = useState(false);
 
   const {
     isScanning,
@@ -28,7 +75,18 @@ export default function CurrentScan() {
     newAlerts,
     numRequests,
     startScan,
-  } = usePolling(apiUrl, query, setData);
+  } = usePolling(apiUrl, query, setOpenTabs, setData);
+
+  useEffect(() => {
+    const getPastScans = async () => {
+      const data = await fetchData("web_api_scan", null);
+      if (data && data.data) {
+        setPastScans(data.data);
+      }
+    };
+
+    getPastScans();
+  }, [data]);
 
   const fetchMessages = useCallback(async () => {
     if (!query || spiderProgress != 100) return; // Stop fetching when not scanning
@@ -49,8 +107,37 @@ export default function CurrentScan() {
       if (isScanning && spiderProgress == 100)
         fetchMessages();
     },
-    isScanning && spiderProgress == 100 ? 5000 : null
+    isScanning && spiderProgress == 100 ? 10000 : null
   );
+
+  function handleOpenPastScan(key: string) {
+    const pastScan = pastScans.find(scan => scan.data[key]);
+    if (pastScan) {
+      setOpenTabs(false)
+      setData(pastScan.data[key]);
+    }
+  }
+
+  const pastScansForWidget = useMemo(() => {
+    return pastScans.flatMap(scan =>
+      Object.entries(scan.data).map(([key, value]) => {
+        const { risk, issues } = getRiskAndIssues(value.alerts);
+        return {
+          key,
+          titleHeading: value["@host"],
+          title: value["@name"],
+          totalIssue: value.alerts.length,
+          noOfIssue: issues,
+          status: risk,
+          scanOn: value.scanned_at,
+          href: '#',
+        };
+      })
+    );
+  }, [pastScans]);
+
+  console.log("web and api scan data - ", data);
+  console.log("past scans - ", pastScans);
 
 
   return <>
@@ -63,7 +150,7 @@ export default function CurrentScan() {
 
     {/* {error && <p className="text-red-600 text-center">{error}</p>} */}
 
-    <Tabs defaultValue="tab1">
+    {openTabs && <Tabs defaultValue="tab1">
       <TabsList variant="solid" >
         <TabsTrigger value="tab1" className="gap-1.5 flex ">
           <FaSpider className="-ml-1 size-4" aria-hidden="true" />
@@ -91,8 +178,10 @@ export default function CurrentScan() {
           </div>
         </TabsContent>
       </div>
-    </Tabs>
+    </Tabs>}
 
     {data && <Dashboard _data={data} />}
+
+    <PastScans pastScans={pastScansForWidget} onOpenPastScan={handleOpenPastScan} />
   </>
 }

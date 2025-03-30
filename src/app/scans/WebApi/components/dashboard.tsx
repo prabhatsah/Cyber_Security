@@ -70,13 +70,13 @@ export default function Dashboard({ _data }) {
     },
   ];
 
-  const _alertsCount = _data.site[0].alerts.length;
+  const _alertsCount = _data.alerts.length;
 
-  for (let i = 0; i < _data.site[0].alerts.length; i++) {
+  for (let i = 0; i < _data.alerts.length; i++) {
     for (let j = 0; j < _severity.length; j++) {
       if (
         _severity[j]["severity"] ===
-        ristCodeVsDesc[_data.site[0].alerts[i]["riskcode"]]
+        ristCodeVsDesc[_data.alerts[i]["riskcode"]]
       ) {
         _severity[j]["count"] += 1;
       }
@@ -161,11 +161,11 @@ export default function Dashboard({ _data }) {
           >
             <div className="flex gap-5">
               <h3 className="text-tremor-title font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong">
-                {_data.site[0]["@name"]}
+                {_data["@name"]}
               </h3>
             </div>
             <p className=" text-tremor-default leading-6 text-tremor-content dark:text-dark-tremor-content">
-              {_data.site[0]["@host"]}
+              {_data["@host"]}
             </p>
           </Card>
         </div>
@@ -174,7 +174,7 @@ export default function Dashboard({ _data }) {
             Alert Details
           </h1>
           <Accordion type="multiple" className="mt-3 ">
-            {_data.site[0].alerts.map((dataItem) => (
+            {_data.alerts.map((dataItem) => (
               <AccordionItem value={dataItem.pluginid} key={dataItem.pluginid}>
                 <AccordionTrigger>
                   <span className="flex items-center gap-2 h-8">

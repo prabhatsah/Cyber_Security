@@ -81,7 +81,7 @@ export function Scans() {
   return (
     <>
 
-      <div className="flex justify-between items-center mb-8">
+      <div className="justify-between items-center mb-8">
 
         {/* <div className="flex justify-between items-center mb-8">
 >>>>>>> 31e96a83980fa29181cecba9362a351adac9ae2a

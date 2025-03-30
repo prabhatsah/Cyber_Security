@@ -11,14 +11,17 @@ import { Card, Title, Text, Button } from "@tremor/react";
 import { TextInput } from "@tremor/react";
 import { Badge } from "@tremor/react";
 import * as prevScans from "./scanHistory";
-import { getTotalVulnerabilitiesForImages, ScannedImages } from "./sideMenuHistory";
+import {
+  getTotalVulnerabilitiesForImages,
+  ScannedImages,
+} from "./sideMenuHistory";
 import { FaChartPie } from "react-icons/fa6";
 import { AiFillDashboard } from "react-icons/ai";
 import DynamicResultRendering from "./dynamicResultRendering";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/Accordion"; // Update with your actual file path
+import Loading from "../loading";
+
 type CommandKey = keyof typeof dockerCommands;
-
-
 
 export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
   const [tableType, setTableType] = useState("");
@@ -33,7 +36,9 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
   const [scanResults, setScanResults] = useState<Record<string, any>>({});
   const [scanningItem, setScanningItem] = useState<string | null>(null);
   const [latestResult, setLatestResult] = useState<any>(null);
-  const [currSeverity, setCurrSeverity] = useState<{ severity: string; count: number }[]>([]);
+  const [currSeverity, setCurrSeverity] = useState<
+    { severity: string; count: number }[]
+  >([]);
 
   const [fileScan, setFileScan] = useState(0);
   const [imageFiles, setImageFiles] = useState<string | null>(null);
@@ -61,11 +66,10 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
 
   useEffect(() => {
     if (prevScans.Vulnerabilitiesgetter()) {
-      console.log(prevScans.Vulnerabilitiesgetter())
+      console.log(prevScans.Vulnerabilitiesgetter());
       setScannedImages(prevScans.Vulnerabilitiesgetter());
     }
-  }, [])
-
+  }, []);
 
   useEffect(() => {
     console.log(fileSystemResult);
@@ -93,7 +97,8 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
 
     let history = data?.Metadata?.ImageConfig?.history;
 
-    const key = type === "Image" ? data?.Metadata?.RepoTags[0] : data?.Results[0].Target;
+    const key =
+      type === "Image" ? data?.Metadata?.RepoTags[0] : data?.Results[0].Target;
 
     if (type === "Image") {
       data.Metadata.ImageConfig.history = history.map((entry: any) => {
@@ -322,7 +327,7 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
                 disabled={loading === "showALLImgs"}
               >
                 {loading === "showALLImgs" ? (
-                  "Loading..."
+                  <Loading />
                 ) : (
                   <span className="flex items-center gap-1">
                     <Play className="w-3 h-3 text-white" />
@@ -382,7 +387,7 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
                 disabled={loading === "listDockerContainers"}
               >
                 {loading === "listDockerContainers" ? (
-                  "Loading..."
+                  <Loading />
                 ) : (
                   <span className="flex items-center gap-1">
                     <Play className="w-3 h-3 text-white" />
@@ -434,7 +439,7 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
                 }}
               >
                 {loading === "scanRemoteImg" ? (
-                  "Loading..."
+                  <Loading />
                 ) : (
                   <span className="flex items-center gap-1">
                     <Play className="w-3 h-3 text-white" />
@@ -485,7 +490,7 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
                 }}
               >
                 {loading === "scanFileSystem" ? (
-                  "Loading..."
+                  <Loading />
                 ) : (
                   <span className="flex items-center gap-1">
                     <Play className="w-3 h-3 text-white" />
@@ -579,10 +584,11 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
                     }
                   }}
                   disabled={loading === "scanFileSystem"}
-                  className={`flex items-center px-4 py-2 text-white font-semibold rounded-lg transition-all ${loading === "scanFileSystem"
-                    ? "bg-gray-500 cursor-not-allowed"
-                    : "bg-blue-600 hover:bg-blue-700"
-                    }`}
+                  className={`flex items-center px-4 py-2 text-white font-semibold rounded-lg transition-all ${
+                    loading === "scanFileSystem"
+                      ? "bg-gray-500 cursor-not-allowed"
+                      : "bg-blue-600 hover:bg-blue-700"
+                  }`}
                 >
                   {loading === "scanFileSystem" ? (
                     "Scanning..."
@@ -646,10 +652,11 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
                       }
                     }}
                     disabled={loading === "scanRemoteImg"}
-                    className={`flex items-center px-2 py-2 text-white font-semibold rounded-lg transition-all ${loading === "scanRemoteImg"
-                      ? "bg-grey-800 cursor-not-allowed"
-                      : "bg-blue-600 hover:bg-blue-700"
-                      }`}
+                    className={`flex items-center px-2 py-2 text-white font-semibold rounded-lg transition-all ${
+                      loading === "scanRemoteImg"
+                        ? "bg-grey-800 cursor-not-allowed"
+                        : "bg-blue-600 hover:bg-blue-700"
+                    }`}
                   >
                     {loading === "scanRemoteImg" ? (
                       "Scanning..."
@@ -673,7 +680,7 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
           )}
 
           {loading ? (
-            <p>Loading...</p>
+            <Loading />
           ) : tableType === "Containers" && output ? (
             <div className="bg-blue-50 dark:bg-gray-900 p-5 rounded-lg">
               <h2 className="text-2xl font-semibold mb-4">Containers</h2>
@@ -724,10 +731,11 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
                                 ); setLogs([]);
                               }}
                               disabled={loading === row.Image}
-                              className={`flex items-center justify-center gap-1 px-2 py-2 w-18 rounded-lg font-xs transition ${loading === row.Image
-                                ? "bg-gray-400 dark:bg-gray-600 cursor-not-allowed"
-                                : "bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
-                                } text-white`}
+                              className={`flex items-center justify-center gap-1 px-2 py-2 w-18 rounded-lg font-xs transition ${
+                                loading === row.Image
+                                  ? "bg-gray-400 dark:bg-gray-600 cursor-not-allowed"
+                                  : "bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
+                              } text-white`}
                             >
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -789,10 +797,11 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
                               ); setLogs([]);
                             }}
                             disabled={loading === row.Repository}
-                            className={`bg-blue-600 text-white px-2 py-2 rounded hover:bg-blue-700 ${loading === row.Repository
-                              ? "bg-gray-400 cursor-not-allowed"
-                              : ""
-                              }`}
+                            className={`bg-blue-600 text-white px-2 py-2 rounded hover:bg-blue-700 ${
+                              loading === row.Repository
+                                ? "bg-gray-400 cursor-not-allowed"
+                                : ""
+                            }`}
                           >
                             <div className="flex items-center gap-1">
                               <svg
