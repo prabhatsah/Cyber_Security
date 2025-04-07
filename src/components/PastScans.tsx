@@ -58,6 +58,12 @@ const statusConfig = {
         textColor: 'text-red-800 dark:text-red-500',
         label: 'Critical', // Keep or change this label as needed
     },
+     unclear: {
+        icon: Info,
+        bgColor: 'bg-blue-500',
+        textColor: 'text-blue-800 dark:text-blue-500',
+        label: 'Unclear', // Keep or change this label as needed
+    },
 };
 
 function cx(...classes: (string | boolean | undefined | null)[]) {

@@ -88,7 +88,7 @@ export default function ChartWidget({
       <div className="col-span-1 space-y-2">
         <Label className=" font-bold text-widget-title text-widgetHeader">Security Vendors Flag</Label>
 
-        <Card className="rounded-md p-0">
+        <Card className="rounded-md p-2.5">
           <div className="flex flex-col items-center justify-center h-full">
 
             <div className="mt-2 grid grid-cols-8 gap-8 items-center">
@@ -102,12 +102,12 @@ export default function ChartWidget({
                   colors={chartData.map(item => item.borderColor.replace('bg-', ''))}
                 />
                 <div className="flex flex-wrap justify-center gap-4 mt-2">
-                  <span className="inline-flex items-center space-x-2.5 rounded-md bg-tremor-background py-1 pl-2.5 pr-1 ring-1 ring-inset ring-tremor-ring">
-                    <span className="text-sm font-semibold text-gray-700">
+                  <span className="inline-flex items-center space-x-2 rounded-md bg-tremor-background py-1 pl-2.5 pr-1 ring-1 ring-inset ring-tremor-ring">
+                    <span className="text-xs font-semibold text-gray-700">
                       Reputation
                     </span>
                     <span
-                      className={`rounded-md text-sm px-2 font-bold ${reputationCss}`}
+                      className={`rounded-md text-xs px-2 font-bold ${reputationCss}`}
                     >
                       {reputation}
                     </span>

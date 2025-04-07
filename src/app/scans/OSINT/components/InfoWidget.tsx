@@ -171,7 +171,7 @@ export default function InfoWidget({
           <div className="h-full">
             <ul
               role="list"
-              className="grid grid-cols-1 h-full gap-6 lg:mt-0 lg:grid-cols-4"
+              className="grid grid-cols-1 h-full gap-3 lg:mt-0 lg:grid-cols-4"
             >
               {basicInfo.map((item) => (
                 <li
@@ -191,7 +191,7 @@ export default function InfoWidget({
             </ul>
           </div>
         </Card> */}
-        <BasicInfoWidget items={basicInfo}/>
+        <BasicInfoWidget items={basicInfo} />
       </div>
     </>
   );
