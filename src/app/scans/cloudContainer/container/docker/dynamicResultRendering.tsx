@@ -82,8 +82,8 @@ const DynamicResultRendering = ({ scanningItem, outputScan, latestResult }) => {
             </h1>
 
             <div className="mt-3 p-6 rounded-lg shadow-lg">
-                <div className="rounded-md bg-gray-500">
-                    <div className="bg-gray-100 dark:bg-[#0f172a] p-4 rounded-lg shadow-md">
+                <div className="rounded-lg bg-gray-500">
+                    <div className="bg-gray-100 dark:bg-[#0f172a] p-4 rounded-md shadow-md">
                         <h4 className="text-lg dark:text-white font-semibold text-gray-900 mb-4">
                             Information
                         </h4>
@@ -190,12 +190,12 @@ const DynamicResultRendering = ({ scanningItem, outputScan, latestResult }) => {
 
                                 <div className="flex items-center">
                                     <h4 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
-                                        Report for {scanningItem} :-
+                                        Report for {scanningItem}
                                     </h4>
                                 </div>
                             </div>
                             <TableRoot
-                                className={`overflow-x-auto overflow-y-auto rounded-lg scrollbar-thin scrollbar-thumb-yellow-500 scrollbar-track-gray-200 dark:scrollbar-thumb-blue-400 dark:scrollbar-track-gray-800 ${isFullScreen ? "max-h-[90vh]" : "max-h-80"
+                                className={`overflow-x-auto overflow-y-auto rounded-lg scrollbar-thin scrollbar-thumb-yellow-500 scrollbar-track-gray-200 dark:scrollbar-thumb-blue-400 dark:scrollbar-track-gray-800 ${isFullScreen ? "max-h-[90vh]" : "max-h-[80vh]"
                                     }`}
                             >
                                 <Table>

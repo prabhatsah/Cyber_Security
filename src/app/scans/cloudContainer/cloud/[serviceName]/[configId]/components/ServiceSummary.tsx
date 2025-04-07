@@ -1,5 +1,3 @@
-"use client";
-
 import {
     Table,
     TableBody,
@@ -11,31 +9,17 @@ import {
 } from "@/components/Table";
 import { Badge } from "@tremor/react";
 import { Label } from "@radix-ui/react-label";
-import { useEffect, useState } from "react";
-import FetchCloudScanData from "./FetchCloudScanData";
 
-export default function ServiceSummary({ serviceName }) {
-    const [data, setData] = useState(null);
-
-    useEffect(() => {
-        const fetchData = async () => {
-            const result = await FetchCloudScanData(serviceName);
-            setData(result);
-        };
-
-        fetchData();
-
-    }, []);
-
-    if (!data) {
-        return <div>Loading...</div>;
-    }
-
-    const serviceSummary = data.last_run.summary;
-
-
+export default function ServiceSummary({ summary }: {
+    summary: Record<string, {
+        checked_items: number;
+        flagged_items: number;
+        max_level: string;
+        resources_count: number;
+        rules_count: number;
+    }>;
+}) {
     return (
-
         <div className="w-full mt-8">
             <Label className="text-[17px] font-bold text-widget-title">Services Level Summary</Label>
             <div className="border rounded-md mt-2">
@@ -56,8 +40,8 @@ export default function ServiceSummary({ serviceName }) {
                 <TableRoot className="max-h-96">
                     <Table>
                         <TableBody>
-                            {Object.keys(serviceSummary).length > 0 ? (
-                                Object.entries(serviceSummary).map(([key, value]) => {
+                            {Object.keys(summary).length > 0 ? (
+                                Object.entries(summary).map(([key, value]) => {
                                     // Determine badge color based on level
                                     let badgeColor = "";
                                     let displayText = "";
@@ -127,8 +111,8 @@ export default function ServiceSummary({ serviceName }) {
         //         <TableRoot className="max-h-96">
         //             <Table>
         //                 <TableBody>
-        //                     {Object.keys(serviceSummary).length > 0 ? (
-        //                         Object.entries(serviceSummary).map(([key, value]) => (
+        //                     {Object.keys(summary).length > 0 ? (
+        //                         Object.entries(summary).map(([key, value]) => (
         //                             < TableRow key={key} >
         //                                 <TableCell className="w-52">{key}</TableCell>
         //                                 <TableCell className="w-52">{value.checked_items}</TableCell>

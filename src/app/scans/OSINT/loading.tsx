@@ -5,7 +5,7 @@ export default function Loading() {
   const skeletons = Array(3).fill(null);
 
   return (
-    <div className="bg-black text-white p-6">
+    <div className=" text-white p-6">
       {/* OSINT & Threat Intelligence Header */}
       <h2 className="text-lg font-bold mb-2"></h2>
       <div className="flex items-center space-x-2 mb-6">
@@ -14,7 +14,7 @@ export default function Loading() {
       </div>
 
       {/* Scan History */}
-      <h3 className="text-xl font-bold mb-4">Scan History</h3>
+      <h3 className="text-xl font-bold mb-4 mt-4">Scan History</h3>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {skeletons.map((_, index) => (
           <Card

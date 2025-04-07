@@ -20,10 +20,19 @@ export function Vulnerabilitiesgetter() {
 }
 
 export function fetchDetailsOfParticularImage(imageName: string) {
+  if (previousScannedResults?.data[1]) {
+    const images = previousScannedResults?.data[1].data;
+    console.log(images);
+    return images[imageName];
+  }
+  return null;
+}
+
+export function fetchDetailsOfParticularFile(fileName: string) {
   if (previousScannedResults?.data[0]) {
     const images = previousScannedResults?.data[0].data;
     console.log(images);
-    return images[imageName];
+    return images[fileName];
   }
   return null;
 }

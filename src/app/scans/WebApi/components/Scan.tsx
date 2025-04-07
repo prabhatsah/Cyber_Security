@@ -13,7 +13,8 @@ import Dashboard from "./dashboard";
 import { usePolling } from "../hooks/usePolling";
 import { useInterval } from "../hooks/useInterval";
 import { apiRequest } from "../utils/api";
-import { fetchScannedData } from "@/utils/api";
+
+import { fetchData, fetchScannedData } from "@/utils/api";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || "/api/webApi/ZAP";
 
