@@ -8,6 +8,7 @@ export async function POST(req: NextRequest) {
     console.log("body - ");
     console.log(body);
 
+    // const scoutRes = await fetch("http://127.0.0.1:5000/run-scout", {
     const scoutRes = await fetch("https://ikoncloud-dev.keross.com/scout", {
       method: "POST",
       headers: {

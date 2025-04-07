@@ -170,18 +170,18 @@ export default function InfoWidget({
           <div className="h-full">
             <ul
               role="list"
-              className=" grid grid-cols-1 h-full gap-6 lg:mt-0 lg:grid-cols-4"
+              className="grid grid-cols-1 h-full gap-6 lg:mt-0 lg:grid-cols-4"
             >
               {basicInfo.map((item) => (
                 <li
                   key={item.name}
-                  className="px-0 py-3 lg:px-4 lg:py-2 lg:text-left"
+                  className="px-0 py-3 lg:px-4 lg:py-2 lg:text-left max-w-[200px] lg:max-w-none" // Fixed width for mobile
                 >
-                  <div className="border-l-2 border-l-white/70 pl-2">
-                    <p className="text-sm font-semibold text-widget-mainHeader">
+                  <div className="border-l-2 border-l-white/70 pl-2 w-full">
+                    <p className="text-sm font-semibold text-widget-mainHeader truncate" title={item.value}>
                       {item.value}
                     </p>
-                    <p className="text-sm text-widget-mainDesc">
+                    <p className="text-sm text-widget-mainDesc truncate">
                       {item.name}
                     </p>
                   </div>
