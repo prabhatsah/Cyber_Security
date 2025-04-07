@@ -1,17 +1,6 @@
 "use client";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableFoot,
-  TableHead,
-  TableHeaderCell,
-  TableRoot,
-  TableRow,
-} from "@/components/Table";
-//import Tabs from "@/components/Tabs";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/Tabs";
+import { Table, TableBody, TableCaption, TableCell, TableFoot, TableHead, TableHeaderCell, TableRoot, TableRow, } from "@/components/Table";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/Tabs"
 import { useState, useRef, useEffect } from "react";
 import dockerCommands from "../docker-commands.json";
 import VulnerabilitiesStats from "./stats";
@@ -29,8 +18,9 @@ import {
 import { FaChartPie } from "react-icons/fa6";
 import { AiFillDashboard } from "react-icons/ai";
 import DynamicResultRendering from "./dynamicResultRendering";
-
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/Accordion"; // Update with your actual file path
 import Loading from "../loading";
+
 type CommandKey = keyof typeof dockerCommands;
 
 export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
@@ -124,6 +114,15 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
     return api.updateColumnGeneralised(name, "data", data, key, "type", type);
   };
 
+  const [logs, setLogs] = useState<string[]>([]);
+
+  const logsContainerRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (logsContainerRef.current) {
+      logsContainerRef.current.scrollTop = logsContainerRef.current.scrollHeight;
+    }
+  }, [logs]);
+
   const runCommand = async (
     commandKey: CommandKey,
     params: Record<string, string> = {},
@@ -131,109 +130,140 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
     flag: number = 0
   ) => {
     let data: any;
-    try {
-      setLoading(commandKey);
-      setError(null);
-      setScanningItem(itemId);
-      const response = await fetch("/api/cloud-container/run-docker", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ commandKey, params }),
-      });
-      if (response.ok) {
-        data = await response.json();
-        const severity = new Map<string, number>([
-          ["LOW", 0],
-          ["MEDIUM", 0],
-          ["HIGH", 0],
-          ["CRITICAL", 0],
-        ]);
+    setError(null);
+    setLoading(commandKey)
+    setScanningItem(itemId)
+    const response = await fetch("/api/cloud-container/run-docker", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ commandKey, params }),
+    });
 
-        if (flag == 1) {
-          const formattedString = cleanAndFormatJson(data.output);
-          let finalResult: any;
-          finalResult = JSON.parse(formattedString);
-          saveHistoryScans(commandKey, finalResult).then(setTableResult);
-          console.log("after saveHistory line 187-->");
-          //console.log(finalResult);
-          setOutputScan(finalResult);
-          setScanResults((prevResults) => ({
-            ...prevResults,
-            [itemId!]: finalResult?.Results ?? finalResult,
-          }));
-          console.log(scanResults);
-          let vul: any;
-          if (
-            finalResult &&
-            finalResult.Results &&
-            finalResult.Results.length > 0
-          ) {
-            console.log("Entering vul");
-            setLatestResult(finalResult.Results[0]);
-            if (
-              finalResult.Results[0].Vulnerabilities &&
-              finalResult.Results[0].Vulnerabilities.length > 0
-            ) {
-              vul = finalResult.Results[0].Vulnerabilities;
-              for (let i = 0; i < vul.length; i++) {
-                if (!severity.has(vul[i].Severity))
-                  severity.set(vul[i].Severity, 1);
-                else {
-                  let count: number = severity.get(vul[i].Severity) || 0;
-                  severity.set(vul[i].Severity, count + 1);
-                }
-              }
-              console.log(severity);
+    if (!response.body) {
+      console.error("No response body");
+      setError("Failed to stream logs.");
+      return;
+    }
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let done = false;
+    let buffer = "";
+
+    while (!done) {
+      const { value, done: streamDone } = await reader.read();
+      if (value) {
+        const chunk = decoder.decode(value, { stream: true });
+        buffer += chunk;
+
+        let lines = buffer.split("\n");
+        buffer = lines.pop() || "";
+
+        for (const line of lines) {
+
+          if (line.trim().startsWith("{") && line.trim().endsWith("}")) {
+            const data = JSON.parse(line.trim());
+            const timestamp = new Date().toLocaleTimeString();
+            if (data.log) {
+              setLogs((prevLogs) => [...prevLogs, `[${timestamp}] ${data.log}`]);
             }
-            const severityArray = Array.from(severity, ([severity, count]) => ({
-              severity,
-              count,
-            }));
-            setCurrSeverity(severityArray);
-            console.log(currSeverity);
+            if (data.error) {
+              setLogs((prevLogs) => [...prevLogs, `[${timestamp}] ${data.error}`]);
+            }
+            if (data.output) {
+              console.log("this is the data inside finalOutput ==>");
+              console.log(data.output?.result);
+              const severity = new Map<string, number>([
+                ["LOW", 0],
+                ["MEDIUM", 0],
+                ["HIGH", 0],
+                ["CRITICAL", 0],
+              ]);
+              if (flag == 1) {
+                console.log(data);
+                const formattedString = cleanAndFormatJson(data.output.result);
+                let finalResult: any;
+                console.log("after saveHistory line 187-->")
+                finalResult = JSON.parse(formattedString);
+                //saveHistoryScans(commandKey, finalResult).then(setTableResult);
+                //console.log(finalResult);
+                setOutputScan(finalResult);
+                setScanResults((prevResults) => ({
+                  ...prevResults,
+                  [itemId!]: finalResult?.Results ?? finalResult,
+                }));
+                console.log(scanResults);
+                let vul: any;
+                if (
+                  finalResult &&
+                  finalResult.Results &&
+                  finalResult.Results.length > 0
+                ) {
+                  console.log("Entering vul");
+                  setLatestResult(finalResult.Results[0]);
+                  if (
+                    finalResult.Results[0].Vulnerabilities &&
+                    finalResult.Results[0].Vulnerabilities.length > 0
+                  ) {
+                    vul = finalResult.Results[0].Vulnerabilities;
+                    for (let i = 0; i < vul.length; i++) {
+                      if (!severity.has(vul[i].Severity))
+                        severity.set(vul[i].Severity, 1);
+                      else {
+                        let count: number = severity.get(vul[i].Severity) || 0;
+                        severity.set(vul[i].Severity, count + 1);
+                      }
+                    }
+                    console.log(severity);
+                  }
+                  const severityArray = Array.from(severity, ([severity, count]) => ({
+                    severity,
+                    count,
+                  }));
+                  setCurrSeverity(severityArray);
+                  console.log(currSeverity);
+                }
+              } else if (flag == 2) {
+                const formattedString = cleanAndFormatJson(data.output.result);
+                let finalResult: any;
+                finalResult = JSON.parse(formattedString);
+                finalResult["fileName"] = itemId;
+                saveHistoryScans(commandKey, finalResult).then(setTableResult);
+                //fetchAndProcessHistory();
+                setfileSystemResult(finalResult);
+              }
+              else {
+                console.log("Entering else")
+                setOutput(null)
+                const parsedData = data.output.result
+                  .trim()
+                  .split("\n")
+                  .map((line: any) => JSON.parse(line));
+                console.log(parsedData);
+                setImageScan(0);
+                setOutput(parsedData);
+                setScanResults((prevResults: any) => ({
+                  ...prevResults,
+                  [itemId!]: parsedData,
+                }));
+              }
+            }
           }
-        } else if (flag == 2) {
-          const formattedString = cleanAndFormatJson(data.output);
-          let finalResult: any;
-          finalResult = JSON.parse(formattedString);
-          finalResult["fileName"] = itemId;
-          saveHistoryScans(commandKey, finalResult).then(setTableResult);
-          //fetchAndProcessHistory();
-          setfileSystemResult(finalResult);
-        } else {
-          console.log("Entering else");
-          const parsedData = data.output
-            .trim()
-            .split("\n")
-            .map((line: any) => JSON.parse(line));
-          console.log(parsedData);
-          setImageScan(0);
-          setOutput(parsedData);
-          setScanResults((prevResults: any) => ({
-            ...prevResults,
-            [itemId!]: parsedData,
-          }));
         }
       }
-    } catch (err) {
-      setError("Failed to execute command");
-    } finally {
-      setLoading(null);
+      done = streamDone;
     }
+    setLoading(null)
   };
   function showImageDetails(imageName: string) {
     console.log("Clicked image:", imageName);
     setScannedImagesDetails(imageName);
-    // console.log(prevScans.fetchDetailsOfParticularImage(imageName));
-    setScannedImagesDetails(imageName);
+    setOutputScan(null);
 
-    // Fetch details
     const details = prevScans.fetchDetailsOfParticularImage(imageName);
     console.log(details);
 
-    // Update state with fetched details
+
     setScanDetails(details);
     console.log(getTotalVulnerabilitiesForImages(details));
   }
@@ -249,6 +279,7 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
         </span>
       </div>
       <div className="p-4 w-full">
+
         {/* start from here*/}
         <Text className="!text-2xl !mt-1 !mb-9 flex items-center justify-center !text-center !w-full text-black dark:text-white">
           Docker Security Scanning & Image Analysis
@@ -291,7 +322,7 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
                   setImageScanLocal(0);
                   setImageScan(0);
                   setTableType("Images");
-                  setScanDetails(null);
+                  //setScanDetails(null);
                 }}
                 disabled={loading === "showALLImgs"}
               >
@@ -351,7 +382,7 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
                   setImageScanLocal(0);
                   setImageScan(0);
                   setTableType("Containers");
-                  setScanDetails(null);
+                  //setScanDetails(null);
                 }}
                 disabled={loading === "listDockerContainers"}
               >
@@ -404,7 +435,7 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
                 onClick={() => {
                   setImageScan(1);
                   setTableType("scanRemote");
-                  setScanDetails(null);
+                  //setScanDetails(null);
                 }}
               >
                 {loading === "scanRemoteImg" ? (
@@ -455,7 +486,7 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
                   setFileScan(1);
                   setImageScan(0);
                   setTableType("FileScanning");
-                  setScanDetails(null);
+                  //setScanDetails(null);
                 }}
               >
                 {loading === "scanFileSystem" ? (
@@ -471,6 +502,56 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
           </Card>
         </div>
 
+        {/*------------------------------------------- Accordion starts ------------------------------------------------------------*/}
+
+        <Accordion type="single" collapsible className="shadow-md mt-6 p-0 bg-blue-50 dark:bg-gray-900 rounded-lg">
+          <AccordionItem value="live-logs">
+            <AccordionTrigger className="mt-2 px-3 py-3 dark:text-white rounded-lg text-xl font-semibold">
+              <h2 className="text-2xl font-semibold">Live Logs</h2>
+            </AccordionTrigger>
+            <AccordionContent>
+              <div className="bg-blue-50 dark:bg-gray-900 p-5 rounded-lg">
+                <TableRoot
+                  ref={logsContainerRef}
+                  className="my-table-container max-h-[300px] overflow-y-auto rounded-lg scrollbar-thin scrollbar-thumb-yellow-500 scrollbar-track-gray-200 dark:scrollbar-thumb-blue-400 dark:scrollbar-track-gray-800"
+                >
+                  <Table>
+                    <TableHead className="sticky top-0 bg-gray-200 dark:bg-gray-800 z-10 rounded-lg">
+                      <TableRow>
+                        <TableHeaderCell className="px-6 py-4 w-[30%] text-gray-800 dark:text-gray-200">
+                          Timestamp
+                        </TableHeaderCell>
+                        <TableHeaderCell className="px-6 py-4 w-[70%] text-gray-800 dark:text-gray-200">
+                          Log Message
+                        </TableHeaderCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {logs.length > 0 ? (
+                        logs.map((log, index) => {
+                          const [timestamp, message] = log.split("] ");
+                          return (
+                            <TableRow key={index}>
+                              <TableCell className="font-mono text-red-500">{timestamp}]</TableCell>
+                              <TableCell className="whitespace-normal break-words px-6 py-4 w-[100%] font-mono text-blue-600 dark:text-blue-400 no-underline">
+                                {message}
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })
+                      ) : (
+                        <TableRow>
+                          <TableCell colSpan={2} className="text-gray-500">No logs available yet...</TableCell>
+                        </TableRow>
+                      )}
+                    </TableBody>
+                  </Table>
+                </TableRoot>
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+        {/*----------------------------------------------------------------------------------------*/}
         <div className="mt-6">
           {fileScan !== 0 && tableType == "FileScanning" && (
             <div className="mt-4 px-3">
@@ -497,7 +578,7 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
                         { FILE_PATH: imageFiles },
                         fileName,
                         2
-                      );
+                      ); setLogs([]);
                     } else {
                       setError("Please select a directory");
                     }
@@ -529,16 +610,6 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
             </div>
           )}
 
-          {/* Render DynamicResultRendering when an image is selected */}
-          {/* {scannedImagesDetails && scanDetails && (
-            <DynamicResultRendering
-              scanningItem={scannedImagesDetails}
-              outputScan={scanDetails}
-              latestResult={scanDetails.Results}
-            />
-          )} */}
-
-          {/*returnImageDetails() && <div>{returnImageDetails().ArtifactName}</div>*/}
           {imageScan !== 0 && (
             <div className="mt-4 px-3">
               <div className="mb-4 flex space-x-2">
@@ -657,7 +728,7 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
                                   { LOCAL_IMAGE: row.Image },
                                   row.Names,
                                   1
-                                );
+                                ); setLogs([]);
                               }}
                               disabled={loading === row.Image}
                               className={`flex items-center justify-center gap-1 px-2 py-2 w-18 rounded-lg font-xs transition ${
@@ -723,7 +794,7 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
                                 { LOCAL_IMAGE: `${row.Repository}` },
                                 row.Repository,
                                 1
-                              );
+                              ); setLogs([]);
                             }}
                             disabled={loading === row.Repository}
                             className={`bg-blue-600 text-white px-2 py-2 rounded hover:bg-blue-700 ${
@@ -755,247 +826,230 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
             <pre className="p-4 bg-red-100 text-red-600 border border-red-300 rounded-lg">
               {error}
             </pre>
-          ) : (
-            scannedImagesDetails &&
-            scanDetails && (
-              <DynamicResultRendering
-                scanningItem={scannedImagesDetails}
-                outputScan={scanDetails}
-                latestResult={scanDetails.Results}
-              />
-            )
-          )}
+          ) : null}
+
 
           {Object.keys(scanResults).length > 0 &&
             scanningItem &&
-            scanResults[scanningItem!] && (
-              <>
-                <h1 className="flex text-lg mt-8 font-semibold text-gray-00">
-                  Scanned Results for{" "}
-                  <p className="ms-1 font-bold">{scanningItem}</p> :-
-                </h1>
-                <div className="mt-3 p-6 rounded-lg shadow-lg">
-                  <div className="rounded-md bg-grey-500">
-                    <div className="bg-gray-100 dark:bg-[#0f172a] p-4 rounded-lg shadow-md">
-                      <h4 className="text-lg font-semibold text-gray-00 mb-4">
-                        Information
-                      </h4>
-                      <div className="flex items-center bg-gray-100 dark:bg-[#0f172a] rounded-lg space-x-2">
-                        <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                          Name:
-                        </h3>
-                        <p className="text-md font-mono font-bold text-gray-900 dark:text-white break-all">
-                          {outputScan.Results[0].Target}
-                        </p>
-                      </div>
-                      <div className="flex items-center bg-gray-100 dark:bg-[#0f172a] rounded-lg space-x-1">
-                        <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                          Type:
-                        </h3>
-                        <p className="text-md font-mono font-bold text-gray-900 dark:text-white break-all">
-                          {outputScan.ArtifactType}
-                        </p>
-                      </div>
-                      <div className="flex items-center bg-gray-100 dark:bg-[#0f172a] rounded-lg space-x-2">
-                        <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                          Repository:
-                        </h3>
-                        <p className="text-md font-mono font-bold text-gray-900 dark:text-white break-all">
-                          {outputScan.Metadata.RepoTags[0]}
-                        </p>
-                      </div>
-                      <div className="flex items-center bg-gray-100 dark:bg-[#0f172a] rounded-lg space-x-2">
-                        <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                          Architecture:
-                        </h3>
-                        <p className="text-md font-mono font-bold text-gray-900 dark:text-white break-all">
-                          {outputScan.Metadata.ImageConfig.architecture}
-                        </p>
-                      </div>
-                      <div className="flex items-center bg-gray-100 dark:bg-[#0f172a] rounded-lg space-x-2">
-                        <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                          Operating System:{" "}
-                        </h3>
-                        <p className="text-md font-mono font-bold text-gray-900 dark:text-white break-all">
-                          {outputScan.Metadata.ImageConfig.os}
-                        </p>
-                      </div>
+            scanResults[scanningItem!] && outputScan ? (
+            <>
+              <h1 className="flex text-lg mt-8 font-semibold text-gray-00">
+                Scanned Results for{" "}
+                <p className="ms-1 font-bold">{scanningItem}</p> :-
+              </h1>
+              <div className="mt-3 p-6 rounded-lg shadow-lg">
+                <div className="rounded-md bg-grey-500">
+                  <div className="bg-gray-100 dark:bg-[#0f172a] p-4 rounded-lg shadow-md">
+                    <h4 className="text-lg font-semibold text-gray-00 mb-4">
+                      Information
+                    </h4>
+                    <div className="flex items-center bg-gray-100 dark:bg-[#0f172a] rounded-lg space-x-2">
+                      <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                        Name:
+                      </h3>
+                      <p className="text-md font-mono font-bold text-gray-900 dark:text-white break-all">
+                        {outputScan.Results[0].Target}
+                      </p>
+                    </div>
+                    <div className="flex items-center bg-gray-100 dark:bg-[#0f172a] rounded-lg space-x-1">
+                      <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                        Type:
+                      </h3>
+                      <p className="text-md font-mono font-bold text-gray-900 dark:text-white break-all">
+                        {outputScan.ArtifactType}
+                      </p>
+                    </div>
+                    <div className="flex items-center bg-gray-100 dark:bg-[#0f172a] rounded-lg space-x-2">
+                      <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                        Repository:
+                      </h3>
+                      <p className="text-md font-mono font-bold text-gray-900 dark:text-white break-all">
+                        {outputScan.Metadata.RepoTags[0]}
+                      </p>
+                    </div>
+                    <div className="flex items-center bg-gray-100 dark:bg-[#0f172a] rounded-lg space-x-2">
+                      <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                        Architecture:
+                      </h3>
+                      <p className="text-md font-mono font-bold text-gray-900 dark:text-white break-all">
+                        {outputScan.Metadata.ImageConfig.architecture}
+                      </p>
+                    </div>
+                    <div className="flex items-center bg-gray-100 dark:bg-[#0f172a] rounded-lg space-x-2">
+                      <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                        Operating System:{" "}
+                      </h3>
+                      <p className="text-md font-mono font-bold text-gray-900 dark:text-white break-all">
+                        {outputScan.Metadata.ImageConfig.os}
+                      </p>
                     </div>
                   </div>
+                </div>
 
-                  {latestResult &&
+                {latestResult &&
                   latestResult.Vulnerabilities &&
                   latestResult.Vulnerabilities.length > 0 ? (
-                    <>
-                      <div className="mt-6 bg-gray-100 dark:bg-[#0f172a] p-4 rounded-lg shadow-md">
-                        <h4 className="text-lg font-semibold text-gray-00 mb-4">
-                          Stats
-                        </h4>
-                        {/* <Tabs tabs={tabs} /> */}
+                  <>
+                    <div className="mt-6 bg-gray-100 dark:bg-[#0f172a] p-4 rounded-lg shadow-md">
+                      <h4 className="text-lg font-semibold text-gray-00 mb-4">
+                        Stats
+                      </h4>
+                      {/* <Tabs tabs={tabs} /> */}
 
-                        <Tabs defaultValue="tab1">
-                          <TabsList variant="solid">
-                            <TabsTrigger value="tab1" className="gap-1.5 flex ">
-                              <AiFillDashboard
-                                className="-ml-1 size-4"
-                                aria-hidden="true"
-                              />
-                              Card
-                            </TabsTrigger>
-                            <TabsTrigger value="tab2" className="gap-1.5 flex ">
-                              <FaChartPie
-                                className="-ml-1 size-4"
-                                aria-hidden="true"
-                              />
-                              Visualization
-                            </TabsTrigger>
-                          </TabsList>
-                          <div className="mt-4">
-                            <TabsContent value="tab1">
-                              <div>
-                                <VulnerabilitiesStats
-                                  severityArray={currSeverity}
-                                />
-                              </div>
-                            </TabsContent>
-                            <TabsContent value="tab2">
-                              <div>
-                                <CustomPieChart data={currSeverity} />
-                              </div>
-                            </TabsContent>
-                          </div>
-                        </Tabs>
-                      </div>
-
-                      <div
-                        className={`mt-6 bg-gray-100 dark:bg-[#0f172a] p-4 rounded-lg shadow-md ${
-                          isFullScreen
-                            ? "fixed top-0 left-0 w-full h-full z-50 bg-white dark:bg-[#0f172a] p-8"
-                            : ""
-                        }`}
-                      >
-                        <div className="relative">
-                          <a
-                            onClick={toggleFullScreen}
-                            className="absolute cursor-pointer top-0 right-0 text-black dark:text-white rounded-md hover:bg-grey-600"
-                          >
-                            {isFullScreen ? (
-                              <Minimize size={20} />
-                            ) : (
-                              <Maximize size={20} />
-                            )}
-                          </a>
-
-                          <div className="flex items-center">
-                            <h4 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
-                              Report for {scanningItem} :-
-                            </h4>
-                          </div>
+                      <Tabs defaultValue="tab1">
+                        <TabsList variant="solid" >
+                          <TabsTrigger value="tab1" className="gap-1.5 flex ">
+                            <AiFillDashboard className="-ml-1 size-4" aria-hidden="true" />
+                            Card
+                          </TabsTrigger>
+                          <TabsTrigger value="tab2" className="gap-1.5 flex ">
+                            <FaChartPie className="-ml-1 size-4" aria-hidden="true" />
+                            Visualization
+                          </TabsTrigger>
+                        </TabsList>
+                        <div className="mt-4">
+                          <TabsContent value="tab1">
+                            <div>
+                              <VulnerabilitiesStats severityArray={currSeverity} />
+                            </div>
+                          </TabsContent>
+                          <TabsContent value="tab2">
+                            <div>
+                              <CustomPieChart data={currSeverity} />
+                            </div>
+                          </TabsContent>
                         </div>
-                        <TableRoot
-                          className={`overflow-x-auto overflow-y-auto rounded-lg scrollbar-thin scrollbar-thumb-yellow-500 scrollbar-track-gray-200 dark:scrollbar-thumb-blue-400 dark:scrollbar-track-gray-800 ${
-                            isFullScreen ? "max-h-[90vh]" : "max-h-80"
-                          }`}
+                      </Tabs>
+                    </div>
+
+                    <div
+                      className={`mt-6 bg-gray-100 dark:bg-[#0f172a] p-4 rounded-lg shadow-md ${isFullScreen
+                        ? "fixed top-0 left-0 w-full h-full z-50 bg-white dark:bg-[#0f172a] p-8"
+                        : ""
+                        }`}
+                    >
+                      <div className="relative">
+                        <a
+                          onClick={toggleFullScreen}
+                          className="absolute cursor-pointer top-0 right-0 text-black dark:text-white rounded-md hover:bg-grey-600"
                         >
-                          <Table>
-                            <TableHead className="sticky top-0 bg-gray-200 dark:bg-gray-800 z-10 rounded-lg">
-                              <TableRow>
-                                <TableHeaderCell>ID</TableHeaderCell>
-                                <TableHeaderCell>Source</TableHeaderCell>
-                                <TableHeaderCell>Severity</TableHeaderCell>
-                                <TableHeaderCell>DataSource</TableHeaderCell>
-                                <TableHeaderCell>Cause</TableHeaderCell>
-                                <TableHeaderCell>Description</TableHeaderCell>
-                                <TableHeaderCell>References</TableHeaderCell>
-                              </TableRow>
-                            </TableHead>
-                            <TableBody>
-                              {latestResult.Vulnerabilities?.map((row: any) => (
-                                <TableRow key={row.VulnerabilityID}>
-                                  <TableCell>{row.VulnerabilityID}</TableCell>
-                                  <TableCell>{row.SeveritySource}</TableCell>
-                                  <TableCell>
-                                    <Badge
-                                      className={`px-3 py-1 rounded-md font-medium ${getSeverityStyles(
-                                        row.Severity
-                                      )}`}
-                                    >
-                                      {row.Severity}
-                                    </Badge>
-                                  </TableCell>
+                          {isFullScreen ? (
+                            <Minimize size={20} />
+                          ) : (
+                            <Maximize size={20} />
+                          )}
+                        </a>
 
-                                  <TableCell>
-                                    <ul className="list-disc pl-4">
-                                      <li>
-                                        <strong>ID:</strong> {row.DataSource.ID}
-                                      </li>
-                                      <li>
-                                        <strong>Name:</strong>{" "}
-                                        {row.DataSource.Name}
-                                      </li>
-                                      <li>
-                                        <strong>URL:</strong>
-                                        <a
-                                          href={row.DataSource.URL}
-                                          target="_blank"
-                                          rel="noopener noreferrer"
-                                          className="text-blue-600 underline"
-                                        >
-                                          {row.DataSource.URL}
-                                        </a>
-                                      </li>
-                                    </ul>
-                                  </TableCell>
-                                  <TableCell className="whitespace-normal break-words max-w-xs">
-                                    {row.Title}
-                                  </TableCell>
-                                  <TableCell className="whitespace-normal break-words max-w-s">
-                                    {row.Description}
-                                  </TableCell>
-                                  <TableCell>
-                                    <ul className="list-disc pl-4">
-                                      {row.References?.map(
-                                        (element: string, index: number) => (
-                                          <li key={index}>
-                                            <a
-                                              href={element}
-                                              target="_blank"
-                                              rel="noopener noreferrer"
-                                              className="text-blue-600 underline"
-                                            >
-                                              {element}
-                                            </a>
-                                          </li>
-                                        )
-                                      )}
-                                    </ul>
-                                  </TableCell>
-                                </TableRow>
-                              ))}
-                            </TableBody>
-                          </Table>
-                        </TableRoot>
+                        <div className="flex items-center">
+                          <h4 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
+                            Report for {scanningItem} :-
+                          </h4>
+                        </div>
                       </div>
-                    </>
-                  ) : (
-                    <>
-                      <VulnerabilitiesStats severityArray={currSeverity} />{" "}
-                      <pre className="p-4 mt-6 bg-yellow-100 text-green-600 border border-red-300 rounded-lg">
-                        There are no vulnearibilities in this image
-                      </pre>
-                    </>
-                  )}
-                </div>
-              </>
-            )}
+                      <TableRoot
+                        className={`overflow-x-auto overflow-y-auto rounded-lg scrollbar-thin scrollbar-thumb-yellow-500 scrollbar-track-gray-200 dark:scrollbar-thumb-blue-400 dark:scrollbar-track-gray-800 ${isFullScreen ? "max-h-[90vh]" : "max-h-80"
+                          }`}
+                      >
+                        <Table>
+                          <TableHead className="sticky top-0 bg-gray-200 dark:bg-gray-800 z-10 rounded-lg">
+                            <TableRow>
+                              <TableHeaderCell>ID</TableHeaderCell>
+                              <TableHeaderCell>Source</TableHeaderCell>
+                              <TableHeaderCell>Severity</TableHeaderCell>
+                              <TableHeaderCell>DataSource</TableHeaderCell>
+                              <TableHeaderCell>Cause</TableHeaderCell>
+                              <TableHeaderCell>Description</TableHeaderCell>
+                              <TableHeaderCell>References</TableHeaderCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {latestResult.Vulnerabilities?.map((row: any) => (
+                              <TableRow key={row.VulnerabilityID}>
+                                <TableCell>{row.VulnerabilityID}</TableCell>
+                                <TableCell>{row.SeveritySource}</TableCell>
+                                <TableCell>
+                                  <Badge
+                                    className={`px-3 py-1 rounded-md font-medium ${getSeverityStyles(
+                                      row.Severity
+                                    )}`}
+                                  >
+                                    {row.Severity}
+                                  </Badge>
+                                </TableCell>
 
-          <h2 className="ms-3 mt-3 text-black dark:text-white">
-            Previosuly Scanned Images
-          </h2>
-          <ScannedImages
-            data={prevScans.Vulnerabilitiesgetter()}
-            onImageClick={showImageDetails}
-          />
+                                <TableCell>
+                                  <ul className="list-disc pl-4">
+                                    <li>
+                                      <strong>ID:</strong> {row.DataSource.ID}
+                                    </li>
+                                    <li>
+                                      <strong>Name:</strong>{" "}
+                                      {row.DataSource.Name}
+                                    </li>
+                                    <li>
+                                      <strong>URL:</strong>
+                                      <a
+                                        href={row.DataSource.URL}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-blue-600 underline"
+                                      >
+                                        {row.DataSource.URL}
+                                      </a>
+                                    </li>
+                                  </ul>
+                                </TableCell>
+                                <TableCell className="whitespace-normal break-words max-w-xs">
+                                  {row.Title}
+                                </TableCell>
+                                <TableCell className="whitespace-normal break-words max-w-s">
+                                  {row.Description}
+                                </TableCell>
+                                <TableCell>
+                                  <ul className="list-disc pl-4">
+                                    {row.References?.map(
+                                      (element: string, index: number) => (
+                                        <li key={index}>
+                                          <a
+                                            href={element}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="text-blue-600 underline"
+                                          >
+                                            {element}
+                                          </a>
+                                        </li>
+                                      )
+                                    )}
+                                  </ul>
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </TableRoot>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <VulnerabilitiesStats severityArray={currSeverity} />{" "}
+                    <pre className="p-4 mt-6 bg-yellow-100 text-green-600 border border-red-300 rounded-lg">
+                      There are no vulnearibilities in this image
+                    </pre>
+                  </>
+                )}
+              </div>
+            </>
+          ) : scannedImagesDetails && scanDetails && (
+            <DynamicResultRendering
+              scanningItem={scannedImagesDetails}
+              outputScan={scanDetails}
+              latestResult={scanDetails.Results}
+            />
+          )}
+
+          <h2 className="ms-3 mt-3 text-black dark:text-white">Previosuly Scanned Images</h2>
+          <ScannedImages data={prevScans.Vulnerabilitiesgetter()} onImageClick={showImageDetails} />
 
           {/* {fileSystemResult && (<>
                   <div className="mt-3 p-6 bg-grey-300  rounded-lg shadow-lg bg-gray-100">

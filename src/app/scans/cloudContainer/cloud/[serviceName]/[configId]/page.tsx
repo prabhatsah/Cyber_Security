@@ -36,7 +36,7 @@ export default async function CloudConfigScanningMainDashboard({
 
     const apiBodyJson = {
       "cloudProvider": "gcp",
-      "credentials": specificConfigData.serviceAccountKey
+      "credentials": specificConfigData.serviceAccountKey.credentials
     }
 
     const response = await fetch("http://localhost:3000/src/app/api/cloud-container/scan", {

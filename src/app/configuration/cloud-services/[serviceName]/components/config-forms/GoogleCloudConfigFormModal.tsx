@@ -145,7 +145,10 @@ export default function GoogleCloudConfigFormModal({
             cloudProvider: "gcp",
             configurationName: formData.configurationName,
             projectId: formData.projectId,
-            serviceAccountKey: serviceAccountKeyData,
+            serviceAccountKey: {
+              fileName: formData.serviceAccountKey?.name,
+              credentials: serviceAccountKeyData
+            },
             region: formData.region,
             createdOn: format(new Date(), "yyyy-MMM-dd HH:mm:ss"),
             createdBy: createdBy,
@@ -269,7 +272,7 @@ export default function GoogleCloudConfigFormModal({
           <form
             action="#"
             method="POST"
-            onSubmit={savedDataToBePopulated ? handleConfigUpdate : (!isConnected ? handleFormSave : handleTestConnection)}
+            onSubmit={savedDataToBePopulated ? handleConfigUpdate : (isConnected ? handleFormSave : handleTestConnection)}
           >
             <div className="absolute right-0 top-0 pr-3 pt-3">
               <button
@@ -441,20 +444,31 @@ export default function GoogleCloudConfigFormModal({
                       Service Account Key (JSON)
                     </label>
 
-                    <Input
-                      id="serviceAccountKey"
-                      name="serviceAccountKey"
-                      // value={savedDataToBePopulated && savedDataToBePopulated.serviceAccountKey ? savedDataToBePopulated.serviceAccountKey : ""}
-                      disabled={savedDataToBePopulated ? true : false}
-                      type="file"
-                      className={
-                        errors.serviceAccountKey
-                          ? "w-full border border-red-500 rounded-md"
-                          : "w-full"
-                      }
-                      onChange={handleChange}
-                      accept=".json"
-                    />
+                    {savedDataToBePopulated?.serviceAccountKey ?
+                      <div className="relative w-full flex">
+                        <div className="relative rounded-l-md border-l border-t border-b px-3 py-2 shadow-sm sm:text-sm border-gray-300 bg-gray-100 text-gray-500 dark:border-gray-700
+                      dark:bg-gray-800 dark:text-gray-500">
+                          Choose File
+                        </div>
+
+                        <div className="flex-grow relative rounded-r-md border border-l-0 px-3 py-2 shadow-sm sm:text-sm
+                      placeholder-gray-400 dark:placeholder-gray-500 border-gray-300 bg-gray-100 text-gray-400 dark:border-gray-700
+                      dark:bg-gray-800 dark:text-gray-500">
+                          {savedDataToBePopulated.serviceAccountKey.fileName}
+                        </div>
+                      </div> : <Input
+                        id="serviceAccountKey"
+                        name="serviceAccountKey"
+                        disabled={savedDataToBePopulated ? true : false}
+                        type="file"
+                        className={
+                          errors.serviceAccountKey
+                            ? "w-full border border-red-500 rounded-md"
+                            : "w-full"
+                        }
+                        onChange={handleChange}
+                        accept=".json"
+                      />}
 
                     {errors.serviceAccountKey ? (
                       <p className="text-xs text-red-500">
@@ -506,7 +520,7 @@ export default function GoogleCloudConfigFormModal({
             </div>
           </form>
         </DialogPanel>
-      </Dialog>
+      </Dialog >
     </>
   );
 }

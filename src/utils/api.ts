@@ -42,6 +42,7 @@ import { tableData } from "@/app/scans/WebApi/data";
 import { Buffer } from "buffer";
 import { getLoggedInUserProfile } from "@/ikon/utils/api/loginService/index";
 
+const userId = (await getLoggedInUserProfile()).USER_ID;
 const baseUrl =
   process.env.NEXT_PUBLIC_BASE_URL ||
   `http://localhost:${process.env.PORT || 3000}`;
@@ -405,7 +406,6 @@ export async function saveScannedData(
   tableName: string,
   values: { key: string; value: any }
 ) {
-  const userId = (await getLoggedInUserProfile()).USER_ID;
   console.log("this is the userId---> " + userId);
   const jsonString = JSON.stringify(values.value).replace(/'/g, "");
 
@@ -433,4 +433,28 @@ export async function saveScannedData(
   });
 
   return res.json();
+}
+
+export async function fetchScannedData(
+  tableName: string,
+  orderByColumn: string | null,
+  allInstances: boolean | false,
+  columnFilter?: { column: string; value: string | number } | null,
+  jsonFilter?:
+    | {
+        column: string;
+        keyPath: string[];
+        value: string | number;
+      }[]
+    | null
+) {
+  columnFilter = allInstances ? null : { column: "userid", value: userId };
+  const query = { tableName, orderByColumn, columnFilter, jsonFilter };
+  console.log(query);
+
+  const res = await fetch(`${baseUrl}/api/dbApi`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ query, instruction: "fetch" }),
+  });
 }
