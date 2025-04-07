@@ -1,46 +1,54 @@
-"use client"
-import { Card, DonutChart } from "@tremor/react";
-import { AnalysisResult, HarvesterData, WidgetDataItem } from "./type";
+import { Card } from "@tremor/react";
 import { Label } from "@radix-ui/react-label";
+import { format } from "date-fns";
 
 /// For Border Color
-const colorMap: Record<string, string> = {
-    Danger: "bg-red-900",
-    Warning: "bg-red-500",
-    Medium: "bg-amber-500",
-    Low: "bg-green-800",
-};
+// const colorMap: Record<string, string> = {
+//     Danger: "bg-red-900",
+//     Warning: "bg-red-500",
+//     Medium: "bg-amber-500",
+//     Low: "bg-green-800",
+// };
 
-function classNames(...classes) {
-    return classes.filter(Boolean).join(' ');
-}
 
-const widgetData = [
-    {
-        name: 'Danger',
-        amount: 10,
-        borderColor: 'bg-red-900',
-    },
-    {
-        name: 'Warning',
-        amount: 9,
-        borderColor: 'bg-red-500',
-    },
-    {
-        name: 'Medium',
-        amount: 6,
-        borderColor: 'bg-amber-500',
-    },
-    {
-        name: 'Low',
-        amount: 2,
-        borderColor: 'bg-green-800',
-    },
-];
+// const widgetData = [
+//     {
+//         name: 'Danger',
+//         amount: 10,
+//         borderColor: 'bg-red-900',
+//     },
+//     {
+//         name: 'Warning',
+//         amount: 9,
+//         borderColor: 'bg-red-500',
+//     },
+//     {
+//         name: 'Medium',
+//         amount: 6,
+//         borderColor: 'bg-amber-500',
+//     },
+//     {
+//         name: 'Low',
+//         amount: 2,
+//         borderColor: 'bg-green-800',
+//     },
+// ];
 
-export default function BasicInfo({ scanTime, serviceName, serviceCode, summary }: {
+export default function BasicInfo({ summary, scanTime, serviceNameAsDisplayStr, serviceCode, projectId }: {
+    summary: Record<string, {
+        checked_items: number;
+        flagged_items: number;
+        max_level: string;
+        resources_count: number;
+        rules_count: number;
+    }>;
     scanTime: string;
+    serviceNameAsDisplayStr: string;
+    serviceCode: string;
+    projectId?: string;
 }) {
+
+    serviceCode = serviceCode.toUpperCase();
 
     let serviceScanned = 0;
     let rulesCount = 0;
@@ -60,7 +68,7 @@ export default function BasicInfo({ scanTime, serviceName, serviceCode, summary 
         },
         {
             name: "Project ID",
-            value: (serviceCode === "GCP") ? "meta-sensor-447310-c0" : "n/a"
+            value: projectId ?? "N/A",
         },
         {
             name: "Resources Count",
@@ -73,7 +81,7 @@ export default function BasicInfo({ scanTime, serviceName, serviceCode, summary 
         },
         {
             name: "Provider Name",
-            value: serviceName
+            value: serviceNameAsDisplayStr
         },
         {
             name: "Flagged Items",
@@ -85,7 +93,7 @@ export default function BasicInfo({ scanTime, serviceName, serviceCode, summary 
         },
         {
             name: "Scan Time",
-            value: "n/a"
+            value: format(scanTime, "dd-MMM-yyyy HH:mm:ss")
         },
     ]
 

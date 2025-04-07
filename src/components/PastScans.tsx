@@ -86,8 +86,10 @@ export default function Example({ pastScans, onOpenPastScan }) {
     }
 
     return (
+
         <div className="">
             <h2 className=" font-bold text-widget-title text-widgetHeader mt-4">Scan History</h2>
+        
             <dl className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 mt-4">
                 {pastScans.map((item) => {
                     const StatusIcon = statusConfig[item.status as keyof typeof statusConfig]?.icon;

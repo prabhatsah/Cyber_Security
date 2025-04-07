@@ -5,7 +5,7 @@ export default function Loading() {
   const skeletons = Array(3).fill(null);
 
   return (
-    <div className="bg-black text-white p-6">
+    <div className=" text-white p-6">
       {/* OSINT & Threat Intelligence Header */}
       <h2 className="text-lg font-bold mb-2"></h2>
       <div className="flex items-center space-x-2 mb-6">
