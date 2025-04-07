@@ -6,7 +6,7 @@ import Widgets from "./Widgets";
 import { ApiResponse, HarvesterData } from "./components/type";
 import PastScans from "@/components/PastScans";
 import { RenderAppBreadcrumb } from "@/components/app-breadcrumb";
-import { fetchData, saveScannedData } from "@/utils/api";
+import { fetchScannedData, saveScannedData } from "@/utils/api";
 
 function formatTimestamp(timestamp: string) {
   const date = new Date(Number(timestamp));
@@ -82,7 +82,7 @@ export default function TheHarvesterDashboard() {
 
   useEffect(() => {
     const getPastScans = async () => {
-      const data = await fetchData("osint_threat_intelligence_scan", null);
+      const data = await fetchScannedData("osint_threat_intelligence_scan", null, false, null, null);
       if (data && data.data) {
         setPastScans(data.data);
       }
