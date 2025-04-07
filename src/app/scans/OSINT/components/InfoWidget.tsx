@@ -166,7 +166,7 @@ export default function InfoWidget({
           Basic Information
         </Label>
 
-        <Card className="rounded-md">
+        <Card className="rounded-md p-8">
           <div className="h-full">
             <ul
               role="list"
