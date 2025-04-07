@@ -85,10 +85,10 @@ export default function ChartWidget({
       </Card> */}
 
 
-      <div className="col-span-4 space-y-2">
+      <div className="col-span-1 space-y-2">
         <Label className=" font-bold text-widget-title text-widgetHeader">Security Vendors Flag</Label>
 
-        <Card className="rounded-md">
+        <Card className="rounded-md p-0">
           <div className="flex flex-col items-center justify-center h-full">
 
             <div className="mt-2 grid grid-cols-8 gap-8 items-center">
@@ -98,7 +98,7 @@ export default function ChartWidget({
                   category="amount"
                   index="name"
                   showTooltip={false}
-                  className="h-28 hide-donut-center"
+                  className="w-full h-28 hide-donut-center"
                   colors={chartData.map(item => item.borderColor.replace('bg-', ''))}
                 />
                 <div className="flex flex-wrap justify-center gap-4 mt-2">
@@ -114,7 +114,7 @@ export default function ChartWidget({
                   </span>
                 </div>
               </div>
-              <div className="col-span-5">
+              <div className="col-span-5 py-6">
                 {/* <p className="text-xs">Levels</p > */}
                 <ul className="space-y-1 grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
                   {chartData.map((item) => (
