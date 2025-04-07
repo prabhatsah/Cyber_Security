@@ -320,11 +320,7 @@ export default function AmazonWebServicesConfigFormModal({
                       value={formData.accessKeyId}
                       disabled={savedDataToBePopulated ? true : false}
                       type="password"
-                      className={
-                        errors.accessKeyId
-                          ? "w-full border border-red-500 rounded-md"
-                          : "w-full"
-                      }
+                      className={`w-full ${savedDataToBePopulated ? "cursor-not-allowed" : ""} ${errors.accessKeyId ? "border border-red-500 rounded-md" : ""}`}
                       onChange={handleChange}
                       placeholder="Enter Access Key Id"
                     />
@@ -354,11 +350,7 @@ export default function AmazonWebServicesConfigFormModal({
                       value={formData.secretAccessKey}
                       disabled={savedDataToBePopulated ? true : false}
                       type="password"
-                      className={
-                        errors.secretAccessKey
-                          ? "w-full border border-red-500 rounded-md"
-                          : "w-full"
-                      }
+                      className={`w-full ${savedDataToBePopulated ? "cursor-not-allowed" : ""} ${errors.accessKeyId ? "border border-red-500 rounded-md" : ""}`}
                       onChange={handleChange}
                       placeholder="Enter Secret Access Key"
                     />
