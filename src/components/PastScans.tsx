@@ -86,7 +86,7 @@ export default function Example({ pastScans, onOpenPastScan }) {
     }
 
     return (
-        <div className="">
+        <div className="mt-6">
             <h2 className=" font-bold text-widget-title text-widgetHeader">Scan History</h2>
             <dl className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 mt-4">
                 {pastScans.map((item) => {
