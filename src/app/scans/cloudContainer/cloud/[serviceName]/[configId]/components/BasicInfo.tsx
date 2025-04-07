@@ -1,6 +1,7 @@
 import { Card } from "@tremor/react";
 import { Label } from "@radix-ui/react-label";
 import { format } from "date-fns";
+import { BasicInfoWidget } from "@/components/BasicInfoWidget";
 
 /// For Border Color
 // const colorMap: Record<string, string> = {
@@ -61,46 +62,50 @@ export default function BasicInfo({ summary, scanTime, serviceNameAsDisplayStr, 
         resourcesCount += summary[key].resources_count;
     }
 
-    const basicInfo = [
-        {
-            name: "Provider Code",
-            value: serviceCode
-        },
-        {
-            name: "Project ID",
-            value: projectId ?? "N/A",
-        },
-        {
-            name: "Resources Count",
-            value: resourcesCount
-        },
+    const basicInfo: Array<{
+        name: string;
+        value: string;
+    }> = [
+            {
+                name: "Provider Code",
+                value: serviceCode
+            },
+            {
+                name: "Project ID",
+                value: projectId ?? "N/A",
+            },
+            {
+                name: "Resources Count",
+                value: resourcesCount
+            },
 
-        {
-            name: "Services Scanned",
-            value: serviceScanned
-        },
-        {
-            name: "Provider Name",
-            value: serviceNameAsDisplayStr
-        },
-        {
-            name: "Flagged Items",
-            value: flaggedItems
-        },
-        {
-            name: "Rules Evaluated",
-            value: rulesCount
-        },
-        {
-            name: "Scan Time",
-            value: format(scanTime, "dd-MMM-yyyy HH:mm:ss")
-        },
-    ]
+            {
+                name: "Services Scanned",
+                value: serviceScanned
+            },
+            {
+                name: "Provider Name",
+                value: serviceNameAsDisplayStr
+            },
+            {
+                name: "Flagged Items",
+                value: flaggedItems
+            },
+            {
+                name: "Rules Evaluated",
+                value: rulesCount
+            },
+            {
+                name: "Scan Time",
+                value: format(scanTime, "dd-MMM-yyyy HH:mm")
+            },
+        ]
 
     return (
         <div className="col-span-3 space-y-2">
             <Label className="text-lg font-bold text-widget-title">Basic Information</Label>
-            <Card className=" rounded-md">
+            <BasicInfoWidget items={basicInfo} />
+            {/* <Card className=" rounded-md">
                 <div className=" h-full">
                     <ul
                         role="list"
@@ -124,7 +129,7 @@ export default function BasicInfo({ summary, scanTime, serviceNameAsDisplayStr, 
                         ))}
                     </ul>
                 </div>
-            </Card>
+            </Card> */}
         </div>
     );
 }

@@ -14,7 +14,7 @@ export default function Loading() {
       </div>
 
       {/* Scan History */}
-      <h3 className="text-xl font-bold mb-4">Scan History</h3>
+      <h3 className="text-xl font-bold mb-4 mt-4">Scan History</h3>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {skeletons.map((_, index) => (
           <Card
