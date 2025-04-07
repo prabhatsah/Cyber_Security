@@ -83,7 +83,7 @@ export default function ChartWidget({
 
 
       <div className="col-span-4 space-y-2">
-        <Label className="text-lg font-bold text-widget-title text-widgetHeader">Security Vendors Flag</Label>
+        <Label className=" font-bold text-widget-title text-widgetHeader">Security Vendors Flag</Label>
 
         <Card className="rounded-md">
           <div className="flex flex-col items-center justify-center h-full">
@@ -120,10 +120,10 @@ export default function ChartWidget({
                         className={`${item.borderColor} w-1 shrink-0 rounded`}
                       />
                       <div>
-                        <p className="text-sm font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">
+                        <p className="text-sm font-medium text-widget-mainHeader">
                           {item.amount}
                         </p>
-                        <p className="mt-0.5 whitespace-nowrap text-sm text-tremor-content dark:text-dark-tremor-content">
+                        <p className="mt-0.5 whitespace-nowrap text-sm text-widget-mainDesc">
                           {item.name}
                         </p>
                       </div>
