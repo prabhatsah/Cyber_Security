@@ -1,5 +1,4 @@
 import { Card, DonutChart } from "@tremor/react";
-import { AnalysisResult, HarvesterData, WidgetDataItem } from "./type";
 import { Label } from "@radix-ui/react-label";
 
 /// For Border Color
@@ -10,33 +9,18 @@ const colorMap: Record<string, string> = {
   Low: "bg-green-800",
 };
 
-// const widgetData = [
-//   {
-//     name: 'Danger',
-//     amount: 10,
-//     borderColor: 'bg-red-900',
-//   },
-//   {
-//     name: 'Warning',
-//     amount: 9,
-//     borderColor: 'bg-red-500',
-//   },
-//   {
-//     name: 'Medium',
-//     amount: 6,
-//     borderColor: 'bg-amber-500',
-//   },
-//   {
-//     name: 'Low',
-//     amount: 2,
-//     borderColor: 'bg-green-800',
-//   },
-// ];
-
-export default function ChartWidget({ summary }) {
+export default function ChartWidget({ summary }: {
+  summary: Record<string, {
+    checked_items: number;
+    flagged_items: number;
+    max_level: string;
+    resources_count: number;
+    rules_count: number;
+  }>;
+}) {
 
   // Initialize maxLevelSum with default 0 values for all levels
-  const maxLevelSum = {
+  const maxLevelSum: Record<string, number> = {
     danger: 0,
     warning: 0,
     medium: 0,
@@ -45,7 +29,7 @@ export default function ChartWidget({ summary }) {
 
   // Iterate over the summary object and sum the rules_count by max_level
   for (const key in summary) {
-    const maxLevel = summary[key].max_level;
+    const maxLevel: string = summary[key].max_level;
     const rulesCount = summary[key].rules_count;
 
     // Sum rules_count based on max_level
