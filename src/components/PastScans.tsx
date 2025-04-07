@@ -86,14 +86,16 @@ export default function Example({ pastScans, onOpenPastScan }) {
     }
 
     return (
-        <div className="mt-6">
-            <h2 className=" font-bold text-widget-title text-widgetHeader">Scan History</h2>
+
+        <div className="">
+            <h2 className=" font-bold text-widget-title text-widgetHeader mt-4">Scan History</h2>
+        
             <dl className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 mt-4">
-                {pastScans.map((item) => {
+                {pastScans.map((item, index) => {
                     const StatusIcon = statusConfig[item.status as keyof typeof statusConfig]?.icon;
                     const statusLabel = statusConfig[item.status as keyof typeof statusConfig]?.label;
                     return (
-                        <Card key={item.titleHeading} className="relative overflow-hidden hover:shadow-lg transition-shadow duration-300 rounded-lg">
+                        <Card key={index} className="relative overflow-hidden hover:shadow-lg transition-shadow duration-300 rounded-lg">
                             <div className="absolute top-0 right-0 w-24 h-24 -mr-8 -mt-8 from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 rounded-full opacity-50"></div>
 
                             <div className="relative">
@@ -101,14 +103,15 @@ export default function Example({ pastScans, onOpenPastScan }) {
                                     <span>{item.titleHeading}</span>
                                     {item.key === openedScan && <Badge className='text-white'>opened</Badge>}
                                 </dt>
-                                <dd className="mt-1 text-lg font-bold text-widget-mainDesc">
+                                <dd className="mt-1 text-lg font-bold text-widget-mainDesc truncate" title={item.title}>
+
                                     {item.title}
                                 </dd>
                             </div>
 
                             <div className="mt-6 space-y-4">
-                                <div className="flex items-center justify-between p-3 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
-                                    <div className="flex items-center space-x-3">
+                                <div className="flex items-center justify-between p-3 bg-white dark:bg-gray-800 rounded-lg shadow-sm cursor-pointer"  onClick={() => handleClick(item.key)}>
+                                    <div className="flex items-center space-x-3" >
                                         <span className={cx(
                                             statusConfig[item.status as keyof typeof statusConfig]?.bgColor,
                                             'flex h-10 w-10 items-center justify-center rounded-lg text-white'
@@ -142,7 +145,7 @@ export default function Example({ pastScans, onOpenPastScan }) {
                                 </div>
                             </div>
 
-                            <a href={item.href} className="absolute inset-0" aria-hidden="true" onClick={() => handleClick(item.key)} />
+                            {/* <a href={item.href} className="absolute inset-0" aria-hidden="true" /> */}
                         </Card>
                     );
                 })}

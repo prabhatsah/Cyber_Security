@@ -10,6 +10,7 @@ import { ReactNode } from "react";
 import { RiInformationLine, RiShieldCheckLine } from "@remixicon/react";
 import { format } from "date-fns";
 import { Label } from "@radix-ui/react-label";
+import { BasicInfoWidget } from "@/components/BasicInfoWidget";
 
 interface WhoisData {
   admin: Record<string, string>;
@@ -166,7 +167,7 @@ export default function InfoWidget({
           Basic Information
         </Label>
 
-        <Card className="rounded-md p-6">
+        {/* <Card className="rounded-md">
           <div className="h-full">
             <ul
               role="list"
@@ -189,7 +190,8 @@ export default function InfoWidget({
               ))}
             </ul>
           </div>
-        </Card>
+        </Card> */}
+        <BasicInfoWidget items={basicInfo} />
       </div>
     </>
   );

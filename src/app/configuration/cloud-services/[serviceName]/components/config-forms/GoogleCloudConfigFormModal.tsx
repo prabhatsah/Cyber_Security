@@ -416,11 +416,7 @@ export default function GoogleCloudConfigFormModal({
                       name="projectId"
                       value={formData.projectId}
                       disabled={savedDataToBePopulated ? true : false}
-                      className={
-                        errors.projectId
-                          ? "w-full border border-red-500 rounded-md"
-                          : "w-full"
-                      }
+                      className={`w-full ${savedDataToBePopulated ? "cursor-not-allowed " : ""} ${errors.projectId ? "border border-red-500 rounded-md" : ""}`}
                       onChange={handleChange}
                       placeholder="Enter GCP Project Id"
                     />
@@ -445,7 +441,7 @@ export default function GoogleCloudConfigFormModal({
                     </label>
 
                     {savedDataToBePopulated?.serviceAccountKey ?
-                      <div className="relative w-full flex">
+                      <div className="relative w-full flex cursor-not-allowed">
                         <div className="relative rounded-l-md border-l border-t border-b px-3 py-2 shadow-sm sm:text-sm border-gray-300 bg-gray-100 text-gray-500 dark:border-gray-700
                       dark:bg-gray-800 dark:text-gray-500">
                           Choose File
