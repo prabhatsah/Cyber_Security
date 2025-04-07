@@ -1,8 +1,16 @@
 import { RenderAppBreadcrumb } from "@/components/app-breadcrumb";
-import Dashboard from "./components/Dashboard";
 import { fetchData } from "@/utils/api";
 import { AmazonWebServicesConfiguration, GoogleCloudConfiguration } from "@/app/configuration/components/type";
-import { testGoogleCloudConnection } from "./components/apis/googleCloud";
+import { ScoutSuiteScanData } from "@/app/api/cloud-container/scan/scoutSuite";
+import { Label } from "@radix-ui/react-label";
+import Header from "./components/Header";
+import ServiceSummary from "./components/ServiceSummary";
+import ServiceBreakdown from "./components/ServiceBreakdowns";
+
+const cloudServiceNameWiseCodeMap: Record<string, string> = {
+  "google-cloud-platform": "gcp",
+  "amazon-web-services": "aws",
+}
 
 export default async function CloudConfigScanningMainDashboard({
   params,
@@ -13,7 +21,7 @@ export default async function CloudConfigScanningMainDashboard({
   // Await the Promise to get the actual params object
   const { serviceName, configId } = (await params);
 
-  const serviceNameFromUrl = serviceName
+  const serviceNameAsDisplayStr = serviceName
     .split("-")
     .map((word) =>
       word === "ibm"
@@ -29,65 +37,27 @@ export default async function CloudConfigScanningMainDashboard({
   console.log("Data for Config Id (", configId, "): ", fetchedData);
 
 
-  // let apiBodyJson: Record<string, any> = {};
+  const cloudProvider = cloudServiceNameWiseCodeMap[serviceName];
+  let scanData: any = undefined;
   if (serviceName === "google-cloud-platform") {
-    // const projectId = specificConfigData.projectId;
-    // const serviceAccountKeyData = specificConfigData.serviceAccountKey;
+    const result = await ScoutSuiteScanData(
+      cloudProvider,
+      specificConfigData.serviceAccountKey.credentials
+    );
+    scanData = result.data;
 
-    const apiBodyJson = {
-      "cloudProvider": "gcp",
-      "credentials": specificConfigData.serviceAccountKey.credentials
+  } else if (serviceName === "amazon-web-services") {
+    const credentials = {
+      "awsAccessKey": specificConfigData.accessKeyId,
+      "awsSecretKey": specificConfigData.secretAccessKey,
     }
-
-    const response = await fetch("http://localhost:3000/src/app/api/cloud-container/scan", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(apiBodyJson), // This should include serviceAccountKey
-    });
-
-    const text = await response.text(); // Get response as text
-    try {
-      const result = JSON.parse(text);
-      console.log("GCP Scan Result: ", result);
-    } catch (error) {
-      console.log("Failed to parse JSON.");
-    }
-
-    // const byteCharacters = atob(base64String.split(",")[1]); // Decode Base64 (remove data URL prefix)
-    // const byteNumbers = new Array(byteCharacters.length);
-    // for (let i = 0; i < byteCharacters.length; i++) {
-    //   byteNumbers[i] = byteCharacters.charCodeAt(i);
-    // }
-    // const byteArray = new Uint8Array(byteNumbers);
-    // const blob = new Blob([byteArray], { type: "application/json" });
-    // const fileName = "service-account-key_" + projectId + ".json";
-    // const serviceAccountKeyFile: File | null = new File([blob], fileName, { type: "application/json", lastModified: Date.now(), });
-
-    // const fileName = "service-account-key_" + projectId + ".json";
-    // const response = await fetch(base64String);
-    // const buffer = await response.arrayBuffer();
-    // const serviceAccountKeyFile = new File([buffer], fileName, { type: "application/json" });
-
-    // const blob = new Blob([serviceAccountKeyData.data], { type: serviceAccountKeyData.mimeType });
-    // const serviceAccountKeyFile = new File([blob], serviceAccountKeyData.fileName, { type: serviceAccountKeyData.mimeType });
-
-
-    // const result = await testGoogleCloudConnection(
-    //   projectId,
-    //   serviceAccountKeyFile
-    // );
-    // console.log("Result: ", result);
-
-    // apiBodyJson = {
-    //   serviceAccountKey: serviceAccountKeyFile,
-    //   projectId: projectId,
-    // }
-
-    // console.log("API Body Json: ", apiBodyJson);
-
+    const result = await ScoutSuiteScanData(
+      cloudProvider,
+      credentials
+    );
+    scanData = result.data;
   }
+  console.log("Scan Data: ", scanData);
 
 
   return (
@@ -95,7 +65,7 @@ export default async function CloudConfigScanningMainDashboard({
       <RenderAppBreadcrumb
         breadcrumb={{
           level: 3,
-          title: serviceNameFromUrl,
+          title: serviceNameAsDisplayStr,
           href: `/scans/cloudContainer/cloud/${serviceName}`,
         }}
       />
@@ -106,7 +76,13 @@ export default async function CloudConfigScanningMainDashboard({
           href: `/scans/cloudContainer/cloud/${serviceName}/${configId}`,
         }}
       />
-      <Dashboard serviceName={serviceName} serviceNameFromUrl={serviceNameFromUrl} configId={configId} />
+      {/* <Dashboard serviceName={serviceName} serviceNameAsDisplayStr={serviceNameAsDisplayStr} configId={configId} /> */}
+      <div className="w-full">
+        <Label className="text-[20px] font-bold text-gray-900 dark:text-gray-50">{serviceNameAsDisplayStr} Scan</Label>
+        <Header summary={scanData.last_run.summary} scanTime={scanData.last_run.time} serviceNameAsDisplayStr={serviceNameAsDisplayStr} serviceCode={cloudProvider} projectId={specificConfigData.projectId} />
+        <ServiceSummary summary={scanData.last_run.summary} />
+        <ServiceBreakdown services={scanData.services} />
+      </div>
     </>
   );
 }
