@@ -458,4 +458,6 @@ export async function fetchScannedData(
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ query, instruction: "fetch" }),
   });
+
+  return res.json();
 }
