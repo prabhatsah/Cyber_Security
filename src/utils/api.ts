@@ -420,7 +420,7 @@ export async function saveScannedData(
                   ON CONFLICT (userid) 
                   DO UPDATE SET 
                       data = ${tableName}.data || jsonb_build_object('${values.key}', '${jsonString}'::jsonb),
-                      scanondata = CURRENT_TIMESTAMP
+                      lastscanon = CURRENT_TIMESTAMP
                   RETURNING *;
                   `;
 
@@ -433,4 +433,29 @@ export async function saveScannedData(
   });
 
   return res.json();
+}
+
+export async function fetchScannedData(
+  tableName: string,
+  orderByColumn: string | null,
+  allInstances: boolean | false,
+  columnFilter?: { column: string; value: string | number } | null,
+  jsonFilter?:
+    | {
+        column: string;
+        keyPath: string[];
+        value: string | number;
+      }[]
+    | null
+) {
+  const userId = (await getLoggedInUserProfile()).USER_ID;
+  columnFilter = allInstances ? null : { column: "userid", value: userId };
+  const query = { tableName, orderByColumn, columnFilter, jsonFilter };
+  console.log(query);
+
+  const res = await fetch(`${baseUrl}/api/dbApi`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ query, instruction: "fetch" }),
+  });
 }

@@ -81,7 +81,7 @@ export default function Widgets({
   }));
 
   const subject_alternative_names: Array<string> =
-    widgetData.attributes.last_https_certificate.extensions
+    widgetData.attributes.last_https_certificate?.extensions
       .subject_alternative_name ?? [];
 
   return (

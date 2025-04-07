@@ -4,10 +4,11 @@ import { RiAmazonFill, RiCheckboxCircleLine, RiCloseLine, RiErrorWarningLine } f
 import { Dialog, DialogPanel, Divider, Select, SelectItem } from "@tremor/react";
 import { format } from "date-fns";
 import { useState } from "react";
-import { testGoogleCloudConnection } from "../apis/googleCloud";
 import { addNewConfiguration } from "../apis/cloudConfigDataHandler";
 import { Input } from "@/components/Input";
 import { updateDataObject } from "@/utils/api";
+import { getLoggedInUserProfile } from "@/ikon/utils/api/loginService";
+import { AWSConnection } from "@/app/api/cloud-container/amazon-web-services/amazonWebServices";
 
 export default function AmazonWebServicesConfigFormModal({
   serviceUrl,
@@ -81,30 +82,36 @@ export default function AmazonWebServicesConfigFormModal({
   };
 
   const handleTestConnection = async (event: React.FormEvent) => {
-    // event.preventDefault();
-    // if (!validateForm()) return;
+    event.preventDefault();
+    if (!validateForm()) return;
 
-    // setIsLoading(true);
-    // setTestConnectionResult("");
+    setIsLoading(true);
+    setTestConnectionResult("");
 
-    // const result = await testGoogleCloudConnection(
-    //   formData.accessKeyId,
-    //   formData.secretAccessKey
-    // );
-    // if (result.success) {
-    //   setTestConnectionResult("Connection Successfull");
-    //   setIsConnected(true);
-    // } else {
-    //   setTestConnectionResult("Connection Failed!");
-    // }
+    const result = await AWSConnection(
+      formData.accessKeyId,
+      formData.secretAccessKey
+    );
+    if (result.success) {
+      setTestConnectionResult("Connection Successfull");
+      setIsConnected(true);
+    } else {
+      setTestConnectionResult("Connection Failed!");
+    }
 
-    // setIsLoading(false);
+    setIsLoading(false);
   };
 
-  const handleFormSave = (event: React.FormEvent) => {
+  async function handleFormSave(event: React.FormEvent) {
     event.preventDefault();
 
     if (!validateForm()) return;
+
+    const loggedInUserDetails = await getLoggedInUserProfile();
+    const createdBy = {
+      userId: loggedInUserDetails.USER_ID,
+      userName: loggedInUserDetails.USER_NAME,
+    }
 
     const configId = crypto.randomUUID();
     const dataToBeSaved: AmazonWebServicesConfiguration = {
@@ -115,11 +122,7 @@ export default function AmazonWebServicesConfigFormModal({
       secretAccessKey: formData.secretAccessKey,
       region: formData.region,
       createdOn: format(new Date(), "yyyy-MMM-dd HH:mm:ss"),
-      createdBy: {
-        userName: "Sayan Roy",
-        userId: "be7a0ece-f3d8-4c5b-84dc-52c32c4adff4",
-        userEmail: "sayan.roy@keross.com",
-      },
+      createdBy: createdBy,
     };
 
     addNewConfiguration(dataToBeSaved, serviceUrl);
@@ -169,12 +172,12 @@ export default function AmazonWebServicesConfigFormModal({
     <>
       <Dialog
         open={isFormModalOpen}
-        onClose={() => onClose()}
+        onClose={() => handleClose()}
         static={true}
         className="z-[100]"
       >
         <DialogPanel className="overflow-visible rounded-md p-0 sm:max-w-5xl">
-          <form action="#" method="POST" onSubmit={savedDataToBePopulated ? handleConfigUpdate : (!isConnected ? handleFormSave : handleTestConnection)}>
+          <form action="#" method="POST" onSubmit={savedDataToBePopulated ? handleConfigUpdate : (isConnected ? handleFormSave : handleTestConnection)}>
             <div className="absolute right-0 top-0 pr-3 pt-3">
               <button
                 type="button"

@@ -5,3 +5,7 @@ node_modules/
 
 # Environment variables
 .env
+
+
+# AWS Key File
+src/app/scans/cloudContainer/cloud/*/*/components/FetchCloudScanData.ts

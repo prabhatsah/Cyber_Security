@@ -13,12 +13,13 @@ import {
   SelectItem,
 } from "@tremor/react";
 import { useEffect, useState } from "react";
-import { testGoogleCloudConnection } from "../apis/googleCloud";
 import { Button } from "@/components/Button";
 import { format } from "date-fns";
 import { addNewConfiguration } from "../apis/cloudConfigDataHandler";
 import { GoogleCloudConfiguration } from "@/app/configuration/components/type";
 import { updateDataObject } from "@/utils/api";
+import { getLoggedInUserProfile } from "@/ikon/utils/api/loginService";
+import { GoogleCloudConnection } from "@/app/api/cloud-container/google-cloud-platform/googleCloud";
 
 export default function GoogleCloudConfigFormModal({
   serviceUrl,
@@ -106,7 +107,7 @@ export default function GoogleCloudConfigFormModal({
     setIsLoading(true);
     setTestConnectionResult("");
 
-    const result = await testGoogleCloudConnection(
+    const result = await GoogleCloudConnection(
       formData.projectId,
       formData.serviceAccountKey
     );
@@ -120,37 +121,87 @@ export default function GoogleCloudConfigFormModal({
     setIsLoading(false);
   };
 
-  const handleFormSave = (event: React.FormEvent) => {
+  async function handleFormSave(event: React.FormEvent) {
     event.preventDefault();
 
     if (!validateForm()) return;
 
     if (formData.serviceAccountKey) {
+      const loggedInUserDetails = await getLoggedInUserProfile();
+      const createdBy = {
+        userId: loggedInUserDetails.USER_ID,
+        userName: loggedInUserDetails.USER_NAME,
+      }
+
       const reader = new FileReader();
-      reader.readAsDataURL(formData.serviceAccountKey);
-      reader.onloadend = () => {
-        const uploadedJsonBase64 = reader.result;
-        const configId = crypto.randomUUID();
+      reader.onload = (e) => {
+        try {
+          const content = e.target?.result as string;
+          const serviceAccountKeyData = JSON.parse(content);
 
-        const dataToBeSaved: GoogleCloudConfiguration = {
-          configId: configId,
-          cloudProvider: "gcp",
-          configurationName: formData.configurationName,
-          projectId: formData.projectId,
-          serviceAccountKey: uploadedJsonBase64,
-          region: formData.region,
-          createdOn: format(new Date(), "yyyy-MMM-dd HH:mm:ss"),
-          createdBy: {
-            userName: "Sayan Roy",
-            userId: "be7a0ece-f3d8-4c5b-84dc-52c32c4adff4",
-            userEmail: "sayan.roy@keross.com",
-          },
-        };
+          const configId = crypto.randomUUID();
+          const dataToBeSaved: GoogleCloudConfiguration = {
+            configId: configId,
+            cloudProvider: "gcp",
+            configurationName: formData.configurationName,
+            projectId: formData.projectId,
+            serviceAccountKey: {
+              fileName: formData.serviceAccountKey?.name,
+              credentials: serviceAccountKeyData
+            },
+            region: formData.region,
+            createdOn: format(new Date(), "yyyy-MMM-dd HH:mm:ss"),
+            createdBy: createdBy,
+          };
 
-        addNewConfiguration(dataToBeSaved, serviceUrl);
-        handleClose();
+          addNewConfiguration(dataToBeSaved, serviceUrl);
+          handleClose();
+        } catch (error) {
+          console.error("Error parsing JSON file:", error);
+          alert("Invalid JSON file!");
+        }
       };
+
+      reader.readAsText(formData.serviceAccountKey);
     }
+
+    // if (formData.serviceAccountKey) {
+    //   const reader = new FileReader();
+    //   reader.readAsDataURL(formData.serviceAccountKey);
+    //   reader.onload = (e) => {
+    //     try {
+    //       const content = e.target?.result as string;
+    //       const parsedJson = JSON.parse(content); // Parse JSON
+    //       // const serviceAccountKeyArrayBuffer = await formData.serviceAccountKey.arrayBuffer();
+    //       // const serviceAccountKeyBuffer = Buffer.from(serviceAccountKeyArrayBuffer);
+
+    //       // const serviceAccountKeyData = {
+    //       //   name: formData.serviceAccountKey.name,
+    //       //   mimeType: formData.serviceAccountKey.type,
+    //       //   data: serviceAccountKeyBuffer,
+    //       // };
+
+    //       const configId = crypto.randomUUID();
+    //       const dataToBeSaved: GoogleCloudConfiguration = {
+    //         configId: configId,
+    //         cloudProvider: "gcp",
+    //         configurationName: formData.configurationName,
+    //         projectId: formData.projectId,
+    //         serviceAccountKey: serviceAccountKeyData,
+    //         region: formData.region,
+    //         createdOn: format(new Date(), "yyyy-MMM-dd HH:mm:ss"),
+    //         createdBy: {
+    //           userName: "Sayan Roy",
+    //           userId: "be7a0ece-f3d8-4c5b-84dc-52c32c4adff4",
+    //           userEmail: "sayan.roy@keross.com",
+    //         },
+    //       };
+
+    //       addNewConfiguration(dataToBeSaved, serviceUrl);
+    //       handleClose();
+    //     }
+    // }
+    // }
 
 
     // setConfigurationData((prevConfigData) => {
@@ -213,7 +264,7 @@ export default function GoogleCloudConfigFormModal({
     <>
       <Dialog
         open={isFormModalOpen}
-        onClose={() => onClose()}
+        onClose={() => handleClose()}
         static={true}
         className="z-[100]"
       >
@@ -221,7 +272,7 @@ export default function GoogleCloudConfigFormModal({
           <form
             action="#"
             method="POST"
-            onSubmit={savedDataToBePopulated ? handleConfigUpdate : (!isConnected ? handleFormSave : handleTestConnection)}
+            onSubmit={savedDataToBePopulated ? handleConfigUpdate : (isConnected ? handleFormSave : handleTestConnection)}
           >
             <div className="absolute right-0 top-0 pr-3 pt-3">
               <button
@@ -393,20 +444,31 @@ export default function GoogleCloudConfigFormModal({
                       Service Account Key (JSON)
                     </label>
 
-                    <Input
-                      id="serviceAccountKey"
-                      name="serviceAccountKey"
-                      // value={savedDataToBePopulated && savedDataToBePopulated.serviceAccountKey ? savedDataToBePopulated.serviceAccountKey : ""}
-                      disabled={savedDataToBePopulated ? true : false}
-                      type="file"
-                      className={
-                        errors.serviceAccountKey
-                          ? "w-full border border-red-500 rounded-md"
-                          : "w-full"
-                      }
-                      onChange={handleChange}
-                      accept=".json"
-                    />
+                    {savedDataToBePopulated?.serviceAccountKey ?
+                      <div className="relative w-full flex">
+                        <div className="relative rounded-l-md border-l border-t border-b px-3 py-2 shadow-sm sm:text-sm border-gray-300 bg-gray-100 text-gray-500 dark:border-gray-700
+                      dark:bg-gray-800 dark:text-gray-500">
+                          Choose File
+                        </div>
+
+                        <div className="flex-grow relative rounded-r-md border border-l-0 px-3 py-2 shadow-sm sm:text-sm
+                      placeholder-gray-400 dark:placeholder-gray-500 border-gray-300 bg-gray-100 text-gray-400 dark:border-gray-700
+                      dark:bg-gray-800 dark:text-gray-500">
+                          {savedDataToBePopulated.serviceAccountKey.fileName}
+                        </div>
+                      </div> : <Input
+                        id="serviceAccountKey"
+                        name="serviceAccountKey"
+                        disabled={savedDataToBePopulated ? true : false}
+                        type="file"
+                        className={
+                          errors.serviceAccountKey
+                            ? "w-full border border-red-500 rounded-md"
+                            : "w-full"
+                        }
+                        onChange={handleChange}
+                        accept=".json"
+                      />}
 
                     {errors.serviceAccountKey ? (
                       <p className="text-xs text-red-500">
@@ -458,7 +520,7 @@ export default function GoogleCloudConfigFormModal({
             </div>
           </form>
         </DialogPanel>
-      </Dialog>
+      </Dialog >
     </>
   );
 }
