@@ -26,7 +26,7 @@ export default function CloudWidget({ item }: { item: any }) {
         </span>
         <dt
           className="text-tremor-default font-medium 
-      text-tremor-content-strong dark:text-dark-tremor-content-strong"
+      text-widget-mainHeader"
         >
           <Link href={item.href} className="focus:outline-none">
             <span className="absolute inset-0" aria-hidden={true} />
@@ -38,17 +38,17 @@ export default function CloudWidget({ item }: { item: any }) {
         <div className="flex-1">
           <dd
             className="text-tremor-default leading-6 
-        text-tremor-content dark:text-dark-tremor-content"
+        text-widget-mainDesc"
           >
             {item.description}
           </dd>
         </div>
         <div className="mt-6 flex items-center space-x-2">
           <RiSettings5Line
-            className="size-5 text-tremor-content-subtle dark:text-dark-tremor-content-subtle"
+            className="size-5 text-widget-secondaryheader"
             aria-hidden={true}
           />
-          <p className="text-tremor-default text-tremor-content dark:text-dark-tremor-content">
+          <p className="text-tremor-default text-widget-secondaryheader">
             {item.configurationCount > 1
               ? `${item.configurationCount} Configurations`
               : `${item.configurationCount} Configuration`}
