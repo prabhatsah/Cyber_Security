@@ -19,13 +19,16 @@ export default function ChartWidget({
     widgetData.attributes.last_analysis_stats ?? {};
 
   const chartData: WidgetDataItem[] = Object.entries(last_analysis_stats)
-    .filter(([key]) => key !== "timeout") // Exclude "timeout"
+    .filter(([key]) => key !== "timeout")
+    .sort(([a], [b]) => {  // Add sorting
+      const order = ['malicious', 'suspicious', 'undetected', 'harmless'];
+      return order.indexOf(a) - order.indexOf(b);
+    })
     .map(([key, value]) => ({
-      name: key.charAt(0).toUpperCase() + key.slice(1), // Capitalize first letter
+      name: key.charAt(0).toUpperCase() + key.slice(1),
       amount: value,
-      borderColor: colorMap[key] || "bg-gray-500", // Default color if not mapped
+      borderColor: colorMap[key] || "bg-gray-500",
     }));
-
   const reputation = widgetData.attributes.reputation ?? "0";
   const reputationCss =
     reputation >= 0 ? "bg-green-100 text-green-900" : "bg-red-100 text-red-900";
@@ -83,7 +86,7 @@ export default function ChartWidget({
 
 
       <div className="col-span-4 space-y-2">
-        <Label className="text-lg font-bold text-widget-title text-widgetHeader">Security Vendors Flag</Label>
+        <Label className=" font-bold text-widget-title text-widgetHeader">Security Vendors Flag</Label>
 
         <Card className="rounded-md">
           <div className="flex flex-col items-center justify-center h-full">
@@ -96,7 +99,7 @@ export default function ChartWidget({
                   index="name"
                   showTooltip={false}
                   className="h-28 hide-donut-center"
-                  colors={["red-900", "red-500", "yellow-500", "green-800"]}
+                  colors={chartData.map(item => item.borderColor.replace('bg-', ''))}
                 />
                 <div className="flex flex-wrap justify-center gap-4 mt-2">
                   <span className="inline-flex items-center space-x-2.5 rounded-md bg-tremor-background py-1 pl-2.5 pr-1 ring-1 ring-inset ring-tremor-ring">
@@ -120,10 +123,10 @@ export default function ChartWidget({
                         className={`${item.borderColor} w-1 shrink-0 rounded`}
                       />
                       <div>
-                        <p className="text-sm font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">
+                        <p className="text-sm font-medium text-widget-mainHeader">
                           {item.amount}
                         </p>
-                        <p className="mt-0.5 whitespace-nowrap text-sm text-tremor-content dark:text-dark-tremor-content">
+                        <p className="mt-0.5 whitespace-nowrap text-sm text-widget-mainDesc">
                           {item.name}
                         </p>
                       </div>
