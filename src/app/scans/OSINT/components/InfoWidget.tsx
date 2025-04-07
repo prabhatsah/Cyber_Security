@@ -161,7 +161,7 @@ export default function InfoWidget({
 
   return (
     <>
-      <div className="col-span-8 h-full space-y-2">
+      <div className="col-span-3 space-y-2">
         <Label className="text-lg font-bold h-full text-widget-title text-widgetHeader">
           Basic Information
         </Label>
