@@ -254,6 +254,8 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
     }
     setLoading(null)
   };
+
+
   function showImageDetails(imageName: string) {
     console.log("Clicked image:", imageName);
     setScannedImagesDetails(imageName);
@@ -524,7 +526,7 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
                         <TableHeaderCell className="px-6 py-4 w-[30%] text-gray-800 dark:text-gray-200">
                           Timestamp
                         </TableHeaderCell>
-                        <TableHeaderCell className="px-6 py-4 w-[70%] text-gray-800 dark:text-gray-200">
+                        <TableHeaderCell className="text-center px-6 py-4 w-[70%] text-gray-800 dark:text-gray-200">
                           Log Message
                         </TableHeaderCell>
                       </TableRow>
@@ -945,7 +947,7 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
                         </div>
                       </div>
                       <TableRoot
-                        className={`overflow-x-auto overflow-y-auto rounded-lg scrollbar-thin scrollbar-thumb-yellow-500 scrollbar-track-gray-200 dark:scrollbar-thumb-blue-400 dark:scrollbar-track-gray-800 ${isFullScreen ? "max-h-[90vh]" : "max-h-80"
+                        className={`overflow-x-auto overflow-y-auto rounded-lg scrollbar-thin scrollbar-thumb-yellow-500 scrollbar-track-gray-200 dark:scrollbar-thumb-blue-400 dark:scrollbar-track-gray-800 ${isFullScreen ? "max-h-[90vh]" : "max-h-[80vh]"
                           }`}
                       >
                         <Table>
@@ -1046,7 +1048,7 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
             />
           )}
 
-          <h2 className="ms-3 mt-3 text-black dark:text-white">Previosuly Scanned Images</h2>
+          <h2 className="ms-3 mt-3 text-black dark:text-white">Previosuly Scanned </h2>
           <ScannedImages data={prevScans.Vulnerabilitiesgetter()} onImageClick={showImageDetails} />
 
           {/* {fileSystemResult && (<>
