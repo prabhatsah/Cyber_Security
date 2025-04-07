@@ -166,11 +166,11 @@ export default function InfoWidget({
           Basic Information
         </Label>
 
-        <Card className="rounded-md p-8">
+        <Card className="rounded-md p-6">
           <div className="h-full">
             <ul
               role="list"
-              className="grid grid-cols-1 h-full gap-6 lg:mt-0 lg:grid-cols-4"
+              className="grid grid-cols-1 h-full gap-3 lg:mt-0 lg:grid-cols-4"
             >
               {basicInfo.map((item) => (
                 <li
