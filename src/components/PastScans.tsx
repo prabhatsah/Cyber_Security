@@ -91,11 +91,11 @@ export default function Example({ pastScans, onOpenPastScan }) {
             <h2 className=" font-bold text-widget-title text-widgetHeader mt-4">Scan History</h2>
         
             <dl className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 mt-4">
-                {pastScans.map((item) => {
+                {pastScans.map((item, index) => {
                     const StatusIcon = statusConfig[item.status as keyof typeof statusConfig]?.icon;
                     const statusLabel = statusConfig[item.status as keyof typeof statusConfig]?.label;
                     return (
-                        <Card key={item.titleHeading} className="relative overflow-hidden hover:shadow-lg transition-shadow duration-300 rounded-lg">
+                        <Card key={index} className="relative overflow-hidden hover:shadow-lg transition-shadow duration-300 rounded-lg">
                             <div className="absolute top-0 right-0 w-24 h-24 -mr-8 -mt-8 from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 rounded-full opacity-50"></div>
 
                             <div className="relative">

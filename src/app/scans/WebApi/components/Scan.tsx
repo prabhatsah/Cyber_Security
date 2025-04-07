@@ -13,6 +13,7 @@ import Dashboard from "./dashboard";
 import { usePolling } from "../hooks/usePolling";
 import { useInterval } from "../hooks/useInterval";
 import { apiRequest } from "../utils/api";
+
 import { fetchData, fetchScannedData } from "@/utils/api";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || "/api/webApi/ZAP";
@@ -80,9 +81,10 @@ export default function Scan() {
   useEffect(() => {
     const getPastScans = async () => {
       const data = await fetchScannedData("web_api_scan", null, false, null, null);
-      if (data && data.data) {
-        setPastScans(data.data);
-      }
+      setPastScans(data.data);
+      // if (data && data[0].data) {
+      //   setPastScans(data[0].data);
+      // }
     };
 
     getPastScans();

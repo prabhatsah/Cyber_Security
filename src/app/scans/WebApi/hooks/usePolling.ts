@@ -215,7 +215,7 @@ export const usePolling = (
         console.error("Error polling spider progress:", err);
         clearInterval(spiderIntervalRef.current!);
       }
-    }, 3000); // Poll every 10 seconds
+    }, 5000); // Poll every 10 seconds
   };
 
   const startActiveScan = async () => {
@@ -268,7 +268,7 @@ export const usePolling = (
         console.error("Error polling active scan progress:", err);
         clearInterval(activeIntervalRef.current!);
       }
-    }, 5000); // Poll every 5 seconds
+    }, 15000); // Poll every 5 seconds
   };
 
   // Cleanup polling intervals on unmount
