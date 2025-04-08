@@ -420,16 +420,16 @@ export async function saveScannedData(
     ON CONFLICT (userid)
     DO UPDATE SET 
       data = (
-        SELECT jsonb_object_agg(key, new_data -> key)
+        SELECT jsonb_object_agg(key, merged_data -> key)
         FROM (
           SELECT key
-          FROM jsonb_object_keys(${tableName}.data || jsonb_build_object('${values.key}', '${jsonString}'::jsonb)) AS key
+          FROM jsonb_object_keys(${tableName}.data || jsonb_build_object('${values.key}', '${jsonString}'::jsonb)) AS key(key)
           ORDER BY key::bigint DESC
           LIMIT 10
         ) AS latest_keys,
         LATERAL (
           SELECT ${tableName}.data || jsonb_build_object('${values.key}', '${jsonString}'::jsonb)
-        ) AS new_data
+        ) AS merged_data
       ),
       lastscanon = CURRENT_TIMESTAMP
     RETURNING *;
@@ -445,6 +445,7 @@ export async function saveScannedData(
 
   return res.json();
 }
+
 
 export async function fetchScannedData(
   tableName: string,
