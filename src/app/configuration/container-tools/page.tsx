@@ -1,3 +1,4 @@
+
 import {
   RiAlibabaCloudFill,
   RiAmazonLine,
@@ -54,6 +55,11 @@ export default async function CloudServicesConfig() {
     return { ...cloudService, configurationCount: 0 };
   });
 
+
+import { RenderAppBreadcrumb } from "@/components/app-breadcrumb";
+
+export default function ContainerServicesConfig() {
+
   return (
     <>
       <RenderAppBreadcrumb
@@ -83,6 +89,7 @@ export default async function CloudServicesConfig() {
             <CloudWidget key={item.name} item={item} />
           ))}
         </div>
+
       </div>
     </>
   );
