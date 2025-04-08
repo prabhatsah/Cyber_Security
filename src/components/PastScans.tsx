@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Card } from "@tremor/react";
-import { AlertCircle, CheckCircle2, Eye, ArrowRight, User, Calendar } from 'lucide-react';
+import { AlertCircle, CheckCircle2, Eye, ArrowRight, User, Calendar,Info } from 'lucide-react';
 import { getProfileData } from '@/ikon/utils/actions/auth';
 import { Badge } from './ui/badge';
 
