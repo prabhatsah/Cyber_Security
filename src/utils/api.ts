@@ -161,13 +161,13 @@ export async function addColumn(
   const query = `INSERT INTO ${tableName} (${columnDefinitions}) VALUES ${valuesString};`;
   console.log(query);
 
-  // const res = await fetch(`${baseUrl}/api/dbApi`, {
-  //   method: "POST",
-  //   headers: { "Content-Type": "application/json" },
-  //   body: JSON.stringify({ query }),
-  // });
+  const res = await fetch(`${baseUrl}/api/dbApi`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ query }),
+  });
 
-  // return res.json();
+  return res.json();
 }
 
 //delete table

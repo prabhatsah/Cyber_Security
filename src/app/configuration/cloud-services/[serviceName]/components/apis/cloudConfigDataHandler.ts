@@ -1,6 +1,7 @@
 import {
   AmazonWebServicesConfiguration,
   GoogleCloudConfiguration,
+  WazuhAgentConfiguration,
 } from "@/app/configuration/components/type";
 import * as api from "@/utils/api";
 
@@ -50,7 +51,10 @@ export function addCloudEntry() {
 }
 
 export function addNewConfiguration(
-  newConfigData: GoogleCloudConfiguration | AmazonWebServicesConfiguration,
+  newConfigData:
+    | GoogleCloudConfiguration
+    | AmazonWebServicesConfiguration
+    | WazuhAgentConfiguration,
   cloudProvider: string
 ) {
   console.log("New Config Data: ", newConfigData);
