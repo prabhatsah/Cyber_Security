@@ -410,19 +410,30 @@ export async function saveScannedData(
   const jsonString = JSON.stringify(values.value).replace(/'/g, "");
 
   const query = `
-                  INSERT INTO ${tableName} (id, userid, data, lastscanon)
-                  VALUES (
-                      gen_random_uuid(), 
-                      '${userId}', 
-                      jsonb_build_object('${values.key}', '${jsonString}'::jsonb), 
-                      CURRENT_TIMESTAMP
-                  )
-                  ON CONFLICT (userid) 
-                  DO UPDATE SET 
-                      data = ${tableName}.data || jsonb_build_object('${values.key}', '${jsonString}'::jsonb),
-                      lastscanon = CURRENT_TIMESTAMP
-                  RETURNING *;
-                  `;
+    INSERT INTO ${tableName} (id, userid, data, lastscanon)
+    VALUES (
+      gen_random_uuid(), 
+      '${userId}', 
+      jsonb_build_object('${values.key}', '${jsonString}'::jsonb), 
+      CURRENT_TIMESTAMP
+    )
+    ON CONFLICT (userid)
+    DO UPDATE SET 
+      data = (
+        SELECT jsonb_object_agg(key, merged_data -> key)
+        FROM (
+          SELECT key
+          FROM jsonb_object_keys(${tableName}.data || jsonb_build_object('${values.key}', '${jsonString}'::jsonb)) AS key(key)
+          ORDER BY key::bigint DESC
+          LIMIT 10
+        ) AS latest_keys,
+        LATERAL (
+          SELECT ${tableName}.data || jsonb_build_object('${values.key}', '${jsonString}'::jsonb)
+        ) AS merged_data
+      ),
+      lastscanon = CURRENT_TIMESTAMP
+    RETURNING *;
+  `;
 
   console.log(query);
 
@@ -434,6 +445,7 @@ export async function saveScannedData(
 
   return res.json();
 }
+
 
 export async function fetchScannedData(
   tableName: string,
