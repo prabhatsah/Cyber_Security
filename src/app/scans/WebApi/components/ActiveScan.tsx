@@ -102,8 +102,8 @@ export default function ActiveScan({
             </TableHead> */}
             <TableBody>
               {messages.length > 0 ? (
-                messages.map((item) => (
-                  <TableRow key={item.id}>
+                messages.map((item, index) => (
+                  <TableRow key={index}>
                     <TableCell className="w-52">
                       {item.request_timestamp}
                     </TableCell>
