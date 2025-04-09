@@ -6,6 +6,7 @@ type IpInputProps = InputProps & {
   name: string;
   id?: string;
   className?: string;
+  error?: boolean;
   onChangeFunction?: (name: string, ip: string) => void; // returns combined IP
 };
 
@@ -15,6 +16,7 @@ export const IpInput = ({
   id,
   value = "",
   onChangeFunction,
+  error = false,
   ...rest
 }: IpInputProps) => {
   const [segments, setSegments] = useState(["", "", "", ""]);
@@ -83,7 +85,8 @@ export const IpInput = ({
             onKeyDown={(e) => handleKeyDown(e, index)}
             maxLength={3}
             name={name ? `${name}-${index}` : undefined}
-            className="w-12 text-center bg-slate-800 text-white rounded-md flex-grow"
+            className={`w-12 text-center bg-slate-800 text-white rounded-md flex-grow ${error ? "border border-red-500" : ""}`}
+            // className="w-12 text-center bg-slate-800 text-white rounded-md flex-grow"
             placeholder="0"
             {...rest}
           />

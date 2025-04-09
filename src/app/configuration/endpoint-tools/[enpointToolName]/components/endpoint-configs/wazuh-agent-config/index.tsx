@@ -13,20 +13,19 @@ export default async function WazuhAgentConfig({
   enpointToolUrl: string;
   enpointToolName: string;
 }) {
-  // const fetchedData = (await fetchData("cloud_config", "id", { column: "name", value: enpointToolUrl }, null)).data;
-  // console.log("Fetched data ", fetchedData);
-  // const eachConfigDataFormatted: Array<GoogleCloudConfiguration | any> = [...Object.values(fetchedData[0].data)];
-  // console.log(enpointToolName, " Data updated ", eachConfigDataFormatted);
+  const fetchedData = (await fetchData("endpoint_config", "id", { column: "name", value: enpointToolUrl }, null)).data;
+  console.log("Fetched data ", fetchedData);
+  const eachConfigDataFormatted: Array<GoogleCloudConfiguration | any> = [...Object.values(fetchedData[0].data)];
+  console.log(enpointToolName, " Data updated ", eachConfigDataFormatted);
 
   return (
     <>
       <ConfigHeader
         enpointToolUrl={enpointToolUrl}
         enpointToolName={enpointToolName}
-        // configDataLength={eachConfigDataFormatted.length}
-        configDataLength={0}
+        configDataLength={eachConfigDataFormatted.length}
       />
-      {/* {eachConfigDataFormatted.length === 0 ? <NoSavedConfigTemplate /> :
+      {eachConfigDataFormatted.length === 0 ? <NoSavedConfigTemplate /> :
         <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {eachConfigDataFormatted.map((eachConfigDetails) => (
             <WazuhAgentConfigWidget
@@ -35,8 +34,7 @@ export default async function WazuhAgentConfig({
               eachConfigDetails={eachConfigDetails}
             />
           ))}
-        </div>} */}
-      <NoSavedConfigTemplate />
+        </div>}
     </>
   );
 }

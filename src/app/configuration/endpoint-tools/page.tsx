@@ -19,31 +19,31 @@ const endPointConfigList = [
 ];
 
 export default async function CloudServicesConfig() {
-  // const fetchedData = (await fetchData("cloud_config", "id")).data;
+  const fetchedData = (await fetchData("endpoint_config", "id")).data;
 
-  // let configDataFormatted: Record<string, EachConfigDataFormatted> = {};
-  // if (fetchedData && fetchedData.length > 0) {
-  //   fetchedData.forEach((element: EachConfigDataFromServer) => {
-  //     configDataFormatted[element.name] = {
-  //       id: element.id,
-  //       data: element.data,
-  //     };
-  //   });
-  // }
+  let configDataFormatted: Record<string, EachConfigDataFormatted> = {};
+  if (fetchedData && fetchedData.length > 0) {
+    fetchedData.forEach((element: EachConfigDataFromServer) => {
+      configDataFormatted[element.name] = {
+        id: element.id,
+        data: element.data,
+      };
+    });
+  }
 
-  // const updatedCloudConfigList = cloudConfigList.map((cloudService) => {
-  //   const cloudServiceName = cloudService.href.split("/")[3];
+  const updatedEndpointConfigList = endPointConfigList.map((endpointTool) => {
+    const cloudServiceName = endpointTool.href.split("/")[3];
 
-  //   if (configDataFormatted[cloudServiceName]) {
-  //     return {
-  //       ...cloudService,
-  //       configurationCount: Object.keys(configDataFormatted[cloudServiceName].data)
-  //         .length,
-  //     };
-  //   }
+    if (configDataFormatted[cloudServiceName]) {
+      return {
+        ...endpointTool,
+        configurationCount: Object.keys(configDataFormatted[cloudServiceName].data)
+          .length,
+      };
+    }
 
-  //   return { ...cloudService, configurationCount: 0 };
-  // });
+    return { ...endpointTool, configurationCount: 0 };
+  });
 
   return (
     <>
@@ -66,11 +66,11 @@ export default async function CloudServicesConfig() {
             Endpoint Tools
           </h2>
           <span className="inline-flex size-7 items-center justify-center rounded-full bg-tremor-background-subtle text-tremor-label font-medium text-tremor-content-strong dark:bg-dark-tremor-background-subtle dark:text-dark-tremor-content-strong">
-            {endPointConfigList.length}
+            {updatedEndpointConfigList.length}
           </span>
         </div>
         <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 h-fit">
-          {endPointConfigList.map((item) => (
+          {updatedEndpointConfigList.map((item) => (
             <EachEndPointWidget key={item.name} item={item} />
           ))}
         </div>

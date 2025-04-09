@@ -1,10 +1,7 @@
-import {
-  AmazonWebServicesConfiguration,
-  GoogleCloudConfiguration,
-} from "@/app/configuration/components/type";
+import { WazuhAgentConfiguration } from "@/app/configuration/components/type";
 import * as api from "@/utils/api";
 
-const name = "cloud_config";
+const name = "endpoint_config";
 
 export function createTable() {
   const columnArr: Record<string, string>[] = [
@@ -31,18 +28,11 @@ export function addCloudEntry() {
     { column: "id" },
     {
       column: "name",
-      value: [
-        "amazon-web-services",
-        "microsoft-azure",
-        "google-cloud-platform",
-        "ibm-cloud",
-        "oracle-cloud-infrastructure",
-        "alibaba-cloud",
-      ],
+      value: ["wazuh-agent"],
     },
     {
       column: "data",
-      value: [{}, {}, {}, {}, {}, {}],
+      value: [{}],
     },
   ];
 
@@ -50,8 +40,8 @@ export function addCloudEntry() {
 }
 
 export function addNewConfiguration(
-  newConfigData: GoogleCloudConfiguration | AmazonWebServicesConfiguration,
-  cloudProvider: string
+  newConfigData: WazuhAgentConfiguration,
+  toolName: string
 ) {
   console.log("New Config Data: ", newConfigData);
   api.updateColumn(
@@ -59,6 +49,6 @@ export function addNewConfiguration(
     "data",
     newConfigData,
     newConfigData.configId,
-    cloudProvider
+    toolName
   );
 }

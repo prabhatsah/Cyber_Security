@@ -20,7 +20,7 @@ import { format } from "date-fns";
 import { WazuhAgentConfiguration } from "@/app/configuration/components/type";
 import { updateDataObject } from "@/utils/api";
 import { getLoggedInUserProfile } from "@/ikon/utils/api/loginService";
-import { addNewConfiguration } from "@/app/configuration/cloud-services/[serviceName]/components/apis/cloudConfigDataHandler";
+import { addNewConfiguration } from "@/app/configuration/cloud-services/[serviceName]/components/apis/endPointConfigDataHandler";
 import { IpInput } from "@/components/IpInput";
 
 export default function WazuhAgentConfigFormModal({
@@ -69,9 +69,39 @@ export default function WazuhAgentConfigFormModal({
   const validateForm = () => {
     const newErrors: { [key: string]: string } = {};
 
+    if (formData.osType.trim().length <= 0) {
+      newErrors.osType =
+        "OS Type must be specified. Please select an OS type!";
+    }
+
     if (formData.configurationName.trim().length < 3) {
       newErrors.configurationName =
-        "Configuration name must be at least 3 characters long.";
+        "Configuration name must be at least 3 characters long. Please provide a valid name!";
+    }
+
+    if (formData.listOfDevices.length <= 0) {
+      newErrors.listOfDevices =
+        "List of devices cannot be empty. Please select one or more devices!";
+    }
+
+    if (formData.probeId.length <= 0) {
+      newErrors.probeId =
+        "List of devices cannot be empty. Please select one or more devices!";
+    }
+
+    if (formData.managerIp.trim().length <= 0) {
+      newErrors.managerIp =
+        "Manager IP must be specified. Please provide a valid IP!";
+    }
+
+    if (formData.osType === "ubuntu" && formData.pythonServerIp.trim().length <= 0) {
+      newErrors.pythonServerIp =
+        "Python Server IP must be specified. Please provide a valid Server IP!";
+    }
+
+    if (formData.osType === "ubuntu" && formData.pythonServerPort.trim().length <= 0) {
+      newErrors.pythonServerPort =
+        "Python Server Port must be specified. Please provide a valid Server Port!";
     }
 
     setErrors(newErrors);
@@ -93,6 +123,7 @@ export default function WazuhAgentConfigFormModal({
   const handleIpInputChange = (inputName: string, ip: string) => {
     setErrors({});
 
+    inputName = inputName.split("-")[0];
     setFormData((prev) => ({ ...prev, [inputName]: ip }));
   };
 
@@ -136,11 +167,11 @@ export default function WazuhAgentConfigFormModal({
       listOfDevices: formData.listOfDevices,
       probeDetails: {
         probeId: formData.probeId,
-        probeName: "Wazuh Probe",
+        probeName: probeList.filter(eachProbe => eachProbe.probeId === formData.probeId)[0].probeName,
       },
-      managerIp: formData.managerIp ?? "",
-      pythonServerIp: formData?.pythonServerIp ?? "",
-      pythonServerPort: formData?.pythonServerPort ?? "",
+      managerIp: formData.managerIp,
+      pythonServerIp: formData.pythonServerIp ?? "",
+      pythonServerPort: formData.pythonServerPort ?? "",
       createdOn: format(new Date(), "yyyy-MMM-dd HH:mm:ss"),
       createdBy: createdBy,
     };
@@ -189,9 +220,11 @@ export default function WazuhAgentConfigFormModal({
   };
 
   const listOfDevices = [
-    { value: 'device-1', label: 'Device 1' },
-    { value: 'device-2', label: 'Device 2' },
-    { value: 'device-3', label: 'Device 3' },
+    { value: 'Keross LPTP - 07', label: 'Keross LPTP - 07' },
+    { value: 'Keross LPTP - 12', label: 'Keross LPTP - 12' },
+    { value: 'Keross LPTP - 10', label: 'Keross LPTP - 10' },
+    { value: 'Keross LPTP - 49', label: 'Keross LPTP - 49' },
+    { value: 'Keross LPTP - 51', label: 'Keross LPTP - 51' },
   ];
 
   const probeList = [
@@ -299,7 +332,7 @@ export default function WazuhAgentConfigFormModal({
                     <Button isLoading>Loading</Button>
                   ) : (
                     <Button variant="primary">
-                      {savedDataToBePopulated ? "Update" : (isConnected ? "Save" : "Connect")}
+                      {savedDataToBePopulated ? "Update" : (!isConnected ? "Save" : "Connect")}
                     </Button>
                   )}
                 </div>
@@ -314,28 +347,30 @@ export default function WazuhAgentConfigFormModal({
                       Select Operating System
                     </label>
 
-                    <Select
-                      id="osType"
-                      name="osType"
-                      className={
-                        errors.osType
-                          ? "w-full border border-red-500 rounded-md"
-                          : "w-full"
-                      }
-                      value={formData.osType}
-                      onValueChange={(val) => {
-                        setFormData((prev) => ({ ...prev, osType: val }))
-                      }}
-                    >
-                      <SelectItem value="windows">Windows</SelectItem>
-                      <SelectItem value="ubuntu">Ubuntu</SelectItem>
-                    </Select>
+                    <div className="flex flex-col gap-1">
+                      <Select
+                        id="osType"
+                        name="osType"
+                        className={
+                          errors.osType
+                            ? "w-full border border-red-500 rounded-md"
+                            : "w-full"
+                        }
+                        value={formData.osType}
+                        onValueChange={(val) => {
+                          setFormData((prev) => ({ ...prev, osType: val }))
+                        }}
+                      >
+                        <SelectItem value="windows">Windows</SelectItem>
+                        <SelectItem value="ubuntu">Ubuntu</SelectItem>
+                      </Select>
 
-                    {errors.osType ?? (
-                      <p className="text-xs text-red-500">
-                        {errors.osType}
-                      </p>
-                    )}
+                      {errors.osType ? (
+                        <p className="text-xs text-red-500">
+                          {errors.osType}
+                        </p>
+                      ) : undefined}
+                    </div>
                   </div>
                 </div>
 
@@ -348,24 +383,26 @@ export default function WazuhAgentConfigFormModal({
                       Configuration Name
                     </label>
 
-                    <Input
-                      id="configurationName"
-                      name="configurationName"
-                      value={formData.configurationName}
-                      className={
-                        errors.configurationName
-                          ? "w-full border border-red-500 rounded-md"
-                          : "w-full"
-                      }
-                      onChange={handleInputChange}
-                      placeholder="Enter Configuration Name"
-                    />
+                    <div className="flex flex-col gap-1">
+                      <Input
+                        id="configurationName"
+                        name="configurationName"
+                        value={formData.configurationName}
+                        className={
+                          errors.configurationName
+                            ? "w-full border border-red-500 rounded-md"
+                            : "w-full"
+                        }
+                        onChange={handleInputChange}
+                        placeholder="Enter Configuration Name"
+                      />
 
-                    {errors.configurationName ?? (
-                      <p className="text-xs text-red-500">
-                        {errors.configurationName}
-                      </p>
-                    )}
+                      {errors.configurationName ? (
+                        <p className="text-xs text-red-500">
+                          {errors.configurationName}
+                        </p>
+                      ) : undefined}
+                    </div>
                   </div>
                 </div>
 
@@ -378,31 +415,33 @@ export default function WazuhAgentConfigFormModal({
                       Select List of Devices
                     </label>
 
-                    <MultiSelect
-                      id="listOfDevices"
-                      name="listOfDevices"
-                      className={
-                        errors.listOfDevices
-                          ? "w-full border border-red-500 rounded-md"
-                          : "w-full"
-                      }
-                      value={formData.listOfDevices}
-                      onValueChange={(val) =>
-                        setFormData((prev) => ({ ...prev, listOfDevices: val }))
-                      }
-                    >
-                      {listOfDevices.map((device) => (
-                        <MultiSelectItem key={device.value} value={device.value}>
-                          {device.label}
-                        </MultiSelectItem>
-                      ))}
-                    </MultiSelect>
+                    <div className="flex flex-col gap-1">
+                      <MultiSelect
+                        id="listOfDevices"
+                        name="listOfDevices"
+                        className={
+                          errors.listOfDevices
+                            ? "w-full border border-red-500 rounded-md"
+                            : "w-full"
+                        }
+                        value={formData.listOfDevices}
+                        onValueChange={(val) =>
+                          setFormData((prev) => ({ ...prev, listOfDevices: val }))
+                        }
+                      >
+                        {listOfDevices.map((device) => (
+                          <MultiSelectItem key={device.value} value={device.value}>
+                            {device.label}
+                          </MultiSelectItem>
+                        ))}
+                      </MultiSelect>
 
-                    {errors.listOfDevices ?? (
-                      <p className="text-xs text-red-500">
-                        {errors.listOfDevices}
-                      </p>
-                    )}
+                      {errors.listOfDevices ? (
+                        <p className="text-xs text-red-500">
+                          {errors.listOfDevices}
+                        </p>
+                      ) : undefined}
+                    </div>
                   </div>
                 </div>
 
@@ -415,25 +454,33 @@ export default function WazuhAgentConfigFormModal({
                       Select Probe
                     </label>
 
-                    <Select
-                      id="region"
-                      name="region"
-                      className={
-                        errors.probeId
-                          ? "w-full border border-red-500 rounded-md"
-                          : "w-full"
-                      }
-                      value={formData.probeId}
-                      onValueChange={(val) =>
-                        setFormData((prev) => ({ ...prev, probeId: val }))
-                      }
-                    >
-                      {probeList.map((probe) => (
-                        <SelectItem key={probe.probeId} value={probe.probeId}>
-                          {probe.probeName}
-                        </SelectItem>
-                      ))}
-                    </Select>
+                    <div className="flex flex-col gap-1">
+                      <Select
+                        id="region"
+                        name="region"
+                        className={
+                          errors.probeId
+                            ? "w-full border border-red-500 rounded-md"
+                            : "w-full"
+                        }
+                        value={formData.probeId}
+                        onValueChange={(val) =>
+                          setFormData((prev) => ({ ...prev, probeId: val }))
+                        }
+                      >
+                        {probeList.map((probe) => (
+                          <SelectItem key={probe.probeId} value={probe.probeId}>
+                            {probe.probeName}
+                          </SelectItem>
+                        ))}
+                      </Select>
+
+                      {errors.probeId ? (
+                        <p className="text-xs text-red-500">
+                          {errors.probeId}
+                        </p>
+                      ) : undefined}
+                    </div>
                   </div>
                 </div>
 
@@ -446,21 +493,19 @@ export default function WazuhAgentConfigFormModal({
                       Manager IP
                     </label>
 
-                    <IpInput
-                      name="managerIp"
-                      id="managerIp"
-                      className={
-                        errors.managerIp
-                          ? "w-full border border-red-500 rounded-md"
-                          : "w-full"
-                      }
-                      value={formData.managerIp}
-                      onChangeFunction={handleIpInputChange}
-                    />
+                    <div className="flex flex-col gap-1">
+                      <IpInput
+                        name="managerIp"
+                        id="managerIp"
+                        error={errors.managerIp ? true : false}
+                        value={formData.managerIp}
+                        onChangeFunction={handleIpInputChange}
+                      />
 
-                    {errors.managerIp ?? (
-                      <p className="text-xs text-red-500">{errors.managerIp}</p>
-                    )}
+                      {errors.managerIp ? (
+                        <p className="text-xs text-red-500">{errors.managerIp}</p>
+                      ) : undefined}
+                    </div>
                   </div>
                 </div>
 
@@ -475,21 +520,19 @@ export default function WazuhAgentConfigFormModal({
                         Python Server IP
                       </label>
 
-                      <IpInput
-                        name="pythonServerIp"
-                        id="pythonServerIp"
-                        className={
-                          errors.pythonServerIp
-                            ? "w-full border border-red-500 rounded-md"
-                            : "w-full"
-                        }
-                        value={formData.pythonServerIp}
-                        onChangeFunction={handleIpInputChange}
-                      />
+                      <div className="flex flex-col gap-1">
+                        <IpInput
+                          name="pythonServerIp"
+                          id="pythonServerIp"
+                          error={errors.pythonServerIp ? true : false}
+                          value={formData.pythonServerIp}
+                          onChangeFunction={handleIpInputChange}
+                        />
 
-                      {errors.pythonServerIp ?? (
-                        <p className="text-xs text-red-500">{errors.pythonServerIp}</p>
-                      )}
+                        {errors.pythonServerIp ? (
+                          <p className="text-xs text-red-500">{errors.pythonServerIp}</p>
+                        ) : undefined}
+                      </div>
                     </div>
 
                     <div className="flex flex-col space-y-3">
@@ -500,24 +543,26 @@ export default function WazuhAgentConfigFormModal({
                         Python Server Port
                       </label>
 
-                      <Input
-                        id="pythonServerPort"
-                        name="pythonServerPort"
-                        value={formData.pythonServerPort}
-                        className={
-                          errors.pythonServerPort
-                            ? "w-full border border-red-500 rounded-md"
-                            : "w-full"
-                        }
-                        onChange={handleInputChange}
-                        placeholder="Enter Python Server Port Number"
-                      />
+                      <div className="flex flex-col gap-1">
+                        <Input
+                          id="pythonServerPort"
+                          name="pythonServerPort"
+                          value={formData.pythonServerPort}
+                          className={
+                            errors.pythonServerPort
+                              ? "w-full border border-red-500 rounded-md"
+                              : "w-full"
+                          }
+                          onChange={handleInputChange}
+                          placeholder="Enter Python Server Port Number"
+                        />
 
-                      {errors.pythonServerPort ?? (
-                        <p className="text-xs text-red-500">
-                          {errors.pythonServerPort}
-                        </p>
-                      )}
+                        {errors.pythonServerPort ? (
+                          <p className="text-xs text-red-500">
+                            {errors.pythonServerPort}
+                          </p>
+                        ) : undefined}
+                      </div>
                     </div>
                   </div>
                 </div> : undefined}
