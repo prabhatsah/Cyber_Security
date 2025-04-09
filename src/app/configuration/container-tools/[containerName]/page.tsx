@@ -11,7 +11,7 @@ const globalConfigMap: Record<
   }>
 > = {
   "trivy": TrivyConfig,
-  
+
 };
 
 export default function CloudcontainerDetails({
@@ -37,8 +37,14 @@ export default function CloudcontainerDetails({
     <>
       <RenderAppBreadcrumb
         breadcrumb={{
+          level: 0,
+          title: "Configuration",
+        }}
+      />
+      <RenderAppBreadcrumb
+        breadcrumb={{
           level: 1,
-          title: "Cloud containers",
+          title: "Container Tools",
           href: "/configuration/container-tools",
         }}
       />

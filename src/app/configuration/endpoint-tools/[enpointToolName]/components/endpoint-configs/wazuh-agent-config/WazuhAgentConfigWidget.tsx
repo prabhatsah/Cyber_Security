@@ -72,11 +72,13 @@ export default function WazuhAgentConfigWidget({
         <div className="grid grid-cols-2 mt-6 divide-x divide-tremor-border dark:divide-dark-tremor-border border-tremor-border dark:border-dark-tremor-border">
           <div className="truncate px-3 py-2">
             <h4 className="text-widget-secondaryheader">List of Devices</h4>
-            <ul className="mt-2 space-y-1">
-              {eachConfigDetails.listOfDevices.map(eachDevice => (<li title={eachDevice} className="truncate text-sm leading-6 text-tremor-content dark:text-dark-tremor-content">
-                {eachDevice}
-              </li>))}
-            </ul>
+            <div className="mt-2 h-14 overflow-y-auto pr-2">
+              <ul className="space-y-1">
+                {eachConfigDetails.listOfDevices.map(eachDevice => (<li key={eachDevice} title={eachDevice} className="truncate text-sm leading-6 text-tremor-content dark:text-dark-tremor-content">
+                  {eachDevice}
+                </li>))}
+              </ul>
+            </div>
           </div>
 
           <div className="truncate px-3 py-2">

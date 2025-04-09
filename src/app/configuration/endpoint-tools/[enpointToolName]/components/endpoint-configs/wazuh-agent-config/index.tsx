@@ -1,7 +1,5 @@
 import ConfigHeader from "../../components/ConfigHeader";
-import {
-  GoogleCloudConfiguration,
-} from "@/app/configuration/components/type";
+import { WazuhAgentConfiguration } from "@/app/configuration/components/type";
 import NoSavedConfigTemplate from "../../components/NoSavedConfigTemplate";
 import { fetchData } from "@/utils/api";
 import WazuhAgentConfigWidget from "./WazuhAgentConfigWidget";
@@ -15,7 +13,7 @@ export default async function WazuhAgentConfig({
 }) {
   const fetchedData = (await fetchData("endpoint_config", "id", { column: "name", value: enpointToolUrl }, null)).data;
   console.log("Fetched data ", fetchedData);
-  const eachConfigDataFormatted: Array<GoogleCloudConfiguration | any> = [...Object.values(fetchedData[0].data)];
+  const eachConfigDataFormatted: Array<WazuhAgentConfiguration | any> = [...Object.values(fetchedData[0].data)];
   console.log(enpointToolName, " Data updated ", eachConfigDataFormatted);
 
   return (

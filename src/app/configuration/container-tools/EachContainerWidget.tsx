@@ -2,11 +2,7 @@ import { RiSettings5Line } from "@remixicon/react";
 import { Card } from "@tremor/react";
 import Link from "next/link";
 
-function clickHandle(url: string) {
-  //redirect(url);
-}
-
-export default function ContainerWidget({ item }: { item: any }) {
+export default function EachContainerWidget({ item }: { item: any }) {
 
   return (
     <Card

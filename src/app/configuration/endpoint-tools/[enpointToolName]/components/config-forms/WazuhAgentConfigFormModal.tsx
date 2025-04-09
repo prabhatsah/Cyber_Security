@@ -20,7 +20,7 @@ import { format } from "date-fns";
 import { WazuhAgentConfiguration } from "@/app/configuration/components/type";
 import { updateDataObject } from "@/utils/api";
 import { getLoggedInUserProfile } from "@/ikon/utils/api/loginService";
-import { addNewConfiguration } from "@/app/configuration/cloud-services/[serviceName]/components/apis/endPointConfigDataHandler";
+import { addNewConfiguration } from "@/app/configuration/endpoint-tools/[enpointToolName]/components/apis/endPointConfigDataHandler";
 import { IpInput } from "@/components/IpInput";
 
 export default function WazuhAgentConfigFormModal({
@@ -43,11 +43,6 @@ export default function WazuhAgentConfigFormModal({
       " ";
   });
   enpointToolName.trim();
-
-  const [cloudConfigData, setCloudConfigData] = useState<any>();
-  useEffect(() => {
-    console.log(cloudConfigData);
-  }, [cloudConfigData]);
 
   // const { setConfigurationData } = useConfiguration();
 
@@ -448,7 +443,7 @@ export default function WazuhAgentConfigFormModal({
                 <div>
                   <div className="flex flex-col space-y-3">
                     <label
-                      htmlFor="region"
+                      htmlFor="probeId"
                       className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
                     >
                       Select Probe
@@ -456,8 +451,8 @@ export default function WazuhAgentConfigFormModal({
 
                     <div className="flex flex-col gap-1">
                       <Select
-                        id="region"
-                        name="region"
+                        id="probeId"
+                        name="probeId"
                         className={
                           errors.probeId
                             ? "w-full border border-red-500 rounded-md"

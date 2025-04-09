@@ -141,7 +141,7 @@ async function fetchPaginatedData(
       ) t;
     `;
 
-    // console.log("Query: ", query);
+    console.log("Query: ", query);
 
     const result = await ssh.execCommand(
       `PGPASSWORD="postgres" psql -h localhost -U postgres -p 5436 -d cyber_security -A -t -c "${query}"`

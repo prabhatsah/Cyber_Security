@@ -1,5 +1,3 @@
-// import AddConfigurationBtnWithFormDialog from "../AddConfigurationBtnWithFormDialog";
-
 import AddConfigurationBtnWithFormDialog from "../AddConfigurationBtnWithFormDialog";
 
 export default function ConfigHeader({

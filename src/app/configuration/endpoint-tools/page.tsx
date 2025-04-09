@@ -18,7 +18,7 @@ const endPointConfigList = [
   },
 ];
 
-export default async function CloudServicesConfig() {
+export default async function EndPointToolsConfig() {
   const fetchedData = (await fetchData("endpoint_config", "id")).data;
 
   let configDataFormatted: Record<string, EachConfigDataFormatted> = {};
