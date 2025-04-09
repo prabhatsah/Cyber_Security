@@ -410,29 +410,35 @@ export async function saveScannedData(
   const jsonString = JSON.stringify(values.value).replace(/'/g, "");
 
   const query = `
-    INSERT INTO ${tableName} (id, userid, data, lastscanon)
-    VALUES (
-      gen_random_uuid(), 
-      '${userId}', 
-      jsonb_build_object('${values.key}', '${jsonString}'::jsonb), 
-      CURRENT_TIMESTAMP
-    )
-    ON CONFLICT (userid)
-    DO UPDATE SET 
-      data = (
-        SELECT jsonb_object_agg(key, merged_data -> key)
-        FROM (
-          SELECT key
-          FROM jsonb_object_keys(${tableName}.data || jsonb_build_object('${values.key}', '${jsonString}'::jsonb)) AS key(key)
-          ORDER BY key::bigint DESC
-          LIMIT 10
-        ) AS latest_keys,
-        LATERAL (
-          SELECT ${tableName}.data || jsonb_build_object('${values.key}', '${jsonString}'::jsonb)
-        ) AS merged_data
-      ),
-      lastscanon = CURRENT_TIMESTAMP
-    RETURNING *;
+                WITH user_data AS (
+              SELECT data
+              FROM ${tableName}
+              WHERE userid = '${userId}'
+            ),
+            merged AS (
+              SELECT 
+                (SELECT data FROM user_data) || jsonb_build_object('${values.key}', '${jsonString}'::jsonb) AS merged_data
+            ),
+            filtered AS (
+              SELECT jsonb_object_agg(key, merged_data -> key) AS filtered_data
+              FROM (
+                SELECT key
+                FROM (
+                  SELECT key::bigint AS ts_key, key
+                  FROM jsonb_object_keys((SELECT merged_data FROM merged)) AS key(key)
+                ) sub
+                ORDER BY ts_key DESC
+                LIMIT 10
+              ) AS latest_keys,
+              LATERAL (
+                SELECT merged_data FROM merged
+              ) AS merged_data
+            )
+            UPDATE ${tableName}
+            SET data = (SELECT filtered_data FROM filtered),
+                lastscanon = CURRENT_TIMESTAMP
+            WHERE userid = '${userId}'
+            RETURNING *;
   `;
 
   console.log(query);
