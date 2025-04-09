@@ -18,14 +18,6 @@ import { fetchData, fetchScannedData } from "@/utils/api";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || "/api/webApi/ZAP";
 
-const ristCodeVsDesc = {
-  0: "Info",
-  1: "Low",
-  2: "Medium",
-  3: "High",
-  4: "Critical",
-};
-
 const getRiskAndIssues = (alerts) => {
   const returnObj = {
     risk: "", issues: 0
@@ -64,7 +56,7 @@ const getRiskAndIssues = (alerts) => {
 export default function Scan() {
   const [query, setQuery] = useState("");
   const [data, setData] = useState(null);
-  const [messages, setMessages] = useState([]);
+  // const [messages, setMessages] = useState([]);
   const [pastScans, setPastScans] = useState([]);
   const [openTabs, setOpenTabs] = useState(false);
 
@@ -75,12 +67,13 @@ export default function Scan() {
     foundURI,
     newAlerts,
     numRequests,
+    messages,
     startScan,
   } = usePolling(apiUrl, query, setOpenTabs, setData);
 
   useEffect(() => {
     const getPastScans = async () => {
-      const data = await fetchScannedData("web_api_scan", null, false, null, null);
+      const data = await fetchScannedData("web_api_scan", 'userid', false, null, null);
       setPastScans(data.data);
       // if (data && data[0].data) {
       //   setPastScans(data[0].data);
@@ -90,27 +83,27 @@ export default function Scan() {
     getPastScans();
   }, [data]);
 
-  const fetchMessages = useCallback(async () => {
-    if (!query || spiderProgress != 100) return; // Stop fetching when not scanning
-    try {
-      const messagesData = await apiRequest(
-        `${apiUrl}/messages?baseurl=${encodeURIComponent(query)}&start=${messages.length}`,
-      );
-      // setMessages(messagesData.messages);
-      setMessages((prev) => [...prev, ...messagesData.messages]);
-    } catch (err) {
-      console.error("Error fetching messages:", err);
-    }
-  }, [query, messages.length, spiderProgress]);
+  // const fetchMessages = useCallback(async () => {
+  //   if (!query || spiderProgress != 100) return; // Stop fetching when not scanning
+  //   try {
+  //     const messagesData = await apiRequest(
+  //       `${apiUrl}/messages?baseurl=${encodeURIComponent(query)}&start=${messages.length}`,
+  //     );
+  //     // setMessages(messagesData.messages);
+  //     setMessages((prev) => [...prev, ...messagesData.messages]);
+  //   } catch (err) {
+  //     console.error("Error fetching messages:", err);
+  //   }
+  // }, [query, messages.length, spiderProgress]);
 
   // Interval runs only when scanning is active
-  useInterval(
-    () => {
-      if (isScanning && spiderProgress == 100)
-        fetchMessages();
-    },
-    isScanning && spiderProgress == 100 ? 10000 : null
-  );
+  // useInterval(
+  //   () => {
+  //     if (isScanning && spiderProgress == 100)
+  //       fetchMessages();
+  //   },
+  //   isScanning && spiderProgress == 100 ? 10000 : null
+  // );
 
   function handleOpenPastScan(key: string) {
     const pastScan = pastScans.find(scan => scan.data[key]);

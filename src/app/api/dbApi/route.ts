@@ -43,10 +43,10 @@ export async function POST(req: Request) {
 
     if (instruction && instruction === "update") {
       fs.writeFileSync(localFilePath, query, { encoding: "utf8" });
-      console.log(
-        "SQL Query Written to File:",
-        fs.readFileSync(localFilePath, "utf8")
-      );
+      // console.log(
+      //   "SQL Query Written to File:",
+      //   fs.readFileSync(localFilePath, "utf8")
+      // );
       await ssh.putFile(localFilePath, remoteFilePath);
       result = await ssh.execCommand(
         `PGPASSWORD="postgres" psql -h localhost -U postgres -p 5436 -d cyber_security -f "${remoteFilePath}"`
@@ -61,8 +61,8 @@ export async function POST(req: Request) {
         query.columnFilter,
         query.jsonFilter
       );
-      console.log("this is the fetched result");
-      console.log(fetchedResult);
+      // console.log("this is the fetched result");
+      // console.log(fetchedResult);
       return NextResponse.json({
         success: true,
         fullData: result,
@@ -73,15 +73,16 @@ export async function POST(req: Request) {
         `PGPASSWORD="postgres" psql -h localhost -U postgres -p 5436 -d cyber_security -c "${query}"`
       );
     }
-    console.log("Query Result:", result);
+    // console.log("Query Result:", result);
     ssh.dispose();
 
-    if (result.stdout.includes("json")) jsonData = extractJson(result.stdout);
+    if (result.stdout.includes("json") && instruction != "update")
+      jsonData = extractJson(result.stdout);
 
     return NextResponse.json({
       success: true,
       fullData: result,
-      data: jsonData ? jsonData : null,
+      data: jsonData ? jsonData : result,
     });
   } catch (error: any) {
     console.error("SSH Connection Failed:", error);
@@ -113,25 +114,16 @@ async function fetchPaginatedData(
     let selectClause = "*";
     let fromClause = tableName;
 
+    // Filter by direct column
     if (columnFilter) {
       whereClauses.push(`"${columnFilter.column}" = '${columnFilter.value}'`);
     }
 
     if (jsonFilters && jsonFilters.length > 0) {
-      selectClause = "configs.value AS config_filtered";
-      fromClause = `${tableName}, jsonb_each(data) AS configs`;
-
       jsonFilters.forEach((jsonFilter) => {
-        let keyPathQuery = jsonFilter.keyPath
-          .map((key, index) =>
-            index === jsonFilter.keyPath.length - 1
-              ? `->>'${key}'`
-              : `->'${key}'`
-          )
-          .join("");
-
+        const path = jsonFilter.keyPath.map((k) => `'${k}'`).join(",");
         whereClauses.push(
-          `configs.value${keyPathQuery} = '${jsonFilter.value}'`
+          `"${jsonFilter.column}" #>> ARRAY[${path}] = '${jsonFilter.value}'`
         );
       });
     }
@@ -144,11 +136,12 @@ async function fetchPaginatedData(
         SELECT ${selectClause}
         FROM ${fromClause}
         ${whereClause}
+        ORDER BY "${orderByColumn}"
         LIMIT ${limit} OFFSET ${offset}
       ) t;
     `;
 
-    console.log("Query: ", query);
+    // console.log("Query: ", query);
 
     const result = await ssh.execCommand(
       `PGPASSWORD="postgres" psql -h localhost -U postgres -p 5436 -d cyber_security -A -t -c "${query}"`
