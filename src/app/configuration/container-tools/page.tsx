@@ -23,12 +23,12 @@ const containerConfigList = [
       "Trivy is a simple and comprehensive vulnerability scanner for container images and file systems. It detects vulnerabilities in operating system packages (such as apt, yum, apk), programming language dependencies (such as npm, pip, bundler), and configuration files",
     configurationCount: 0,
     icon: <SiTrivy  className="size-5"/>,
-    href: "/configuration/container-services/trivy",
+    href: "/configuration/container-tools/trivy/config-froms",
   },
   
 ];
 
-export default async function CloudServicesConfig() {
+export  async function CloudServicesConfig() {
   const fetchedData = (await fetchData("cloud_config", "id")).data;
 
   let configDataFormatted: Record<string, EachConfigDataFormatted> = {};
@@ -55,8 +55,8 @@ export default async function CloudServicesConfig() {
     return { ...cloudService, configurationCount: 0 };
   });
 
+}
 
-import { RenderAppBreadcrumb } from "@/components/app-breadcrumb";
 
 export default function ContainerServicesConfig() {
 
@@ -92,5 +92,5 @@ export default function ContainerServicesConfig() {
 
       </div>
     </>
-  );
+  )
 }
