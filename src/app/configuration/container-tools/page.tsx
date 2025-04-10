@@ -30,7 +30,7 @@ const containerConfigList = [
 ];
 
 
-export default async function ContainerToolsConfig() {
+export  async function ContainerToolsConfig() {
   const fetchedData = (await fetchData("container_config", "id")).data;
 
   let configDataFormatted: Record<string, EachConfigDataFormatted> = {};
@@ -56,7 +56,7 @@ export default async function ContainerToolsConfig() {
 
     return { ...cloudService, configurationCount: 0 };
   });
-
+}
 
 
 
@@ -83,11 +83,11 @@ export default function ContainerServicesConfig() {
             Container Tools
           </h2>
           <span className="inline-flex size-7 items-center justify-center rounded-full bg-tremor-background-subtle text-tremor-label font-medium text-tremor-content-strong dark:bg-dark-tremor-background-subtle dark:text-dark-tremor-content-strong">
-            {updatedcontainerConfigList.length}
+            {containerConfigList.length}
           </span>
         </div>
         <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 h-fit">
-          {updatedcontainerConfigList.map((item) => (
+          {containerConfigList.map((item) => (
             <EachContainerWidget key={item.name} item={item} />
           ))}
         </div>
