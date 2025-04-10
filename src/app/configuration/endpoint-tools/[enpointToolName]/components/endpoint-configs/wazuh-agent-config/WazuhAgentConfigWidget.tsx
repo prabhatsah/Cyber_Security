@@ -1,7 +1,7 @@
 "use client";
 
 import { WazuhAgentConfiguration } from "@/app/configuration/components/type";
-import { RiDeleteBin6Line, RiEdit2Line, RiUbuntuLine, RiWindowsFill } from "@remixicon/react";
+import { RiDeleteBin6Line, RiEdit2Line, RiUbuntuFill, RiWindowsFill } from "@remixicon/react";
 import { Card } from "@tremor/react";
 import { format } from "date-fns";
 import { useState } from "react";
@@ -26,7 +26,7 @@ export default function WazuhAgentConfigWidget({
     await deleteConfigWithKey("endpoint_config", "configId", configId);
   };
 
-  const DisplayIcon = eachConfigDetails.osType === "windows" ? RiWindowsFill : RiUbuntuLine;
+  const DisplayIcon = eachConfigDetails.osType === "windows" ? RiWindowsFill : RiUbuntuFill;
   const pythonServerIp = eachConfigDetails.osType === "windows" ? "N/A" : eachConfigDetails.pythonServerIp;
   const pythonServerPort = eachConfigDetails.osType === "windows" ? "N/A" : eachConfigDetails.pythonServerPort;
 

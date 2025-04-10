@@ -8,6 +8,7 @@ import TrivyConfigFormModal from "../../config-forms/TrivyConfigFormModal";
 import { deleteConfigWithKey } from "@/utils/api";
 import { TrivyConfiguration } from "@/app/configuration/components/type";
 import { Callout } from "@/components/Callout";
+import { SiTrivy } from "react-icons/si";
 
 export default function TrivyConfigWidget({
     containerUrl,
@@ -37,7 +38,7 @@ export default function TrivyConfigWidget({
                             className="text-blue-800 dark:text-blue-500 bg-blue-100 dark:bg-blue-500/20 flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-tremor-default font-medium"
                             aria-hidden={true}
                         >
-                            <DisplayIcon />
+                            <SiTrivy className="size-5" />
                         </span>
                         <div className="truncate">
                             <p className="truncate text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">
