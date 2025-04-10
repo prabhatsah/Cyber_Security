@@ -13,6 +13,7 @@ import {
   CloudCog,
   Network,
   PackageOpen,
+  ShieldCheck,
 } from "lucide-react";
 import { RiArrowDownSLine } from "@remixicon/react";
 
@@ -40,6 +41,11 @@ const navigation = [
         name: "Container Tools",
         href: "/configuration/container-tools",
         icon: PackageOpen,
+      },
+      {
+        name: "Endpoint Tools",
+        href: "/configuration/endpoint-tools",
+        icon: ShieldCheck,
       },
     ],
   },

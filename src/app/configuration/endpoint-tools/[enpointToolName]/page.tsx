@@ -1,27 +1,25 @@
 import React from "react";
-
 import { RenderAppBreadcrumb } from "@/components/app-breadcrumb";
-import TrivyConfig from "./components/container-config/trivy-config";
+import WazuhAgentConfig from "./components/endpoint-configs/wazuh-agent-config";
 
 const globalConfigMap: Record<
   string,
   React.FC<{
-    containerUrl: string;
-    containerName: string;
+    enpointToolUrl: string;
+    enpointToolName: string;
   }>
 > = {
-  "trivy": TrivyConfig,
-
+  "wazuh-agent": WazuhAgentConfig,
 };
 
-export default function CloudcontainerDetails({
+export default function CloudenpointToolDetails({
   params,
 }: {
-  params: Promise<{ containerName: string }>;
+  params: Promise<{ enpointToolName: string }>;
 }) {
   const unwrappedParams = React.use(params); // Unwrap the Promise here
-  const containerUrl = unwrappedParams.containerName;
-  const containerName = containerUrl
+  const enpointToolUrl = unwrappedParams.enpointToolName;
+  const enpointToolName = enpointToolUrl
     .split("-") // Split the string at hyphens
     .map((word) =>
       word === "ibm"
@@ -31,35 +29,28 @@ export default function CloudcontainerDetails({
     .join(" ");
 
   // Get the corresponding config component
-  const CloudConfigTemplate = globalConfigMap[containerUrl];
+  const EndpointConfigTemplate = globalConfigMap[enpointToolUrl];
 
   return (
     <>
       <RenderAppBreadcrumb
         breadcrumb={{
-          level: 0,
-          title: "Configuration",
-        }}
-      />
-      <RenderAppBreadcrumb
-        breadcrumb={{
           level: 1,
-          title: "Container Tools",
-          href: "/configuration/container-tools",
+          title: "Endpoint Tools",
+          href: "/configuration/endpoint-tools",
         }}
       />
       <RenderAppBreadcrumb
         breadcrumb={{
           level: 2,
-          title: containerName,
-          href: `/configuration/container-tools/${containerUrl}`
+          title: enpointToolName,
+          href: `/configuration/endpoint-tools/${enpointToolUrl}`
         }}
       />
       <div className=" flex flex-col flex-grow">
-        <CloudConfigTemplate
-          containerUrl={containerUrl}
-          containerName={containerName}
-
+        <EndpointConfigTemplate
+          enpointToolUrl={enpointToolUrl}
+          enpointToolName={enpointToolName}
         />
       </div>
     </>

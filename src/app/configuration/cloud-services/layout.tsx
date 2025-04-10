@@ -1,5 +1,4 @@
 import * as api from "@/utils/api";
-import { ConfigurationProvider } from "../components/ConfigurationContext";
 import { RenderAppBreadcrumb } from "@/components/app-breadcrumb";
 
 export async function fetchdata() {

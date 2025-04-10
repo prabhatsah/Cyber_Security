@@ -161,13 +161,13 @@ export async function addColumn(
   const query = `INSERT INTO ${tableName} (${columnDefinitions}) VALUES ${valuesString};`;
   console.log(query);
 
-  // const res = await fetch(`${baseUrl}/api/dbApi`, {
-  //   method: "POST",
-  //   headers: { "Content-Type": "application/json" },
-  //   body: JSON.stringify({ query }),
-  // });
+  const res = await fetch(`${baseUrl}/api/dbApi`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ query }),
+  });
 
-  // return res.json();
+  return res.json();
 }
 
 //delete table
@@ -410,19 +410,36 @@ export async function saveScannedData(
   const jsonString = JSON.stringify(values.value).replace(/'/g, "");
 
   const query = `
-                  INSERT INTO ${tableName} (id, userid, data, lastscanon)
-                  VALUES (
-                      gen_random_uuid(), 
-                      '${userId}', 
-                      jsonb_build_object('${values.key}', '${jsonString}'::jsonb), 
-                      CURRENT_TIMESTAMP
-                  )
-                  ON CONFLICT (userid) 
-                  DO UPDATE SET 
-                      data = ${tableName}.data || jsonb_build_object('${values.key}', '${jsonString}'::jsonb),
-                      lastscanon = CURRENT_TIMESTAMP
-                  RETURNING *;
-                  `;
+                WITH user_data AS (
+              SELECT data
+              FROM ${tableName}
+              WHERE userid = '${userId}'
+            ),
+            merged AS (
+              SELECT 
+                (SELECT data FROM user_data) || jsonb_build_object('${values.key}', '${jsonString}'::jsonb) AS merged_data
+            ),
+            filtered AS (
+              SELECT jsonb_object_agg(key, merged_data -> key) AS filtered_data
+              FROM (
+                SELECT key
+                FROM (
+                  SELECT key::bigint AS ts_key, key
+                  FROM jsonb_object_keys((SELECT merged_data FROM merged)) AS key(key)
+                ) sub
+                ORDER BY ts_key DESC
+                LIMIT 10
+              ) AS latest_keys,
+              LATERAL (
+                SELECT merged_data FROM merged
+              ) AS merged_data
+            )
+            UPDATE ${tableName}
+            SET data = (SELECT filtered_data FROM filtered),
+                lastscanon = CURRENT_TIMESTAMP
+            WHERE userid = '${userId}'
+            RETURNING *;
+  `;
 
   console.log(query);
 
@@ -434,6 +451,7 @@ export async function saveScannedData(
 
   return res.json();
 }
+
 
 export async function fetchScannedData(
   tableName: string,

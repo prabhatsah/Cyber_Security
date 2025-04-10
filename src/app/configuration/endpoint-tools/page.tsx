@@ -1,14 +1,5 @@
-
-import {
-  RiAlibabaCloudFill,
-  RiAmazonLine,
-  RiCloudLine,
-  RiCloudy2Line,
-  RiGoogleFill,
-  RiWindowsFill,
-} from "@remixicon/react";
-import { SiTrivy } from "react-icons/si";
-import EachContainerWidget from "./EachContainerWidget";
+import { RiCodeBoxLine } from "@remixicon/react";
+import EachEndPointWidget from "./EachEndPointWidget";
 import {
   EachConfigDataFormatted,
   EachConfigDataFromServer,
@@ -16,22 +7,19 @@ import {
 import { RenderAppBreadcrumb } from "@/components/app-breadcrumb";
 import { fetchData } from "@/utils/api";
 
-const containerConfigList = [
+const endPointConfigList = [
   {
-    name: "Trivy ",
+    name: "Wazuh Agent",
     description:
-      "Trivy is a simple and comprehensive vulnerability scanner for container images and file systems. It detects vulnerabilities in operating system packages (such as apt, yum, apk), programming language dependencies (such as npm, pip, bundler), and configuration files",
+      "Wazuh Agent is a lightweight security monitoring tool that collects and forwards system data to a Wazuh Manager for threat detection and compliance analysis.",
     configurationCount: 0,
-
-    icon: <SiTrivy className="size-5" />,
-    href: "/configuration/container-tools/trivy",
+    icon: <RiCodeBoxLine className="size-5" aria-hidden={true} />,
+    href: "/configuration/endpoint-tools/wazuh-agent",
   },
-
 ];
 
-
-export default async function ContainerToolsConfig() {
-  const fetchedData = (await fetchData("container_config", "id")).data;
+export default async function EndPointToolsConfig() {
+  const fetchedData = (await fetchData("endpoint_config", "id")).data;
 
   let configDataFormatted: Record<string, EachConfigDataFormatted> = {};
   if (fetchedData && fetchedData.length > 0) {
@@ -43,24 +31,19 @@ export default async function ContainerToolsConfig() {
     });
   }
 
-  const updatedcontainerConfigList = containerConfigList.map((cloudService) => {
-    const cloudServiceName = cloudService.href.split("/")[3];
+  const updatedEndpointConfigList = endPointConfigList.map((endpointTool) => {
+    const cloudServiceName = endpointTool.href.split("/")[3];
 
     if (configDataFormatted[cloudServiceName]) {
       return {
-        ...cloudService,
+        ...endpointTool,
         configurationCount: Object.keys(configDataFormatted[cloudServiceName].data)
           .length,
       };
     }
 
-    return { ...cloudService, configurationCount: 0 };
+    return { ...endpointTool, configurationCount: 0 };
   });
-
-
-
-
-export default function ContainerServicesConfig() {
 
   return (
     <>
@@ -73,26 +56,25 @@ export default function ContainerServicesConfig() {
       <RenderAppBreadcrumb
         breadcrumb={{
           level: 1,
-          title: "Container Tools",
-          href: "/configuration/container-tools",
+          title: "Endpoint Tools",
+          href: "/configuration/endpoint-tools",
         }}
       />
       <div className=" flex flex-col relative">
         <div className="flex items-center space-x-2">
           <h2 className="text-2xl font-semibold text-primary ">
-            Container Tools
+            Endpoint Tools
           </h2>
           <span className="inline-flex size-7 items-center justify-center rounded-full bg-tremor-background-subtle text-tremor-label font-medium text-tremor-content-strong dark:bg-dark-tremor-background-subtle dark:text-dark-tremor-content-strong">
-            {updatedcontainerConfigList.length}
+            {updatedEndpointConfigList.length}
           </span>
         </div>
         <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 h-fit">
-          {updatedcontainerConfigList.map((item) => (
-            <EachContainerWidget key={item.name} item={item} />
+          {updatedEndpointConfigList.map((item) => (
+            <EachEndPointWidget key={item.name} item={item} />
           ))}
         </div>
-
       </div>
     </>
-  )
+  );
 }

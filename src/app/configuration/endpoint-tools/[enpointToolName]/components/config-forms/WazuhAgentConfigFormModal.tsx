@@ -14,36 +14,35 @@ import {
   Select,
   SelectItem,
 } from "@tremor/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/Button";
 import { format } from "date-fns";
-import { TrivyConfiguration } from "@/app/configuration/components/type";
+import { WazuhAgentConfiguration } from "@/app/configuration/components/type";
 import { updateDataObject } from "@/utils/api";
 import { getLoggedInUserProfile } from "@/ikon/utils/api/loginService";
+import { addNewConfiguration } from "@/app/configuration/endpoint-tools/[enpointToolName]/components/apis/endPointConfigDataHandler";
 import { IpInput } from "@/components/IpInput";
-import { SiTrivy } from "react-icons/si";
-import { addNewConfiguration } from "../apis/containerConfigDataHandler";
 
-export default function TrivyConfigFormModal({
-  containerUrl,
+export default function WazuhAgentConfigFormModal({
+  enpointToolUrl,
   isFormModalOpen,
   onClose,
   savedDataToBePopulated,
 }: {
-  containerUrl: string;
+  enpointToolUrl: string;
   isFormModalOpen: boolean;
   onClose: () => void;
-  savedDataToBePopulated?: TrivyConfiguration;
+  savedDataToBePopulated?: WazuhAgentConfiguration;
 }) {
-  const containerNameArray = containerUrl.split("-");
-  let containerName = "";
-  containerNameArray.forEach((eachPart) => {
-    containerName +=
+  const enpointToolNameArray = enpointToolUrl.split("-");
+  let enpointToolName = "";
+  enpointToolNameArray.forEach((eachPart) => {
+    enpointToolName +=
       eachPart.substring(0, 1).toUpperCase() +
       eachPart.substring(1, eachPart.length) +
       " ";
   });
-  containerName.trim();
+  enpointToolName.trim();
 
   // const { setConfigurationData } = useConfiguration();
 
@@ -52,6 +51,7 @@ export default function TrivyConfigFormModal({
     osType: savedDataToBePopulated?.osType ?? "",
     listOfDevices: savedDataToBePopulated?.listOfDevices ?? [],
     probeId: savedDataToBePopulated?.probeDetails.probeId ?? "",
+    managerIp: savedDataToBePopulated?.managerIp ?? "",
     pythonServerIp: savedDataToBePopulated?.pythonServerIp ?? "",
     pythonServerPort: savedDataToBePopulated?.pythonServerPort ?? "",
   });
@@ -84,12 +84,17 @@ export default function TrivyConfigFormModal({
         "List of devices cannot be empty. Please select one or more devices!";
     }
 
-    if (formData.pythonServerIp.trim().length <= 0) {
+    if (formData.managerIp.trim().length <= 0) {
+      newErrors.managerIp =
+        "Manager IP must be specified. Please provide a valid IP!";
+    }
+
+    if (formData.osType === "ubuntu" && formData.pythonServerIp.trim().length <= 0) {
       newErrors.pythonServerIp =
         "Python Server IP must be specified. Please provide a valid Server IP!";
     }
 
-    if (formData.pythonServerPort.trim().length <= 0) {
+    if (formData.osType === "ubuntu" && formData.pythonServerPort.trim().length <= 0) {
       newErrors.pythonServerPort =
         "Python Server Port must be specified. Please provide a valid Server Port!";
     }
@@ -149,9 +154,9 @@ export default function TrivyConfigFormModal({
       userId: loggedInUserDetails.USER_ID,
       userName: loggedInUserDetails.USER_NAME,
     }
-    const dataToBeSaved: TrivyConfiguration = {
+    const dataToBeSaved: WazuhAgentConfiguration = {
       configId: configId,
-      containerName: "trivy",
+      toolName: "wazuh",
       configurationName: formData.configurationName,
       osType: formData.osType,
       listOfDevices: formData.listOfDevices,
@@ -159,13 +164,14 @@ export default function TrivyConfigFormModal({
         probeId: formData.probeId,
         probeName: probeList.filter(eachProbe => eachProbe.probeId === formData.probeId)[0].probeName,
       },
-      pythonServerIp: formData.pythonServerIp,
-      pythonServerPort: formData.pythonServerPort,
+      managerIp: formData.managerIp,
+      pythonServerIp: formData.pythonServerIp ?? "",
+      pythonServerPort: formData.pythonServerPort ?? "",
       createdOn: format(new Date(), "yyyy-MMM-dd HH:mm:ss"),
       createdBy: createdBy,
     };
 
-    addNewConfiguration(dataToBeSaved, containerUrl);
+    addNewConfiguration(dataToBeSaved, enpointToolUrl);
     handleClose();
 
   };
@@ -183,7 +189,7 @@ export default function TrivyConfigFormModal({
         },
       ];
 
-      const tableName = "container_config";
+      const tableName = "endpoint_config";
       const filterColumn = "configId";
       const filterColumnValue = savedDataToBePopulated.configId;
       await updateDataObject(tableName, updatedConfigData, filterColumn, filterColumnValue);
@@ -197,6 +203,7 @@ export default function TrivyConfigFormModal({
       osType: "",
       listOfDevices: [],
       probeId: "",
+      managerIp: "",
       pythonServerIp: "",
       pythonServerPort: "",
     });
@@ -216,8 +223,8 @@ export default function TrivyConfigFormModal({
   ];
 
   const probeList = [
-    { probeName: "Trivy Probe", probeId: 'c2bff3a9-f939-46fd-b38a-a22b360a3fb5' },
-    { probeName: "Trivy Services Probe", probeId: 'b096dd57-1a8d-432c-95ba-cf828a8269f2' }
+    { probeName: "Wazuh Probe", probeId: '0727e135-dc72-4eff-8b8f-7415500ca1ef' },
+    { probeName: "Wazuh Agent Probe", probeId: 'a9d9b4b1-0808-41db-8ca1-dd0efaffe083' }
   ]
 
   return (
@@ -259,11 +266,11 @@ export default function TrivyConfigFormModal({
                           className="flex size-12 shrink-0 items-center justify-center text-primary rounded-md 
                       border border-tremor-border p-1 dark:border-dark-tremor-border"
                         >
-                          <SiTrivy className="size-5" aria-hidden={true} />
+                          <RiCodeBoxLine className="size-5" aria-hidden={true} />
                         </div>
                         <div>
                           <h3 className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">
-                            {containerName}
+                            {enpointToolName}
                           </h3>
                         </div>
                       </div>
@@ -273,8 +280,7 @@ export default function TrivyConfigFormModal({
                           Description:
                         </h4>
                         <p className="mt-1 text-tremor-default leading-6 text-tremor-content dark:text-dark-tremor-content">
-                          Trivy is a simple and comprehensive vulnerability scanner for container images and file systems. It detects vulnerabilities in operating system packages (such as apt, yum, apk),
-                          programming language dependencies (such as npm, pip, bundler), and configuration files.
+                          Wazuh Agent collects and sends security data for threat detection.
                         </p>
                       </div>
                       <div className="flex flex-col space-y-2">
@@ -282,8 +288,7 @@ export default function TrivyConfigFormModal({
                           Supported functionality:
                         </h4>
                         <p className="text-tremor-default leading-6 text-tremor-content dark:text-dark-tremor-content">
-                          Supports computing, storage, networking, AI, machine
-                          learning, security, and analytics.
+                          Supports threat detection, log analysis, and security monitoring.
                         </p>
                       </div>
                     </div>
@@ -475,6 +480,32 @@ export default function TrivyConfigFormModal({
                 </div>
 
                 <div>
+                  <div className="flex flex-col space-y-3">
+                    <label
+                      htmlFor="managerIp"
+                      className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                    >
+                      Manager IP
+                    </label>
+
+                    <div className="flex flex-col gap-1">
+                      <IpInput
+                        name="managerIp"
+                        id="managerIp"
+                        error={errors.managerIp ? true : false}
+                        value={formData.managerIp}
+                        onChangeFunction={handleIpInputChange}
+                      />
+
+                      {errors.managerIp ? (
+                        <p className="text-xs text-red-500">{errors.managerIp}</p>
+                      ) : undefined}
+                    </div>
+                  </div>
+                </div>
+
+
+                {formData.osType === "ubuntu" ? <div>
                   <div className="grid grid-cols-2 gap-6">
                     <div className="flex flex-col space-y-3">
                       <label
@@ -529,7 +560,7 @@ export default function TrivyConfigFormModal({
                       </div>
                     </div>
                   </div>
-                </div>
+                </div> : undefined}
               </div>
             </div>
           </form>

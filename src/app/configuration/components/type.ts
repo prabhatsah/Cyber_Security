@@ -64,3 +64,44 @@ export interface ConfigDataFormatted {
   "oracle-cloud-infrastructure": EachConfigDataFormatted;
   "alibaba-cloud": EachConfigDataFormatted;
 }
+
+export interface WazuhAgentConfiguration {
+  configId: string;
+  toolName: string;
+  osType: string;
+  configurationName: string;
+  listOfDevices: Array<string>;
+  probeDetails: {
+    probeName: string;
+    probeId: string;
+  };
+  managerIp: string;
+  pythonServerIp?: string;
+  pythonServerPort?: string;
+  createdOn: string;
+  createdBy: {
+    userName: string;
+    userId: string;
+    userEmail?: string;
+  };
+}
+
+export interface TrivyConfiguration {
+  configId: string;
+  containerName: string;
+  osType: string;
+  configurationName: string;
+  listOfDevices: Array<string>;
+  probeDetails: {
+    probeName: string;
+    probeId: string;
+  };
+  pythonServerIp: string;
+  pythonServerPort: string;
+  createdOn: string;
+  createdBy: {
+    userName: string;
+    userId: string;
+    userEmail?: string;
+  };
+}

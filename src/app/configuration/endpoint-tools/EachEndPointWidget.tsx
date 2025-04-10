@@ -2,7 +2,7 @@ import { RiSettings5Line } from "@remixicon/react";
 import { Card } from "@tremor/react";
 import Link from "next/link";
 
-export default function EachContainerWidget({ item }: { item: any }) {
+export default function EachEndPointWidget({ item }: { item: any }) {
 
   return (
     <Card

@@ -1,12 +1,12 @@
 import AddConfigurationBtnWithFormDialog from "../AddConfigurationBtnWithFormDialog";
 
 export default function ConfigHeader({
-  containerUrl,
-  containerName,
+  enpointToolUrl,
+  enpointToolName,
   configDataLength,
 }: {
-  containerUrl: string;
-  containerName: string;
+  enpointToolUrl: string;
+  enpointToolName: string;
   configDataLength: number;
 }) {
   return (
@@ -14,7 +14,7 @@ export default function ConfigHeader({
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-2">
           <h3 className="text-tremor-default font-medium text-primary">
-            {containerName} Configurations
+            {enpointToolName} Configurations
           </h3>
           <span className="inline-flex size-7 items-center justify-center rounded-full bg-tremor-background-subtle text-tremor-label font-medium text-tremor-content-strong dark:bg-dark-tremor-background-subtle dark:text-dark-tremor-content-strong">
             {configDataLength}
@@ -22,7 +22,7 @@ export default function ConfigHeader({
         </div>
         <AddConfigurationBtnWithFormDialog
           btnText="Add Configuration"
-          containerUrl={containerUrl}
+          enpointToolUrl={enpointToolUrl}
         />
       </div>
     </>
