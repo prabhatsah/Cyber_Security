@@ -14,12 +14,14 @@ import {
   Network,
   PackageOpen,
   ShieldCheck,
+  BugPlay,
 } from "lucide-react";
 import { RiArrowDownSLine } from "@remixicon/react";
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "Scans", href: "/scans", icon: Scan },
+  { name: "PenTest", href: "/pen-test", icon: BugPlay },
   { name: "Reports", href: "/reports", icon: FileText },
   { name: "Audit Log", href: "/audit", icon: Activity },
   { name: "Settings", href: "/settings", icon: Settings },
