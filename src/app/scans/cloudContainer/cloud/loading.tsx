@@ -5,12 +5,12 @@ export default function Loading() {
   const skeletons = Array(6).fill(null);
 
   return (
-    <div className="w-full container mx-auto p-4">
+    <div className="w-full">
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-4">
         {skeletons.map((_, index) => (
           <Card
             key={index}
-            className="flex flex-col space-y-5 w-full rounded-lg justify-between !bg-dark-bgPrimary 
+            className="flex flex-col space-y-5 w-full rounded-lg justify-between bg-primary !bg-dark-bgPrimary 
             hover:bg-tremor-background-muted hover:dark:bg-dark-tremor-background-muted p-4"
           >
             {/* Header */}

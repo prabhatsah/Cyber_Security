@@ -19,7 +19,7 @@ const navigation = [
 
 export default function CloudContainerTabs() {
   const pathname = usePathname();
-
+  console.log(pathname)
   const [selectedTab, setSelectedTab] = useState("cloud");
 
   const handleTabChange = (value: string) => {
@@ -50,7 +50,7 @@ export default function CloudContainerTabs() {
       </div> */}
 
 
-      <Tabs defaultValue="cloud" value={selectedTab} onValueChange={handleTabChange}>
+      {pathname.substring(pathname.lastIndexOf('/') + 1) === 'container' || pathname.substring(pathname.lastIndexOf('/') + 1) === 'cloud' ? (<Tabs defaultValue="cloud" value={selectedTab} onValueChange={handleTabChange}>
         <TabsList variant="solid" className="">
           <TabsTrigger value="cloud" className="gap-1.5 flex ">
             <RiCloudFill className="-ml-1 size-4" aria-hidden="true" />
@@ -73,7 +73,7 @@ export default function CloudContainerTabs() {
             </div>
           </TabsContent>
         </div>
-      </Tabs>
+      </Tabs>) : null}
     </>
   );
 }
