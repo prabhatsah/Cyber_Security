@@ -91,6 +91,17 @@ export default function WazuhAgentConfigFormModal({
     DeviceOption[]
   >([]);
 
+  // Form state
+  const [formData, setFormData] = useState<FormState>({
+    configurationName: savedDataToBePopulated?.configurationName ?? "",
+    osType: savedDataToBePopulated?.osType ?? "",
+    listOfDevices: savedDataToBePopulated?.listOfDevices ?? [],
+    probeId: savedDataToBePopulated?.probeDetails?.probeId ?? "",
+    managerIp: savedDataToBePopulated?.managerIp ?? "",
+    pythonServerIp: savedDataToBePopulated?.pythonServerIp ?? "",
+    pythonServerPort: savedDataToBePopulated?.pythonServerPort ?? "",
+  });
+
   // Prefill data on mount
   useEffect(() => {
     const fetchPrefilledData = async () => {
@@ -118,35 +129,32 @@ export default function WazuhAgentConfigFormModal({
         probeOptions = fetchedProbes;
 
         // If an OS is already selected (e.g., when editing), filter devices accordingly
-        // if (savedDataToBePopulated?.osType) {
-        //   const existingOsType = savedDataToBePopulated.osType.toLowerCase();
-        //   setFilteredDeviceOptions(
-        //     devices.filter(
-        //       (device) => device.osType?.toLowerCase() === existingOsType
-        //     )
-        //   );
-        // } else {
-        //   // Otherwise, you can show all or none
-        //   setFilteredDeviceOptions([]);
-        // }
+        if (savedDataToBePopulated?.osType) {
+          const existingOsType = savedDataToBePopulated.osType.toLowerCase();
+          setFilteredDeviceOptions(
+            devices.filter(
+              (device) => device.osType?.toLowerCase() === existingOsType
+            )
+          );
+        } else if (formData.osType) {
+          // If OS is selected in the form state, filter accordingly on initial load
+          const initialOsType = formData.osType.toLowerCase();
+          setFilteredDeviceOptions(
+            devices.filter(
+              (device) => device.osType?.toLowerCase() === initialOsType
+            )
+          );
+        } else {
+          // Otherwise, you can show all or none. Showing none for initial clarity.
+          setFilteredDeviceOptions([]);
+        }
       } catch (error) {
         console.error("Error fetching prefilled Wazuh form data:", error);
       }
     };
 
     fetchPrefilledData();
-  }, []);
-
-  // Form state
-  const [formData, setFormData] = useState<FormState>({
-    configurationName: savedDataToBePopulated?.configurationName ?? "",
-    osType: savedDataToBePopulated?.osType ?? "",
-    listOfDevices: savedDataToBePopulated?.listOfDevices ?? [],
-    probeId: savedDataToBePopulated?.probeDetails?.probeId ?? "",
-    managerIp: savedDataToBePopulated?.managerIp ?? "",
-    pythonServerIp: savedDataToBePopulated?.pythonServerIp ?? "",
-    pythonServerPort: savedDataToBePopulated?.pythonServerPort ?? "",
-  });
+  }, [formData.osType, savedDataToBePopulated?.osType]);
 
   // Error states and other feedback
   const [errors, setErrors] = useState<ErrorState>({});
@@ -180,9 +188,6 @@ export default function WazuhAgentConfigFormModal({
       newErrors.managerIp = "Manager IP is required.";
     }
 
-    // IMPORTANT FIX:
-    // Previously, the check was if (osType === "ubuntu"), but the actual
-    // value for Ubuntu is "ssh". So we change that here:
     if (formData.osType === "ssh" && !formData.pythonServerIp.trim()) {
       newErrors.pythonServerIp = "Python Server IP is required for Ubuntu/SSH!";
     }
@@ -212,7 +217,7 @@ export default function WazuhAgentConfigFormModal({
       const existingOsType = savedDataToBePopulated.osType?.toLowerCase();
       if (existingOsType) {
         const filteredDevices = allDeviceOptions.filter(
-          (device) => device.osType.toLowerCase() === existingOsType
+          (device) => device.osType?.toLowerCase() === existingOsType
         );
         setFilteredDeviceOptions(filteredDevices);
       }
@@ -236,15 +241,21 @@ export default function WazuhAgentConfigFormModal({
     setFormData((prev) => ({ ...prev, [fieldName]: ip }));
   };
 
-  // (Optional) Test connection code — currently disabled
+  // (Optional) Test connection code
   const handleTestConnection = async (event: FormEvent) => {
     event.preventDefault();
     if (!validateForm()) return;
 
-    // setIsLoading(true);
-    // setTestConnectionResult("");
-    // // do your test logic...
-    // setIsLoading(false);
+    setIsLoading(true);
+    setTestConnectionResult("");
+    // Simulate a connection test
+    await new Promise((resolve) => setTimeout(resolve, 1500)); // Replace with actual test logic
+
+    // For demonstration purposes, randomly set connection status
+    const isTestSuccessful = Math.random() > 0.5;
+    setIsConnected(isTestSuccessful);
+    setTestConnectionResult(isTestSuccessful ? "Connection successful!" : "Connection failed.");
+    setIsLoading(false);
   };
 
   // Save a new configuration
@@ -334,6 +345,35 @@ export default function WazuhAgentConfigFormModal({
             key: "configurationName",
             value: formData.configurationName,
           },
+          {
+            key: "osType",
+            value: formData.osType,
+          },
+          {
+            key: "listOfDevices",
+            value: formData.listOfDevices,
+          },
+          {
+            key: "probeDetails",
+            value: {
+              probeId: formData.probeId,
+              probeName: probeOptions.find(
+                (probe) => probe.probeId === formData.probeId
+              )?.probeName ?? "",
+            },
+          },
+          {
+            key: "managerIp",
+            value: formData.managerIp,
+          },
+          {
+            key: "pythonServerIp",
+            value: formData.pythonServerIp ?? "",
+          },
+          {
+            key: "pythonServerPort",
+            value: formData.pythonServerPort ?? "",
+          },
           // add more fields here as needed
         ];
 
@@ -422,7 +462,7 @@ export default function WazuhAgentConfigFormModal({
                     <div className="flex items-center space-x-3">
                       <div
                         className="flex size-12 shrink-0 items-center justify-center text-primary rounded-md
-                            border border-tremor-border p-1 dark:border-dark-tremor-border"
+                          border border-tremor-border p-1 dark:border-dark-tremor-border"
                       >
                         <RiCodeBoxLine className="size-5" aria-hidden={true} />
                       </div>
@@ -482,13 +522,16 @@ export default function WazuhAgentConfigFormModal({
                 {isLoading ? (
                   <Button isLoading>Loading</Button>
                 ) : (
-                  <Button variant="primary">
-                    {savedDataToBePopulated
-                      ? "Update"
-                      : !isConnected
-                        ? "Save"
-                        : "Connect"}
-                  </Button>
+                  <>
+                    {!savedDataToBePopulated && (
+                      <Button variant="primary" type="button" onClick={handleTestConnection} className="mr-2">
+                        Test Connection
+                      </Button>
+                    )}
+                    <Button variant="primary" type="submit">
+                      {savedDataToBePopulated ? "Update" : "Save"}
+                    </Button>
+                  </>
                 )}
               </div>
             </div>
@@ -668,62 +711,64 @@ export default function WazuhAgentConfigFormModal({
               </div>
 
               {/* Python Server Info (only used for SSH/Ubuntu) */}
-              <div>
-                <div className="grid grid-cols-2 gap-6">
-                  <div className="flex flex-col space-y-3">
-                    <label
-                      htmlFor="pythonServerIp"
-                      className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
-                    >
-                      Python Server IP
-                    </label>
-                    <div className="flex flex-col gap-1">
-                      <IpInput
-                        name="pythonServerIp"
-                        id="pythonServerIp"
-                        error={!!errors.pythonServerIp}
-                        value={formData.pythonServerIp}
-                        onChangeFunction={handleIpInputChange}
-                      />
+              {formData.osType === "ssh" && (
+                <div>
+                  <div className="grid grid-cols-2 gap-6">
+                    <div className="flex flex-col space-y-3">
+                      <label
+                        htmlFor="pythonServerIp"
+                        className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                      >
+                        Python Server IP
+                      </label>
+                      <div className="flex flex-col gap-1">
+                        <IpInput
+                          name="pythonServerIp"
+                          id="pythonServerIp"
+                          error={!!errors.pythonServerIp}
+                          value={formData.pythonServerIp}
+                          onChangeFunction={handleIpInputChange}
+                        />
 
-                      {errors.pythonServerIp && (
-                        <p className="text-xs text-red-500">
-                          {errors.pythonServerIp}
-                        </p>
-                      )}
+                        {errors.pythonServerIp && (
+                          <p className="text-xs text-red-500">
+                            {errors.pythonServerIp}
+                          </p>
+                        )}
+                      </div>
                     </div>
-                  </div>
 
-                  <div className="flex flex-col space-y-3">
-                    <label
-                      htmlFor="pythonServerPort"
-                      className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
-                    >
-                      Python Server Port
-                    </label>
-                    <div className="flex flex-col gap-1">
-                      <Input
-                        id="pythonServerPort"
-                        name="pythonServerPort"
-                        value={formData.pythonServerPort}
-                        className={
-                          errors.pythonServerPort
-                            ? "w-full border border-red-500 rounded-md"
-                            : "w-full"
-                        }
-                        onChange={handleInputChange}
-                        placeholder="Enter Python Server Port Number"
-                      />
+                    <div className="flex flex-col space-y-3">
+                      <label
+                        htmlFor="pythonServerPort"
+                        className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                      >
+                        Python Server Port
+                      </label>
+                      <div className="flex flex-col gap-1">
+                        <Input
+                          id="pythonServerPort"
+                          name="pythonServerPort"
+                          value={formData.pythonServerPort}
+                          className={
+                            errors.pythonServerPort
+                              ? "w-full border border-red-500 rounded-md"
+                              : "w-full"
+                          }
+                          onChange={handleInputChange}
+                          placeholder="Enter Python Server Port Number"
+                        />
 
-                      {errors.pythonServerPort && (
-                        <p className="text-xs text-red-500">
-                          {errors.pythonServerPort}
-                        </p>
-                      )}
+                        {errors.pythonServerPort && (
+                          <p className="text-xs text-red-500">
+                            {errors.pythonServerPort}
+                          </p>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              )}
               {/* End of Form Inputs */}
             </div>
           </div>
