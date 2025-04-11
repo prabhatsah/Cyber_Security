@@ -1,0 +1,34 @@
+export default function NoSavedScansTemplate() {
+    return (
+        <>
+            <div className="relative">
+                <ul
+                    role="list"
+                    className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
+                >
+                    {[...Array(3)].map((_, index) => (
+                        <li
+                            key={index}
+                            className="h-44 rounded-tremor-default bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle"
+                        />
+                    ))}
+
+                    {[...Array(3)].map((_, index) => (
+                        <li
+                            key={`hidden-${index}`}
+                            className="hidden h-44 rounded-tremor-default bg-tremor-background-subtle dark:bg-dark-tremor-background-subtle sm:block"
+                        />
+                    ))}
+                </ul>
+                <div className="absolute inset-x-0 bottom-0 flex h-32 flex-col items-center justify-center bg-gradient-to-t from-white to-transparent dark:from-gray-950">
+                    <p className="font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">
+                        No Saved Configurations
+                    </p>
+                    <p className="mt-2 text-tremor-default text-tremor-content dark:text-dark-tremor-content">
+                        Add your configurations and start scanning
+                    </p>
+                </div>
+            </div>
+        </>
+    );
+}

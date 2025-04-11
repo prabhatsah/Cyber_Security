@@ -15,6 +15,7 @@ import {
   PackageOpen,
   ShieldCheck,
   BugPlay,
+  ScanSearch,
 } from "lucide-react";
 import { RiArrowDownSLine } from "@remixicon/react";
 
@@ -51,6 +52,7 @@ const navigation = [
       },
     ],
   },
+  { name: "Reconnaissance", href: "/reconnaissance", icon: ScanSearch },
 ];
 
 export default function Sidebar() {

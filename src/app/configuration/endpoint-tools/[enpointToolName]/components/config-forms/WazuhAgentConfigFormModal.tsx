@@ -46,7 +46,7 @@ export default function WazuhAgentConfigFormModal({
 
   // const { setConfigurationData } = useConfiguration();
 
-  const [formData, setFormData] = useState({
+  let [formData, setFormData] = useState({
     configurationName: savedDataToBePopulated?.configurationName ?? "",
     osType: savedDataToBePopulated?.osType ?? "",
     listOfDevices: savedDataToBePopulated?.listOfDevices ?? [],
