@@ -5,30 +5,43 @@ import { RiDeleteBin6Line, RiEdit2Line, RiUbuntuFill, RiWindowsFill } from "@rem
 import { Card } from "@tremor/react";
 import { format } from "date-fns";
 import { useState } from "react";
+
 import { deleteConfigWithKey } from "@/utils/api";
 import WazuhAgentConfigFormModal from "../../config-forms/WazuhAgentConfigFormModal";
 import { Callout } from "@/components/Callout";
 
+interface WazuhAgentConfigWidgetProps {
+  enpointToolUrl: string;
+  eachConfigDetails: WazuhAgentConfiguration;
+}
+
 export default function WazuhAgentConfigWidget({
   enpointToolUrl,
   eachConfigDetails,
-}: {
-  enpointToolUrl: string;
-  eachConfigDetails: WazuhAgentConfiguration;
-}) {
+}: WazuhAgentConfigWidgetProps) {
   const [isEditFormOpen, setEditFormOpen] = useState(false);
 
   function toggleFormModal() {
     setEditFormOpen((prev) => !prev);
-  };
+  }
 
   async function handleDeleteConfig(configId: string) {
-    await deleteConfigWithKey("endpoint_config", "configId", configId);
-  };
+    try {
+      await deleteConfigWithKey("endpoint_config", "configId", configId);
+    } catch (error) {
+      console.error("Error deleting configuration:", error);
+    }
+  }
 
-  const DisplayIcon = eachConfigDetails.osType === "Windows" ? RiWindowsFill : RiUbuntuFill;
-  const pythonServerIp = eachConfigDetails.pythonServerIp;
-  const pythonServerPort = eachConfigDetails.pythonServerPort;
+  /**
+   * Match the OS type against the lowercase values
+   * we now use in the form: "windows" or "ssh"
+   */
+  const lowerOsType = eachConfigDetails.osType.toLowerCase();
+  const DisplayIcon = lowerOsType === "windows" ? RiWindowsFill : RiUbuntuFill;
+
+  // For date handling, ensure the value passed to format is a Date object
+  const createdOnDate = new Date(eachConfigDetails.createdOn);
 
   return (
     <>
@@ -51,12 +64,19 @@ export default function WazuhAgentConfigWidget({
             </div>
           </div>
 
-
           <div className="flex justify-between items-center">
-            <button title="Edit Configuration" onClick={toggleFormModal} className="border-r border-dark-bgTertiary pr-3 text-blue-700 dark:text-blue-700 hover:text-blue-800 hover:dark:text-blue-600 cursor-pointer">
+            <button
+              title="Edit Configuration"
+              onClick={toggleFormModal}
+              className="border-r border-dark-bgTertiary pr-3 text-blue-700 dark:text-blue-700 hover:text-blue-800 hover:dark:text-blue-600 cursor-pointer"
+            >
               <RiEdit2Line className="size-5" aria-hidden={true} />
             </button>
-            <button title="Delete Configuration" onClick={() => handleDeleteConfig(eachConfigDetails.configId)} className="pl-3 text-blue-700 dark:text-blue-700 hover:text-blue-800 hover:dark:text-blue-600 cursor-pointer">
+            <button
+              title="Delete Configuration"
+              onClick={() => handleDeleteConfig(eachConfigDetails.configId)}
+              className="pl-3 text-blue-700 dark:text-blue-700 hover:text-blue-800 hover:dark:text-blue-600 cursor-pointer"
+            >
               <RiDeleteBin6Line className="size-5" aria-hidden={true} />
             </button>
           </div>
@@ -64,8 +84,24 @@ export default function WazuhAgentConfigWidget({
 
         <div className="mt-6">
           <Callout variant="default" title="Probe Details">
-            <p className="truncate">Name: <span title={eachConfigDetails.probeDetails.probeName} className="truncate font-semibold">{eachConfigDetails.probeDetails.probeName}</span></p>
-            <p className="truncate">ID: <span title={eachConfigDetails.probeDetails.probeId} className="truncate font-semibold">{eachConfigDetails.probeDetails.probeId}</span></p>
+            <p className="truncate">
+              Name:{" "}
+              <span
+                title={eachConfigDetails.probeDetails.probeName}
+                className="truncate font-semibold"
+              >
+                {eachConfigDetails.probeDetails.probeName}
+              </span>
+            </p>
+            <p className="truncate">
+              ID:{" "}
+              <span
+                title={eachConfigDetails.probeDetails.probeId}
+                className="truncate font-semibold"
+              >
+                {eachConfigDetails.probeDetails.probeId}
+              </span>
+            </p>
           </Callout>
         </div>
 
@@ -74,24 +110,41 @@ export default function WazuhAgentConfigWidget({
             <h4 className="text-widget-secondaryheader">List of Devices</h4>
             <div className="mt-2 h-14 overflow-y-auto pr-2">
               <ul className="space-y-1">
-                {eachConfigDetails.listOfDevices.map(eachDevice => (<li key={eachDevice.label} title={eachDevice} className="truncate text-sm leading-6 text-tremor-content dark:text-dark-tremor-content">
-                  {eachDevice}
-                </li>))}
+                {eachConfigDetails.listOfDevices.map((eachDevice) => (
+                  <li
+                    key={eachDevice}
+                    title={eachDevice}
+                    className="truncate text-sm leading-6 text-tremor-content dark:text-dark-tremor-content"
+                  >
+                    {eachDevice}
+                  </li>
+                ))}
               </ul>
             </div>
           </div>
 
           <div className="truncate px-3 py-2">
             <div className="flex flex-col gap-6">
-              <div className="">
+              <div>
                 <h4 className="text-widget-secondaryheader">Python Server</h4>
                 <ul className="mt-2 space-y-1">
                   <li className="truncate text-sm leading-6 text-tremor-content dark:text-dark-tremor-content">
-                    IP: <span title={pythonServerIp} className="truncate text-widget-secondaryheader">{pythonServerIp}</span>
+                    IP:{" "}
+                    <span
+                      title={eachConfigDetails.pythonServerIp}
+                      className="truncate text-widget-secondaryheader"
+                    >
+                      {eachConfigDetails.pythonServerIp}
+                    </span>
                   </li>
-
                   <li className="truncate text-sm leading-6 text-tremor-content dark:text-dark-tremor-content">
-                    Port: <span title={pythonServerPort} className="truncate text-widget-secondaryheader">{pythonServerPort}</span>
+                    Port:{" "}
+                    <span
+                      title={eachConfigDetails.pythonServerPort}
+                      className="truncate text-widget-secondaryheader"
+                    >
+                      {eachConfigDetails.pythonServerPort}
+                    </span>
                   </li>
                 </ul>
               </div>
@@ -108,13 +161,13 @@ export default function WazuhAgentConfigWidget({
               {eachConfigDetails.createdBy.userName}
             </p>
           </div>
-
           <div className="truncate px-3 py-2">
             <p className="truncate text-tremor-label text-tremor-content dark:text-dark-tremor-content">
               Created On
             </p>
             <p className="truncate text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">
-              {format(eachConfigDetails.createdOn, "dd-MMM-yyyy HH:mm")}
+              {/* Convert to Date object if needed */}
+              {format(createdOnDate, "dd-MMM-yyyy HH:mm")}
             </p>
           </div>
         </div>
