@@ -26,9 +26,9 @@ export default function WazuhAgentConfigWidget({
     await deleteConfigWithKey("endpoint_config", "configId", configId);
   };
 
-  const DisplayIcon = eachConfigDetails.osType === "windows" ? RiWindowsFill : RiUbuntuFill;
-  const pythonServerIp = eachConfigDetails.osType === "windows" ? "N/A" : eachConfigDetails.pythonServerIp;
-  const pythonServerPort = eachConfigDetails.osType === "windows" ? "N/A" : eachConfigDetails.pythonServerPort;
+  const DisplayIcon = eachConfigDetails.osType === "Windows" ? RiWindowsFill : RiUbuntuFill;
+  const pythonServerIp = eachConfigDetails.pythonServerIp;
+  const pythonServerPort = eachConfigDetails.pythonServerPort;
 
   return (
     <>
@@ -74,7 +74,7 @@ export default function WazuhAgentConfigWidget({
             <h4 className="text-widget-secondaryheader">List of Devices</h4>
             <div className="mt-2 h-14 overflow-y-auto pr-2">
               <ul className="space-y-1">
-                {eachConfigDetails.listOfDevices.map(eachDevice => (<li key={eachDevice} title={eachDevice} className="truncate text-sm leading-6 text-tremor-content dark:text-dark-tremor-content">
+                {eachConfigDetails.listOfDevices.map(eachDevice => (<li key={eachDevice.label} title={eachDevice} className="truncate text-sm leading-6 text-tremor-content dark:text-dark-tremor-content">
                   {eachDevice}
                 </li>))}
               </ul>

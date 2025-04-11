@@ -1,4 +1,4 @@
-import { Input } from "@/components/Input";
+import React, { useEffect, useState, ChangeEvent, FormEvent } from "react";
 import {
   RiCheckboxCircleLine,
   RiCloseLine,
@@ -14,59 +14,135 @@ import {
   Select,
   SelectItem,
 } from "@tremor/react";
-import { useEffect, useState } from "react";
-import { Button } from "@/components/Button";
 import { format } from "date-fns";
-import { WazuhAgentConfiguration } from "@/app/configuration/components/type";
+
+import { Input } from "@/components/Input";
+import { Button } from "@/components/Button";
+import { IpInput } from "@/components/IpInput";
+import {
+  WazuhAgentConfiguration,
+
+} from "@/app/configuration/components/type";
 import { updateDataObject } from "@/utils/api";
 import { getLoggedInUserProfile } from "@/ikon/utils/api/loginService";
 import { addNewConfiguration } from "@/app/configuration/endpoint-tools/[enpointToolName]/components/apis/endPointConfigDataHandler";
-import { IpInput } from "@/components/IpInput";
+import {
+  configureWazuhAgent,
+  prefillWazuhForm,
+} from "@/app/api/wazuh/WazuhConfigService";
+
+interface WazuhAgentConfigFormModalProps {
+  enpointToolUrl: string;
+  isFormModalOpen: boolean;
+  onClose: () => void;
+  savedDataToBePopulated?: WazuhAgentConfiguration;
+}
+
+interface FormState {
+  configurationName: string;
+  osType: string;
+  listOfDevices: string[];
+  probeId: string;
+  managerIp: string;
+  pythonServerIp: string;
+  pythonServerPort: string;
+}
+
+interface ErrorState {
+  [key: string]: string;
+}
+
+interface DeviceDetails {
+  osType: string; // Assuming device object has osType property
+}
+
+interface DeviceOption {
+  value: string;
+  label: string;
+  osType: string;
+}
+
+interface ProbeOption {
+  probeName: string;
+  probeId: string;
+}
+
+let allDeviceOptions: DeviceOption[] = [];
+let probeOptions: ProbeOption[] = [];
+const devicesMap = new Map<string, DeviceDetails>();
+const devicesKeyMap = new Map<string, string>();
+
 
 export default function WazuhAgentConfigFormModal({
   enpointToolUrl,
   isFormModalOpen,
   onClose,
   savedDataToBePopulated,
-}: {
-  enpointToolUrl: string;
-  isFormModalOpen: boolean;
-  onClose: () => void;
-  savedDataToBePopulated?: WazuhAgentConfiguration;
-}) {
-  const enpointToolNameArray = enpointToolUrl.split("-");
-  let enpointToolName = "";
-  enpointToolNameArray.forEach((eachPart) => {
-    enpointToolName +=
-      eachPart.substring(0, 1).toUpperCase() +
-      eachPart.substring(1, eachPart.length) +
-      " ";
-  });
-  enpointToolName.trim();
+}: WazuhAgentConfigFormModalProps) {
+  // Derive endpoint tool name from the URL
+  const enpointToolName = enpointToolUrl
+    .split("-")
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ")
+    .trim();
 
-  // const { setConfigurationData } = useConfiguration();
+  // State for all devices and probes fetched from the API
 
-  const [formData, setFormData] = useState({
+  // State for filtered device options based on selected OS
+  const [filteredDeviceOptions, setFilteredDeviceOptions] = useState<
+    DeviceOption[]
+  >([]);
+
+  // Fetch initial data for devices and probes
+  useEffect(() => {
+    const fetchPrefilledData = async () => {
+      try {
+        const [fetchedDevices, fetchedProbes] = await prefillWazuhForm();
+        const devices: DeviceOption[] = fetchedDevices.map((device: any) => {
+          devicesMap.set(device.data.deviceId, { ...device.data, osType: device.data.osType });
+          devicesKeyMap.set(`${device.data.hostIp}(${device.data.hostName})`, device.data.deviceId);
+          return {
+            label: `${device.data.hostIp}(${device.data.hostName})`,
+            value: device.data.deviceId,
+            osType: device.data.osType,
+          };
+        });
+        allDeviceOptions = devices;
+        //setFilteredDeviceOptions(devices); // Initially show all devices
+        probeOptions = fetchedProbes;
+      } catch (error) {
+        console.error("Error fetching prefilled Wazuh form data:", error);
+        // Optionally set an error state to display to the user
+      }
+    };
+
+    console.log("Fetching prefilled data...");
+    fetchPrefilledData();
+  }, []);
+
+  // Form state initialization
+  const [formData, setFormData] = useState<FormState>({
     configurationName: savedDataToBePopulated?.configurationName ?? "",
     osType: savedDataToBePopulated?.osType ?? "",
     listOfDevices: savedDataToBePopulated?.listOfDevices ?? [],
-    probeId: savedDataToBePopulated?.probeDetails.probeId ?? "",
+    probeId: savedDataToBePopulated?.probeDetails?.probeId ?? "",
     managerIp: savedDataToBePopulated?.managerIp ?? "",
     pythonServerIp: savedDataToBePopulated?.pythonServerIp ?? "",
     pythonServerPort: savedDataToBePopulated?.pythonServerPort ?? "",
   });
 
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  // State for form errors, loading, test connection result, and connection status
+  const [errors, setErrors] = useState<ErrorState>({});
   const [isLoading, setIsLoading] = useState(false);
   const [testConnectionResult, setTestConnectionResult] = useState("");
   const [isConnected, setIsConnected] = useState(false);
 
-  const validateForm = () => {
-    const newErrors: { [key: string]: string } = {};
+  // Form validation function
+  const validateForm = (): boolean => {
+    const newErrors: ErrorState = {};
 
-    if (formData.osType.trim().length <= 0) {
-      newErrors.osType =
-        "OS Type must be specified. Please select an OS type!";
+    if (!formData.osType.trim()) {
+      newErrors.osType = "OS Type must be specified. Please select an OS type!";
     }
 
     if (formData.configurationName.trim().length < 3) {
@@ -79,22 +155,20 @@ export default function WazuhAgentConfigFormModal({
         "List of devices cannot be empty. Please select one or more devices!";
     }
 
-    if (formData.probeId.length <= 0) {
-      newErrors.probeId =
-        "List of devices cannot be empty. Please select one or more devices!";
+    if (!formData.probeId) {
+      newErrors.probeId = "Please select a probe!";
     }
 
-    if (formData.managerIp.trim().length <= 0) {
-      newErrors.managerIp =
-        "Manager IP must be specified. Please provide a valid IP!";
+    if (!formData.managerIp.trim()) {
+      newErrors.managerIp = "Manager IP must be specified. Please provide a valid IP!";
     }
 
-    if (formData.osType === "ubuntu" && formData.pythonServerIp.trim().length <= 0) {
+    if (formData.osType === "ubuntu" && !formData.pythonServerIp.trim()) {
       newErrors.pythonServerIp =
         "Python Server IP must be specified. Please provide a valid Server IP!";
     }
 
-    if (formData.osType === "ubuntu" && formData.pythonServerPort.trim().length <= 0) {
+    if (formData.osType === "ubuntu" && !formData.pythonServerPort.trim()) {
       newErrors.pythonServerPort =
         "Python Server Port must be specified. Please provide a valid Server Port!";
     }
@@ -103,26 +177,24 @@ export default function WazuhAgentConfigFormModal({
     return Object.keys(newErrors).length === 0;
   };
 
+  // Handle input change for standard input fields
   const handleInputChange = (
-    e:
-      | React.ChangeEvent<HTMLInputElement>
-      | React.ChangeEvent<HTMLSelectElement>
+    e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-
     setErrors({});
-
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  // Handle input change for IP address input fields
   const handleIpInputChange = (inputName: string, ip: string) => {
     setErrors({});
-
-    inputName = inputName.split("-")[0];
-    setFormData((prev) => ({ ...prev, [inputName]: ip }));
+    const name = inputName.split("-")[0]; // Extract the actual field name
+    setFormData((prev) => ({ ...prev, [name]: ip }));
   };
 
-  const handleTestConnection = async (event: React.FormEvent) => {
+  // Handle test connection (currently commented out)
+  const handleTestConnection = async (event: FormEvent) => {
     event.preventDefault();
     if (!validateForm()) return;
 
@@ -143,60 +215,102 @@ export default function WazuhAgentConfigFormModal({
     // setIsLoading(false);
   };
 
-  async function handleFormSave(event: React.FormEvent) {
+  // Handle form submission for saving a new configuration
+  const handleFormSave = async (event: FormEvent) => {
     event.preventDefault();
 
     if (!validateForm()) return;
 
-    const configId = crypto.randomUUID();
-    const loggedInUserDetails = await getLoggedInUserProfile();
-    const createdBy = {
-      userId: loggedInUserDetails.USER_ID,
-      userName: loggedInUserDetails.USER_NAME,
+    setIsLoading(true);
+
+    try {
+      // Configure Wazuh agent on selected devices
+      await Promise.all(
+        formData.listOfDevices.map(async (key) => {
+          await configureWazuhAgent(devicesMap.get(devicesKeyMap.get(key)!)!, formData.probeId);
+        })
+      );
+
+      // Create configuration metadata
+      const configId = crypto.randomUUID();
+      const loggedInUserDetails = await getLoggedInUserProfile();
+      const createdBy = {
+        userId: loggedInUserDetails.USER_ID,
+        userName: loggedInUserDetails.USER_NAME,
+      };
+      const selectedProbe = probeOptions.find(
+        (probe) => probe.probeId === formData.probeId
+      );
+      const dataToBeSaved: WazuhAgentConfiguration = {
+        configId,
+        toolName: "wazuh",
+        configurationName: formData.configurationName,
+        osType: formData.osType,
+        listOfDevices: formData.listOfDevices,
+        probeDetails: {
+          probeId: formData.probeId,
+          probeName: selectedProbe?.probeName ?? "",
+        },
+        managerIp: formData.managerIp,
+        pythonServerIp: formData.pythonServerIp ?? "",
+        pythonServerPort: formData.pythonServerPort ?? "",
+        createdOn: format(new Date(), "yyyy-MMM-dd HH:mm:ss"),
+        createdBy,
+      };
+
+      // Save the new configuration
+      await addNewConfiguration(dataToBeSaved, enpointToolUrl);
+      handleClose();
+    } catch (error) {
+      console.error("Error saving Wazuh agent configuration:", error);
+      // Optionally set an error state to display to the user
+    } finally {
+      setIsLoading(false);
     }
-    const dataToBeSaved: WazuhAgentConfiguration = {
-      configId: configId,
-      toolName: "wazuh",
-      configurationName: formData.configurationName,
-      osType: formData.osType,
-      listOfDevices: formData.listOfDevices,
-      probeDetails: {
-        probeId: formData.probeId,
-        probeName: probeList.filter(eachProbe => eachProbe.probeId === formData.probeId)[0].probeName,
-      },
-      managerIp: formData.managerIp,
-      pythonServerIp: formData.pythonServerIp ?? "",
-      pythonServerPort: formData.pythonServerPort ?? "",
-      createdOn: format(new Date(), "yyyy-MMM-dd HH:mm:ss"),
-      createdBy: createdBy,
-    };
-
-    addNewConfiguration(dataToBeSaved, enpointToolUrl);
-    handleClose();
-
   };
 
-  async function handleConfigUpdate(event: React.FormEvent) {
+  // Handle form submission for updating an existing configuration
+  const handleConfigUpdate = async (event: FormEvent) => {
     event.preventDefault();
 
     if (!validateForm()) return;
 
-    if (savedDataToBePopulated) {
-      const updatedConfigData = [
-        {
-          key: "configurationName",
-          value: formData.configurationName
-        },
-      ];
+    setIsLoading(true);
 
-      const tableName = "endpoint_config";
-      const filterColumn = "configId";
-      const filterColumnValue = savedDataToBePopulated.configId;
-      await updateDataObject(tableName, updatedConfigData, filterColumn, filterColumnValue);
+    try {
+      if (savedDataToBePopulated) {
+        await Promise.all(
+          formData.listOfDevices.map(async (key) => {
+            await configureWazuhAgent(devicesMap.get(devicesKeyMap.get(key)!)!, formData.probeId);
+          })
+        );
+        const updatedConfigData = [
+          {
+            key: "configurationName",
+            value: formData.configurationName,
+          },
+        ];
+
+        const tableName = "endpoint_config";
+        const filterColumn = "configId";
+        const filterColumnValue = savedDataToBePopulated.configId;
+        await updateDataObject(
+          tableName,
+          updatedConfigData,
+          filterColumn,
+          filterColumnValue
+        );
+      }
+      handleClose();
+    } catch (error) {
+      console.error("Error updating Wazuh agent configuration:", error);
+      // Optionally set an error state to display to the user
+    } finally {
+      setIsLoading(false);
     }
-    handleClose();
-  }
+  };
 
+  // Handle modal close event
   const handleClose = () => {
     setFormData({
       configurationName: "",
@@ -214,38 +328,38 @@ export default function WazuhAgentConfigFormModal({
     onClose();
   };
 
-  const listOfDevices = [
-    { value: 'Keross LPTP - 07', label: 'Keross LPTP - 07' },
-    { value: 'Keross LPTP - 12', label: 'Keross LPTP - 12' },
-    { value: 'Keross LPTP - 10', label: 'Keross LPTP - 10' },
-    { value: 'Keross LPTP - 49', label: 'Keross LPTP - 49' },
-    { value: 'Keross LPTP - 51', label: 'Keross LPTP - 51' },
-  ];
-
-  const probeList = [
-    { probeName: "Wazuh Probe", probeId: '0727e135-dc72-4eff-8b8f-7415500ca1ef' },
-    { probeName: "Wazuh Agent Probe", probeId: 'a9d9b4b1-0808-41db-8ca1-dd0efaffe083' }
-  ]
+  // Handle OS type selection
+  const handleOsTypeChange = (osType: string) => {
+    setFormData((prev) => ({ ...prev, osType, listOfDevices: [] })); // Clear selected devices on OS change
+    const filteredDevices = allDeviceOptions.filter(
+      (device) => device.osType?.toLowerCase() === osType.toLowerCase()
+    );
+    setFilteredDeviceOptions(filteredDevices);
+  };
 
   return (
     <>
       <Dialog
         open={isFormModalOpen}
-        onClose={() => handleClose()}
-        static={true}
+        onClose={handleClose}
+        static
         className="z-[100]"
       >
         <DialogPanel className="overflow-visible rounded-md p-0 sm:max-w-5xl">
           <form
             action="#"
             method="POST"
-            onSubmit={savedDataToBePopulated ? handleConfigUpdate : (!isConnected ? handleFormSave : handleTestConnection)}
+            onSubmit={
+              savedDataToBePopulated
+                ? handleConfigUpdate
+                : handleFormSave
+            }
           >
             <div className="absolute right-0 top-0 pr-3 pt-3">
               <button
                 type="button"
                 className="rounded-sm p-2 text-tremor-content-subtle hover:bg-tremor-background-subtle hover:text-tremor-content dark:text-dark-tremor-content-subtle hover:dark:bg-dark-tremor-background-subtle hover:dark:text-tremor-content"
-                onClick={() => handleClose()}
+                onClick={handleClose}
                 aria-label="Close"
               >
                 <RiCloseLine className="size-5 shrink-0" aria-hidden={true} />
@@ -253,7 +367,7 @@ export default function WazuhAgentConfigFormModal({
             </div>
             <div className="border-b border-tremor-border px-6 py-4 dark:border-dark-tremor-border">
               <h3 className="font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">
-                Add Configuration
+                {savedDataToBePopulated ? "Edit Configuration" : "Add Configuration"}
               </h3>
             </div>
             <div className="max-h-[80vh] overflow-y-auto flex flex-col-reverse md:flex-row">
@@ -263,8 +377,8 @@ export default function WazuhAgentConfigFormModal({
                     <div className="flex flex-col space-y-6">
                       <div className="flex items-center space-x-3">
                         <div
-                          className="flex size-12 shrink-0 items-center justify-center text-primary rounded-md 
-                      border border-tremor-border p-1 dark:border-dark-tremor-border"
+                          className="flex size-12 shrink-0 items-center justify-center text-primary rounded-md
+                            border border-tremor-border p-1 dark:border-dark-tremor-border"
                         >
                           <RiCodeBoxLine className="size-5" aria-hidden={true} />
                         </div>
@@ -280,7 +394,8 @@ export default function WazuhAgentConfigFormModal({
                           Description:
                         </h4>
                         <p className="mt-1 text-tremor-default leading-6 text-tremor-content dark:text-dark-tremor-content">
-                          Wazuh Agent collects and sends security data for threat detection.
+                          Wazuh Agent collects and sends security data for threat
+                          detection.
                         </p>
                       </div>
                       <div className="flex flex-col space-y-2">
@@ -288,7 +403,8 @@ export default function WazuhAgentConfigFormModal({
                           Supported functionality:
                         </h4>
                         <p className="text-tremor-default leading-6 text-tremor-content dark:text-dark-tremor-content">
-                          Supports threat detection, log analysis, and security monitoring.
+                          Supports threat detection, log analysis, and security
+                          monitoring.
                         </p>
                       </div>
                     </div>
@@ -318,7 +434,7 @@ export default function WazuhAgentConfigFormModal({
                   <Button
                     variant="secondary"
                     type="button"
-                    onClick={() => handleClose()}
+                    onClick={handleClose}
                   >
                     Cancel
                   </Button>
@@ -327,7 +443,11 @@ export default function WazuhAgentConfigFormModal({
                     <Button isLoading>Loading</Button>
                   ) : (
                     <Button variant="primary">
-                      {savedDataToBePopulated ? "Update" : (!isConnected ? "Save" : "Connect")}
+                      {savedDataToBePopulated
+                        ? "Update"
+                        : !isConnected
+                          ? "Save"
+                          : "Connect"}
                     </Button>
                   )}
                 </div>
@@ -353,11 +473,11 @@ export default function WazuhAgentConfigFormModal({
                         }
                         value={formData.osType}
                         onValueChange={(val) => {
-                          setFormData((prev) => ({ ...prev, osType: val }))
+                          handleOsTypeChange(val);
                         }}
                       >
                         <SelectItem value="windows">Windows</SelectItem>
-                        <SelectItem value="ubuntu">Ubuntu</SelectItem>
+                        <SelectItem value="ssh">Ubuntu</SelectItem>
                       </Select>
 
                       {errors.osType ? (
@@ -421,11 +541,17 @@ export default function WazuhAgentConfigFormModal({
                         }
                         value={formData.listOfDevices}
                         onValueChange={(val) =>
-                          setFormData((prev) => ({ ...prev, listOfDevices: val }))
+                          setFormData((prev) => ({
+                            ...prev,
+                            listOfDevices: val,
+                          }))
                         }
                       >
-                        {listOfDevices.map((device) => (
-                          <MultiSelectItem key={device.value} value={device.value}>
+                        {filteredDeviceOptions.map((device) => (
+                          <MultiSelectItem
+                            key={device.label}
+                            value={device.label}
+                          >
                             {device.label}
                           </MultiSelectItem>
                         ))}
@@ -443,7 +569,7 @@ export default function WazuhAgentConfigFormModal({
                 <div>
                   <div className="flex flex-col space-y-3">
                     <label
-                      htmlFor="probeId"
+                      htmlFor="region"
                       className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
                     >
                       Select Probe
@@ -451,8 +577,8 @@ export default function WazuhAgentConfigFormModal({
 
                     <div className="flex flex-col gap-1">
                       <Select
-                        id="probeId"
-                        name="probeId"
+                        id="region"
+                        name="region"
                         className={
                           errors.probeId
                             ? "w-full border border-red-500 rounded-md"
@@ -463,8 +589,11 @@ export default function WazuhAgentConfigFormModal({
                           setFormData((prev) => ({ ...prev, probeId: val }))
                         }
                       >
-                        {probeList.map((probe) => (
-                          <SelectItem key={probe.probeId} value={probe.probeId}>
+                        {probeOptions.map((probe) => (
+                          <SelectItem
+                            key={probe.probeId}
+                            value={probe.probeId}
+                          >
                             {probe.probeName}
                           </SelectItem>
                         ))}
@@ -492,20 +621,22 @@ export default function WazuhAgentConfigFormModal({
                       <IpInput
                         name="managerIp"
                         id="managerIp"
-                        error={errors.managerIp ? true : false}
+                        error={!!errors.managerIp}
                         value={formData.managerIp}
                         onChangeFunction={handleIpInputChange}
                       />
 
                       {errors.managerIp ? (
-                        <p className="text-xs text-red-500">{errors.managerIp}</p>
+                        <p className="text-xs text-red-500">
+                          {errors.managerIp}
+                        </p>
                       ) : undefined}
                     </div>
                   </div>
                 </div>
 
 
-                {formData.osType === "ubuntu" ? <div>
+                <div>
                   <div className="grid grid-cols-2 gap-6">
                     <div className="flex flex-col space-y-3">
                       <label
@@ -519,13 +650,15 @@ export default function WazuhAgentConfigFormModal({
                         <IpInput
                           name="pythonServerIp"
                           id="pythonServerIp"
-                          error={errors.pythonServerIp ? true : false}
+                          error={!!errors.pythonServerIp}
                           value={formData.pythonServerIp}
                           onChangeFunction={handleIpInputChange}
                         />
 
                         {errors.pythonServerIp ? (
-                          <p className="text-xs text-red-500">{errors.pythonServerIp}</p>
+                          <p className="text-xs text-red-500">
+                            {errors.pythonServerIp}
+                          </p>
                         ) : undefined}
                       </div>
                     </div>
@@ -560,12 +693,13 @@ export default function WazuhAgentConfigFormModal({
                       </div>
                     </div>
                   </div>
-                </div> : undefined}
+                </div>
+
               </div>
             </div>
           </form>
         </DialogPanel>
-      </Dialog >
+      </Dialog>
     </>
   );
 }
