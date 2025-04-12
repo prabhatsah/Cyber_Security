@@ -73,6 +73,8 @@ let probeOptions: ProbeOption[] = [];
 const devicesMap = new Map<string, DeviceDetails>();
 const devicesKeyMap = new Map<string, string>();
 
+
+
 export default function WazuhAgentConfigFormModal({
   enpointToolUrl,
   isFormModalOpen,
@@ -106,9 +108,13 @@ export default function WazuhAgentConfigFormModal({
   useEffect(() => {
     const fetchPrefilledData = async () => {
       try {
+
         const [fetchedDevices, fetchedProbes] = await prefillWazuhForm();
         // Build device options
-        const devices: DeviceOption[] = fetchedDevices.map((device: any) => {
+        const devicesMapByLabel: Record<string, DeviceOption> = {};
+
+        fetchedDevices.forEach((device: any) => {
+          const label = `${device.data.hostIp}(${device.data.hostName})`;
           // Save full details by deviceId
           devicesMap.set(device.data.deviceId, {
             ...device.data,
@@ -116,15 +122,18 @@ export default function WazuhAgentConfigFormModal({
           });
           // For easy lookups by label
           devicesKeyMap.set(
-            `${device.data.hostIp}(${device.data.hostName})`,
+            label,
             device.data.deviceId
           );
-          return {
-            label: `${device.data.hostIp}(${device.data.hostName})`,
+
+          devicesMapByLabel[label] = {
+            label: label,
             value: device.data.deviceId,
             osType: device.data.osType,
           };
         });
+
+        const devices: DeviceOption[] = Object.values(devicesMapByLabel);
         allDeviceOptions = devices;
         probeOptions = fetchedProbes;
 
@@ -133,7 +142,7 @@ export default function WazuhAgentConfigFormModal({
           const existingOsType = savedDataToBePopulated.osType.toLowerCase();
           setFilteredDeviceOptions(
             devices.filter(
-              (device) => device.osType?.toLowerCase() === existingOsType
+              (device) => device?.osType?.toLowerCase() === existingOsType
             )
           );
         } else if (formData.osType) {
@@ -154,7 +163,7 @@ export default function WazuhAgentConfigFormModal({
     };
 
     fetchPrefilledData();
-  }, [formData.osType, savedDataToBePopulated?.osType]);
+  }, []);
 
   // Error states and other feedback
   const [errors, setErrors] = useState<ErrorState>({});
@@ -217,7 +226,7 @@ export default function WazuhAgentConfigFormModal({
       const existingOsType = savedDataToBePopulated.osType?.toLowerCase();
       if (existingOsType) {
         const filteredDevices = allDeviceOptions.filter(
-          (device) => device.osType?.toLowerCase() === existingOsType
+          (device) => device?.osType?.toLowerCase() === existingOsType
         );
         setFilteredDeviceOptions(filteredDevices);
       }
@@ -711,64 +720,64 @@ export default function WazuhAgentConfigFormModal({
               </div>
 
               {/* Python Server Info (only used for SSH/Ubuntu) */}
-              {formData.osType === "ssh" && (
-                <div>
-                  <div className="grid grid-cols-2 gap-6">
-                    <div className="flex flex-col space-y-3">
-                      <label
-                        htmlFor="pythonServerIp"
-                        className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
-                      >
-                        Python Server IP
-                      </label>
-                      <div className="flex flex-col gap-1">
-                        <IpInput
-                          name="pythonServerIp"
-                          id="pythonServerIp"
-                          error={!!errors.pythonServerIp}
-                          value={formData.pythonServerIp}
-                          onChangeFunction={handleIpInputChange}
-                        />
 
-                        {errors.pythonServerIp && (
-                          <p className="text-xs text-red-500">
-                            {errors.pythonServerIp}
-                          </p>
-                        )}
-                      </div>
+              <div>
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="flex flex-col space-y-3">
+                    <label
+                      htmlFor="pythonServerIp"
+                      className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                    >
+                      Python Server IP
+                    </label>
+                    <div className="flex flex-col gap-1">
+                      <IpInput
+                        name="pythonServerIp"
+                        id="pythonServerIp"
+                        error={!!errors.pythonServerIp}
+                        value={formData.pythonServerIp}
+                        onChangeFunction={handleIpInputChange}
+                      />
+
+                      {errors.pythonServerIp && (
+                        <p className="text-xs text-red-500">
+                          {errors.pythonServerIp}
+                        </p>
+                      )}
                     </div>
+                  </div>
 
-                    <div className="flex flex-col space-y-3">
-                      <label
-                        htmlFor="pythonServerPort"
-                        className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
-                      >
-                        Python Server Port
-                      </label>
-                      <div className="flex flex-col gap-1">
-                        <Input
-                          id="pythonServerPort"
-                          name="pythonServerPort"
-                          value={formData.pythonServerPort}
-                          className={
-                            errors.pythonServerPort
-                              ? "w-full border border-red-500 rounded-md"
-                              : "w-full"
-                          }
-                          onChange={handleInputChange}
-                          placeholder="Enter Python Server Port Number"
-                        />
+                  <div className="flex flex-col space-y-3">
+                    <label
+                      htmlFor="pythonServerPort"
+                      className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                    >
+                      Python Server Port
+                    </label>
+                    <div className="flex flex-col gap-1">
+                      <Input
+                        id="pythonServerPort"
+                        name="pythonServerPort"
+                        value={formData.pythonServerPort}
+                        className={
+                          errors.pythonServerPort
+                            ? "w-full border border-red-500 rounded-md"
+                            : "w-full"
+                        }
+                        onChange={handleInputChange}
+                        placeholder="Enter Python Server Port Number"
+                      />
 
-                        {errors.pythonServerPort && (
-                          <p className="text-xs text-red-500">
-                            {errors.pythonServerPort}
-                          </p>
-                        )}
-                      </div>
+                      {errors.pythonServerPort && (
+                        <p className="text-xs text-red-500">
+                          {errors.pythonServerPort}
+                        </p>
+                      )}
                     </div>
                   </div>
                 </div>
-              )}
+              </div>
+
               {/* End of Form Inputs */}
             </div>
           </div>
