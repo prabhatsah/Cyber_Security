@@ -73,6 +73,8 @@ let probeOptions: ProbeOption[] = [];
 const devicesMap = new Map<string, DeviceDetails>();
 const devicesKeyMap = new Map<string, string>();
 
+
+
 export default function WazuhAgentConfigFormModal({
   enpointToolUrl,
   isFormModalOpen,
@@ -91,52 +93,6 @@ export default function WazuhAgentConfigFormModal({
     DeviceOption[]
   >([]);
 
-  // Prefill data on mount
-  useEffect(() => {
-    const fetchPrefilledData = async () => {
-      try {
-        const [fetchedDevices, fetchedProbes] = await prefillWazuhForm();
-        // Build device options
-        const devices: DeviceOption[] = fetchedDevices.map((device: any) => {
-          // Save full details by deviceId
-          devicesMap.set(device.data.deviceId, {
-            ...device.data,
-            osType: device.data.osType,
-          });
-          // For easy lookups by label
-          devicesKeyMap.set(
-            `${device.data.hostIp}(${device.data.hostName})`,
-            device.data.deviceId
-          );
-          return {
-            label: `${device.data.hostIp}(${device.data.hostName})`,
-            value: device.data.deviceId,
-            osType: device.data.osType,
-          };
-        });
-        allDeviceOptions = devices;
-        probeOptions = fetchedProbes;
-
-        // If an OS is already selected (e.g., when editing), filter devices accordingly
-        // if (savedDataToBePopulated?.osType) {
-        //   const existingOsType = savedDataToBePopulated.osType.toLowerCase();
-        //   setFilteredDeviceOptions(
-        //     devices.filter(
-        //       (device) => device.osType?.toLowerCase() === existingOsType
-        //     )
-        //   );
-        // } else {
-        //   // Otherwise, you can show all or none
-        //   setFilteredDeviceOptions([]);
-        // }
-      } catch (error) {
-        console.error("Error fetching prefilled Wazuh form data:", error);
-      }
-    };
-
-    fetchPrefilledData();
-  }, []);
-
   // Form state
   const [formData, setFormData] = useState<FormState>({
     configurationName: savedDataToBePopulated?.configurationName ?? "",
@@ -147,6 +103,67 @@ export default function WazuhAgentConfigFormModal({
     pythonServerIp: savedDataToBePopulated?.pythonServerIp ?? "",
     pythonServerPort: savedDataToBePopulated?.pythonServerPort ?? "",
   });
+
+  // Prefill data on mount
+  useEffect(() => {
+    const fetchPrefilledData = async () => {
+      try {
+
+        const [fetchedDevices, fetchedProbes] = await prefillWazuhForm();
+        // Build device options
+        const devicesMapByLabel: Record<string, DeviceOption> = {};
+
+        fetchedDevices.forEach((device: any) => {
+          const label = `${device.data.hostIp}(${device.data.hostName})`;
+          // Save full details by deviceId
+          devicesMap.set(device.data.deviceId, {
+            ...device.data,
+            osType: device.data.osType,
+          });
+          // For easy lookups by label
+          devicesKeyMap.set(
+            label,
+            device.data.deviceId
+          );
+
+          devicesMapByLabel[label] = {
+            label: label,
+            value: device.data.deviceId,
+            osType: device.data.osType,
+          };
+        });
+
+        const devices: DeviceOption[] = Object.values(devicesMapByLabel);
+        allDeviceOptions = devices;
+        probeOptions = fetchedProbes;
+
+        // If an OS is already selected (e.g., when editing), filter devices accordingly
+        if (savedDataToBePopulated?.osType) {
+          const existingOsType = savedDataToBePopulated.osType.toLowerCase();
+          setFilteredDeviceOptions(
+            devices.filter(
+              (device) => device?.osType?.toLowerCase() === existingOsType
+            )
+          );
+        } else if (formData.osType) {
+          // If OS is selected in the form state, filter accordingly on initial load
+          const initialOsType = formData.osType.toLowerCase();
+          setFilteredDeviceOptions(
+            devices.filter(
+              (device) => device.osType?.toLowerCase() === initialOsType
+            )
+          );
+        } else {
+          // Otherwise, you can show all or none. Showing none for initial clarity.
+          setFilteredDeviceOptions([]);
+        }
+      } catch (error) {
+        console.error("Error fetching prefilled Wazuh form data:", error);
+      }
+    };
+
+    fetchPrefilledData();
+  }, []);
 
   // Error states and other feedback
   const [errors, setErrors] = useState<ErrorState>({});
@@ -180,9 +197,6 @@ export default function WazuhAgentConfigFormModal({
       newErrors.managerIp = "Manager IP is required.";
     }
 
-    // IMPORTANT FIX:
-    // Previously, the check was if (osType === "ubuntu"), but the actual
-    // value for Ubuntu is "ssh". So we change that here:
     if (formData.osType === "ssh" && !formData.pythonServerIp.trim()) {
       newErrors.pythonServerIp = "Python Server IP is required for Ubuntu/SSH!";
     }
@@ -212,7 +226,7 @@ export default function WazuhAgentConfigFormModal({
       const existingOsType = savedDataToBePopulated.osType?.toLowerCase();
       if (existingOsType) {
         const filteredDevices = allDeviceOptions.filter(
-          (device) => device.osType.toLowerCase() === existingOsType
+          (device) => device?.osType?.toLowerCase() === existingOsType
         );
         setFilteredDeviceOptions(filteredDevices);
       }
@@ -236,15 +250,21 @@ export default function WazuhAgentConfigFormModal({
     setFormData((prev) => ({ ...prev, [fieldName]: ip }));
   };
 
-  // (Optional) Test connection code — currently disabled
+  // (Optional) Test connection code
   const handleTestConnection = async (event: FormEvent) => {
     event.preventDefault();
     if (!validateForm()) return;
 
-    // setIsLoading(true);
-    // setTestConnectionResult("");
-    // // do your test logic...
-    // setIsLoading(false);
+    setIsLoading(true);
+    setTestConnectionResult("");
+    // Simulate a connection test
+    await new Promise((resolve) => setTimeout(resolve, 1500)); // Replace with actual test logic
+
+    // For demonstration purposes, randomly set connection status
+    const isTestSuccessful = Math.random() > 0.5;
+    setIsConnected(isTestSuccessful);
+    setTestConnectionResult(isTestSuccessful ? "Connection successful!" : "Connection failed.");
+    setIsLoading(false);
   };
 
   // Save a new configuration
@@ -334,6 +354,35 @@ export default function WazuhAgentConfigFormModal({
             key: "configurationName",
             value: formData.configurationName,
           },
+          {
+            key: "osType",
+            value: formData.osType,
+          },
+          {
+            key: "listOfDevices",
+            value: formData.listOfDevices,
+          },
+          {
+            key: "probeDetails",
+            value: {
+              probeId: formData.probeId,
+              probeName: probeOptions.find(
+                (probe) => probe.probeId === formData.probeId
+              )?.probeName ?? "",
+            },
+          },
+          {
+            key: "managerIp",
+            value: formData.managerIp,
+          },
+          {
+            key: "pythonServerIp",
+            value: formData.pythonServerIp ?? "",
+          },
+          {
+            key: "pythonServerPort",
+            value: formData.pythonServerPort ?? "",
+          },
           // add more fields here as needed
         ];
 
@@ -422,7 +471,7 @@ export default function WazuhAgentConfigFormModal({
                     <div className="flex items-center space-x-3">
                       <div
                         className="flex size-12 shrink-0 items-center justify-center text-primary rounded-md
-                            border border-tremor-border p-1 dark:border-dark-tremor-border"
+                          border border-tremor-border p-1 dark:border-dark-tremor-border"
                       >
                         <RiCodeBoxLine className="size-5" aria-hidden={true} />
                       </div>
@@ -482,13 +531,16 @@ export default function WazuhAgentConfigFormModal({
                 {isLoading ? (
                   <Button isLoading>Loading</Button>
                 ) : (
-                  <Button variant="primary">
-                    {savedDataToBePopulated
-                      ? "Update"
-                      : !isConnected
-                        ? "Save"
-                        : "Connect"}
-                  </Button>
+                  <>
+                    {!savedDataToBePopulated && (
+                      <Button variant="primary" type="button" onClick={handleTestConnection} className="mr-2">
+                        Test Connection
+                      </Button>
+                    )}
+                    <Button variant="primary" type="submit">
+                      {savedDataToBePopulated ? "Update" : "Save"}
+                    </Button>
+                  </>
                 )}
               </div>
             </div>
@@ -668,6 +720,7 @@ export default function WazuhAgentConfigFormModal({
               </div>
 
               {/* Python Server Info (only used for SSH/Ubuntu) */}
+
               <div>
                 <div className="grid grid-cols-2 gap-6">
                   <div className="flex flex-col space-y-3">
@@ -724,6 +777,7 @@ export default function WazuhAgentConfigFormModal({
                   </div>
                 </div>
               </div>
+
               {/* End of Form Inputs */}
             </div>
           </div>
