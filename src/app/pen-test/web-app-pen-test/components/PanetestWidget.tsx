@@ -84,9 +84,10 @@ export default function PanetestWidget() {
                 <div className='flex items-center justify-between mb-4'>
                     <h2 className='mb-4 text-widgetHeader'>Configure Pentest</h2>
                     <Button>
-                        <Link
+                        <Link className='flex items-center'
                             href="/pen-test/web-app-pen-test/create-pentest">
-                            <RiAddFill className="h-5 w-5 mr-2" /> Initiate Pentest
+                            <RiAddFill className="h-5 w-5" />
+                            <span>Initiate Panetest</span>
                         </Link>
                     </Button>
                 </div>
