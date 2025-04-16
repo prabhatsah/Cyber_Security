@@ -1,5 +1,5 @@
 import { RenderAppBreadcrumb } from "@/components/app-breadcrumb";
-import PanetestWidget from "./components/PanetestWidget";
+import PentestWidget from "./components/PentestWidget";
 
 export default function WebAppPenetrationTesting() {
     return (
@@ -18,7 +18,7 @@ export default function WebAppPenetrationTesting() {
                     href: "/pen-test/web-app-pen-test",
                 }}
             />
-            <PanetestWidget />
+            <PentestWidget />
         </>
     );
 }
