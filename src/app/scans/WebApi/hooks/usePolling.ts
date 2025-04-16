@@ -157,9 +157,10 @@ export const usePolling = (
   const [foundURI, setFoundURI] = useState<string[]>([]);
   const [newAlerts, setNewAlerts] = useState("0");
   const [numRequests, setNumRequests] = useState("0");
+  const [messages, setMessages] = useState([]);
 
-  const spiderIntervalRef = useRef<NodeJS.Timeout | null>(null);
-  const activeIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  // const spiderIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  // const activeIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const resetScan = () => {
     setSpiderProgress(0);
@@ -167,6 +168,7 @@ export const usePolling = (
     setFoundURI([]);
     setNewAlerts("0");
     setNumRequests("0");
+    setMessages([]);
     onComplete(null);
   };
 
@@ -193,8 +195,33 @@ export const usePolling = (
     }
   };
 
-  const pollSpiderProgress = (spiderScanId: string) => {
-    spiderIntervalRef.current = setInterval(async () => {
+  // const pollSpiderProgress = (spiderScanId: string) => {
+  //   spiderIntervalRef.current = setInterval(async () => {
+  //     try {
+  //       const progressData = await apiRequest(
+  //         `${apiUrl}/progress?scanId=${spiderScanId}&type=spider`
+  //       );
+
+  //       setSpiderProgress(Number(progressData.progress) || 0);
+
+  //       const urls = await apiRequest(
+  //         `${apiUrl}/spiderResults?scanId=${spiderScanId}`
+  //       );
+  //       setFoundURI(urls.urls || []);
+
+  //       if (progressData.progress == "100") {
+  //         clearInterval(spiderIntervalRef.current!);
+  //         await startActiveScan();
+  //       }
+  //     } catch (err) {
+  //       console.error("Error polling spider progress:", err);
+  //       clearInterval(spiderIntervalRef.current!);
+  //     }
+  //   }, 5000); // Poll every 10 seconds
+  // };
+
+  const pollSpiderProgress = async (spiderScanId: string) => {
+    const poll = async () => {
       try {
         const progressData = await apiRequest(
           `${apiUrl}/progress?scanId=${spiderScanId}&type=spider`
@@ -208,14 +235,18 @@ export const usePolling = (
         setFoundURI(urls.urls || []);
 
         if (progressData.progress == "100") {
-          clearInterval(spiderIntervalRef.current!);
           await startActiveScan();
+        } else {
+          // Call again after a delay
+          setTimeout(poll, 2000); // 2 seconds delay before next poll
         }
       } catch (err) {
         console.error("Error polling spider progress:", err);
-        clearInterval(spiderIntervalRef.current!);
+        // Optional: you can retry after a delay or exit here
       }
-    }, 5000); // Poll every 10 seconds
+    };
+
+    await poll();
   };
 
   const startActiveScan = async () => {
@@ -238,8 +269,41 @@ export const usePolling = (
     }
   };
 
-  const pollActiveScanProgress = (activeScanId: string) => {
-    activeIntervalRef.current = setInterval(async () => {
+  // const pollActiveScanProgress = (activeScanId: string) => {
+  //   activeIntervalRef.current = setInterval(async () => {
+  //     try {
+  //       const scanDetails = await apiRequest(`${apiUrl}/scanDetails`);
+  //       const scan = scanDetails.scans.find((s: Scan) => s.id === activeScanId);
+
+  //       if (scan) {
+  //         setActiveProgress(
+  //           scan.state === "FINISHED" ? 100 : Number(scan.progress) || 0
+  //         );
+  //         setNewAlerts(scan.newAlertCount);
+  //         setNumRequests(scan.reqCount);
+  //       }
+
+  //       if (scan?.state === "FINISHED") {
+  //         clearInterval(activeIntervalRef.current!);
+
+  //         const report = await apiRequest(`${apiUrl}/report`);
+  //         const insertScanDataResp = await insertScanData(
+  //           report.report.site[0]
+  //         );
+  //         if (insertScanDataResp.error)
+  //           throw new Error(insertScanDataResp.error);
+  //         onComplete(report.report.site[0]);
+  //         setIsScanning(false);
+  //       }
+  //     } catch (err) {
+  //       console.error("Error polling active scan progress:", err);
+  //       clearInterval(activeIntervalRef.current!);
+  //     }
+  //   }, 15000); // Poll every 5 seconds
+  // };
+
+  const pollActiveScanProgress = async (activeScanId: string) => {
+    const poll = async () => {
       try {
         const scanDetails = await apiRequest(`${apiUrl}/scanDetails`);
         const scan = scanDetails.scans.find((s: Scan) => s.id === activeScanId);
@@ -250,34 +314,54 @@ export const usePolling = (
           );
           setNewAlerts(scan.newAlertCount);
           setNumRequests(scan.reqCount);
+
+          // Fetch messages if spider is done and scanning is ongoing
+          const messagesData = await apiRequest(
+            `${apiUrl}/messages?baseurl=${encodeURIComponent(query)}&start=${
+              messages.length
+            }`
+          );
+          setMessages((prev) => [...prev, ...messagesData.messages]);
         }
 
         if (scan?.state === "FINISHED") {
-          clearInterval(activeIntervalRef.current!);
-
           const report = await apiRequest(`${apiUrl}/report`);
-          const insertScanDataResp = await insertScanData(
-            report.report.site[0]
-          );
-          if (insertScanDataResp.error)
-            throw new Error(insertScanDataResp.error);
+          const scanData = report.report.site[0];
+
+          const uniqueKey = new Date().getTime().toString();
+          console.log("uniqueKey----------", uniqueKey);
+          scanData.scanned_at = formatTimestamp(uniqueKey);
+
+          const resp = await saveScannedData("web_api_scan", {
+            key: uniqueKey,
+            value: scanData,
+          });
+
+          if (resp.error) {
+            throw new Error(resp.error);
+          }
+
           onComplete(report.report.site[0]);
           setIsScanning(false);
+        } else {
+          setTimeout(poll, 5000); // poll again after 15 seconds
         }
       } catch (err) {
         console.error("Error polling active scan progress:", err);
-        clearInterval(activeIntervalRef.current!);
+        // Optional: Retry or fail
       }
-    }, 15000); // Poll every 5 seconds
+    };
+
+    await poll();
   };
 
   // Cleanup polling intervals on unmount
-  useEffect(() => {
-    return () => {
-      if (spiderIntervalRef.current) clearInterval(spiderIntervalRef.current);
-      if (activeIntervalRef.current) clearInterval(activeIntervalRef.current);
-    };
-  }, []);
+  // useEffect(() => {
+  //   return () => {
+  //     if (spiderIntervalRef.current) clearInterval(spiderIntervalRef.current);
+  //     if (activeIntervalRef.current) clearInterval(activeIntervalRef.current);
+  //   };
+  // }, []);
 
   return {
     isScanning,
@@ -286,6 +370,7 @@ export const usePolling = (
     foundURI,
     newAlerts,
     numRequests,
+    messages,
     startScan,
   };
 };

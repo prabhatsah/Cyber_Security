@@ -13,12 +13,16 @@ import {
   CloudCog,
   Network,
   PackageOpen,
+  ShieldCheck,
+  BugPlay,
+  ScanSearch,
 } from "lucide-react";
 import { RiArrowDownSLine } from "@remixicon/react";
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "Scans", href: "/scans", icon: Scan },
+  { name: "PenTest", href: "/pen-test", icon: BugPlay },
   { name: "Reports", href: "/reports", icon: FileText },
   { name: "Audit Log", href: "/audit", icon: Activity },
   { name: "Settings", href: "/settings", icon: Settings },
@@ -37,12 +41,18 @@ const navigation = [
         icon: Network,
       },
       {
-        name: "Container Services",
-        href: "/configuration/container-services",
+        name: "Container Tools",
+        href: "/configuration/container-tools",
         icon: PackageOpen,
+      },
+      {
+        name: "Endpoint Tools",
+        href: "/configuration/endpoint-tools",
+        icon: ShieldCheck,
       },
     ],
   },
+  { name: "Reconnaissance", href: "/reconnaissance", icon: ScanSearch },
 ];
 
 export default function Sidebar() {
@@ -76,10 +86,9 @@ export default function Sidebar() {
                           key={sub.name}
                           href={sub.href}
                           className={`flex items-center gap-x-2.5 px-3 py-2 text-sm rounded-md
-                            ${
-                              pathname.includes(sub.href)
-                                ? "bg-primary text-gray-50"
-                                : "text-gray-700 dark:text-gray-400 hover:bg-gray-100 hover:text-gray-900 hover:dark:text-gray-50 hover:dark:bg-gray-800"
+                            ${pathname.includes(sub.href)
+                              ? "bg-primary text-gray-50"
+                              : "text-gray-700 dark:text-gray-400 hover:bg-gray-100 hover:text-gray-900 hover:dark:text-gray-50 hover:dark:bg-gray-800"
                             }
                           `}
                         >
@@ -93,10 +102,9 @@ export default function Sidebar() {
                   <Link
                     href={item.href}
                     className={`flex items-center gap-x-2.5 text-sm font-medium px-3 py-2 rounded-md
-                      ${
-                        pathname.includes(item.href)
-                          ? "bg-primary text-gray-50"
-                          : "text-gray-700 dark:text-gray-400 hover:bg-gray-100 hover:text-gray-900 hover:dark:text-gray-50 hover:dark:bg-gray-800"
+                      ${pathname.includes(item.href)
+                        ? "bg-primary text-gray-50"
+                        : "text-gray-700 dark:text-gray-400 hover:bg-gray-100 hover:text-gray-900 hover:dark:text-gray-50 hover:dark:bg-gray-800"
                       }
                       `}
                   >
