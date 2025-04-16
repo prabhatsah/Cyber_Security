@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Card } from "@tremor/react";
-import { AlertCircle, CheckCircle2, Eye, ArrowRight, User, Calendar } from 'lucide-react';
+import { AlertCircle, CheckCircle2, Eye, ArrowRight, User, Calendar, Info } from 'lucide-react';
 import { getProfileData } from '@/ikon/utils/actions/auth';
 import { Badge } from './ui/badge';
 
@@ -58,7 +58,7 @@ const statusConfig = {
         textColor: 'text-red-800 dark:text-red-500',
         label: 'Critical', // Keep or change this label as needed
     },
-     unclear: {
+    unclear: {
         icon: Info,
         bgColor: 'bg-blue-500',
         textColor: 'text-blue-800 dark:text-blue-500',
@@ -95,7 +95,7 @@ export default function Example({ pastScans, onOpenPastScan }) {
 
         <div className="">
             <h2 className=" font-bold text-widget-title text-widgetHeader mt-4">Scan History</h2>
-        
+
             <dl className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 mt-4">
                 {pastScans.map((item, index) => {
                     const StatusIcon = statusConfig[item.status as keyof typeof statusConfig]?.icon;
@@ -116,7 +116,7 @@ export default function Example({ pastScans, onOpenPastScan }) {
                             </div>
 
                             <div className="mt-6 space-y-4">
-                                <div className="flex items-center justify-between p-3 bg-white dark:bg-gray-800 rounded-lg shadow-sm cursor-pointer"  onClick={() => handleClick(item.key)}>
+                                <div className="flex items-center justify-between p-3 bg-white dark:bg-gray-800 rounded-lg shadow-sm cursor-pointer" onClick={() => handleClick(item.key)}>
                                     <div className="flex items-center space-x-3" >
                                         <span className={cx(
                                             statusConfig[item.status as keyof typeof statusConfig]?.bgColor,
