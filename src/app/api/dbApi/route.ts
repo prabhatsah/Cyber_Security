@@ -43,10 +43,10 @@ export async function POST(req: Request) {
 
     if (instruction && instruction === "update") {
       fs.writeFileSync(localFilePath, query, { encoding: "utf8" });
-      // console.log(
-      //   "SQL Query Written to File:",
-      //   fs.readFileSync(localFilePath, "utf8")
-      // );
+      console.log(
+        "SQL Query Written to File:",
+        fs.readFileSync(localFilePath, "utf8")
+      );
       await ssh.putFile(localFilePath, remoteFilePath);
       result = await ssh.execCommand(
         `PGPASSWORD="postgres" psql -h localhost -U postgres -p 5436 -d cyber_security -f "${remoteFilePath}"`
@@ -141,7 +141,7 @@ async function fetchPaginatedData(
       ) t;
     `;
 
-    // console.log("Query: ", query);
+    console.log("Query: ", query);
 
     const result = await ssh.execCommand(
       `PGPASSWORD="postgres" psql -h localhost -U postgres -p 5436 -d cyber_security -A -t -c "${query}"`
