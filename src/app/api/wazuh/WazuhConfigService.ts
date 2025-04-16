@@ -1,5 +1,8 @@
 import { getTicket } from "@/ikon/utils/actions/auth";
-
+import { subscribeToProcessEvents } from ".";
+import pako from "pako";
+import * as JSZipUtils from 'jszip-utils';
+import JSZip from 'jszip';
 export async function prefillWazuhForm(): Promise<[any, any]> {
 
     const ticket = await getTicket();
@@ -190,4 +193,128 @@ export async function configureWazuhAgent(device: any, probeId: any) {
 
     return parsedData;
 }
+
+
+export async function callWazuhApi() {
+
+    const ticket = await getTicket();
+    const url = `https://ikoncloud-dev.keross.com/rest?inZip=false&outZip=true&inFormat=freejson&outFormat=freejson&service=processRuntimeService&operation=startProcessWithSpecificTransitionV2&locale=null&activeAccountId=b8bbe5c9-ad0d-4874-b563-275a86e4b818&softwareId=abda94ad-1e44-4e7d-bb86-726d10df2bee&ticket=${ticket}`;
+
+    let requestBody = new URLSearchParams();
+    requestBody.append('arguments',
+            `["f1afe61d-4e0d-4a86-a721-e60c6cbbbdfc","Start DRY Run",{"serviceScriptDetails":
+            {
+                "scriptType":"Wazuh Api Call"
+            },"probeId":"efd16dc0-4790-48f6-8675-8bdcebee7ffd"},"id"]`);
+   
+
+
+
+
+
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        },
+        body: requestBody.toString(),
+    });
+
+    if (!response.ok) {
+        // Handle HTTP errors
+        const errorText = await response.text();
+        console.log(errorText);
+        //handleFetchError(response, errorText, failureFunction, ikonErrorCode);
+        return;
+    }
+
+
+
+    let parsedData = await response.json();
+
+    return parsedData;
+}
+
+
+export async function getWazuhData(callback: any) {
+    // for deos in dev
+    // let accountId = '56b5c266-6a0f-437a-82b9-3715bb6f3d4c';
+    const ticket = await getTicket();
+    const url = `https://ikoncloud-dev.keross.com/rest?inZip=false&outZip=true&inFormat=freejson&outFormat=freejson&service=processRuntimeService&operation=mapProcessName&locale=null&activeAccountId=b8bbe5c9-ad0d-4874-b563-275a86e4b818&softwareId=abda94ad-1e44-4e7d-bb86-726d10df2bee&ticket=${ticket}`;
+
+    let requestBody = new URLSearchParams();
+    requestBody.append('arguments',
+            `["Device Service Dry Run","b8bbe5c9-ad0d-4874-b563-275a86e4b818"]`);
+    
+
+
+
+
+
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        },
+        body: requestBody.toString(),
+    });
+
+    if (!response.ok) {
+        // Handle HTTP errors
+        const errorText = await response.text();
+        console.log(response);
+        //handleFetchError(response, errorText, failureFunction, ikonErrorCode);
+        return;
+    }
+
+    let processId = await response.json();
+    
+    console.log(processId);
+
+    let url2 = `https://ikoncloud-dev.keross.com/rest?inZip=false&outZip=true&inFormat=freejson&outFormat=freejson&service=processRuntimeService&operation=getMyInstancesV2&locale=null&activeAccountId=b8bbe5c9-ad0d-4874-b563-275a86e4b818&softwareId=abda94ad-1e44-4e7d-bb86-726d10df2bee&ticket=${ticket}`;
+
+
+    let requestBody2 = new URLSearchParams();
+    requestBody2.append('arguments',
+        JSON.stringify(["Device Service Dry Run","b8bbe5c9-ad0d-4874-b563-275a86e4b818",null,null,null,null,["Data"],false]));
+
+
+
+
+
+
+    const response2 = await fetch(url2, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        },
+        body: requestBody2.toString(),
+    });
+
+    if (!response2.ok) {
+        // Handle HTTP errors
+        const errorText = await response2.text();
+        console.log(response2);
+        //handleFetchError(response, errorText, failureFunction, ikonErrorCode);
+        return;
+    }
+
+    let instances = await response2.json();
+    
+    
+  //  console.log(instance);
+    const processInstanceId = instances[0].processInstanceId;
+    const socket = await subscribeToProcessEvents({
+      processId:processId,
+      //processInstanceId: null,
+      viewComponentId: "componenetId",
+      eventCallbackFunction: (event: any) => {
+        callback(event);
+        
+        console.log(event.data);
+      },
+    });
+    return socket;
+    
+  }
 
