@@ -1,9 +1,8 @@
 'use client';
 
 import { Card, Divider, Tab, TabGroup, TabList, TabPanel, TabPanels } from '@tremor/react';
-import { RiBuildingFill, RiMapPin2Fill, RiUserFill, RiTimeLine, RiAlarmWarningFill, RiCheckLine } from '@remixicon/react';
+import { RiBuildingFill, RiMapPin2Fill, RiUserFill, RiTimeLine, RiAlarmWarningFill } from '@remixicon/react';
 import { Button } from '@/components/Button';
-import { any } from 'zod';
 
 const reconnaissanceFormData = [
     {
