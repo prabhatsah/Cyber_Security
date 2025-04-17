@@ -1,18 +1,17 @@
 'use client';
 
-import { Badge, Card, Divider, Tab, TabGroup, TabList, TabPanel, TabPanels } from '@tremor/react';
+import { Card, Divider, Tab, TabGroup, TabList, TabPanel, TabPanels } from '@tremor/react';
 import { RiBuildingFill, RiMapPin2Fill, RiUserFill, RiTimeLine, RiAlarmWarningFill, RiCheckLine } from '@remixicon/react';
-import ReconnaissanceConfigFormData from '../../reconnaissance-pen-test/page';
-import React from 'react';
+import { Button } from '@/components/Button';
 
-const data = [
+const reconnaissanceFormData = [
     {
-        status: 'Planning',
-        orders: [
+        reconnaissanceStatus: 'Active',
+        reconnaissanceComponent: [
             {
                 webAppName: 'My Web App',
                 penTestName: 'PenTest 1',
-                penTestDescription: 'Penetration Testing (PenTest) for a web application is a crucial process where ethical hackers simulate real-world attacks to identify vulnerabilities in the application, its infrastructure, and any connected systems. The goal is to uncover security weaknesses before malicious attackers can exploit them.',
+                penTestDescription: 'A description of PenTest 1.',
                 scope: 'Internal',
                 typeOfTesting: 'Black Box',
                 startDate: '2025-04-01',
@@ -20,31 +19,14 @@ const data = [
                 timeZone: 'GMT',
                 priority: 'High',
                 securityLevel: 'Medium',
+                buttonName: 'Initiate Active Reconnassiance',
             },
         ],
 
     },
     {
-        status: 'Reconnaissance',
-        ReconnaissanceComponentTab: ReconnaissanceConfigFormData,
-        orders: [
-            {
-                webAppName: 'Sidhu',
-                penTestName: 'PenTest 1',
-                penTestDescription: 'A description of PenTest 1.',
-                scope: 'Internal',
-                typeOfTesting: 'Black Box',
-                startDate: '2025-04-01',
-                endDate: '2025-04-10',
-                timeZone: 'GMT',
-                priority: 'High',
-                securityLevel: 'Medium',
-            },
-        ],
-    },
-    {
-        status: 'Vulnerability Scanning',
-        orders: [
+        reconnaissanceStatus: 'Passive',
+        reconnaissanceComponent: [
             {
                 webAppName: 'My Web App',
                 penTestName: 'PenTest 1',
@@ -56,139 +38,53 @@ const data = [
                 timeZone: 'GMT',
                 priority: 'High',
                 securityLevel: 'Medium',
-            },
-        ],
-    },
-    {
-        status: 'Exploitation',
-        orders: [
-            {
-                webAppName: 'My Web App',
-                penTestName: 'PenTest 1',
-                penTestDescription: 'A description of PenTest 1.',
-                scope: 'Internal',
-                typeOfTesting: 'Black Box',
-                startDate: '2025-04-01',
-                endDate: '2025-04-10',
-                timeZone: 'GMT',
-                priority: 'High',
-                securityLevel: 'Medium',
-            },
-        ],
-    },
-    {
-        status: 'Post Exploitation',
-        orders: [
-            {
-                webAppName: 'My Web App',
-                penTestName: 'PenTest 1',
-                penTestDescription: 'A description of PenTest 1.',
-                scope: 'Internal',
-                typeOfTesting: 'Black Box',
-                startDate: '2025-04-01',
-                endDate: '2025-04-10',
-                timeZone: 'GMT',
-                priority: 'High',
-                securityLevel: 'Medium',
-            },
-        ],
-    },
-    {
-        status: 'AI Analysis',
-        orders: [
-            {
-                webAppName: 'My Web App',
-                penTestName: 'PenTest 1',
-                penTestDescription: 'A description of PenTest 1.',
-                scope: 'Internal',
-                typeOfTesting: 'Black Box',
-                startDate: '2025-04-01',
-                endDate: '2025-04-10',
-                timeZone: 'GMT',
-                priority: 'High',
-                securityLevel: 'Medium',
+                buttonName: 'Initiate Passive Reconnassiance',
             },
         ],
     },
 ];
 
-const getPriorityColor = (priority: string) => {
-    switch (priority.toLowerCase()) {
-        case 'high':
-            return 'red';
-        case 'medium':
-            return 'orange';
-        case 'low':
-            return 'green';
-        default:
-            return 'gray';
-    }
-};
-
-const getSecurityLevelColor = (level: string) => {
-    switch (level.toLowerCase()) {
-        case 'high':
-            return 'green';
-        case 'medium':
-            return 'yellow';
-        case 'low':
-            return 'red';
-        default:
-            return 'gray';
-    }
-};
-
-export default function PaneTestConfigFormData() {
+export default function ReconnaissanceConfigFormData() {
     return (
         <>
             <Card className="bg-tremor-background-muted p-0 dark:bg-dark-tremor-background-muted">
                 <TabGroup>
                     <TabList className="bg-tremor-background-muted px-6 dark:bg-dark-tremor-background-muted mb-2">
-                        {data.map((category, index) => (
+                        {reconnaissanceFormData.map((category, index) => (
                             <Tab
-                                key={category.status}
+                                key={category.reconnaissanceStatus}
                                 className="pb-2.5 font-medium hover:border-gray-300 flex items-center space-x-2"
                             >
                                 <span className="font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">
-                                    <span className="mr-2">{index + 1}.</span> {/* Serial Number */}
-                                    {category.status}
+                                    {category.reconnaissanceStatus}
                                 </span>
-                                {/* Right Tick Icon for Completed Tabs */}
-                                {category.status === 'Completed' && (
-                                    <RiCheckLine className="text-green-500" />
-                                )}
                             </Tab>
                         ))}
                     </TabList>
 
                     <TabPanels>
-                        {data.map((category) => (
+                        {reconnaissanceFormData.map((category) => (
                             <TabPanel
-                                key={category.status}
+                                key={category.reconnaissanceStatus}
                                 className="p-4"
                             >
-                                {category.ReconnaissanceComponentTab ? (
-                                    <category.ReconnaissanceComponentTab />
-                                ) : category.orders.map((order) => (
-                                    <Card key={order.penTestName} className="bg-gray-50 p-6 hover:bg-gray-100 transition-colors duration-200 mb-4">
+                                {category.reconnaissanceComponent.map((reconnaissanceComponent) => (
+                                    <Card key={reconnaissanceComponent.penTestName} className="bg-gray-50 p-6 hover:bg-gray-100 transition-colors duration-200 mb-4">
                                         <div className="space-y-6">
                                             <div className="flex justify-between items-start">
                                                 <div>
                                                     <h4 className="text-xl font-semibold text-widget-mainHeader">
-                                                        {order.penTestName}
+                                                        {reconnaissanceComponent.penTestName}
                                                     </h4>
                                                     <p className="text-widget-mainDesc max-w-3xl">
-                                                        {order.penTestDescription}
+                                                        {reconnaissanceComponent.penTestDescription}
                                                     </p>
                                                 </div>
-                                                <div className="flex space-x-2">
-                                                    <Badge color={getPriorityColor(order.priority)} size="lg">
-                                                        Priority: {order.priority}
-                                                    </Badge>
-                                                    <Badge color={getSecurityLevelColor(order.securityLevel)} size="lg">
-                                                        Security: {order.securityLevel}
-                                                    </Badge>
-                                                </div>
+                                                <Button>
+                                                    <span>
+                                                        {reconnaissanceComponent.buttonName}
+                                                    </span>
+                                                </Button>
                                             </div>
                                             <Divider />
                                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -199,7 +95,7 @@ export default function PaneTestConfigFormData() {
                                                     />
                                                     <div>
                                                         <p className="text-sm text-widget-mainHeader">Web App Name</p>
-                                                        <p className="text-widget-mainDesc font-medium">{order.webAppName}</p>
+                                                        <p className="text-widget-mainDesc font-medium">{reconnaissanceComponent.webAppName}</p>
                                                     </div>
                                                 </div>
                                                 <div className="flex items-center space-x-3">
@@ -209,7 +105,7 @@ export default function PaneTestConfigFormData() {
                                                     />
                                                     <div>
                                                         <p className="text-sm text-widget-mainHeader">Scope</p>
-                                                        <p className="text-widget-mainDesc font-medium">{order.scope}</p>
+                                                        <p className="text-widget-mainDesc font-medium">{reconnaissanceComponent.scope}</p>
                                                     </div>
                                                 </div>
                                                 <div className="flex items-center space-x-3">
@@ -219,7 +115,7 @@ export default function PaneTestConfigFormData() {
                                                     />
                                                     <div>
                                                         <p className="text-sm text-widget-mainHeader">Testing Type</p>
-                                                        <p className="text-widget-mainDesc font-medium">{order.typeOfTesting}</p>
+                                                        <p className="text-widget-mainDesc font-medium">{reconnaissanceComponent.typeOfTesting}</p>
                                                     </div>
                                                 </div>
                                                 <div className="flex items-center space-x-3">
@@ -230,7 +126,7 @@ export default function PaneTestConfigFormData() {
                                                     <div>
                                                         <p className="text-sm text-widget-mainHeader">Duration</p>
                                                         <p className="text-widget-mainDesc font-medium">
-                                                            {order.startDate} - {order.endDate}
+                                                            {reconnaissanceComponent.startDate} - {reconnaissanceComponent.endDate}
                                                         </p>
                                                     </div>
                                                 </div>
@@ -241,7 +137,7 @@ export default function PaneTestConfigFormData() {
                                                     />
                                                     <div>
                                                         <p className="text-sm text-widget-mainHeader">Time Zone</p>
-                                                        <p className="text-widget-mainDesc font-medium">{order.timeZone}</p>
+                                                        <p className="text-widget-mainDesc font-medium">{reconnaissanceComponent.timeZone}</p>
                                                     </div>
                                                 </div>
                                             </div>
