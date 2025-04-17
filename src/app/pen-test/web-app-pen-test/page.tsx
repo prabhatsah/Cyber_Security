@@ -1,7 +1,21 @@
 import { RenderAppBreadcrumb } from "@/components/app-breadcrumb";
 import PentestWidget from "./components/PentestWidget";
+import { getLoggedInUserProfile } from "@/ikon/utils/api/loginService";
+import { fetchData } from "@/utils/api";
 
-export default function WebAppPenetrationTesting() {
+async function fetchLoggedInUserPentestData() {
+    const userId = (await getLoggedInUserProfile()).USER_ID;
+
+
+    const fetchedData = await fetchData("configured_pentest", "id", [{ column: "userid", value: userId }], null);
+    return fetchedData.data;
+}
+
+export default async function WebAppPenetrationTesting() {
+
+    const loggedInUserPentestData = await fetchLoggedInUserPentestData();
+    console.log("Logged In User Pentest Data: ", loggedInUserPentestData);
+
     return (
         <>
             <RenderAppBreadcrumb

@@ -98,7 +98,7 @@ async function fetchPaginatedData(
   orderByColumn: string,
   offset: number | null,
   limit: number | null,
-  columnFilter?: { column: string; value: string | number } | null,
+  columnFilters?: { column: string; value: string | number }[] | null,
   jsonFilters?:
     | { column: string; keyPath: string[]; value: string | number }[]
     | null
@@ -115,8 +115,10 @@ async function fetchPaginatedData(
     let fromClause = tableName;
 
     // Filter by direct column
-    if (columnFilter) {
-      whereClauses.push(`"${columnFilter.column}" = '${columnFilter.value}'`);
+    if (columnFilters) {
+      columnFilters.forEach((columnFilter) => {
+        whereClauses.push(`"${columnFilter.column}" = '${columnFilter.value}'`);
+      });
     }
 
     if (jsonFilters && jsonFilters.length > 0) {
