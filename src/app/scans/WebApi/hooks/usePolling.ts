@@ -168,6 +168,7 @@ export const usePolling = (
     setFoundURI([]);
     setNewAlerts("0");
     setNumRequests("0");
+    setMessages([]);
     onComplete(null);
   };
 
