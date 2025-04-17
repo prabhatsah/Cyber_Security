@@ -82,7 +82,7 @@ export default function TheHarvesterDashboard() {
 
   useEffect(() => {
     const getPastScans = async () => {
-      const data = await fetchScannedData("osint_threat_intelligence_scan", null, false, null, null);
+      const data = await fetchScannedData("osint_threat_intelligence_scan", 'id', false, null, null);
       if (data && data.data) {
         setPastScans(data.data);
       }
