@@ -11,7 +11,7 @@ export default async function TrivyConfig({
   containerUrl: string;
   containerName: string;
 }) {
-  const fetchedData = (await fetchData("container_config", "id", { column: "name", value: containerUrl }, null)).data;
+  const fetchedData = (await fetchData("container_config", "id", [{ column: "name", value: containerUrl }], null)).data;
   console.log("Fetched data ", fetchedData);
   const eachConfigDataFormatted: Array<TrivyConfiguration | any> = [...Object.values(fetchedData[0].data)];
   console.log(containerName, " Data updated ", eachConfigDataFormatted);

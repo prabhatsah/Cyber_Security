@@ -22,75 +22,67 @@ function extractJson(input: string): any {
 }
 
 export async function POST(req: Request) {
-  try {
-    let { query, instruction } = await req.json();
+  let { query, instruction } = await req.json();
 
-    if (!query) {
-      return NextResponse.json(
-        { success: false, error: "Query parameter is required" },
-        { status: 400 }
-      );
-    }
+  if (!query) {
+    return NextResponse.json(
+      { success: false, error: "Query parameter is required" },
+      { status: 400 }
+    );
+  }
 
-    await ssh.connect({
-      host: "77.68.48.96",
-      username: "root",
-      password: "QR66&4Zq2#",
-    });
+  await ssh.connect({
+    host: "77.68.48.96",
+    username: "root",
+    password: "QR66&4Zq2#",
+  });
 
-    let jsonData: any;
-    let result: any;
+  let jsonData: any;
+  let result: any;
 
-    if (instruction && instruction === "update") {
-      fs.writeFileSync(localFilePath, query, { encoding: "utf8" });
-      console.log(
-        "SQL Query Written to File:",
-        fs.readFileSync(localFilePath, "utf8")
-      );
-      await ssh.putFile(localFilePath, remoteFilePath);
-      result = await ssh.execCommand(
-        `PGPASSWORD="postgres" psql -h localhost -U postgres -p 5436 -d cyber_security -f "${remoteFilePath}"`
-      );
-      await ssh.execCommand(`rm -f ${remoteFilePath}`);
-    } else if (instruction && instruction === "fetch") {
-      const fetchedResult = await fetchPaginatedData(
-        query.tableName,
-        query.orderByColumn,
-        null,
-        null,
-        query.columnFilter,
-        query.jsonFilter
-      );
-      // console.log("this is the fetched result");
-      // console.log(fetchedResult);
-      return NextResponse.json({
-        success: true,
-        fullData: result,
-        data: fetchedResult ? JSON.parse(fetchedResult) : null,
-      });
-    } else {
-      result = await ssh.execCommand(
-        `PGPASSWORD="postgres" psql -h localhost -U postgres -p 5436 -d cyber_security -c "${query}"`
-      );
-    }
-    // console.log("Query Result:", result);
-    ssh.dispose();
-
-    if (result.stdout.includes("json") && instruction != "update")
-      jsonData = extractJson(result.stdout);
-
+  if (instruction && instruction === "update") {
+    fs.writeFileSync(localFilePath, query, { encoding: "utf8" });
+    console.log(
+      "SQL Query Written to File:",
+      fs.readFileSync(localFilePath, "utf8")
+    );
+    await ssh.putFile(localFilePath, remoteFilePath);
+    result = await ssh.execCommand(
+      `PGPASSWORD="postgres" psql -h localhost -U postgres -p 5436 -d cyber_security -f "${remoteFilePath}"`
+    );
+    await ssh.execCommand(`rm -f ${remoteFilePath}`);
+  } else if (instruction && instruction === "fetch") {
+    const fetchedResult = await fetchPaginatedData(
+      query.tableName,
+      query.orderByColumn,
+      null,
+      null,
+      query.columnFilter,
+      query.jsonFilter
+    );
+    // console.log("this is the fetched result");
+    // console.log(fetchedResult);
     return NextResponse.json({
       success: true,
       fullData: result,
-      data: jsonData ? jsonData : result,
+      data: fetchedResult ? JSON.parse(fetchedResult) : null,
     });
-  } catch (error: any) {
-    console.error("SSH Connection Failed:", error);
-    return NextResponse.json(
-      { success: false, error: error.message },
-      { status: 500 }
+  } else {
+    result = await ssh.execCommand(
+      `PGPASSWORD="postgres" psql -h localhost -U postgres -p 5436 -d cyber_security -c "${query}"`
     );
   }
+  // console.log("Query Result:", result);
+  ssh.dispose();
+
+  if (result.stdout.includes("json") && instruction != "update")
+    jsonData = extractJson(result.stdout);
+
+  return NextResponse.json({
+    success: true,
+    fullData: result,
+    data: jsonData ? jsonData : result,
+  });
 }
 
 async function fetchPaginatedData(

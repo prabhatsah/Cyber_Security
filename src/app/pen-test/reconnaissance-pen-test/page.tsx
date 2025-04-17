@@ -3,6 +3,7 @@
 import { Card, Divider, Tab, TabGroup, TabList, TabPanel, TabPanels } from '@tremor/react';
 import { RiBuildingFill, RiMapPin2Fill, RiUserFill, RiTimeLine, RiAlarmWarningFill, RiCheckLine } from '@remixicon/react';
 import { Button } from '@/components/Button';
+import { any } from 'zod';
 
 const reconnaissanceFormData = [
     {
@@ -44,7 +45,7 @@ const reconnaissanceFormData = [
     },
 ];
 
-export default function ReconnaissanceConfigFormData() {
+export default function ReconnaissanceConfigFormData({ componentData }: { componentData: any }) {
     return (
         <>
             <Card className="bg-tremor-background-muted p-0 dark:bg-dark-tremor-background-muted">
