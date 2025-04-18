@@ -1,4 +1,4 @@
-// utils/timezones.ts
+// // utils/timezones.ts
 import moment from "moment-timezone";
 
 export interface TimeZoneOption {
@@ -6,10 +6,10 @@ export interface TimeZoneOption {
   value: string;
 }
 
-export function getFormattedTimeZones(): TimeZoneOption[] {
+export function getFormattedTimeZones(): string[] {
   const allTimeZones = moment.tz.names();
 
-  const formatted = allTimeZones.map((tz) => {
+  const formatted: TimeZoneOption[] = allTimeZones.map((tz) => {
     const offset = moment.tz(tz).utcOffset();
     const sign = offset >= 0 ? "+" : "-";
     const hours = Math.floor(Math.abs(offset) / 60)
@@ -23,9 +23,13 @@ export function getFormattedTimeZones(): TimeZoneOption[] {
     };
   });
 
-  return formatted.sort((a, b) => {
-    const offsetA = moment.tz(a.value).utcOffset();
-    const offsetB = moment.tz(b.value).utcOffset();
-    return offsetA - offsetB || a.label.localeCompare(b.label);
-  });
+  return formatted
+    .sort((a, b) => {
+      const offsetA = moment.tz(a.value).utcOffset();
+      const offsetB = moment.tz(b.value).utcOffset();
+      return offsetA - offsetB || a.label.localeCompare(b.label);
+    })
+    .map((tz) => {
+      return tz.label;
+    });
 }
