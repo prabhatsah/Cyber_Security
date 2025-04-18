@@ -3,6 +3,13 @@
 import { Card, Divider, Tab, TabGroup, TabList, TabPanel, TabPanels } from '@tremor/react';
 import { RiBuildingFill, RiMapPin2Fill, RiUserFill, RiTimeLine, RiAlarmWarningFill } from '@remixicon/react';
 import { Button } from '@/components/Button';
+import SubDomainWizget from './components/subDomain';
+import OpenPortDiscoverWizget from './components/openPortDiscover';
+import TechnologiesIdentifiedWizget from './components/technologiesIdentified';
+import VulnerabilitiesWizget from './components/vulnerabilitiesFound';
+import { HarvesterData } from '@/app/scans/OSINT/components/type';
+import CriticalSubdomainWizget from './components/criticalSubdomain';
+
 
 const reconnaissanceFormData = [
     {
@@ -69,16 +76,17 @@ export default function ReconnaissanceConfigFormData({ componentData }: { compon
                                 className="p-4"
                             >
                                 {category.reconnaissanceComponent.map((reconnaissanceComponent) => (
-                                    <Card key={reconnaissanceComponent.penTestName} className="bg-gray-50 p-6 hover:bg-gray-100 transition-colors duration-200 mb-4">
+                                    <Card key={reconnaissanceComponent.penTestName} className="bg-gray-50 p-4 hover:bg-gray-100 transition-colors duration-200 mb-4">
                                         <div className="space-y-6">
-                                            <div className="flex justify-between items-start">
+                                            <div className="flex   items-center gap-4">
                                                 <div>
-                                                    <h4 className="text-xl font-semibold text-widget-mainHeader">
-                                                        {reconnaissanceComponent.penTestName}
-                                                    </h4>
-                                                    <p className="text-widget-mainDesc max-w-3xl">
-                                                        {reconnaissanceComponent.penTestDescription}
-                                                    </p>
+                                                    <SubDomainWizget />
+                                                </div>
+                                                <div>
+                                                    <OpenPortDiscoverWizget />
+                                                </div>
+                                                <div>
+                                                    <TechnologiesIdentifiedWizget />
                                                 </div>
                                                 <Button>
                                                     <span>
@@ -87,59 +95,13 @@ export default function ReconnaissanceConfigFormData({ componentData }: { compon
                                                 </Button>
                                             </div>
                                             <Divider />
-                                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                                <div className="flex items-center space-x-3">
-                                                    <RiBuildingFill
-                                                        className="size-5 text-blue-600"
-                                                        aria-hidden={true}
-                                                    />
-                                                    <div>
-                                                        <p className="text-sm text-widget-mainHeader">Web App Name</p>
-                                                        <p className="text-widget-mainDesc font-medium">{reconnaissanceComponent.webAppName}</p>
-                                                    </div>
-                                                </div>
-                                                <div className="flex items-center space-x-3">
-                                                    <RiMapPin2Fill
-                                                        className="size-5 text-green-600"
-                                                        aria-hidden={true}
-                                                    />
-                                                    <div>
-                                                        <p className="text-sm text-widget-mainHeader">Scope</p>
-                                                        <p className="text-widget-mainDesc font-medium">{reconnaissanceComponent.scope}</p>
-                                                    </div>
-                                                </div>
-                                                <div className="flex items-center space-x-3">
-                                                    <RiUserFill
-                                                        className="size-5 text-purple-600"
-                                                        aria-hidden={true}
-                                                    />
-                                                    <div>
-                                                        <p className="text-sm text-widget-mainHeader">Testing Type</p>
-                                                        <p className="text-widget-mainDesc font-medium">{reconnaissanceComponent.typeOfTesting}</p>
-                                                    </div>
-                                                </div>
-                                                <div className="flex items-center space-x-3">
-                                                    <RiTimeLine
-                                                        className="size-5 text-orange-600"
-                                                        aria-hidden={true}
-                                                    />
-                                                    <div>
-                                                        <p className="text-sm text-widget-mainHeader">Duration</p>
-                                                        <p className="text-widget-mainDesc font-medium">
-                                                            {reconnaissanceComponent.startDate} - {reconnaissanceComponent.endDate}
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                                <div className="flex items-center space-x-3">
-                                                    <RiAlarmWarningFill
-                                                        className="size-5 text-yellow-600"
-                                                        aria-hidden={true}
-                                                    />
-                                                    <div>
-                                                        <p className="text-sm text-widget-mainHeader">Time Zone</p>
-                                                        <p className="text-widget-mainDesc font-medium">{reconnaissanceComponent.timeZone}</p>
-                                                    </div>
-                                                </div>
+                                            <div>
+                                                {/* Ensure widgetData is safely passed to VulnerabilitiesWizget */}
+                                                <VulnerabilitiesWizget widgetData={reconnaissanceComponent.widgetData ?? {}} />
+                                            </div>
+                                            <Divider />
+                                            <div>
+                                                <CriticalSubdomainWizget />
                                             </div>
                                         </div>
                                     </Card>
