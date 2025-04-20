@@ -2,7 +2,7 @@ import { RiCodeBoxLine } from "@remixicon/react";
 import { RenderAppBreadcrumb } from "@/components/app-breadcrumb";
 import { fetchData } from "@/utils/api";
 import { CloudCog, FolderCog, GlobeLock, Network, TabletSmartphone } from "lucide-react";
-import EachPenTestTypeWidget from "./EachPenTestTypeWidget";
+import EachPenTestTypeWidget from "./components/EachPenTestTypeWidget";
 
 const penTestTypeList = [
     {

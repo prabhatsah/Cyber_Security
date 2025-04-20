@@ -28,7 +28,7 @@ export default async function AmazonWebServicesConfig({
   //   }
   // }, [fetchedData]);
 
-  const fetchedData = (await fetchData("cloud_config", "id", { column: "name", value: serviceUrl }, null)).data;
+  const fetchedData = (await fetchData("cloud_config", "id", [{ column: "name", value: serviceUrl }], null)).data;
   console.log("Fetched data ", fetchedData);
   const eachConfigDataFormatted: Array<AmazonWebServicesConfiguration | any> = [...Object.values(fetchedData[0].data)];
   console.log(serviceName, " Data updated ", eachConfigDataFormatted);

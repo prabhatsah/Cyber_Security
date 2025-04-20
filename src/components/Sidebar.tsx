@@ -52,7 +52,6 @@ const navigation = [
       },
     ],
   },
-  { name: "Reconnaissance", href: "/reconnaissance", icon: ScanSearch },
 ];
 
 export default function Sidebar() {
