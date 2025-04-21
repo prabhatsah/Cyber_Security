@@ -9,7 +9,7 @@ const penTestTypeList = [
         name: "Web Application Penetration Testing",
         description:
             "Web app penetration testing identifies and exploits security vulnerabilities in web applications to assess and improve their security posture.",
-        configurationCount: 0,
+        configurationCount: 1,
         icon: <GlobeLock className="size-5" aria-hidden={true} />,
         href: "/pen-test/web-app-pen-test",
     },
