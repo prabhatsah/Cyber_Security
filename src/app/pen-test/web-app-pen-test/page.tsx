@@ -11,8 +11,8 @@ async function fetchLoggedInUserPentestData() {
 
 
     const fetchedData = await fetchData("configured_pentest", "id", [{ column: "userid", value: userId }]);
-    console.log(fetchedData)
-    return fetchedData ? fetchedData : null;
+
+    return fetchedData;
 }
 
 export default async function WebAppPenetrationTesting() {
