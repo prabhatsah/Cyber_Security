@@ -35,10 +35,9 @@ export default function ConfigSidebar() {
                   key={item.name}
                   href={item.href}
                   className={`flex items-center gap-x-2.5 text-sm font-medium px-3 py-2 rounded-md
-                    ${
-                      pathname.includes(item.href)
-                        ? "bg-primary text-gray-50"
-                        : "text-gray-700 dark:text-gray-400 hover:bg-gray-100 hover:text-gray-900 hover:dark:text-gray-50 hover:dark:bg-gray-800"
+                    ${pathname.includes(item.href)
+                      ? "bg-primary text-gray-50"
+                      : "text-gray-700 dark:text-gray-400 hover:bg-gray-100 hover:text-gray-900 hover:dark:text-gray-50 hover:dark:bg-gray-800"
                     }
                     `}
                 >

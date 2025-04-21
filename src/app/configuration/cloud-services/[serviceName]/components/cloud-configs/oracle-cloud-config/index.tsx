@@ -27,7 +27,7 @@ export default async function OracleCloudConfig({
   // }, [fetchedData]);
 
 
-  const fetchedData = (await fetchData("cloud_config", "id", { column: "name", value: serviceUrl }, null)).data;
+  const fetchedData = (await fetchData("cloud_config", "id", [{ column: "name", value: serviceUrl }], null)).data;
   console.log("Fetched data ", fetchedData);
   const eachConfigDataFormatted: Array<any> = [...Object.values(fetchedData[0].data)];
   console.log(serviceName, " Data updated ", eachConfigDataFormatted);

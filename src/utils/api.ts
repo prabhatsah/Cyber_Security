@@ -110,16 +110,21 @@ export async function addColumn(
   tableName: string,
   values: Record<string, any>[]
 ) {
+  const userId = (await getLoggedInUserProfile()).USER_ID;
+  console.log("this is the userId---> " + userId);
+
   let noOfCols = 0;
 
   for (let i = 0; i < values.length; i++) {
     if (values[i].column && values[i].value) noOfCols++;
   }
+  console.log(noOfCols);
 
   const columnDefinitions = values
     .filter(({ value }) => value !== undefined && value !== null)
     .map(({ column }) => column)
     .join(", ");
+  console.log(columnDefinitions);
 
   const valuesArr = values
     .filter(({ value }) => value !== undefined && value !== null)
@@ -157,14 +162,15 @@ export async function addColumn(
     valuesString = valuesString.slice(0, -1);
     valuesString += "),";
   }
+
   valuesString = valuesString.slice(0, -1).replace(/'{}'/g, "'{}'::jsonb");
-  const query = `INSERT INTO ${tableName} (${columnDefinitions}) VALUES ${valuesString};`;
+  const query = `INSERT INTO users (userid) VALUES ('${userId}') ON CONFLICT (userid) DO NOTHING; INSERT INTO ${tableName} (${columnDefinitions}) VALUES ${valuesString};`;
   console.log(query);
 
   const res = await fetch(`${baseUrl}/api/dbApi`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ query }),
+    body: JSON.stringify({ query, instruction: "update" }),
   });
 
   return res.json();
@@ -353,7 +359,7 @@ api.fetchData(name,null,null,null,{'projectId' : ['gcp-project-98341', 'gcp-proj
 export async function fetchData(
   tableName: string,
   orderByColumn: string | null,
-  columnFilter?: { column: string; value: string | number } | null,
+  columnFilter?: { column: string; value: string | number }[] | null,
   jsonFilter?:
     | {
         column: string;
@@ -363,7 +369,7 @@ export async function fetchData(
     | null
 ) {
   const query = { tableName, orderByColumn, columnFilter, jsonFilter };
-  console.log(query);
+  console.log("Sending query to backend:", query);
 
   const res = await fetch(`${baseUrl}/api/dbApi`, {
     method: "POST",
@@ -371,7 +377,19 @@ export async function fetchData(
     body: JSON.stringify({ query, instruction: "fetch" }),
   });
 
-  return res.json();
+  const text = await res.text();
+
+  if (!text) {
+    console.warn("Empty response from API");
+    return null;
+  }
+
+  try {
+    return JSON.parse(text);
+  } catch (e) {
+    console.error("Invalid JSON response from API:", text);
+    return null;
+  }
 }
 
 export async function deleteConfigWithKey(

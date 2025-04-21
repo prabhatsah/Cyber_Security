@@ -2,58 +2,78 @@ import { NextResponse } from "next/server";
 import { NodeSSH } from "node-ssh";
 import * as fs from "fs";
 import path from "path";
-import { off } from "process";
+import * as os from "os";
+import { randomUUID } from "crypto";
 
-const ssh = new NodeSSH();
-const localFilePath = path.join(__dirname, "query.sql");
-const localJsonPath = path.join(__dirname, "resultJson.json");
-console.log("this is the directory path ---->" + localFilePath);
-
-const remoteFilePath = "/tmp/query.sql";
+const tableLocks = new Map<string, Promise<void>>();
 
 function extractJson(input: string): any {
   const match = input.match(/\[([\s\S]*)\]/);
-
-  if (!match) {
-    throw new Error("No JSON found in the input string.");
-  }
+  if (!match) throw new Error("No JSON found in the input string.");
   const jsonString = match[0].replace(/\+\n/g, "").trim();
   return JSON.parse(jsonString);
 }
 
-export async function POST(req: Request) {
+async function withTableLock<T>(
+  tableName: string,
+  fn: () => Promise<T>
+): Promise<T> {
+  const previous = tableLocks.get(tableName) || Promise.resolve();
+
+  let release: () => void;
+  const current = new Promise<void>((res) => (release = res));
+
+  tableLocks.set(
+    tableName,
+    previous.then(() => current)
+  );
+
   try {
-    let { query, instruction } = await req.json();
-
-    if (!query) {
-      return NextResponse.json(
-        { success: false, error: "Query parameter is required" },
-        { status: 400 }
-      );
+    await previous;
+    return await fn();
+  } finally {
+    release!();
+    if (tableLocks.get(tableName) === current) {
+      tableLocks.delete(tableName);
     }
+  }
+}
 
-    await ssh.connect({
-      host: "77.68.48.96",
-      username: "root",
-      password: "QR66&4Zq2#",
-    });
+export async function POST(req: Request) {
+  const ssh = new NodeSSH();
+  const { query, instruction } = await req.json();
+  if (!query) {
+    return NextResponse.json(
+      { success: false, error: "Query parameter is required" },
+      { status: 400 }
+    );
+  }
 
-    let jsonData: any;
-    let result: any;
+  const uniqueId = randomUUID();
+  const localFilePath = path.join(os.tmpdir(), `query-${uniqueId}.sql`);
+  const remoteFilePath = `/tmp/query-${uniqueId}.sql`;
 
-    if (instruction && instruction === "update") {
-      fs.writeFileSync(localFilePath, query, { encoding: "utf8" });
-      console.log(
-        "SQL Query Written to File:",
-        fs.readFileSync(localFilePath, "utf8")
-      );
+  let result: any;
+  let jsonData: any;
+
+  await ssh.connect({
+    host: "77.68.48.96",
+    username: "root",
+    password: "QR66&4Zq2#",
+  });
+
+  if (instruction === "update") {
+    await withTableLock(query.tableName, async () => {
+      fs.writeFileSync(localFilePath, query, "utf8");
       await ssh.putFile(localFilePath, remoteFilePath);
       result = await ssh.execCommand(
         `PGPASSWORD="postgres" psql -h localhost -U postgres -p 5436 -d cyber_security -f "${remoteFilePath}"`
       );
-      await ssh.execCommand(`rm -f ${remoteFilePath}`);
-    } else if (instruction && instruction === "fetch") {
-      const fetchedResult = await fetchPaginatedData(
+    });
+  } else if (instruction === "fetch") {
+    const fetchedResult = await withTableLock(query.tableName, async () => {
+      return await fetchPaginatedData(
+        ssh,
         query.tableName,
         query.orderByColumn,
         null,
@@ -61,44 +81,42 @@ export async function POST(req: Request) {
         query.columnFilter,
         query.jsonFilter
       );
-      // console.log("this is the fetched result");
-      // console.log(fetchedResult);
-      return NextResponse.json({
-        success: true,
-        fullData: result,
-        data: fetchedResult ? JSON.parse(fetchedResult) : null,
-      });
-    } else {
-      result = await ssh.execCommand(
-        `PGPASSWORD="postgres" psql -h localhost -U postgres -p 5436 -d cyber_security -c "${query}"`
-      );
-    }
-    // console.log("Query Result:", result);
-    ssh.dispose();
+    });
 
-    if (result.stdout.includes("json") && instruction != "update")
-      jsonData = extractJson(result.stdout);
-
+    await ssh.dispose();
     return NextResponse.json({
       success: true,
       fullData: result,
-      data: jsonData ? jsonData : result,
+      data: fetchedResult ? JSON.parse(fetchedResult) : null,
     });
-  } catch (error: any) {
-    console.error("SSH Connection Failed:", error);
-    return NextResponse.json(
-      { success: false, error: error.message },
-      { status: 500 }
+  } else {
+    result = await ssh.execCommand(
+      `PGPASSWORD="postgres" psql -h localhost -U postgres -p 5436 -d cyber_security -c "${query}"`
     );
   }
+
+  if (fs.existsSync(localFilePath)) fs.unlinkSync(localFilePath);
+  await ssh.execCommand(`rm -f ${remoteFilePath}`);
+  await ssh.dispose();
+
+  if (result.stdout.includes("json") && instruction !== "update") {
+    jsonData = extractJson(result.stdout);
+  }
+
+  return NextResponse.json({
+    success: true,
+    fullData: result,
+    data: jsonData || result,
+  });
 }
 
 async function fetchPaginatedData(
+  ssh: NodeSSH,
   tableName: string,
   orderByColumn: string,
   offset: number | null,
   limit: number | null,
-  columnFilter?: { column: string; value: string | number } | null,
+  columnFilters?: { column: string; value: string | number }[] | null,
   jsonFilters?:
     | { column: string; keyPath: string[]; value: string | number }[]
     | null
@@ -114,9 +132,10 @@ async function fetchPaginatedData(
     let selectClause = "*";
     let fromClause = tableName;
 
-    // Filter by direct column
-    if (columnFilter) {
-      whereClauses.push(`"${columnFilter.column}" = '${columnFilter.value}'`);
+    if (columnFilters) {
+      columnFilters.forEach((columnFilter) => {
+        whereClauses.push(`"${columnFilter.column}" = '${columnFilter.value}'`);
+      });
     }
 
     if (jsonFilters && jsonFilters.length > 0) {

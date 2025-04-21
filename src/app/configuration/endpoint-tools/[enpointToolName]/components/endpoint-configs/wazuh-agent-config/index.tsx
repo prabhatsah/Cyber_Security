@@ -11,7 +11,7 @@ export default async function WazuhAgentConfig({
   enpointToolUrl: string;
   enpointToolName: string;
 }) {
-  const fetchedData_ = await fetchData("endpoint_config", "id", { column: "name", value: enpointToolUrl }, null);
+  const fetchedData_ = await fetchData("endpoint_config", "id", [{ column: "name", value: enpointToolUrl }], null);
   const fetchedData = fetchedData_.data;
   console.log("Fetched data ", fetchedData);
   const eachConfigDataFormatted: Array<WazuhAgentConfiguration | any> = [...Object.values(fetchedData[0].data)];
