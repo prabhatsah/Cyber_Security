@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -15,9 +16,13 @@ import {
   PackageOpen,
   ShieldCheck,
   BugPlay,
-  ScanSearch,
+  ChevronLeft,
+  ChevronRight,
+  HelpCircle,
 } from "lucide-react";
 import { RiArrowDownSLine } from "@remixicon/react";
+import { cn } from "@/lib/utils";
+import { Button } from "@tremor/react";
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
@@ -56,43 +61,85 @@ const navigation = [
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const [collapsed, setCollapsed] = useState(false);
 
   return (
     <div className="hidden lg:flex lg:flex-shrink-0 h-full">
-      <div className="flex flex-col w-64">
-        <div className="flex flex-col flex-grow pt-5 pb-4 overflow-y-auto border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950">
-          <div className="flex items-center  px-4 ">
-            <Shield className="h-8 w-8 text-primary" />
-            <h1 className="ml-2 text-xl font-semibold text-gray-900 dark:text-white">
-              SecureGuard
-            </h1>
+      <div
+        className={cn(
+          "flex flex-col transition-all duration-300 ease-in-out border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 relative",
+          collapsed ? "w-16" : "w-64"
+        )}
+      >
+        <div className="flex flex-col h-full">
+          <div className={cn(
+            "flex items-center px-4 mb-6 pt-5",
+            collapsed && "justify-center px-2"
+          )}>
+            <Shield className="h-8 w-8 text-primary flex-shrink-0" />
+            {!collapsed && (
+              <h1 className="ml-2 text-xl font-semibold text-gray-900 dark:text-white truncate">
+                SecureGuard
+              </h1>
+            )}
           </div>
-          <nav className="mt-8 flex-1 px-2 space-y-1">
+
+          <button
+            onClick={() => setCollapsed(!collapsed)}
+            className="absolute -right-3 top-6 flex items-center justify-center w-6 h-6 rounded-full bg-white dark:bg-gray-950 border border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors duration-200 z-50"
+          >
+            {collapsed ? (
+              <ChevronRight className="h-4 w-4" />
+            ) : (
+              <ChevronLeft className="h-4 w-4" />
+            )}
+          </button>
+
+          <nav className="flex-1 px-2 space-y-1 overflow-y-auto">
             {navigation.map((item) => (
               <div key={item.name}>
                 {item.submenus ? (
                   <details className="group">
-                    <summary className="flex items-center justify-between px-3 py-2 text-sm font-medium rounded-md text-gray-700 dark:text-gray-400 hover:bg-gray-100 hover:text-gray-900 hover:dark:text-gray-50 hover:dark:bg-gray-800 cursor-pointer">
-                      <div className="flex items-center gap-x-2.5">
-                        <item.icon className="mr-3 h-5 w-5 flex-shrink-0" />
-                        {item.name}
+                    <summary className={cn(
+                      "flex items-center justify-between py-2 text-sm font-medium rounded-md text-gray-700 dark:text-gray-400 hover:bg-gray-100 hover:text-gray-900 hover:dark:text-gray-50 hover:dark:bg-gray-800 cursor-pointer",
+                      collapsed ? "px-2" : "px-3"
+                    )}>
+                      <div className={cn(
+                        "flex items-center",
+                        collapsed && "justify-center w-full"
+                      )}>
+                        <item.icon className={cn(
+                          "h-5 w-5 flex-shrink-0",
+                          collapsed ? "mr-0" : "mr-3"
+                        )} />
+                        {!collapsed && item.name}
                       </div>
-                      <RiArrowDownSLine className="h-4 w-4 transition-transform group-open:rotate-180" />
+                      {!collapsed && (
+                        <RiArrowDownSLine className="h-4 w-4 transition-transform group-open:rotate-180" />
+                      )}
                     </summary>
-                    <div className="ml-8 mt-1 space-y-1">
+                    <div className={cn(
+                      "mt-1 space-y-1",
+                      collapsed ? "ml-0" : "ml-8"
+                    )}>
                       {item.submenus.map((sub) => (
                         <Link
                           key={sub.name}
                           href={sub.href}
-                          className={`flex items-center gap-x-2.5 px-3 py-2 text-sm rounded-md
-                            ${pathname.includes(sub.href)
+                          title={collapsed ? sub.name : ""}
+                          className={cn(
+                            "flex items-center py-2 text-sm rounded-md",
+                            collapsed ? "px-2 justify-center" : "px-3 gap-x-2.5",
+                            pathname.includes(sub.href)
                               ? "bg-primary text-gray-50"
                               : "text-gray-700 dark:text-gray-400 hover:bg-gray-100 hover:text-gray-900 hover:dark:text-gray-50 hover:dark:bg-gray-800"
-                            }
-                          `}
+                          )}
                         >
-                          <sub.icon className="mr-3 h-5 w-5 flex-shrink-0" />
-                          {sub.name}
+                          <sub.icon className={cn(
+                            "h-5 w-5 flex-shrink-0",
+                            collapsed ? "mr-0" : "mr-3"
+                          )} />
+                          {!collapsed && sub.name}
                         </Link>
                       ))}
                     </div>
@@ -100,35 +147,28 @@ export default function Sidebar() {
                 ) : (
                   <Link
                     href={item.href}
-                    className={`flex items-center gap-x-2.5 text-sm font-medium px-3 py-2 rounded-md
-                      ${pathname.includes(item.href)
+                    title={collapsed ? item.name : ""}
+                    className={cn(
+                      "flex items-center text-sm font-medium py-2 rounded-md",
+                      collapsed ? "px-2 justify-center" : "px-3 gap-x-2.5",
+                      pathname.includes(item.href)
                         ? "bg-primary text-gray-50"
                         : "text-gray-700 dark:text-gray-400 hover:bg-gray-100 hover:text-gray-900 hover:dark:text-gray-50 hover:dark:bg-gray-800"
-                      }
-                      `}
+                    )}
                   >
                     <item.icon
-                      className="mr-3 h-5 w-5 flex-shrink-0"
+                      className={cn(
+                        "h-5 w-5 flex-shrink-0",
+                        collapsed ? "mr-0" : "mr-3"
+                      )}
                       aria-hidden="true"
                     />
-                    {item.name}
+                    {!collapsed && item.name}
                   </Link>
                 )}
               </div>
             ))}
           </nav>
-          {/* <div className="mt-auto px-4 py-4">
-            <div className="bg-secondary rounded-lg p-4">
-              <h3 className="text-sm font-medium">Need Help?</h3>
-              <p className="mt-2 text-xs text-gray-500">
-                Contact our support team for assistance with your security
-                assessments.
-              </p>
-              <button className="mt-3 w-full btn-primary">
-                Contact Support
-              </button>
-            </div>
-          </div> */}
         </div>
       </div>
     </div>
