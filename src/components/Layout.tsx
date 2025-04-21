@@ -29,7 +29,7 @@ export default function Layout({
     <div className={`flex h-screen ${isLoginPage ? "bg-white  dark:bg-gray-950" : ""}`}>
       {/* Render Sidebar and Navbar only if not on the login page */}
       {!isLoginPage && (
-        <div className="w-64">
+        <div className="">
           <Sidebar />
         </div>
       )}
@@ -40,14 +40,12 @@ export default function Layout({
 
         {/* Main content */}
         <main
-          className={`flex-1 overflow-x-hidden overflow-y-auto ${
-            isLoginPage ? "w-full h-full" : "bg-background"
-          }`}
+          className={`flex-1 overflow-x-hidden overflow-y-auto ${isLoginPage ? "w-full h-full" : "bg-background"
+            }`}
         >
           <div
-            className={`h-full p-6 ${
-              isLoginPage ? "w-full" : "bg-white dark:bg-gray-950"
-            }`}
+            className={`h-full p-6 ${isLoginPage ? "w-full" : "bg-white dark:bg-gray-950"
+              }`}
           >
             {children}
           </div>
