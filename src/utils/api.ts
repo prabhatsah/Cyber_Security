@@ -369,7 +369,7 @@ export async function fetchData(
     | null
 ) {
   const query = { tableName, orderByColumn, columnFilter, jsonFilter };
-  console.log(query);
+  console.log("Sending query to backend:", query);
 
   const res = await fetch(`${baseUrl}/api/dbApi`, {
     method: "POST",
@@ -377,7 +377,19 @@ export async function fetchData(
     body: JSON.stringify({ query, instruction: "fetch" }),
   });
 
-  return res.json();
+  const text = await res.text();
+
+  if (!text) {
+    console.warn("Empty response from API");
+    return null;
+  }
+
+  try {
+    return JSON.parse(text);
+  } catch (e) {
+    console.error("Invalid JSON response from API:", text);
+    return null;
+  }
 }
 
 export async function deleteConfigWithKey(
