@@ -8,10 +8,18 @@ interface BasicInfoItem {
 
 interface BasicInfoWidgetProps {
   items: BasicInfoItem[];
+  useDefault?: boolean;
   columns?: number;
 }
 
-export const BasicInfoWidget: React.FC<BasicInfoWidgetProps> = ({ items, columns = Math.ceil(items.length / 2) }) => {
+export const BasicInfoWidget: React.FC<BasicInfoWidgetProps> = ({ items, useDefault = true, columns }) => {
+  if (!columns && !useDefault) {
+    columns = Math.ceil(items.length / 2);
+  }
+  if (!columns && useDefault) {
+    columns = 4;
+  }
+
   return (
     <Card className="rounded-md">
       <div className="h-full">
