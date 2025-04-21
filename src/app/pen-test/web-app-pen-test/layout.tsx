@@ -21,7 +21,7 @@ export default async function RootLayout({
           href: "/pen-test/web-app-pen-test",
         }}
       />
-      <div className=" h-full w-full">{children}</div>
+      <div className="h-full w-full">{children}</div>
     </>
   );
 }
