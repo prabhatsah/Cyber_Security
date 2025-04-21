@@ -11,6 +11,7 @@ async function fetchLoggedInUserPentestData() {
 
 
     const fetchedData = await fetchData("configured_pentest", "id", [{ column: "userid", value: userId }]);
+
     return fetchedData;
 }
 
