@@ -598,16 +598,17 @@ video {
   --chart-4: 43 74% 66%;
   --chart-5: 27 87% 67%;
   --radius: 0.5rem;
-  --title:#111827;
+  --title: #111827;
   --mainHeader: #171d2c;
   --mainDesc: #6b7280;
   --secondaryheader: #3a3e45;
   --secondaryDesc: #6b7280;
   --tableHeader: #171d2c;
   --tableDesc: #6b7280;
-  --pageheader:1.25rem;
-  --widgetHeader:1.125rem;
+  --pageheader: 1.25rem;
+  --widgetHeader: 1.125rem;
 }
+
 .dark {
   --background: 0 0% 3.9%;
   --foreground: 0 0% 98%;
@@ -634,7 +635,7 @@ video {
   --chart-4: 280 65% 60%;
   --chart-5: 340 75% 55%;
   /* --header:1.125rem; */
-  --title:#efefef;
+  --title: #efefef;
   --mainHeader: #e4e8ed;
   --mainDesc: #b6bece;
   --secondaryheader: #e5e7eb;
@@ -651,7 +652,7 @@ video {
   --success: #34d399;
   --error: #f87171;
   --warning: #fbbf24;
-  
+
 }
 
 html {
@@ -2374,6 +2375,46 @@ body {
 .dark\:focus\:ring-gray-700:focus:is(class *) {
   --tw-ring-opacity: 1;
   --tw-ring-color: rgb(55 65 81 / var(--tw-ring-opacity, 1));
+}
+
+/* Global Styles for Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  /* Adjust width of scrollbar */
+}
+
+::-webkit-scrollbar-track {
+  background: #333;
+  /* Dark background for the track */
+  border-radius: 20px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgb(17 24 39 / var(--tw-bg-opacity, 1));
+  border-radius: 20px;
+  /* Rounded edges for the thumb */
+  border: 2px solid #333;
+  /* Border between thumb and track */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #555;
+  /* Darker gray on hover */
+}
+
+/* For Firefox */
+.scrollbar {
+  width: 8px;
+  background-color: #333;
+}
+
+scrollbar-thumb {
+  background-color: #888;
+  border-radius: 10px;
+}
+
+scrollbar-thumb:hover {
+  background-color: #555;
 }
 
 @media (min-width: 640px) {
