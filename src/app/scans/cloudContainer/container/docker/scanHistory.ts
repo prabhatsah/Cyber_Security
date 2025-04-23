@@ -2,6 +2,7 @@ export let previousScannedResults: any;
 let vulnerabilities: Record<string, any> | null = null;
 
 export function setter(OGdata: any) {
+  console.log(OGdata);
   previousScannedResults = OGdata;
 }
 
@@ -20,12 +21,11 @@ export function Vulnerabilitiesgetter() {
 }
 
 export function fetchDetailsOfParticularImage(imageName: string) {
-  if (previousScannedResults?.data[1]) {
-    const images = previousScannedResults?.data[1].data;
-    console.log(images);
-    return images[imageName];
-  }
-  return null;
+  console.log(imageName);
+  let tempVal = previousScannedResults.data.filter((e: any) => {
+    if (e.data[imageName]) return e.data[imageName];
+  });
+  return tempVal ? tempVal[0].data[imageName] : null;
 }
 
 export function fetchDetailsOfParticularFile(fileName: string) {

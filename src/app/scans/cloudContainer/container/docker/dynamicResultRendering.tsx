@@ -78,10 +78,10 @@ const DynamicResultRendering = ({ scanningItem, outputScan, latestResult }) => {
         <div>
             <h1 className="flex text-lg mt-8 font-semibold text-gray-900 dark:text-white">
                 Scanned Results for{" "}
-                <p className="ms-1 font-bold">{scanningItem}</p> :-
+                <p className="ms-1 font-bold">{scanningItem}</p>
             </h1>
 
-            <div className="mt-3 p-6 rounded-lg shadow-lg">
+            <div className="mt-3 rounded-lg shadow-lg">
                 <div className="rounded-lg bg-gray-500">
                     <div className="bg-gray-100 dark:bg-[#0f172a] p-4 rounded-md shadow-md">
                         <h4 className="text-lg dark:text-white font-semibold text-gray-900 mb-4">

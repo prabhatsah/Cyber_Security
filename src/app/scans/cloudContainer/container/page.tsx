@@ -11,9 +11,9 @@ import Loading from "./loading";
 import { useRouter } from "next/navigation";
 
 const fetchHistoryScans = async () => {
-  const tableName = "image_file_scanning";
-  const orderByColumn = "slno";
-  const scans = await api.fetchData(tableName, orderByColumn);
+  const tableName = "container_security_history";
+  const orderByColumn = "id";
+  const scans = await api.fetchScannedData(tableName, orderByColumn, false, null, null, 0, 10);
   console.log(scans);
   prevScans.setter(scans);
 };
