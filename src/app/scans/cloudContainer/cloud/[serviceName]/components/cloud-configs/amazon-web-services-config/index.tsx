@@ -12,7 +12,7 @@ export default async function AmazonWebServicesConfig({
   serviceName: string;
 }) {
 
-  const fetchedData = (await fetchData("cloud_config", "id", { column: "name", value: serviceUrl }, null)).data;
+  const fetchedData = (await fetchData("cloud_config", "id", [{ column: "name", value: serviceUrl }], null)).data;
   // const fetchedData = (await fetchConfigDetails(serviceUrl)).data;
   // let fetchedData: any = configDataGetter();
   // fetchedData = fetchedData.filter((eachData: EachConfigDataFromServer) => eachData.name === serviceUrl);
