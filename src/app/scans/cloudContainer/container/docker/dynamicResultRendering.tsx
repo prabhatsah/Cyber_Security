@@ -21,7 +21,7 @@ import { severity } from "@/app/scans/WebApi/data";
 //     return severityArray;
 // }
 
-const DynamicResultRendering = ({ scanningItem, outputScan, latestResult }) => {
+const DynamicResultRendering = ({ scanningItem, outputScan, latestResult }: any) => {
     console.log(latestResult)
     const [isFullScreen, setIsFullScreen] = useState(false);
     const [currSeverity, setCurrSeverity] = useState<any>([]);
@@ -61,7 +61,7 @@ const DynamicResultRendering = ({ scanningItem, outputScan, latestResult }) => {
         setIsFullScreen(!isFullScreen);
     };
 
-    const getSeverityStyles = (severity) => {
+    const getSeverityStyles = (severity: string) => {
         switch (severity) {
             case "High":
                 return "bg-red-500 text-white";

@@ -522,7 +522,7 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
                     </TableHead>
                     <TableBody>
                       {logs.length > 0 ? (
-                        logs.map(({ timestamp, message, type }, index) => {
+                        logs.map(({ timestamp, message, type }: any, index: number) => {
                           return (
                             <TableRow key={index} className="">
                               <TableCell className={type === "error" ? "font-mono text-red-500" : "font-mono text-blue-500"}>[{timestamp}]</TableCell>
