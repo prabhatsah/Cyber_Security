@@ -96,8 +96,7 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
 
     let history = data?.Metadata?.ImageConfig?.history;
 
-    const key =
-      type === "Image" ? data?.Metadata?.RepoTags[0] : data?.Results[0].Target;
+    const objkey = new Date().getTime() + "";
 
     if (type === "Image") {
       data.Metadata.ImageConfig.history = history.map((entry: any) => {
@@ -108,9 +107,8 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
         return entry;
       });
     }
-    console.log(command, data);
-
-    return api.updateColumnGeneralised(name, "data", data, key, "type", type);
+    console.log(objkey, data);
+    return api.saveScannedData("cloud_security_history", { key: objkey, value: data });
   };
 
   const [logs, setLogs] = useState<any>([]);
@@ -184,7 +182,7 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
                 let finalResult: any;
                 console.log("after saveHistory line 187-->")
                 finalResult = JSON.parse(formattedString);
-                //saveHistoryScans(commandKey, finalResult).then(setTableResult);
+                saveHistoryScans(commandKey, finalResult).then(setTableResult);
                 //console.log(finalResult);
                 setOutputScan(finalResult);
                 setScanResults((prevResults) => ({
@@ -279,13 +277,13 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
           ←
         </span>
       </div>
-      <div className="p-4 w-full">
+      <div className=" w-full">
 
         {/* start from here*/}
         <Text className="!text-2xl !mt-1 !mb-9 flex items-center justify-center !text-center !w-full text-black dark:text-white">
           Docker Security Scanning & Image Analysis
         </Text>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 w-full max-w-full px-3">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 w-full max-w-full">
           <Card className="p-6 rounded-lg w-full max-h-[270px] flex flex-col justify-between shadow-md bg-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-all">
             <div className="flex items-start justify-between">
               <div className="flex items-center space-x-3">
@@ -511,7 +509,7 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
 
         <Accordion type="single" collapsible className="shadow-md mt-6 p-0 bg-blue-50 dark:bg-gray-900 rounded-lg">
           <AccordionItem value="live-logs">
-            <AccordionTrigger className="mt-2 px-3 py-3 dark:text-white rounded-lg text-xl font-semibold">
+            <AccordionTrigger className="px-3 py-3 dark:text-white rounded-lg text-xl font-semibold">
               <h2 className="text-2xl font-semibold">Live Logs</h2>
             </AccordionTrigger>
             <AccordionContent>
@@ -1048,7 +1046,7 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
             />
           )}
 
-          <h2 className="ms-3 mt-3 text-black dark:text-white">Previosuly Scanned </h2>
+          <h2 className=" mt-3 text-black dark:text-white">Previosuly Scanned </h2>
           <ScannedImages data={prevScans.Vulnerabilitiesgetter()} onImageClick={showImageDetails} />
 
           {/* {fileSystemResult && (<>

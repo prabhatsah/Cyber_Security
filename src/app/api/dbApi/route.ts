@@ -71,6 +71,8 @@ export async function POST(req: Request) {
       );
     });
   } else if (instruction === "fetch") {
+    console.log("this is query inside fetch--> ");
+    console.log(query);
     const fetchedResult = await withTableLock(query.tableName, async () => {
       return await fetchPaginatedData(
         ssh,
@@ -78,7 +80,7 @@ export async function POST(req: Request) {
         query.orderByColumn,
         null,
         null,
-        query.columnFilter,
+        query.allColumnFilter,
         query.jsonFilter
       );
     });
@@ -114,8 +116,8 @@ async function fetchPaginatedData(
   ssh: NodeSSH,
   tableName: string,
   orderByColumn: string,
-  offset: number | null,
-  limit: number | null,
+  offset?: number | null,
+  limit?: number | null,
   columnFilters?: { column: string; value: string | number }[] | null,
   jsonFilters?:
     | { column: string; keyPath: string[]; value: string | number }[]
@@ -131,8 +133,9 @@ async function fetchPaginatedData(
     let whereClauses: string[] = [];
     let selectClause = "*";
     let fromClause = tableName;
-
-    if (columnFilters) {
+    console.log("this is columns filters--> ");
+    console.log(columnFilters);
+    if (columnFilters && columnFilters.length > 0) {
       columnFilters.forEach((columnFilter) => {
         whereClauses.push(`"${columnFilter.column}" = '${columnFilter.value}'`);
       });
@@ -155,7 +158,7 @@ async function fetchPaginatedData(
         SELECT ${selectClause}
         FROM ${fromClause}
         ${whereClause}
-        ORDER BY "${orderByColumn}"
+        ORDER BY "${orderByColumn}" DESC
         LIMIT ${limit} OFFSET ${offset}
       ) t;
     `;

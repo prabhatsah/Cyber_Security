@@ -138,7 +138,7 @@ async function insertScanData(scanData) {
   console.log("uniqueKey----------", uniqueKey);
   scanData.scanned_at = formatTimestamp(uniqueKey);
 
-  const resp = await saveScannedData("web_api_scan", {
+  const resp = await saveScannedData("web_api_scan_history", {
     key: uniqueKey,
     value: scanData,
   });
@@ -332,7 +332,7 @@ export const usePolling = (
           console.log("uniqueKey----------", uniqueKey);
           scanData.scanned_at = formatTimestamp(uniqueKey);
 
-          const resp = await saveScannedData("web_api_scan", {
+          const resp = await saveScannedData("web_api_scan_history", {
             key: uniqueKey,
             value: scanData,
           });

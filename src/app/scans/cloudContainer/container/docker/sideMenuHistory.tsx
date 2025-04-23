@@ -68,7 +68,7 @@ export function ScannedImages({ data, onImageClick }: { data: any; onImageClick:
     const [isOpen, setIsOpen] = useState(false);
 
     return (
-        <div className="w-full p-4">
+        <div className="w-full">
             <Accordion className="rounded-lg">
                 <AccordionHeader onClick={() => setIsOpen((prev) => !prev)}>
                     <span className="font-semibold text-lg">Images</span>

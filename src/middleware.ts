@@ -27,7 +27,6 @@ export default async function middleware(req: NextRequest) {
   }
 
   if (!isPublicRoute && ticket) {
-
     const currentUserId = req.cookies.get(cookiePrefix + "currentUserId");
     if (!currentUserId) {
       try {
@@ -74,14 +73,13 @@ export default async function middleware(req: NextRequest) {
     }
     let cyberSecuritySoftwareId = "";
 
-    try{
-         cyberSecuritySoftwareId = await mapSoftwareName({
-            softwareName: "Cyber Security",
-            version: "1",
-        });
-
-    }catch (error) {
-        console.error("Error fetching cyberSecuritySoftwareId:", error);
+    try {
+      cyberSecuritySoftwareId = await mapSoftwareName({
+        softwareName: "Test S2 Cyber Security",
+        version: "1",
+      });
+    } catch (error) {
+      console.error("Error fetching cyberSecuritySoftwareId:", error);
     }
 
     console.log("Cyber Security Software Id: ", cyberSecuritySoftwareId);
