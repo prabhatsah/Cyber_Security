@@ -73,7 +73,7 @@ export default function Scan() {
 
   useEffect(() => {
     const getPastScans = async () => {
-      const data = await fetchScannedData("web_api_scan_history", 'id', false, null, null);
+      const data = await fetchScannedData("web_api_scan_history", 'id', false, null, null, 0, 10);
       setPastScans(data.data);
       // if (data && data[0].data) {
       //   setPastScans(data[0].data);

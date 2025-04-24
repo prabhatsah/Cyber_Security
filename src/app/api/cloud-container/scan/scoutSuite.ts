@@ -8,7 +8,7 @@ export async function ScoutSuiteScanData(
 
   try {
     const response = await fetch(
-      "http://localhost:3000/api/cloud-container/scan",
+      `http://localhost:${process.env.NEXT_PORT}/api/cloud-container/scan`,
       {
         method: "POST",
         headers: {

@@ -43,8 +43,8 @@ import { Buffer } from "buffer";
 import { getLoggedInUserProfile } from "@/ikon/utils/api/loginService/index";
 
 const baseUrl =
-  process.env.NEXT_PUBLIC_BASE_URL ||
-  `http://localhost:${process.env.PORT || 3000}`;
+  process.env.NEXT_PUBLIC_BASE_PATH ||
+  `http://localhost:${process.env.NEXT_PUBLIC_PORT || 3000}`;
 
 export async function createTable(
   tableName: string,
