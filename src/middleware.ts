@@ -7,7 +7,6 @@ import {
 } from "@/ikon/utils/config/const";
 import { appWiseSoftwareNameVersionMap } from "./ikon/utils/config/app-wise-software-name-version-map";
 import { getLoggedInUserProfile } from "./ikon/utils/api/loginService";
-import { profile } from "console";
 
 const loginUrl = "/login";
 
@@ -32,7 +31,6 @@ export default async function middleware(req: NextRequest) {
     if (!currentUserId) {
       try {
         const profile = await getLoggedInUserProfile();
-        console.log("USER ID-> " + profile.USER_ID);
         nextResponse.cookies.set(
           cookiePrefix + "currentUserId",
           profile.USER_ID
@@ -80,12 +78,12 @@ export default async function middleware(req: NextRequest) {
         softwareName: "Test S2 Cyber Security",
         version: "1",
       });
+      console.log("this is the software id--> " + cyberSecuritySoftwareId);
     } catch (error) {
       console.error("Error fetching cyberSecuritySoftwareId:", error);
     }
 
-    console.log("Cyber Security Software Id: ", cyberSecuritySoftwareId);
-    console.log((await getLoggedInUserProfile()).USER_ID);
+    //console.log("Cyber Security Software Id: ", cyberSecuritySoftwareId);
 
     const pathParts = path.split("/");
     if (pathParts.length > 1 && pathParts[1] !== "") {

@@ -49,7 +49,6 @@ export function LoginForm({
     }
     try {
       const result = await login(data);
-
       if (result?.error) {
         toast.error(result.error.message);
       }
@@ -75,7 +74,7 @@ export function LoginForm({
           toast.warning("Error while feaching account data.");
         }
 
-        router.push("/");
+        router.push("/dashboard");
       }
     } catch (error) {
       toast.error("Error while login.");
