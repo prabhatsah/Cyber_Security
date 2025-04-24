@@ -21,13 +21,13 @@ function formatTimestamp(timestamp: string) {
   return `${day}-${month}-${year} ${hours}:${minutes}`;
 }
 
-async function insertScanData(scanData) {
+async function insertScanData(scanData: any) {
 
   const uniqueKey = new Date().getTime().toString();
   console.log("uniqueKey----------", uniqueKey);
   scanData.scanned_at = formatTimestamp(uniqueKey);
 
-  const resp = saveScannedData("osint_threat_intelligence_scan", { key: uniqueKey, value: scanData });
+  const resp = saveScannedData("osint_threat_intelligence_scan_history", { key: uniqueKey, value: scanData });
   return resp;
 }
 
@@ -82,7 +82,7 @@ export default function TheHarvesterDashboard() {
 
   useEffect(() => {
     const getPastScans = async () => {
-      const data = await fetchScannedData("osint_threat_intelligence_scan", 'id', false, null, null);
+      const data = await fetchScannedData("osint_threat_intelligence_scan_history", 'id', false, null, null, 0, 10);
       if (data && data.data) {
         setPastScans(data.data);
       }

@@ -76,7 +76,7 @@ function Login() {
           toast.warning("Error while feaching account data.");
         }
 
-        router.push("/");
+        router.push("/dashboard");
 
       }
     } catch (error) {

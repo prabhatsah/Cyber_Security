@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation";
+import { handleAuthRedirect } from "./ikonHelper";
 
-export default function Home() {
-  redirect("/dashboard");
+export default function Page() {
+  return handleAuthRedirect();
 }
