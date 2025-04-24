@@ -1,6 +1,4 @@
-import { RiCodeBoxLine } from "@remixicon/react";
 import { RenderAppBreadcrumb } from "@/components/app-breadcrumb";
-import { fetchData } from "@/utils/api";
 import { CloudCog, FolderCog, GlobeLock, Network, TabletSmartphone } from "lucide-react";
 import EachPenTestTypeWidget from "./components/EachPenTestTypeWidget";
 
@@ -48,32 +46,6 @@ const penTestTypeList = [
 ];
 
 export default async function EndPointToolsConfig() {
-    // const fetchedData = (await fetchData("endpoint_config", "id")).data;
-
-    // let configDataFormatted: Record<string, EachConfigDataFormatted> = {};
-    // if (fetchedData && fetchedData.length > 0) {
-    //     fetchedData.forEach((element: EachConfigDataFromServer) => {
-    //         configDataFormatted[element.name] = {
-    //             id: element.id,
-    //             data: element.data,
-    //         };
-    //     });
-    // }
-
-    // const updatedEndpointConfigList = endPointConfigList.map((endpointTool) => {
-    //     const cloudServiceName = endpointTool.href.split("/")[3];
-
-    //     if (configDataFormatted[cloudServiceName]) {
-    //         return {
-    //             ...endpointTool,
-    //             configurationCount: Object.keys(configDataFormatted[cloudServiceName].data)
-    //                 .length,
-    //         };
-    //     }
-
-    //     return { ...endpointTool, configurationCount: 0 };
-    // });
-
     return (
         <>
             <RenderAppBreadcrumb
