@@ -91,24 +91,15 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
 
   const saveHistoryScans = (command: string | null, data: any | null) => {
     console.log(command, data);
-    const name = "image_file_scanning";
+    const name = "container_security_history";
     let type = command?.includes("Img") ? "Image" : "File";
 
     let history = data?.Metadata?.ImageConfig?.history;
 
     const objkey = new Date().getTime() + "";
-
-    if (type === "Image") {
-      data.Metadata.ImageConfig.history = history.map((entry: any) => {
-        if (entry.created_by) {
-          const { created_by, ...rest } = entry;
-          return rest;
-        }
-        return entry;
-      });
-    }
+    data.type = type;
     console.log(objkey, data);
-    return api.saveScannedData("cloud_security_history", { key: objkey, value: data });
+    return api.saveScannedData(name, { key: objkey, value: data });
   };
 
   const [logs, setLogs] = useState<any>([]);
@@ -254,12 +245,12 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
   };
 
 
-  function showImageDetails(imageName: string) {
+  function showImageDetails(imageKey: string, imageName: string) {
     console.log("Clicked image:", imageName);
     setScannedImagesDetails(imageName);
     setOutputScan(null);
 
-    const details = prevScans.fetchDetailsOfParticularImage(imageName);
+    const details = prevScans.fetchDetailsOfParticularImage(imageKey);
     console.log(details);
 
 
@@ -531,7 +522,7 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
                     </TableHead>
                     <TableBody>
                       {logs.length > 0 ? (
-                        logs.map(({ timestamp, message, type }, index) => {
+                        logs.map(({ timestamp, message, type }: any, index: number) => {
                           return (
                             <TableRow key={index} className="">
                               <TableCell className={type === "error" ? "font-mono text-red-500" : "font-mono text-blue-500"}>[{timestamp}]</TableCell>
@@ -835,7 +826,7 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
                 Scanned Results for{" "}
                 <p className="ms-1 font-bold">{scanningItem}</p>
               </h1>
-              <div className="mt-3 p-6 rounded-lg shadow-lg">
+              <div className="mt-3 rounded-lg shadow-lg">
                 <div className="rounded-md bg-grey-500">
                   <div className="bg-gray-100 dark:bg-[#0f172a] p-4 rounded-lg shadow-md">
                     <h4 className="text-lg font-semibold text-gray-00 mb-4">
@@ -1046,7 +1037,7 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
             />
           )}
 
-          <h2 className=" mt-3 text-black dark:text-white">Previosuly Scanned </h2>
+          <h3 className=" mt-3  text-black dark:text-white">Previosuly Scanned </h3>
           <ScannedImages data={prevScans.Vulnerabilitiesgetter()} onImageClick={showImageDetails} />
 
           {/* {fileSystemResult && (<>

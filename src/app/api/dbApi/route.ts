@@ -78,8 +78,8 @@ export async function POST(req: Request) {
         ssh,
         query.tableName,
         query.orderByColumn,
-        null,
-        null,
+        query.offset,
+        query.limit,
         query.allColumnFilter,
         query.jsonFilter
       );
@@ -133,8 +133,6 @@ async function fetchPaginatedData(
     let whereClauses: string[] = [];
     let selectClause = "*";
     let fromClause = tableName;
-    console.log("this is columns filters--> ");
-    console.log(columnFilters);
     if (columnFilters && columnFilters.length > 0) {
       columnFilters.forEach((columnFilter) => {
         whereClauses.push(`"${columnFilter.column}" = '${columnFilter.value}'`);

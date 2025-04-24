@@ -7,7 +7,7 @@ import { ExternalLink } from "lucide-react";
 import { Card, Title, Text, Accordion, AccordionHeader, AccordionBody } from "@tremor/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
-
+import moment from 'moment';
 
 interface Vulnerability {
     Image: string;
@@ -18,41 +18,49 @@ interface Vulnerability {
 }
 
 export function getTotalVulnerabilitiesForImages(historyData: any): Vulnerability[] | null {
-    console.log(historyData);
     if (!historyData) return null;
 
-    const historyImages = historyData[1]?.data;
-    if (!historyImages) return null;
+    const imageVulnerabilitiesMap: Record<string, { severity: Map<string, number>, lastScannedAt: string, imageName: string }> = {};
 
-    const imageVulnerabilitiesMap: Record<string, Map<string, number>> = {};
+    for (let i = 0; i < historyData.length; i++) {
+        const eachImageData = historyData[i].data;
+        for (let key in eachImageData) {
+            const obj = eachImageData[key];
+            if (!obj?.Metadata?.RepoTags?.[0]) continue;
 
-    for (let key in historyImages) {
-        const severity = new Map<string, number>([
-            ["LOW", 0],
-            ["MEDIUM", 0],
-            ["HIGH", 0],
-            ["CRITICAL", 0],
-        ]);
+            const imageName = obj.Metadata.RepoTags[0];
+            const severity = new Map<string, number>([
+                ["LOW", 0],
+                ["MEDIUM", 0],
+                ["HIGH", 0],
+                ["CRITICAL", 0],
+            ]);
 
-        const obj = historyImages[key];
-
-        if (obj?.Results?.[0]?.Vulnerabilities?.length) {
-            for (const vul of obj.Results[0].Vulnerabilities) {
-                const count = severity.get(vul.Severity) || 0;
-                severity.set(vul.Severity, count + 1);
+            if (obj?.Results?.[0]?.Vulnerabilities?.length) {
+                for (const vul of obj.Results[0].Vulnerabilities) {
+                    const count = severity.get(vul.Severity) || 0;
+                    severity.set(vul.Severity, count + 1);
+                }
             }
+            const imageKey = key
+            imageVulnerabilitiesMap[imageKey] = {
+                severity,
+                lastScannedAt: moment(Number(key)).format('hh:mm A - MMMM DD, YYYY'),
+                imageName
+            };
         }
-        console.log(key, obj?.data?.Metadata?.RepoTags[0])
-        imageVulnerabilitiesMap[obj?.data?.Metadata?.RepoTags[0] || key] = severity;
     }
 
-    const finalResult: Vulnerability[] = Object.entries(imageVulnerabilitiesMap).map(([image, severityMap]) => ({
-        Image: image,
-        LOW: severityMap.get("LOW") || 0,
-        MEDIUM: severityMap.get("MEDIUM") || 0,
-        HIGH: severityMap.get("HIGH") || 0,
-        CRITICAL: severityMap.get("CRITICAL") || 0,
+    const finalResult: Vulnerability[] = Object.entries(imageVulnerabilitiesMap).map(([image, data]) => ({
+        Image: data.imageName,
+        LOW: data.severity.get("LOW") || 0,
+        MEDIUM: data.severity.get("MEDIUM") || 0,
+        HIGH: data.severity.get("HIGH") || 0,
+        CRITICAL: data.severity.get("CRITICAL") || 0,
+        lastScannedAt: data.lastScannedAt,
+        imageKey: image
     }));
+
     return finalResult;
 }
 
@@ -64,11 +72,10 @@ export function returnImageDetails() {
 let imageDetails: any = null;
 
 
-export function ScannedImages({ data, onImageClick }: { data: any; onImageClick: (imageName: string) => void }) {
+export function ScannedImages({ data, onImageClick }: { data: any; onImageClick: (imageKey: string, imageName: string) => void }) {
     const [isOpen, setIsOpen] = useState(false);
-
     return (
-        <div className="w-full">
+        <div className="w-full p-2 mb-3">
             <Accordion className="rounded-lg">
                 <AccordionHeader onClick={() => setIsOpen((prev) => !prev)}>
                     <span className="font-semibold text-lg">Images</span>
@@ -81,19 +88,21 @@ export function ScannedImages({ data, onImageClick }: { data: any; onImageClick:
                             animate={{ opacity: 1, height: "auto" }}
                             exit={{ opacity: 0, height: 0 }}
                             transition={{ duration: 0.3 }}
-                            className="overflow-hidden"
+                            className="overflow-y-auto max-h-96"
                         >
                             <AccordionBody className="space-y-6 mt-4">
                                 {data.map((vul: any, index: number) => (
                                     <Card key={index} className="relative p-4 rounded-lg shadow-lg">
-                                        <div className="absolute top-2 right-2 cursor-pointer">
-                                            <ExternalLink
-                                                className="w-4 h-4 text-gray-600 hover:text-gray-800 transition"
-                                                onClick={() => onImageClick(vul.Image)}
-                                            />
+                                        <div className="relative flex items-center justify-between pr-8">
+                                            <Title>{vul.Image}</Title>
+                                            <Title className="ml-4 me-3 text-sm text-gray-400">Scanned at:   {vul.lastScannedAt}</Title>
+                                            <div className="absolute top-0 right-0 cursor-pointer">
+                                                <ExternalLink
+                                                    className="w-4 h-4 text-gray-500 hover:text-gray-300 transition"
+                                                    onClick={() => onImageClick(vul.imageKey, vul.Image)}
+                                                />
+                                            </div>
                                         </div>
-                                        <Title>{vul.Image}</Title>
-
                                         <div className="flex justify-between items-center gap-6 mt-4">
                                             {/* LOW */}
                                             <div className="flex items-center gap-2">
