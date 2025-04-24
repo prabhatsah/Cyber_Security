@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { FaFire, FaSpider } from "react-icons/fa6";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/Tabs";
@@ -11,10 +11,8 @@ import SpiderScan from "./SpiderScan";
 import ActiveScan from "./ActiveScan";
 import Dashboard from "./dashboard";
 import { usePolling } from "../hooks/usePolling";
-import { useInterval } from "../hooks/useInterval";
-import { apiRequest } from "../utils/api";
 
-import { fetchData, fetchScannedData } from "@/utils/api";
+import { fetchScannedData } from "@/utils/api";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || "/api/webApi/ZAP";
 

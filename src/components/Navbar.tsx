@@ -1,9 +1,11 @@
 "use client";
-import { Bell, Sun, Moon, ChevronsUpDown } from "lucide-react";
+import { Bell, Sun, Moon, ChevronsUpDown, ScanLine } from "lucide-react";
 import GenericBreadcrumb from "./GenericBreadcrumb";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import AppBreadcrumb from "./app-breadcrumb";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "./ui/dropdown-menu"
+
 
 import { cx, focusRing } from "@/lib/utils";
 import { Button } from "@tremor/react";
@@ -53,6 +55,42 @@ export default function Navbar() {
               <Moon className="h-5 w-5 text-gray-800 dark:text-gray-200" />
             )}
           </motion.button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
+                type="button"
+                className="p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary relative"
+              >
+                <span className="sr-only">Running Scans</span>
+                <ScanLine className="h-6 w-6" aria-hidden="true" />
+                <span className="absolute top-0 right-0 block h-2 w-2 rounded-full bg-error transform translate-x-1/2 -translate-y-1/2"></span>
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              align="start"
+              className="sm:!min-w-[calc(var(--radix-dropdown-menu-trigger-width))]"
+            >
+              <DropdownMenuLabel>Running Scan</DropdownMenuLabel>
+
+              <DropdownMenuSeparator />
+              <DropdownMenuGroup>
+                <DropdownMenuItem>
+                  web and api
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  Reconnassiance
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <button
+            type="button"
+            className="p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary relative"
+          >
+            <span className="sr-only">Running Scans</span>
+            <ScanLine className="h-6 w-6" aria-hidden="true" />
+            <span className="absolute top-0 right-0 block h-2 w-2 rounded-full bg-error transform translate-x-1/2 -translate-y-1/2"></span>
+          </button>
           <button
             type="button"
             className="p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary relative"
