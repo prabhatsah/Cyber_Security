@@ -40,34 +40,34 @@ interface ScanSchedule {
 }
 
 const comps: AIAgent[] = [
-  {
-    id: "vuln-scan",
-    name: "Vulnerability Scanning",
-    role: "Security Analyst",
-    icon: ScanSearch,
-    expertise: [
-      "Automated vulnerability scanning",
-      "Risk assessment & prioritization",
-      "Patch management strategies & Compliance auditing",
-    ],
-    description:
-      "Vulnerability scanning is the process of systematically scanning systems, networks, and applications to identify security weaknesses. It helps organizations detect and address potential threats before they can be exploited by attackers.",
-    route: "/scans/vulnerabilityScan",
-  },
-  {
-    id: "pen-test",
-    name: "Penetration Testing",
-    role: "Ethical Hacker",
-    icon: ShieldAlert,
-    expertise: [
-      "Exploiting vulnerabilities & Red teaming",
-      "Privilege escalation & Post-exploitation techniques",
-      "Reporting & remediation",
-    ],
-    description:
-      "Simulating real-world attacks to identify and exploit security weaknesses, helping organizations strengthen their defenses.",
-    route: "/scans/penTest",
-  },
+  // {
+  //   id: "vuln-scan",
+  //   name: "Vulnerability Scanning",
+  //   role: "Security Analyst",
+  //   icon: ScanSearch,
+  //   expertise: [
+  //     "Automated vulnerability scanning",
+  //     "Risk assessment & prioritization",
+  //     "Patch management strategies & Compliance auditing",
+  //   ],
+  //   description:
+  //     "Vulnerability scanning is the process of systematically scanning systems, networks, and applications to identify security weaknesses. It helps organizations detect and address potential threats before they can be exploited by attackers.",
+  //   route: "/scans/vulnerabilityScan",
+  // },
+  // {
+  //   id: "pen-test",
+  //   name: "Penetration Testing",
+  //   role: "Ethical Hacker",
+  //   icon: ShieldAlert,
+  //   expertise: [
+  //     "Exploiting vulnerabilities & Red teaming",
+  //     "Privilege escalation & Post-exploitation techniques",
+  //     "Reporting & remediation",
+  //   ],
+  //   description:
+  //     "Simulating real-world attacks to identify and exploit security weaknesses, helping organizations strengthen their defenses.",
+  //   route: "/scans/penTest",
+  // },
   {
     id: "network-intrusion-detection",
     name: "Network & Intrusion Detection",
@@ -347,22 +347,22 @@ export default function CyberSecurityComponents() {
                   <div className="flex items-center space-x-3">
                     <div
                       className={`p-2 rounded-lg ${schedule.status === "running"
-                          ? "bg-blue-50"
-                          : schedule.status === "completed"
-                            ? "bg-green-50"
-                            : schedule.status === "failed"
-                              ? "bg-red-50"
-                              : "bg-gray-50"
+                        ? "bg-blue-50"
+                        : schedule.status === "completed"
+                          ? "bg-green-50"
+                          : schedule.status === "failed"
+                            ? "bg-red-50"
+                            : "bg-gray-50"
                         }`}
                     >
                       <agent.icon
                         className={`h-5 w-5 ${schedule.status === "running"
-                            ? "text-blue-600"
-                            : schedule.status === "completed"
-                              ? "text-green-600"
-                              : schedule.status === "failed"
-                                ? "text-red-600"
-                                : "text-gray-600"
+                          ? "text-blue-600"
+                          : schedule.status === "completed"
+                            ? "text-green-600"
+                            : schedule.status === "failed"
+                              ? "text-red-600"
+                              : "text-gray-600"
                           }`}
                       />
                     </div>
@@ -380,12 +380,12 @@ export default function CyberSecurityComponents() {
                   </div>
                   <span
                     className={`px-2 py-1 text-xs font-medium rounded-full ${schedule.status === "running"
-                        ? "bg-blue-100 text-blue-800"
-                        : schedule.status === "completed"
-                          ? "bg-green-100 text-green-800"
-                          : schedule.status === "failed"
-                            ? "bg-red-100 text-red-800"
-                            : "bg-gray-100 text-gray-800"
+                      ? "bg-blue-100 text-blue-800"
+                      : schedule.status === "completed"
+                        ? "bg-green-100 text-green-800"
+                        : schedule.status === "failed"
+                          ? "bg-red-100 text-red-800"
+                          : "bg-gray-100 text-gray-800"
                       }`}
                   >
                     {schedule.status}
