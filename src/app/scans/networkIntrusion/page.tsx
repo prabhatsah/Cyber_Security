@@ -197,14 +197,15 @@ export default function Home() {
           href: "/scans/networkIntrusion",
         }}
       />
-      <div className="min-h-screen bg-background">
+      <div className="">
         <main className=" space-y-6">
           <PacketStats />
           <PacketFilter onFilter={handleFilter} />
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <PacketTable packets={packetData.packets} />
+          {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <PacketTable packets={packetData.packets} />
             <VulnerabilityAlert />
-          </div>
+          </div> */}
         </main>
       </div>
     </>

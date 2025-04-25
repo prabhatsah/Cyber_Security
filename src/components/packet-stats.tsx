@@ -18,10 +18,10 @@ export function PacketStats() {
           <Network className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">45,231</div>
-          <p className="text-xs text-muted-foreground">
+          <div className="text-2xl font-bold">N/A</div>
+          {/* <p className="text-xs text-muted-foreground">
             +20.1% from last hour
-          </p>
+          </p> */}
         </CardContent>
       </Card>
       <Card>
@@ -30,10 +30,10 @@ export function PacketStats() {
           <AlertTriangle className="h-4 w-4 text-destructive" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">23</div>
-          <p className="text-xs text-muted-foreground">
+          <div className="text-2xl font-bold">N/A</div>
+          {/* <p className="text-xs text-muted-foreground">
             3 critical threats
-          </p>
+          </p> */}
         </CardContent>
       </Card>
       <Card>
@@ -42,10 +42,10 @@ export function PacketStats() {
           <Shield className="h-4 w-4 text-primary" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">15</div>
-          <p className="text-xs text-muted-foreground">
+          <div className="text-2xl font-bold">N/A</div>
+          {/* <p className="text-xs text-muted-foreground">
             All services secure
-          </p>
+          </p> */}
         </CardContent>
       </Card>
       <Card>
@@ -54,10 +54,10 @@ export function PacketStats() {
           <Lock className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">98%</div>
-          <p className="text-xs text-muted-foreground">
+          <div className="text-2xl font-bold">N/A</div>
+          {/* <p className="text-xs text-muted-foreground">
             Excellent protection
-          </p>
+          </p> */}
         </CardContent>
       </Card>
     </div>
