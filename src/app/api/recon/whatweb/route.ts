@@ -66,7 +66,7 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Missing target" }, { status: 400 });
   }
 
-  const res = await fetch(`http://192.168.1.34:5000/whatweb?target=${target}`);
+  const res = await fetch(`http://192.168.1.23:5000/whatweb?target=${target}`);
   const data = await res.json();
 
   return NextResponse.json(data);
