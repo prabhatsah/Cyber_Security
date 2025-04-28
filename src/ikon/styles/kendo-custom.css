@@ -1,0 +1,4 @@
+:root {
+    --kendo-color-surface-alt: var(--background);
+    --kendo-color-on-app-surface: var(--foreground)
+}

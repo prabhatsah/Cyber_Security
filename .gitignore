@@ -1,0 +1,11 @@
+node_modules/
+
+# Next.js build output
+.next/
+
+# Environment variables
+.env
+
+
+# AWS Key File
+src/app/scans/cloudContainer/cloud/*/*/components/FetchCloudScanData.ts
