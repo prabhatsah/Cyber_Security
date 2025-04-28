@@ -172,7 +172,7 @@ export default function Home() {
         requiredData["destination_ip"] = newFilters.destinationIp;
       }
 
-      const response = await fetch("http://localhost:5050/api/capture", {
+      const response = await fetch("https://ikoncloud-uat.keross.com/network-intrusion/api/capture", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
