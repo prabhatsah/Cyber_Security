@@ -251,13 +251,17 @@ export async function updateColumnGeneralised(
   tableName: string,
   columnName: string,
   data: any,
-  key: string,
   associatedColumn: string,
-  associatedValue: string
+  associatedValue: string,
+  isPentest: boolean,
+  key?: string | null
 ) {
   const jsonString = JSON.stringify(data).replace(/'/g, "");
+  let query = "";
   console.log(jsonString);
-  const query = `
+
+  if (!isPentest) {
+    query = `
     UPDATE "${tableName}"
     SET "${columnName}" = jsonb_set(
       COALESCE("${columnName}", '{}'::jsonb),
@@ -267,8 +271,14 @@ export async function updateColumnGeneralised(
     )
     WHERE ${associatedColumn} = '${associatedValue}';
   `;
+  } else {
+    query = `UPDATE "${tableName}"
+      SET "${columnName}" = '${jsonString}'
+      WHERE ${associatedColumn} = '${associatedValue}';
+      `;
+  }
 
-  //console.log(query);
+  console.log(query);
 
   const res = await fetch(`${baseUrl}/api/dbApi`, {
     method: "POST",

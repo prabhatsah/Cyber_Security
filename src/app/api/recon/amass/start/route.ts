@@ -9,7 +9,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Missing domain" }, { status: 400 });
     }
 
-    const kaliIp = "http://192.168.1.34:5000"; // Replace with your Kali Linux IP
+    // const kaliIp = "http://192.168.1.34:5000"; // Replace with your Kali Linux IP
+    const kaliIp = process.env.KALI_LINUX_IP;
 
     const res = await fetch(`${kaliIp}/amass/start`, {
       method: "POST",
