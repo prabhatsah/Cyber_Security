@@ -17,12 +17,21 @@ export interface BasicDetails {
   };
 }
 
+export interface ActiveReconnaissance {
+  amassData: Array<string>;
+}
+
+export interface Reconnaissance {
+  activeReconnaissance: ActiveReconnaissance;
+  passiveReconnaissance?: Array<string> | Record<string, any> | null;
+}
+
 export interface PenTestModified {
   userId: string;
   pentestId: string;
   pentestType: string;
   basicDetails: BasicDetails;
-  reconnaissance: Record<string, any> | null;
+  reconnaissance: Reconnaissance | null;
   vulnerabilityScanning: Record<string, any> | null;
   exploitation: Record<string, any> | null;
   postExploitation: Record<string, any> | null;
@@ -36,7 +45,7 @@ export interface PenTestDefault {
   pentestid: string;
   pentest_type: string;
   basic_details: BasicDetails;
-  reconnaissance: Record<string, any> | null;
+  reconnaissance: Reconnaissance | null;
   vulnerability_scanning: Record<string, any> | null;
   exploitation: Record<string, any> | null;
   post_exploitation: Record<string, any> | null;
