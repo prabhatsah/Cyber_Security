@@ -1,16 +1,20 @@
 "use client";
 
 import { AmazonWebServicesConfiguration } from "@/app/configuration/components/type";
+import GlobalLoader from "@/components/GlobalLoader";
 import { RiCalendarScheduleLine, RiPlayLargeFill } from "@remixicon/react";
 import { Card } from "@tremor/react";
 import { format } from "date-fns";
 import { redirect } from "next/navigation";
+import { useState } from "react";
 
 export default function AmazonWebServicesConfigWidget({
     eachConfigDetails,
 }: {
     eachConfigDetails: AmazonWebServicesConfiguration;
 }) {
+    const [isLoading, setIsLoading] = useState(false);
+
     const configNameWords = eachConfigDetails.configurationName
         .trim()
         .split(/\s+/);
@@ -25,11 +29,17 @@ export default function AmazonWebServicesConfigWidget({
     }
 
     function startScan() {
-        redirect(`/scans/cloudContainer/cloud/amazon-web-services/${eachConfigDetails.configId}`);
+        setIsLoading(true);
+
+        setTimeout(() => {
+            redirect(`/scans/cloudContainer/cloud/amazon-web-services/${eachConfigDetails.configId}`);
+        }, 100);
     }
 
     return (
         <>
+            {isLoading && <GlobalLoader />}
+
             <Card key={eachConfigDetails.configId} className="group p-4 rounded-lg">
                 <div className="flex items-start justify-between">
                     <div className="flex items-center space-x-4">

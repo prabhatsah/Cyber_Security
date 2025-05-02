@@ -18,9 +18,9 @@ export function PacketStats() {
           <Network className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">45,231</div>
+          <div className="text-2xl font-bold">0</div>
           <p className="text-xs text-muted-foreground">
-            +20.1% from last hour
+            0% from last hour
           </p>
         </CardContent>
       </Card>
@@ -30,9 +30,9 @@ export function PacketStats() {
           <AlertTriangle className="h-4 w-4 text-destructive" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">23</div>
+          <div className="text-2xl font-bold">0</div>
           <p className="text-xs text-muted-foreground">
-            3 critical threats
+            0 critical threats
           </p>
         </CardContent>
       </Card>
@@ -42,7 +42,7 @@ export function PacketStats() {
           <Shield className="h-4 w-4 text-primary" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">15</div>
+          <div className="text-2xl font-bold">0</div>
           <p className="text-xs text-muted-foreground">
             All services secure
           </p>
@@ -54,7 +54,7 @@ export function PacketStats() {
           <Lock className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">98%</div>
+          <div className="text-2xl font-bold">0%</div>
           <p className="text-xs text-muted-foreground">
             Excellent protection
           </p>

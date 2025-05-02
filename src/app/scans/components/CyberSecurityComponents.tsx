@@ -40,34 +40,34 @@ interface ScanSchedule {
 }
 
 const comps: AIAgent[] = [
-  {
-    id: "vuln-scan",
-    name: "Vulnerability Scanning",
-    role: "Security Analyst",
-    icon: ScanSearch,
-    expertise: [
-      "Automated vulnerability scanning",
-      "Risk assessment & prioritization",
-      "Patch management strategies & Compliance auditing",
-    ],
-    description:
-      "Vulnerability scanning is the process of systematically scanning systems, networks, and applications to identify security weaknesses. It helps organizations detect and address potential threats before they can be exploited by attackers.",
-    route: "/scans/vulnerabilityScan",
-  },
-  {
-    id: "pen-test",
-    name: "Penetration Testing",
-    role: "Ethical Hacker",
-    icon: ShieldAlert,
-    expertise: [
-      "Exploiting vulnerabilities & Red teaming",
-      "Privilege escalation & Post-exploitation techniques",
-      "Reporting & remediation",
-    ],
-    description:
-      "Simulating real-world attacks to identify and exploit security weaknesses, helping organizations strengthen their defenses.",
-    route: "/scans/penTest",
-  },
+  // {
+  //   id: "vuln-scan",
+  //   name: "Vulnerability Scanning",
+  //   role: "Security Analyst",
+  //   icon: ScanSearch,
+  //   expertise: [
+  //     "Automated vulnerability scanning",
+  //     "Risk assessment & prioritization",
+  //     "Patch management strategies & Compliance auditing",
+  //   ],
+  //   description:
+  //     "Vulnerability scanning is the process of systematically scanning systems, networks, and applications to identify security weaknesses. It helps organizations detect and address potential threats before they can be exploited by attackers.",
+  //   route: "/scans/vulnerabilityScan",
+  // },
+  // {
+  //   id: "pen-test",
+  //   name: "Penetration Testing",
+  //   role: "Ethical Hacker",
+  //   icon: ShieldAlert,
+  //   expertise: [
+  //     "Exploiting vulnerabilities & Red teaming",
+  //     "Privilege escalation & Post-exploitation techniques",
+  //     "Reporting & remediation",
+  //   ],
+  //   description:
+  //     "Simulating real-world attacks to identify and exploit security weaknesses, helping organizations strengthen their defenses.",
+  //   route: "/scans/penTest",
+  // },
   {
     id: "network-intrusion-detection",
     name: "Network & Intrusion Detection",

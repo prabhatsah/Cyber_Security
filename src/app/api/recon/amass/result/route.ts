@@ -7,7 +7,8 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Missing jobId" }, { status: 400 });
   }
 
-  const kaliIp = "http://192.168.1.34:5000"; // Replace with your Kali IP
+  // const kaliIp = "http://192.168.1.34:5000"; // Replace with your Kali IP
+  const kaliIp = process.env.KALI_LINUX_IP;
 
   try {
     const res = await fetch(`${kaliIp}/amass/result/${jobId}`);

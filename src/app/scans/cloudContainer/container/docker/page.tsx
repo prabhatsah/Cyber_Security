@@ -20,6 +20,8 @@ import { AiFillDashboard } from "react-icons/ai";
 import DynamicResultRendering from "./dynamicResultRendering";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/Accordion"; // Update with your actual file path
 import DivLoading from "@/components/divLoading";
+import { RenderAppBreadcrumb } from "@/components/app-breadcrumb";
+
 type CommandKey = keyof typeof dockerCommands;
 
 export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
@@ -260,6 +262,21 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
 
   return (
     <>
+      <RenderAppBreadcrumb
+        breadcrumb={{
+          level: 2,
+          title: "Containers",
+          href: "/scans/cloudContainer/container",
+        }}
+      />
+      <RenderAppBreadcrumb
+        breadcrumb={{
+          level: 3,
+          title: "Docker",
+          href: "/scans/cloudContainer/container/docker",
+        }}
+      />
+
       <div className="flex justify-start w-full">
         <span
           onClick={onBack}

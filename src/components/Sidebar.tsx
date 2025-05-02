@@ -26,7 +26,7 @@ import { Button } from "@tremor/react";
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { name: "Scans", href: "/scans", icon: Scan },
+  { name: "Vulnerability Scans", href: "/scans", icon: Scan },
   { name: "PenTest", href: "/pen-test", icon: BugPlay },
   { name: "Reports", href: "/reports", icon: FileText },
   { name: "Audit Log", href: "/audit", icon: Activity },

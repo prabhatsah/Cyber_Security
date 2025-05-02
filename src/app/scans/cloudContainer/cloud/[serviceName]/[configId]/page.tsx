@@ -30,11 +30,13 @@ export default async function CloudConfigScanningMainDashboard({
     )
     .join(" ");
 
-  const fetchedData = (await fetchData("cloud_config", "id", { column: "name", value: serviceName }, [{ column: "data", keyPath: ["configId"], value: configId }])).data;
+  // const fetchedData = (await fetchData("cloud_config", "id", [{ column: "name", value: serviceName }], [{ column: "data", keyPath: ["configId"], value: configId }])).data;
+  const fetchedData = (await fetchData("cloud_config", "id", [{ column: "name", value: serviceName }], null)).data;
   console.log("Fetched Data: ", fetchedData);
 
-  const specificConfigData: GoogleCloudConfiguration | AmazonWebServicesConfiguration | any = fetchedData[0]['config_filtered'];
-  console.log("Data for Config Id (", configId, "): ", fetchedData);
+  // const specificConfigData: GoogleCloudConfiguration | AmazonWebServicesConfiguration | any = fetchedData[0]['config_filtered'];
+  const specificConfigData: GoogleCloudConfiguration | AmazonWebServicesConfiguration | any = fetchedData[0]['data'][configId];
+  console.log("Data for Config Id (", configId, "): ", specificConfigData);
 
 
   const cloudProvider = cloudServiceNameWiseCodeMap[serviceName];

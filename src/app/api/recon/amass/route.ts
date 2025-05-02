@@ -9,7 +9,8 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Missing target" }, { status: 400 });
   }
 
-  const res = await fetch(`http://192.168.1.34:5000/amass?domain=${domain}`);
+  // const res = await fetch(`http://192.168.121.128:5000/amass?domain=${domain}`);
+  const res = await fetch(`${process.env.KALI_LINUX_IP}/amass?domain=${domain}`);
   console.log("amass response");
   const data = await res.json();
 

@@ -1,16 +1,19 @@
 "use client";
 
 import { GoogleCloudConfiguration } from "@/app/configuration/components/type";
+import GlobalLoader from "@/components/GlobalLoader";
 import { RiCalendarScheduleLine, RiPlayLargeFill } from "@remixicon/react";
 import { Card } from "@tremor/react";
 import { format } from "date-fns";
 import { redirect } from "next/navigation";
+import { useState } from "react";
 
 export default function GoogleCloudConfigWidget({
   eachConfigDetails,
 }: {
   eachConfigDetails: GoogleCloudConfiguration;
 }) {
+  const [isLoading, setIsLoading] = useState(false);
 
   const configNameWords = eachConfigDetails.configurationName.trim()
     .split(/\s+/);
@@ -25,11 +28,17 @@ export default function GoogleCloudConfigWidget({
   }
 
   function startScan() {
-    redirect(`/scans/cloudContainer/cloud/google-cloud-platform/${eachConfigDetails.configId}`);
+    setIsLoading(true);
+
+    setTimeout(() => {
+      redirect(`/scans/cloudContainer/cloud/google-cloud-platform/${eachConfigDetails.configId}`);
+    }, 100);
   }
 
   return (
     <>
+      {isLoading && <GlobalLoader />}
+
       <Card key={eachConfigDetails.configId} className="group p-4 rounded-lg">
         <div className="flex items-start justify-between">
           <div className="flex items-center space-x-4">
