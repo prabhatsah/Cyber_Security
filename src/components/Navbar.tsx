@@ -11,10 +11,14 @@ import { cx, focusRing } from "@/lib/utils";
 import { Button } from "@tremor/react";
 import { DropdownUserProfile } from "./dropdownuserprofile";
 import { getProfileData } from "@/ikon/utils/actions/auth";
+import { useScanNotification } from "@/contexts/ScanNotificationContext";
+import ScanNotificationItem from "./ScanNotificationItem";
 
 export default function Navbar() {
   const [darkMode, setDarkMode] = useState(true);
-  const [profileData, setProfileData] = useState({})
+  const [profileData, setProfileData] = useState({});
+  const { scanNotificationData, setScanNotificationData } = useScanNotification();
+
   async function logindata() {
     try {
       const profile = await getProfileData()
@@ -74,12 +78,13 @@ export default function Navbar() {
 
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
-                <DropdownMenuItem>
+                {/* <DropdownMenuItem>
                   web and api
                 </DropdownMenuItem>
                 <DropdownMenuItem>
                   Reconnassiance
-                </DropdownMenuItem>
+                </DropdownMenuItem> */}
+                {scanNotificationData.map(eachScanNotificationData => <ScanNotificationItem key={eachScanNotificationData.scan_id} scanData={eachScanNotificationData} />)}
               </DropdownMenuGroup>
             </DropdownMenuContent>
           </DropdownMenu>
