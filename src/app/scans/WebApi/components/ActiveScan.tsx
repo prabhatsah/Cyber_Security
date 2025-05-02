@@ -18,13 +18,31 @@ const truncateUrl = (url: string, maxLength = 20) => {
   return `${start}...${end}`;
 };
 
+type HttpTransaction = {
+  id: string;
+  request_timestamp: string;
+  response_timestamp: string;
+  method: string;
+  url: string;
+  status_code: string;
+  reason: string;
+  rtt: number;
+  response_header_size: number;
+  response_body_size: number;
+};
+
 export default function ActiveScan({
   progress,
   newAlerts,
   numRequests,
   messages,
+}: {
+  progress: number;
+  newAlerts: string;
+  numRequests: string;
+  messages: HttpTransaction[];
 }) {
-  const tableBodyRef = useRef(null);
+  const tableBodyRef = useRef<HTMLDivElement>(null);
 
   // Scroll only the table body when new messages are added
   useEffect(() => {

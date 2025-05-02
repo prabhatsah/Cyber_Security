@@ -7,12 +7,12 @@ interface Instance {
   evidence: string;
 }
 
-interface Alert {
+export interface Alert {
   pluginid: string;
   alert: string;
-  riskcode: number;
-  confidence: number;
-  count: number;
+  riskcode: string;
+  confidence: string;
+  count: string;
   cweid: string;
   wascid: string;
   desc: string;
@@ -21,12 +21,21 @@ interface Alert {
   instances: Instance[];
 }
 
-interface Site {
+export interface Site {
   "@name": string;
   "@host": string;
+  "@port": string;
+  "@ssl": string;
   alerts: Alert[];
 }
 
 export interface Data {
-  site: Site[];
+  [key: string]: Site & { scanned_at: string };
+}
+
+export interface PastScansData {
+  data: Data;
+  id: number;
+  lastscanon: string;
+  userId: string;
 }
