@@ -13,49 +13,28 @@ import Dashboard from "./dashboard";
 import { usePolling } from "../hooks/usePolling";
 
 import { fetchScannedData } from "@/utils/api";
+import { Alert, PastScansData, Site } from "../types/alertTypes";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || "/api/webApi/ZAP";
 
-const getRiskAndIssues = (alerts) => {
-  const returnObj = {
-    risk: "", issues: 0
+const getRiskAndIssues = (alerts: Alert[]) => {
+  let success = 0, warning = 0, critical = 0;
+
+  for (const { riskcode } of alerts) {
+    if (riskcode === "0" || riskcode === "1") success++;
+    else if (riskcode === "2") warning++;
+    else critical++;
   }
 
-  const riskCount = {
-    critical: 0,
-    warning: 0,
-    success: 0
-  }
-
-  for (let i = 0; i < alerts.length; i++) {
-    if (alerts[i].riskcode == "0" || alerts[i].riskcode == "1") {
-      riskCount.success += 1;
-    } else if (alerts[i].riskcode == "2") {
-      riskCount.warning += 1;
-    } else {
-      riskCount.critical += 1;
-    }
-  }
-
-  if (riskCount.critical) {
-    returnObj.issues = riskCount.critical;
-    returnObj.risk = "critical";
-  } else if (riskCount.warning) {
-    returnObj.issues = riskCount.warning;
-    returnObj.risk = "warning";
-  } else {
-    returnObj.issues = riskCount.success;
-    returnObj.risk = "success";
-  }
-
-  return returnObj;
+  if (critical) return { risk: "critical", issues: critical };
+  if (warning) return { risk: "warning", issues: warning };
+  return { risk: "success", issues: success };
 };
 
 export default function Scan() {
   const [query, setQuery] = useState("");
-  const [data, setData] = useState(null);
-  // const [messages, setMessages] = useState([]);
-  const [pastScans, setPastScans] = useState([]);
+  const [data, setData] = useState<(Site & { scanned_at?: string }) | null>(null);
+  const [pastScans, setPastScans] = useState<PastScansData[]>([]);
   const [openTabs, setOpenTabs] = useState(false);
 
   const {
@@ -73,43 +52,19 @@ export default function Scan() {
     const getPastScans = async () => {
       const data = await fetchScannedData("web_api_scan_history", 'id', false, null, null, 0, 10);
       setPastScans(data.data);
-      // if (data && data[0].data) {
-      //   setPastScans(data[0].data);
-      // }
     };
 
     getPastScans();
   }, [data]);
 
-  // const fetchMessages = useCallback(async () => {
-  //   if (!query || spiderProgress != 100) return; // Stop fetching when not scanning
-  //   try {
-  //     const messagesData = await apiRequest(
-  //       `${apiUrl}/messages?baseurl=${encodeURIComponent(query)}&start=${messages.length}`,
-  //     );
-  //     // setMessages(messagesData.messages);
-  //     setMessages((prev) => [...prev, ...messagesData.messages]);
-  //   } catch (err) {
-  //     console.error("Error fetching messages:", err);
-  //   }
-  // }, [query, messages.length, spiderProgress]);
-
-  // Interval runs only when scanning is active
-  // useInterval(
-  //   () => {
-  //     if (isScanning && spiderProgress == 100)
-  //       fetchMessages();
-  //   },
-  //   isScanning && spiderProgress == 100 ? 10000 : null
-  // );
-
-  function handleOpenPastScan(key: string) {
-    const pastScan = pastScans.find(scan => scan.data[key]);
-    if (pastScan) {
-      setOpenTabs(false)
-      setData(pastScan.data[key]);
+  const handleOpenPastScan = (key: string) => {
+    const scanData = pastScans.find(scan => scan.data[key])?.data[key];
+    if (scanData) {
+      setOpenTabs(false);
+      setData(scanData);
     }
-  }
+  };
+
 
   const pastScansForWidget = useMemo(() => {
     return pastScans.flatMap(scan =>
@@ -140,8 +95,6 @@ export default function Scan() {
       fetchData={startScan}
       isLoading={isScanning}
     />
-
-    {/* {error && <p className="text-red-600 text-center">{error}</p>} */}
 
     {openTabs && <Tabs defaultValue="tab1">
       <TabsList variant="solid" >

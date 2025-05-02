@@ -7,28 +7,29 @@ import {
   TableRoot,
   TableRow,
 } from "@/components/Table";
-// import {
-//   Table,
-//   TableBody,
-//   TableCell,
-//   TableHead,
-//   TableHeaderCell,
-//   TableRow,
-// } from "@tremor/react";
 
 import { ProgressBar } from "@/components/ui/progress";
 import { Badge } from "@/components/Badge";
 import { useEffect, useRef } from "react";
 
-const truncateUrl = (url, maxLength = 100) => {
+type UrlInfo = {
+  method: string;
+  url: string;
+  flags: string;
+};
+
+const truncateUrl = (url: string, maxLength = 100) => {
   if (url.length <= maxLength) return url;
   const start = url.slice(0, 50); // First 25 chars
   const end = url.slice(-50); // Last 25 chars
   return `${start}...${end}`;
 };
 
-export default function SpiderScan({ progress, foundURI }) {
-  const tableBodyRef = useRef(null);
+export default function SpiderScan({ progress, foundURI }: {
+  progress: number;
+  foundURI: UrlInfo[];
+}) {
+  const tableBodyRef = useRef<HTMLDivElement>(null);
 
   // Scroll to bottom whenever new data is added
   useEffect(() => {
@@ -71,19 +72,6 @@ export default function SpiderScan({ progress, foundURI }) {
         </TableRoot>
         <TableRoot ref={tableBodyRef} className="max-h-96">
           <Table>
-            {/* <TableHead>
-              <TableRow>
-                <TableHeaderCell>Req Timestamp</TableHeaderCell>
-                <TableHeaderCell>Resp Timestamp</TableHeaderCell>
-                <TableHeaderCell>Method</TableHeaderCell>
-                <TableHeaderCell>URI</TableHeaderCell>
-                <TableHeaderCell>Code</TableHeaderCell>
-                <TableHeaderCell>Reason</TableHeaderCell>
-                <TableHeaderCell>RTT</TableHeaderCell>
-                <TableHeaderCell>Size Resp Header</TableHeaderCell>
-                <TableHeaderCell>Size Resp Body</TableHeaderCell>
-              </TableRow>
-            </TableHead> */}
             <TableBody>
               {foundURI.length > 0 ? (
                 foundURI.map((item, index) => (
@@ -108,41 +96,6 @@ export default function SpiderScan({ progress, foundURI }) {
           </Table>
         </TableRoot>
       </div>
-      {/* <div className="w-full mt-8">
-        <h1 className="text-md font-semibold text-gray-900 dark:text-gray-50">
-          URLs
-        </h1>
-        <TableRoot className="mt-3">
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableHeaderCell>Method</TableHeaderCell>
-                <TableHeaderCell>URI</TableHeaderCell>
-                <TableHeaderCell>Flags</TableHeaderCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {foundURI.length > 0 ? (
-                foundURI.map((item, index) => (
-                  <TableRow key={index}>
-                    <TableCell>
-                      <Badge variant="default">{item.method || "GET"}</Badge>
-                    </TableCell>
-                    <TableCell>{item.url}</TableCell>
-                    <TableCell>{item.flags || "None"}</TableCell>
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={3} className="text-center">
-                    No URLs found yet.
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableRoot>
-      </div> */}
     </div>
   );
 }

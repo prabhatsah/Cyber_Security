@@ -2,42 +2,42 @@
 
 import React, { useEffect, useState } from 'react';
 import { Card } from "@tremor/react";
-import { AlertCircle, CheckCircle2, Eye, ArrowRight, User, Calendar,Info } from 'lucide-react';
+import { AlertCircle, CheckCircle2, Eye, ArrowRight, User, Calendar, Info } from 'lucide-react';
 import { getProfileData } from '@/ikon/utils/actions/auth';
 import { Badge } from './ui/badge';
 
-const data = [
-    {
-        titleHeading: 'Europe',
-        title: '$10,023',
-        noOfIssue: 3,
-        totalIssue: 5,
-        status: 'warning',
-        scanBy: 'John Doe',
-        scanOn: '13.03.25 • 14:30',
-        href: '#',
-    },
-    {
-        titleHeading: 'Asia',
-        title: '$15,789',
-        noOfIssue: 2,
-        totalIssue: 5,
-        status: 'critical',
-        scanBy: 'Jane Smith',
-        scanOn: '13.03.25 • 15:45',
-        href: '#',
-    },
-    {
-        titleHeading: 'Americas',
-        title: '$8,456',
-        noOfIssue: 5,
-        totalIssue: 5,
-        status: 'success',
-        scanBy: 'Mike Johnson',
-        scanOn: '13.03.25 • 16:20',
-        href: '#',
-    },
-];
+// const data = [
+//     {
+//         titleHeading: 'Europe',
+//         title: '$10,023',
+//         noOfIssue: 3,
+//         totalIssue: 5,
+//         status: 'warning',
+//         scanBy: 'John Doe',
+//         scanOn: '13.03.25 • 14:30',
+//         href: '#',
+//     },
+//     {
+//         titleHeading: 'Asia',
+//         title: '$15,789',
+//         noOfIssue: 2,
+//         totalIssue: 5,
+//         status: 'critical',
+//         scanBy: 'Jane Smith',
+//         scanOn: '13.03.25 • 15:45',
+//         href: '#',
+//     },
+//     {
+//         titleHeading: 'Americas',
+//         title: '$8,456',
+//         noOfIssue: 5,
+//         totalIssue: 5,
+//         status: 'success',
+//         scanBy: 'Mike Johnson',
+//         scanOn: '13.03.25 • 16:20',
+//         href: '#',
+//     },
+// ];
 
 const statusConfig = {
     success: {
@@ -66,14 +66,28 @@ const statusConfig = {
     },
 };
 
+interface PastScans {
+    key: string;
+    titleHeading: string;
+    title: string;
+    totalIssue: number;
+    noOfIssue: number;
+    status: string; // assuming these possible statuses
+    scanOn: string; // if you want, you can make it Date later
+    href: string;
+};
+
 function cx(...classes: (string | boolean | undefined | null)[]) {
     return classes.filter(Boolean).join(' ');
 }
 
-export default function Example({ pastScans, onOpenPastScan }) {
+export default function Example({ pastScans, onOpenPastScan }: {
+    pastScans: PastScans[];
+    onOpenPastScan: (key: string) => void;
+}) {
 
     const [profileData, setProfileData] = useState<any>();
-    const [openedScan, setOpenedScan] = useState<any>()
+    const [openedScan, setOpenedScan] = useState<string>("")
 
     useEffect(() => {
         const fetchUserProfileData = async () => {
@@ -86,7 +100,7 @@ export default function Example({ pastScans, onOpenPastScan }) {
     console.log("profile - ", profileData);
     console.log("Scan history data - ", pastScans);
 
-    function handleClick(key) {
+    function handleClick(key: string) {
         setOpenedScan(key);
         onOpenPastScan(key);
     }
@@ -97,7 +111,7 @@ export default function Example({ pastScans, onOpenPastScan }) {
             <h2 className=" font-bold text-widget-title text-widgetHeader mt-4">Scan History</h2>
 
             <dl className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 mt-4">
-                {pastScans.map((item, index) => {
+                {pastScans.length ? pastScans.map((item, index) => {
                     const StatusIcon = statusConfig[item.status as keyof typeof statusConfig]?.icon;
                     const statusLabel = statusConfig[item.status as keyof typeof statusConfig]?.label;
                     return (
@@ -154,7 +168,7 @@ export default function Example({ pastScans, onOpenPastScan }) {
                             {/* <a href={item.href} className="absolute inset-0" aria-hidden="true" /> */}
                         </Card>
                     );
-                })}
+                }) : <p>Loading past scans...</p>}
             </dl>
         </div>
     );
