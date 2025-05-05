@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import io from "socket.io-client";
-export let globalWsData: Record<string, string> | null = null;
+import { setterWsData } from "./getterSetterWs";
 
 const ScanStatus = () => {
   const [wsData, setWsData] = useState<Record<string, string>>({});
 
   useEffect(() => {
 
-    //globalWsData = null;
+
 
     const socket = io("https://ikoncloud-uat.keross.com", {
       path: "/cstools/socket.io",
@@ -16,12 +16,12 @@ const ScanStatus = () => {
 
     socket.on("scan_complete", (data) => {
       console.log("Scan completed:", data);
-      setWsData(data);
-      globalWsData = data;
+      localStorage.setItem("scanData", JSON.stringify(data));
+      setWsData(data)
     });
 
     return () => {
-      globalWsData = null;
+      //globalWsData = null;
       socket.disconnect();
     };
   }, []);

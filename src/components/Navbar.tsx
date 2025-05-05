@@ -13,6 +13,7 @@ import { DropdownUserProfile } from "./dropdownuserprofile";
 import { getProfileData } from "@/ikon/utils/actions/auth";
 import { useScanNotification } from "@/contexts/ScanNotificationContext";
 import ScanNotificationItem from "./ScanNotificationItem";
+import { getterWsData } from "@/utils/getterSetterWs";
 
 export default function Navbar() {
   const [darkMode, setDarkMode] = useState(true);
@@ -30,10 +31,17 @@ export default function Navbar() {
   }
   const [message, setMessage] = useState<string>("");
   let scanDetails = ScanStatus();
-  console.log("this is scan details in navbar->", scanDetails.props.children)
+  console.log("navbar->", scanDetails.props.children)
 
-  if (globalWsData)
-    console.log("this is the data ", globalWsData)
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const savedData = localStorage.getItem("scanData");
+      if (savedData) {
+        const parsedData = JSON.parse(savedData);
+        console.log(parsedData);
+      }
+    }
+  }, []);
 
   useEffect(() => {
     logindata();
