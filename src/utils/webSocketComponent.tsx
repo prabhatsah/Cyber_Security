@@ -21,7 +21,7 @@ const ScanStatus = () => {
     });
 
     return () => {
-      globalWsData = null;
+      // globalWsData = null;
       socket.disconnect();
     };
   }, []);
