@@ -17,13 +17,13 @@ import { getterWsData } from "@/utils/getterSetterWs";
 
 export default function Navbar() {
   const [darkMode, setDarkMode] = useState(true);
-  const [profileData, setProfileData] = useState({});
+  const [profileData, setProfileData] = useState<Record<string, any>>();
   const { scanNotificationData, setScanNotificationData } = useScanNotification();
 
   async function logindata() {
     try {
       const profile = await getProfileData()
-      setProfileData(profile)
+      setProfileData(profile);
     } catch (error) {
       console.error(error)
     }
