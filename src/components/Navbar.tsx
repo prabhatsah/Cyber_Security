@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import AppBreadcrumb from "./app-breadcrumb";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "./ui/dropdown-menu"
 
-
+import ScanStatus, { globalWsData } from '@/utils/webSocketComponent';
 import { cx, focusRing } from "@/lib/utils";
 import { Button } from "@tremor/react";
 import { DropdownUserProfile } from "./dropdownuserprofile";
@@ -28,6 +28,13 @@ export default function Navbar() {
     }
 
   }
+  const [message, setMessage] = useState<string>("");
+  let scanDetails = ScanStatus();
+  console.log("this is scan details in navbar->", scanDetails.props.children)
+
+  if (globalWsData)
+    console.log("this is the data ", globalWsData)
+
   useEffect(() => {
     logindata();
   }, [])
