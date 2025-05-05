@@ -9,6 +9,7 @@ import Layout from "@/components/Layout";
 import ClientLayout from "@/components/ClientLayout";
 // import { BreadcrumbProvider } from "@/contexts/BreadcrumbContext";
 import { BreadcrumbProvider } from "@/components/app-breadcrumb/BreadcrumbProvider";
+import { ScanNotificationProvider } from "@/contexts/ScanNotificationContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -29,7 +30,9 @@ export default function RootLayout({
           <GlobalLoadingSpinner />
           <BreadcrumbProvider>
             <Providers>
-              <ClientLayout>{children}</ClientLayout>
+              <ScanNotificationProvider>
+                <ClientLayout>{children}</ClientLayout>
+              </ScanNotificationProvider>
             </Providers>
           </BreadcrumbProvider>
         </LoadingProvider>

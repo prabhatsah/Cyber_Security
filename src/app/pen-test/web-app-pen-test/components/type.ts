@@ -1,6 +1,6 @@
 export interface BasicDetails {
   pentestId: string;
-  webApp: string;
+  target: string;
   pentestName: string;
   pentestDescription: string;
   scope: string;
@@ -31,11 +31,11 @@ export interface PenTestModified {
   pentestId: string;
   pentestType: string;
   basicDetails: BasicDetails;
-  reconnaissance: Reconnaissance | null;
-  vulnerabilityScanning: Record<string, any> | null;
-  exploitation: Record<string, any> | null;
-  postExploitation: Record<string, any> | null;
-  aiAnalysis: Record<string, any> | null;
+  scanData: {
+    amass?: Array<string>;
+    whatweb?: any;
+    nmap?: any;
+  };
   lastUpdated: string;
 }
 
@@ -43,12 +43,41 @@ export interface PenTestDefault {
   id: number;
   userid: string;
   pentestid: string;
-  pentest_type: string;
-  basic_details: BasicDetails;
-  reconnaissance: Reconnaissance | null;
-  vulnerability_scanning: Record<string, any> | null;
-  exploitation: Record<string, any> | null;
-  post_exploitation: Record<string, any> | null;
-  ai_analysis: Record<string, any> | null;
-  last_updated: string;
+  type: string;
+  data: {
+    basicDetails: BasicDetails;
+    scandata?: {
+      amass?: Array<string>;
+      whatweb?: any;
+      nmap?: any;
+    };
+  };
+  lastscanon: string;
 }
+
+// export interface PenTestModified {
+//   userId: string;
+//   pentestId: string;
+//   pentestType: string;
+//   basicDetails: BasicDetails;
+//   reconnaissance: Reconnaissance | null;
+//   vulnerabilityScanning: Record<string, any> | null;
+//   exploitation: Record<string, any> | null;
+//   postExploitation: Record<string, any> | null;
+//   aiAnalysis: Record<string, any> | null;
+//   lastUpdated: string;
+// }
+
+// export interface PenTestDefault {
+//   id: number;
+//   userid: string;
+//   pentestid: string;
+//   pentest_type: string;
+//   basic_details: BasicDetails;
+//   reconnaissance: Reconnaissance | null;
+//   vulnerability_scanning: Record<string, any> | null;
+//   exploitation: Record<string, any> | null;
+//   post_exploitation: Record<string, any> | null;
+//   ai_analysis: Record<string, any> | null;
+//   last_updated: string;
+// }

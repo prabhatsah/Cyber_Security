@@ -14,7 +14,7 @@ async function fetchLoggedInUserPentestData() {
     console.log(userId);
 
 
-    const fetchedData = await fetchData("configured_pentest", "id", [{ column: "userid", value: userId }]);
+    const fetchedData = await fetchData("penetration_testing_history", "id");
 
     return fetchedData;
 }
@@ -31,17 +31,13 @@ export default async function WebAppPenetrationTesting() {
         return {
             userId: eachPenTestData.userid,
             pentestId: eachPenTestData.pentestid,
-            pentestType: eachPenTestData.pentest_type,
-            basicDetails: { ...eachPenTestData.basic_details },
-            reconnaissance: eachPenTestData.reconnaissance,
-            vulnerabilityScanning: eachPenTestData.vulnerability_scanning,
-            exploitation: eachPenTestData.exploitation,
-            postExploitation: eachPenTestData.post_exploitation,
-            aiAnalysis: eachPenTestData.ai_analysis,
-            lastUpdated: eachPenTestData.last_updated,
+            pentestType: eachPenTestData.type,
+            basicDetails: { ...eachPenTestData.data.basicDetails },
+            scanData: eachPenTestData.data.scandata ? { ...eachPenTestData.data.scandata } : {},
+            lastUpdated: eachPenTestData.lastscanon,
         }
     });
-    // console.log("Logged In User Pentest Data: ", loggedInUserPentestDataFormatted);
+    console.log("Logged In User Pentest Data: ", loggedInUserPentestData);
 
     return (
         <>
