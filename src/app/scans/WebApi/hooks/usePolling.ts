@@ -150,20 +150,20 @@ export const usePolling = (
 
         if (scan?.state === "FINISHED") {
           const report = await apiRequest(`${apiUrl}/report`);
-          // const scanData = report.report.site[0];
+          const scanData = report.report.site[0];
 
-          // const uniqueKey = new Date().getTime().toString();
-          // console.log("uniqueKey----------", uniqueKey);
-          // scanData.scanned_at = formatTimestamp(uniqueKey);
+          const uniqueKey = new Date().getTime().toString();
+          console.log("uniqueKey----------", uniqueKey);
+          scanData.scanned_at = formatTimestamp(uniqueKey);
 
-          // const resp = await saveScannedData("web_api_scan_history", {
-          //   key: uniqueKey,
-          //   value: scanData,
-          // });
+          const resp = await saveScannedData("web_api_scan_history", {
+            key: uniqueKey,
+            value: scanData,
+          });
 
-          // if (resp.error) {
-          //   throw new Error(resp.error);
-          // }
+          if (resp.error) {
+            throw new Error(resp.error);
+          }
 
           onComplete(report.report.site[0]);
           setIsScanning(false);
