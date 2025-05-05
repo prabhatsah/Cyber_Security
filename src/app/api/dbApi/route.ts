@@ -57,9 +57,9 @@ export async function POST(req: Request) {
   let jsonData: any;
 
   await ssh.connect({
-    host: "77.68.48.96",
+    host: "77.68.30.54",
     username: "root",
-    password: "QR66&4Zq2#",
+    password: "G18_*Y#7st",
   });
 
   if (instruction === "update") {
