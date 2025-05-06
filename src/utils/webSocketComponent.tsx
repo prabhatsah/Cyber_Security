@@ -14,9 +14,15 @@ const ScanStatus = () => {
       transports: ["websocket"],
     });
 
+    // socket.on("scan_complete", (data) => {
+    //   console.log("Scan completed:", data);
+    //   localStorage.setItem("scanData", JSON.stringify(data));
+    //   setWsData(data)
+    // });
+
     socket.on("scan_complete", (data) => {
       console.log("Scan completed:", data);
-      localStorage.setItem("scanData", JSON.stringify(data));
+      localStorage.setItem("scanData_" + data.scan_id, JSON.stringify(data));
       setWsData(data)
     });
 
