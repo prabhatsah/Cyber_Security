@@ -34,12 +34,12 @@ export default function ScanNotificationItem({ scanData }: {
                     </h4>
                     <span
                         className={classNames(
-                            // statusColor[category.status],
+                            statusColor['In progress'],
                             'inline-flex items-center whitespace-nowrap rounded px-1.5 py-0.5 text-tremor-label font-medium ring-1 ring-inset',
                         )}
                         aria-hidden={true}
-                    >
-                        {scanData.status}
+                    > In progress
+                        {/* {scanData.status} */}
                     </span>
                 </div>
                 <div className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-4">
@@ -61,7 +61,7 @@ export default function ScanNotificationItem({ scanData }: {
                             {scanData.scan_id}
                         </p>
                     </div>
-                    <div className="flex items-center space-x-1.5">
+                    {/* <div className="flex items-center space-x-1.5">
                         <RiUserFill
                             className="size-5 text-tremor-content-subtle dark:text-dark-tremor-content-subtle"
                             aria-hidden={true}
@@ -69,7 +69,7 @@ export default function ScanNotificationItem({ scanData }: {
                         <p className="text-tremor-default text-tremor-content dark:text-dark-tremor-content">
                             {scanData.pentestid}
                         </p>
-                    </div>
+                    </div> */}
                 </div>
                 <Divider />
                 <div className="block sm:flex sm:items-center sm:justify-between sm:space-x-2">
@@ -88,7 +88,7 @@ export default function ScanNotificationItem({ scanData }: {
                         </p>
                     </div>
                     <p className="mt-2 text-tremor-default text-tremor-content dark:text-dark-tremor-content sm:mt-0">
-                        Updated {scanData.start_time}
+                        Started 1 min ago {scanData.start_time}
                     </p>
                 </div>
             </Card>
