@@ -1,7 +1,8 @@
 import { RiBuildingFill, RiMapPin2Fill, RiUserFill } from "@remixicon/react";
 import { Card, Divider, ProgressCircle } from "@tremor/react";
+import { ScanNotificationDataModified } from "./type";
 
-function classNames(...classes) {
+function classNames(...classes: any) {
     return classes.filter(Boolean).join(' ');
 }
 
@@ -15,19 +16,33 @@ const statusColor = {
 }
 
 export default function ScanNotificationItem({ scanData }: {
-    scanData: {
-        pentestid: string;
-        scan_id: string;
-        status: string;
-        target: string;
-        tool: string;
-        start_time: string;
-    }
+    scanData: ScanNotificationDataModified;
 }) {
+
+    const startOrEndTime = scanData.endTime.trim().length > 0 ? new Date(scanData.endTime) : new Date(scanData.startTime);
+    const presentTime = new Date();
+    const diffMs = presentTime.getTime() - startOrEndTime.getTime();
+
+    const seconds = Math.floor(diffMs / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+
+    let dataTimeStr = scanData.endTime.trim().length > 0 ? "Completed " : "Started ";
+
+    if (seconds < 60) {
+        dataTimeStr += `${seconds} second${seconds !== 1 ? "s" : ""} ago`;
+    } else if (minutes < 60) {
+        dataTimeStr += `${minutes} minute${minutes !== 1 ? "s" : ""} ago`;
+    } else if (hours < 24) {
+        dataTimeStr += `${hours} hour${hours !== 1 ? "s" : ""} ago`;
+    } else {
+        dataTimeStr += `${days} day${days !== 1 ? "s" : ""} ago`;
+    }
 
     return (
         <>
-            <Card key={scanData.scan_id}>
+            <Card key={scanData.scanId}>
                 <div className="flex items-center justify-between space-x-4 sm:justify-start sm:space-x-2">
                     <h4 className="truncate text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">
                         {scanData.target}
@@ -58,7 +73,7 @@ export default function ScanNotificationItem({ scanData }: {
                             aria-hidden={true}
                         />
                         <p className="text-tremor-default text-tremor-content dark:text-dark-tremor-content">
-                            {scanData.scan_id}
+                            {scanData.scanId}
                         </p>
                     </div>
                     {/* <div className="flex items-center space-x-1.5">
@@ -88,7 +103,8 @@ export default function ScanNotificationItem({ scanData }: {
                         </p>
                     </div>
                     <p className="mt-2 text-tremor-default text-tremor-content dark:text-dark-tremor-content sm:mt-0">
-                        Started 1 min ago {scanData.start_time}
+                        {/* Started 1 min ago {scanData.startTime} */}
+                        {dataTimeStr}
                     </p>
                 </div>
             </Card>

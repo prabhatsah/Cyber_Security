@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import AppBreadcrumb from "./app-breadcrumb";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "./ui/dropdown-menu"
 
-import ScanStatus, { globalWsData } from '@/utils/webSocketComponent';
+import ScanStatus from '@/utils/webSocketComponent';
 import { cx, focusRing } from "@/lib/utils";
 import { Button } from "@tremor/react";
 import { DropdownUserProfile } from "./dropdownuserprofile";
@@ -14,38 +14,54 @@ import { getProfileData } from "@/ikon/utils/actions/auth";
 import { useScanNotification } from "@/contexts/ScanNotificationContext";
 import ScanNotificationItem from "./ScanNotificationItem";
 import { getterWsData } from "@/utils/getterSetterWs";
+import { fetchData } from "@/utils/api";
+import { getLoggedInUserProfile } from "@/ikon/utils/api/loginService";
+import { ScanNotificationDataModified, ScanNotificationDataWithoutPentestId, ScanNotificationDataWithPentestId, ScanNotificationInDatabase } from "./type";
+
+const fetchScanNotificationDetailsOnLogin = async () => {
+  const userId = (await getLoggedInUserProfile()).USER_ID;
+
+  const scanNotificationDataOnLogin = await fetchData("scandetails", "scan_id", [{ column: "user_id", value: userId }]);
+
+  return scanNotificationDataOnLogin;
+}
 
 export default function Navbar() {
   const [darkMode, setDarkMode] = useState(true);
   const [profileData, setProfileData] = useState<Record<string, any>>();
-  const { scanNotificationData, setScanNotificationData } = useScanNotification();
+  const { scanNotificationData, setScanNotificationData, scanNotificationDataWithoutPentestId, pentestIdWiseScanDetailsObj } = useScanNotification();
 
-  async function logindata() {
+  async function logInData() {
     try {
-      const profile = await getProfileData()
+      const profile = await getProfileData();
+
+      localStorage.clear();
+      const scanNotificationDataOnLogin: ScanNotificationInDatabase[] = await fetchScanNotificationDetailsOnLogin() ? (await fetchScanNotificationDetailsOnLogin()).data : [];
+
+      const scanNotificationDataOnLoginFormatted: ScanNotificationDataModified[] = scanNotificationDataOnLogin.map(eachScanNotificationData => ({
+        scanId: eachScanNotificationData.scan_id,
+        tool: eachScanNotificationData.tool,
+        target: eachScanNotificationData.target,
+        startTime: eachScanNotificationData.start_time,
+        endTime: eachScanNotificationData.end_time ?? "",
+        status: eachScanNotificationData.status,
+        pentestId: eachScanNotificationData.pentest_id ?? "",
+      }));
+
+      localStorage.setItem("scanData", JSON.stringify(scanNotificationDataOnLoginFormatted));
+      setScanNotificationData(scanNotificationDataOnLoginFormatted);
       setProfileData(profile);
     } catch (error) {
       console.error(error)
     }
-
   }
-  const [message, setMessage] = useState<string>("");
+
   let scanDetails = ScanStatus();
-  //console.log("navbar->", scanDetails.props.children)
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const savedData = localStorage.getItem("scanData");
-      if (savedData) {
-        const parsedData = JSON.parse(savedData);
-        console.log(parsedData);
-      }
-    }
+    logInData();
   }, []);
 
-  useEffect(() => {
-    logindata();
-  }, [])
   useEffect(() => {
     if (darkMode) {
       document.documentElement.classList.add("dark");
@@ -89,17 +105,14 @@ export default function Navbar() {
               align="start"
               className="sm:!min-w-[calc(var(--radix-dropdown-menu-trigger-width))]"
             >
-              <DropdownMenuLabel>Running Scan</DropdownMenuLabel>
+              <DropdownMenuLabel>Recent Scan History</DropdownMenuLabel>
 
               <DropdownMenuSeparator />
-              <DropdownMenuGroup>
-                {/* <DropdownMenuItem>
-                  web and api
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  Reconnassiance
-                </DropdownMenuItem> */}
-                {scanNotificationData.map(eachScanNotificationData => <ScanNotificationItem key={eachScanNotificationData.scan_id} scanData={eachScanNotificationData} />)}
+              <DropdownMenuGroup className="p-4 flex flex-col gap-5 max-h-80 overflow-auto">
+
+                {
+                  scanNotificationData.map(eachScanNotificationData => <ScanNotificationItem key={eachScanNotificationData.scanId} scanData={eachScanNotificationData} />)
+                }
               </DropdownMenuGroup>
             </DropdownMenuContent>
           </DropdownMenu>
