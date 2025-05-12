@@ -6,24 +6,43 @@ import { motion } from "framer-motion";
 import AppBreadcrumb from "./app-breadcrumb";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "./ui/dropdown-menu"
 
-
+import ScanStatus, { globalWsData } from '@/utils/webSocketComponent';
 import { cx, focusRing } from "@/lib/utils";
 import { Button } from "@tremor/react";
 import { DropdownUserProfile } from "./dropdownuserprofile";
 import { getProfileData } from "@/ikon/utils/actions/auth";
+import { useScanNotification } from "@/contexts/ScanNotificationContext";
+import ScanNotificationItem from "./ScanNotificationItem";
+import { getterWsData } from "@/utils/getterSetterWs";
 
 export default function Navbar() {
   const [darkMode, setDarkMode] = useState(true);
-  const [profileData, setProfileData] = useState({})
+  const [profileData, setProfileData] = useState<Record<string, any>>();
+  const { scanNotificationData, setScanNotificationData } = useScanNotification();
+
   async function logindata() {
     try {
       const profile = await getProfileData()
-      setProfileData(profile)
+      setProfileData(profile);
     } catch (error) {
       console.error(error)
     }
 
   }
+  const [message, setMessage] = useState<string>("");
+  let scanDetails = ScanStatus();
+  //console.log("navbar->", scanDetails.props.children)
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const savedData = localStorage.getItem("scanData");
+      if (savedData) {
+        const parsedData = JSON.parse(savedData);
+        console.log(parsedData);
+      }
+    }
+  }, []);
+
   useEffect(() => {
     logindata();
   }, [])
@@ -74,23 +93,16 @@ export default function Navbar() {
 
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
-                <DropdownMenuItem>
+                {/* <DropdownMenuItem>
                   web and api
                 </DropdownMenuItem>
                 <DropdownMenuItem>
                   Reconnassiance
-                </DropdownMenuItem>
+                </DropdownMenuItem> */}
+                {scanNotificationData.map(eachScanNotificationData => <ScanNotificationItem key={eachScanNotificationData.scan_id} scanData={eachScanNotificationData} />)}
               </DropdownMenuGroup>
             </DropdownMenuContent>
           </DropdownMenu>
-          <button
-            type="button"
-            className="p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary relative"
-          >
-            <span className="sr-only">Running Scans</span>
-            <ScanLine className="h-6 w-6" aria-hidden="true" />
-            <span className="absolute top-0 right-0 block h-2 w-2 rounded-full bg-error transform translate-x-1/2 -translate-y-1/2"></span>
-          </button>
           <button
             type="button"
             className="p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary relative"
