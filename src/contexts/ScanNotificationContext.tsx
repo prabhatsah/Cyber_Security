@@ -1,6 +1,6 @@
 "use client";
 
-import { ScanNotificationDataModified } from '@/components/type';
+import { PentestEachSubScan, ScanNotificationDataModified, ScanNotificationDataWithGroupedPentestId } from '@/components/type';
 import { createContext, useContext, useState, Dispatch, SetStateAction, ReactNode } from 'react';
 
 // First, define the type
@@ -8,7 +8,7 @@ type ScanNotificationContextType = {
     scanNotificationData: ScanNotificationDataModified[];
     setScanNotificationData: Dispatch<SetStateAction<ScanNotificationDataModified[]>>;
     scanNotificationDataWithoutPentestId: ScanNotificationDataModified[];
-    pentestIdWiseScanDetailsObj: Record<string, ScanNotificationDataModified[]>;
+    scanNotificationDataWithPentestId: ScanNotificationDataWithGroupedPentestId[];
 };
 
 // Then, create context with correct type (nullable)
@@ -18,28 +18,42 @@ const ScanNotificationContext = createContext<ScanNotificationContextType | null
 export function ScanNotificationProvider({ children }: { children: ReactNode }) {
     const [scanNotificationData, setScanNotificationData] = useState<ScanNotificationDataModified[]>([]);
 
-    const scanNotificationDataWithPentestId: ScanNotificationDataModified[] = [];
+    const pentestIdWiseScanDetailsObj: Record<string, ScanNotificationDataModified[]> = {};
     const scanNotificationDataWithoutPentestId: ScanNotificationDataModified[] = [];
 
     scanNotificationData.forEach(eachScanNotificationData => {
         if (eachScanNotificationData.pentestId !== null && eachScanNotificationData.pentestId.trim().length > 0) {
-            scanNotificationDataWithPentestId.push(eachScanNotificationData);
+            !pentestIdWiseScanDetailsObj[eachScanNotificationData.pentestId] ? pentestIdWiseScanDetailsObj[eachScanNotificationData.pentestId] = [] : undefined;
+            pentestIdWiseScanDetailsObj[eachScanNotificationData.pentestId].push(eachScanNotificationData);
         } else {
             scanNotificationDataWithoutPentestId.push(eachScanNotificationData);
         }
     });
 
-    const pentestIdWiseScanDetailsObj: Record<string, ScanNotificationDataModified[]> = {};
-    scanNotificationDataWithPentestId.forEach(eachScanNotificationData => {
-        if (!pentestIdWiseScanDetailsObj[eachScanNotificationData.pentestId]) {
-            pentestIdWiseScanDetailsObj[eachScanNotificationData.pentestId] = [];
-        }
 
-        pentestIdWiseScanDetailsObj[eachScanNotificationData.pentestId].push(eachScanNotificationData);
-    })
+    const scanNotificationDataWithPentestId: ScanNotificationDataWithGroupedPentestId[] = [];
+    for (const eachPentestId in pentestIdWiseScanDetailsObj) {
+        const eachPentestDetails = pentestIdWiseScanDetailsObj[eachPentestId];
+        const subScanDetails: PentestEachSubScan[] = [];
+        eachPentestDetails.forEach(eachSubScanDetails => {
+            subScanDetails.push({
+                tool: eachSubScanDetails.tool,
+                endTime: eachSubScanDetails.endTime,
+                startTime: eachSubScanDetails.startTime,
+                status: eachSubScanDetails.status,
+                scanId: eachSubScanDetails.scanId,
+            })
+        });
+
+        scanNotificationDataWithPentestId.push({
+            pentestId: eachPentestId,
+            target: eachPentestDetails[0].target,
+            subScanDetails: subScanDetails,
+        });
+    }
 
     return (
-        <ScanNotificationContext.Provider value={{ scanNotificationData, setScanNotificationData, scanNotificationDataWithoutPentestId, pentestIdWiseScanDetailsObj }}>
+        <ScanNotificationContext.Provider value={{ scanNotificationData, setScanNotificationData, scanNotificationDataWithoutPentestId, scanNotificationDataWithPentestId }}>
             {children}
         </ScanNotificationContext.Provider>
     );

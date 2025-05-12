@@ -17,6 +17,7 @@ import { getterWsData } from "@/utils/getterSetterWs";
 import { fetchData } from "@/utils/api";
 import { getLoggedInUserProfile } from "@/ikon/utils/api/loginService";
 import { ScanNotificationDataModified, ScanNotificationDataWithoutPentestId, ScanNotificationDataWithPentestId, ScanNotificationInDatabase } from "./type";
+import ScanNotificationItemPentest from "./ScanNotificationItemPentest";
 
 const fetchScanNotificationDetailsOnLogin = async () => {
   const userId = (await getLoggedInUserProfile()).USER_ID;
@@ -29,7 +30,7 @@ const fetchScanNotificationDetailsOnLogin = async () => {
 export default function Navbar() {
   const [darkMode, setDarkMode] = useState(true);
   const [profileData, setProfileData] = useState<Record<string, any>>();
-  const { scanNotificationData, setScanNotificationData, scanNotificationDataWithoutPentestId, pentestIdWiseScanDetailsObj } = useScanNotification();
+  const { scanNotificationData, setScanNotificationData, scanNotificationDataWithoutPentestId, scanNotificationDataWithPentestId } = useScanNotification();
 
   async function logInData() {
     try {
@@ -111,7 +112,11 @@ export default function Navbar() {
               <DropdownMenuGroup className="p-4 flex flex-col gap-5 max-h-80 overflow-auto">
 
                 {
-                  scanNotificationData.map(eachScanNotificationData => <ScanNotificationItem key={eachScanNotificationData.scanId} scanData={eachScanNotificationData} />)
+                  scanNotificationDataWithPentestId.map((eachPentestScanNotificationData) =>
+                    (<ScanNotificationItemPentest key={eachPentestScanNotificationData.pentestId} pentestScanData={eachPentestScanNotificationData} />))
+                }
+                {
+                  scanNotificationDataWithoutPentestId.map(eachScanNotificationData => <ScanNotificationItem key={eachScanNotificationData.scanId} scanData={eachScanNotificationData} />)
                 }
               </DropdownMenuGroup>
             </DropdownMenuContent>
