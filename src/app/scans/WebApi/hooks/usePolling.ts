@@ -26,20 +26,26 @@ export const usePolling = (
   console.log("query ---------- ", query);
   const [isScanning, setIsScanning] = useState(false);
   const [spiderProgress, setSpiderProgress] = useState(0);
-  const [activeProgress, setActiveProgress] = useState(0);
   const [foundURI, setFoundURI] = useState<string[]>([]);
-  const [newAlerts, setNewAlerts] = useState("0");
-  const [numRequests, setNumRequests] = useState("0");
   const [messages, setMessages] = useState([]);
+  const [scanDetails, setScanDetails] = useState({
+    activeProgress: 0,
+    newAlerts: "0",
+    numRequests: "0",
+  });
 
   const resetScan = () => {
-    setSpiderProgress(0);
-    setActiveProgress(0);
-    setFoundURI([]);
-    setNewAlerts("0");
-    setNumRequests("0");
-    setMessages([]);
-    onComplete(null);
+    setSpiderProgress(() => 0);
+    setFoundURI(() => []);
+    setScanDetails(() => {
+      return {
+        activeProgress: 0,
+        newAlerts: "0",
+        numRequests: "0",
+      };
+    });
+    setMessages(() => []);
+    onComplete(() => null);
   };
 
   const startScan = async () => {
@@ -87,7 +93,6 @@ export const usePolling = (
         }
       } catch (err) {
         console.error("Error polling spider progress:", err);
-        // Optional: you can retry after a delay or exit here
       }
     };
 
@@ -114,62 +119,6 @@ export const usePolling = (
     }
   };
 
-  // const pollActiveScanProgress = async (activeScanId: string) => {
-  //   const poll = async () => {
-  //     try {
-  //       const scanDetails = await apiRequest(`${apiUrl}/scanDetails`);
-  //       const scan = scanDetails.scans.find((s: Scan) => s.id === activeScanId);
-
-  //       if (scan) {
-  //         setActiveProgress(
-  //           scan.state === "FINISHED" ? 100 : Number(scan.progress) || 0
-  //         );
-  //         setNewAlerts(scan.newAlertCount);
-  //         setNumRequests(scan.reqCount);
-
-  //         // Fetch messages if spider is done and scanning is ongoing
-  //         const messagesData = await apiRequest(
-  //           `${apiUrl}/messages?baseurl=${encodeURIComponent(query)}&start=${
-  //             messages.length
-  //           }`
-  //         );
-  //         setMessages((prev) => {
-  //           return [...prev, ...messagesData.messages];
-  //         });
-  //         let x = "";
-  //       }
-
-  //       if (scan?.state === "FINISHED") {
-  //         const report = await apiRequest(`${apiUrl}/report`);
-  //         // const scanData = report.report.site[0];
-
-  //         // const uniqueKey = new Date().getTime().toString();
-  //         // console.log("uniqueKey----------", uniqueKey);
-  //         // scanData.scanned_at = formatTimestamp(uniqueKey);
-
-  //         // const resp = await saveScannedData("web_api_scan_history", {
-  //         //   key: uniqueKey,
-  //         //   value: scanData,
-  //         // });
-
-  //         // if (resp.error) {
-  //         //   throw new Error(resp.error);
-  //         // }
-
-  //         onComplete(report.report.site[0]);
-  //         setIsScanning(false);
-  //       } else {
-  //         setTimeout(poll, 5000); // poll again after 15 seconds
-  //       }
-  //     } catch (err) {
-  //       console.error("Error polling active scan progress:", err);
-  //       // Optional: Retry or fail
-  //     }
-  //   };
-
-  //   await poll();
-  // };
-
   const pollActiveScanProgress = async (activeScanId: string) => {
     const poll = async () => {
       try {
@@ -177,13 +126,15 @@ export const usePolling = (
         const scan = scanDetails.scans.find((s: Scan) => s.id === activeScanId);
 
         if (scan) {
-          setActiveProgress(
-            scan.state === "FINISHED" ? 100 : Number(scan.progress) || 0
-          );
-          setNewAlerts(scan.newAlertCount);
-          setNumRequests(scan.reqCount);
+          setScanDetails(() => {
+            return {
+              activeProgress:
+                scan.state === "FINISHED" ? 100 : Number(scan.progress) || 0,
+              newAlerts: scan.newAlertCount,
+              numRequests: scan.reqCount,
+            };
+          });
 
-          // Use functional update to get the latest messages
           const messagesData = await apiRequest(
             `${apiUrl}/messages?baseurl=${encodeURIComponent(query)}&start=${
               messages.length
@@ -195,10 +146,30 @@ export const usePolling = (
 
         if (scan?.state === "FINISHED") {
           const report = await apiRequest(`${apiUrl}/report`);
-          onComplete(report.report.site[0]);
-          setIsScanning(false);
+
+          // const scanData = report.report.site[0];
+
+          // const uniqueKey = new Date().getTime().toString();
+          // console.log("uniqueKey----------", uniqueKey);
+          // scanData.scanned_at = formatTimestamp(uniqueKey);
+
+          // const resp = await saveScannedData("web_api_scan_history", {
+          //   key: uniqueKey,
+          //   value: scanData,
+          // });
+
+          // if (resp.error) {
+          //   throw new Error(resp.error);
+          // }
+
+          const data = report.report.site.filter(
+            (item) => item["@name"] === query
+          );
+
+          onComplete(() => data[0]);
+          setIsScanning(() => false);
         } else {
-          setTimeout(poll, 5000); // poll again after 5 seconds
+          setTimeout(poll, 5000);
         }
       } catch (err) {
         console.error("Error polling active scan progress:", err);
@@ -211,10 +182,8 @@ export const usePolling = (
   return {
     isScanning,
     spiderProgress,
-    activeProgress,
     foundURI,
-    newAlerts,
-    numRequests,
+    scanDetails,
     messages,
     startScan,
   };
