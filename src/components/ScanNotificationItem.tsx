@@ -13,8 +13,8 @@ const statusColor = {
     'default': 'bg-blue-50 text-blue-900 ring-blue-500/30 dark:bg-blue-400/10 dark:text-blue-400 dark:ring-blue-400/30',
 }
 const toolNameMap = {
-    "theHarvester": "Harvester",
-    "zap": "Web and API Security",
+    "theHarvester": "Public Information",
+    "zap": "Web Scanning",
     "virusTotal": "OSINT and Threat Intelligence"
 }
 
