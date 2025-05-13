@@ -179,7 +179,7 @@ export default function Dashboard({ _data }: { _data: (Site & { scanned_at?: str
             Alert Details
           </h1>
           <Accordion type="multiple" className="mt-3 ">
-            {_data.alerts.map((dataItem) => (
+            {_data.alerts?.map((dataItem) => (
               <AccordionItem value={dataItem.pluginid} key={dataItem.pluginid}>
                 <AccordionTrigger>
                   <span className="flex items-center gap-2 h-8">

@@ -40,10 +40,8 @@ export default function Scan() {
   const {
     isScanning,
     spiderProgress,
-    activeProgress,
     foundURI,
-    newAlerts,
-    numRequests,
+    scanDetails,
     messages,
     startScan,
   } = usePolling(apiUrl, query, setOpenTabs, setData);
@@ -116,9 +114,9 @@ export default function Scan() {
         <TabsContent value="tab2">
           <div>
             <ActiveScan
-              progress={activeProgress}
-              newAlerts={newAlerts}
-              numRequests={numRequests}
+              progress={scanDetails.activeProgress}
+              newAlerts={scanDetails.newAlerts}
+              numRequests={scanDetails.numRequests}
               messages={messages}
             />
           </div>
