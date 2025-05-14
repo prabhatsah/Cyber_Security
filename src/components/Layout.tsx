@@ -25,6 +25,7 @@ export default function Layout({
   children: React.ReactNode;
   isLoginPage: boolean;
 }) {
+
   return (
     <div className={`flex h-screen ${isLoginPage ? "bg-white  dark:bg-gray-950" : ""}`}>
       {/* Render Sidebar and Navbar only if not on the login page */}

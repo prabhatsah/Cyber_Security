@@ -3,7 +3,7 @@ const StartScan = async (
   tool: string,
   target: string,
   pentestId: string,
-  start_time: string
+  startTime: string
 ) => {
   try {
     const response = await fetch(
@@ -18,7 +18,7 @@ const StartScan = async (
           tool: tool,
           target: target,
           pentestid: pentestId,
-          start_time: start_time,
+          start_time: startTime,
         }),
       }
     );
