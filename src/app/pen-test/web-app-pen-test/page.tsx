@@ -5,9 +5,13 @@ import { fetchData } from "@/utils/api";
 import AddPentestBtnWithFormModal from "./components/AddPentestBtnWithFormModal";
 import NoSavedPentestTemplate from "./components/NoSavedPentestTemplate";
 import { PenTestDefault, PenTestModified } from "./components/type";
+import ScanStatus from "./[pentestIdName]/reconnaissance/components/ScanStatus";
 
 async function fetchLoggedInUserPentestData() {
     const userId = (await getLoggedInUserProfile()).USER_ID;
+
+    console.log("user id ---------")
+    console.log(userId);
 
 
     const fetchedData = await fetchData("penetration_testing_history", "id");
@@ -16,6 +20,11 @@ async function fetchLoggedInUserPentestData() {
 }
 
 export default async function WebAppPenetrationTesting() {
+
+    // const scan_details = await fetchData("scandetails", "scan_id", [{ column: "user_id", value: "38384a69-e2aa-42ad-bc67-47502d563148" }]);
+
+    // console.log("scan detalis ----------------");
+    // console.log(scan_details);
 
     const loggedInUserPentestData: PenTestDefault[] = await fetchLoggedInUserPentestData() ? (await fetchLoggedInUserPentestData()).data : [];
     const loggedInUserPentestDataFormatted: PenTestModified[] = loggedInUserPentestData.map((eachPenTestData: PenTestDefault) => {
@@ -61,6 +70,8 @@ export default async function WebAppPenetrationTesting() {
                 </div>
                 {loggedInUserPentestData.length === 0 ? <NoSavedPentestTemplate /> : <PentestWidget allPentestWidgetData={loggedInUserPentestDataFormatted} />}
             </div>
+
+            {/* <ScanStatus /> */}
         </>
     );
 }

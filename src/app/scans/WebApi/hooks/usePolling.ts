@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { apiRequest } from "../utils/api";
 import { Scan } from "../types/scanTypes";
 import { saveScannedData } from "@/utils/api";
@@ -17,18 +17,6 @@ function formatTimestamp(timestamp: string) {
   return `${day}-${month}-${year} ${hours}:${minutes}`;
 }
 
-async function insertScanData(scanData) {
-  const uniqueKey = new Date().getTime().toString();
-  console.log("uniqueKey----------", uniqueKey);
-  scanData.scanned_at = formatTimestamp(uniqueKey);
-
-  const resp = await saveScannedData("web_api_scan_history", {
-    key: uniqueKey,
-    value: scanData,
-  });
-  return resp;
-}
-
 export const usePolling = (
   apiUrl: string,
   query: string,
@@ -38,20 +26,26 @@ export const usePolling = (
   console.log("query ---------- ", query);
   const [isScanning, setIsScanning] = useState(false);
   const [spiderProgress, setSpiderProgress] = useState(0);
-  const [activeProgress, setActiveProgress] = useState(0);
   const [foundURI, setFoundURI] = useState<string[]>([]);
-  const [newAlerts, setNewAlerts] = useState("0");
-  const [numRequests, setNumRequests] = useState("0");
   const [messages, setMessages] = useState([]);
+  const [scanDetails, setScanDetails] = useState({
+    activeProgress: 0,
+    newAlerts: "0",
+    numRequests: "0",
+  });
 
   const resetScan = () => {
-    setSpiderProgress(0);
-    setActiveProgress(0);
-    setFoundURI([]);
-    setNewAlerts("0");
-    setNumRequests("0");
-    setMessages([]);
-    onComplete(null);
+    setSpiderProgress(() => 0);
+    setFoundURI(() => []);
+    setScanDetails(() => {
+      return {
+        activeProgress: 0,
+        newAlerts: "0",
+        numRequests: "0",
+      };
+    });
+    setMessages(() => []);
+    onComplete(() => null);
   };
 
   const startScan = async () => {
@@ -99,7 +93,6 @@ export const usePolling = (
         }
       } catch (err) {
         console.error("Error polling spider progress:", err);
-        // Optional: you can retry after a delay or exit here
       }
     };
 
@@ -133,23 +126,27 @@ export const usePolling = (
         const scan = scanDetails.scans.find((s: Scan) => s.id === activeScanId);
 
         if (scan) {
-          setActiveProgress(
-            scan.state === "FINISHED" ? 100 : Number(scan.progress) || 0
-          );
-          setNewAlerts(scan.newAlertCount);
-          setNumRequests(scan.reqCount);
+          setScanDetails(() => {
+            return {
+              activeProgress:
+                scan.state === "FINISHED" ? 100 : Number(scan.progress) || 0,
+              newAlerts: scan.newAlertCount,
+              numRequests: scan.reqCount,
+            };
+          });
 
-          // Fetch messages if spider is done and scanning is ongoing
           const messagesData = await apiRequest(
             `${apiUrl}/messages?baseurl=${encodeURIComponent(query)}&start=${
               messages.length
             }`
           );
+
           setMessages((prev) => [...prev, ...messagesData.messages]);
         }
 
         if (scan?.state === "FINISHED") {
           const report = await apiRequest(`${apiUrl}/report`);
+
           // const scanData = report.report.site[0];
 
           // const uniqueKey = new Date().getTime().toString();
@@ -165,14 +162,17 @@ export const usePolling = (
           //   throw new Error(resp.error);
           // }
 
-          onComplete(report.report.site[0]);
-          setIsScanning(false);
+          const data = report.report.site.filter(
+            (item) => item["@name"] === query
+          );
+
+          onComplete(() => data[0]);
+          setIsScanning(() => false);
         } else {
-          setTimeout(poll, 5000); // poll again after 15 seconds
+          setTimeout(poll, 5000);
         }
       } catch (err) {
         console.error("Error polling active scan progress:", err);
-        // Optional: Retry or fail
       }
     };
 
@@ -182,10 +182,8 @@ export const usePolling = (
   return {
     isScanning,
     spiderProgress,
-    activeProgress,
     foundURI,
-    newAlerts,
-    numRequests,
+    scanDetails,
     messages,
     startScan,
   };

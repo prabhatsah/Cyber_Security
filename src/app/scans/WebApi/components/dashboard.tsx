@@ -9,17 +9,18 @@ import {
 
 import { RiAlertLine, RiLink } from "@remixicon/react";
 import { Badge } from "@/components/Badge";
+import { Site } from "../types/alertTypes";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-const ristCodeVsDesc = {
-  0: "Info",
-  1: "Low",
-  2: "Medium",
-  3: "High",
-  4: "Critical",
+const riskCodeVsDesc: Record<string, string> = {
+  "0": "Info",
+  "1": "Low",
+  "2": "Medium",
+  "3": "High",
+  "4": "Critical",
 };
 
 function removePTags(htmlString: string) {
@@ -41,7 +42,7 @@ const getBadgeVariant = (value: string) => {
         : "default";
 };
 
-export default function Dashboard({ _data }) {
+export default function Dashboard({ _data }: { _data: (Site & { scanned_at?: string }) }) {
   const _severity = [
     {
       severity: "Critical",
@@ -70,15 +71,17 @@ export default function Dashboard({ _data }) {
     },
   ];
 
-  const _alertsCount = _data.alerts.length;
+  const _alertsCount = _data?.alerts?.length;
 
-  for (let i = 0; i < _data.alerts.length; i++) {
-    for (let j = 0; j < _severity.length; j++) {
-      if (
-        _severity[j]["severity"] ===
-        ristCodeVsDesc[_data.alerts[i]["riskcode"]]
-      ) {
-        _severity[j]["count"] += 1;
+  if (_alertsCount) {
+    for (let i = 0; i < _alertsCount; i++) {
+      for (let j = 0; j < _severity.length; j++) {
+        if (
+          _severity[j]["severity"] ===
+          riskCodeVsDesc[_data.alerts[i]["riskcode"]]
+        ) {
+          _severity[j]["count"] += 1;
+        }
       }
     }
   }
@@ -86,12 +89,14 @@ export default function Dashboard({ _data }) {
   console.log("----------- _severity");
   console.log(_severity);
 
+  const labelClass = "text-sm text-gray-900 font-semibold w-32 flex-shrink-0 dark:text-gray-50";
+
   return (
     <div className="min-h-[90vh]">
       <section className="my-4">
         <div className="grid grid-cols-4 gap-5">
           <Card
-            className="col-span-1 rounded-md bg-tremor-background ring-tremor-ring shadow-tremor-card dark:ring-dark-tremor-ring dark:shadow-dark-tremor-card border-tremor-brand dark:border-dark-tremor-brand relative flex flex-col rounded-lg justify-between
+            className="col-span-1 bg-tremor-background ring-tremor-ring shadow-tremor-card dark:ring-dark-tremor-ring dark:shadow-dark-tremor-card border-tremor-brand dark:border-dark-tremor-brand relative flex flex-col rounded-lg justify-between
            dark:bg-dark-bgPrimary hover:bg-tremor-background-muted hover:dark:bg-dark-tremor-background-muted"
           >
             <div className="flex flex-col items-center">
@@ -156,7 +161,7 @@ export default function Dashboard({ _data }) {
             </div>
           </Card>
           <Card
-            className="col-span-3 rounded-md bg-tremor-background ring-tremor-ring shadow-tremor-card dark:ring-dark-tremor-ring dark:shadow-dark-tremor-card border-tremor-brand dark:border-dark-tremor-brand relative  flex-col rounded-lg justify-between
+            className="col-span-3 bg-tremor-background ring-tremor-ring shadow-tremor-card dark:ring-dark-tremor-ring dark:shadow-dark-tremor-card border-tremor-brand dark:border-dark-tremor-brand relative  flex-col rounded-lg justify-between
            dark:bg-dark-bgPrimary hover:bg-tremor-background-muted hover:dark:bg-dark-tremor-background-mute"
           >
             <div className="flex gap-5">
@@ -174,18 +179,18 @@ export default function Dashboard({ _data }) {
             Alert Details
           </h1>
           <Accordion type="multiple" className="mt-3 ">
-            {_data.alerts.map((dataItem) => (
+            {_data.alerts?.map((dataItem) => (
               <AccordionItem value={dataItem.pluginid} key={dataItem.pluginid}>
                 <AccordionTrigger>
                   <span className="flex items-center gap-2 h-8">
                     <RiAlertLine
-                      className={`size-4 ${ristCodeVsDesc[dataItem.riskcode] === "Critical"
+                      className={`size-4 ${riskCodeVsDesc[dataItem.riskcode] === "Critical"
                         ? "text-red-900 dark:text-red-400"
-                        : ristCodeVsDesc[dataItem.riskcode] === "High"
+                        : riskCodeVsDesc[dataItem.riskcode] === "High"
                           ? "text-red-900 dark:text-red-400"
-                          : ristCodeVsDesc[dataItem.riskcode] === "Medium"
+                          : riskCodeVsDesc[dataItem.riskcode] === "Medium"
                             ? "text-yellow-900 dark:text-yellow-400"
-                            : ristCodeVsDesc[dataItem.riskcode] === "Low"
+                            : riskCodeVsDesc[dataItem.riskcode] === "Low"
                               ? "text-emerald-900 dark:text-emerald-400"
                               : "text-blue-900 dark:text-blue-400"
                         }`}
@@ -193,17 +198,17 @@ export default function Dashboard({ _data }) {
                     {dataItem.alert}
                     <Badge
                       variant={
-                        ristCodeVsDesc[dataItem.riskcode] === "Critical" ||
-                          ristCodeVsDesc[dataItem.riskcode] === "High"
+                        riskCodeVsDesc[dataItem.riskcode] === "Critical" ||
+                          riskCodeVsDesc[dataItem.riskcode] === "High"
                           ? "error"
-                          : ristCodeVsDesc[dataItem.riskcode] === "Medium"
+                          : riskCodeVsDesc[dataItem.riskcode] === "Medium"
                             ? "warning"
-                            : ristCodeVsDesc[dataItem.riskcode] === "Low"
+                            : riskCodeVsDesc[dataItem.riskcode] === "Low"
                               ? "success"
                               : "default"
                       }
                     >
-                      {ristCodeVsDesc[dataItem.riskcode]}
+                      {riskCodeVsDesc[dataItem.riskcode]}
                     </Badge>
                     <Badge variant="neutral">{dataItem.count}</Badge>
                   </span>
@@ -214,11 +219,11 @@ export default function Dashboard({ _data }) {
                     {[
                       {
                         label: "Risk:",
-                        value: ristCodeVsDesc[dataItem.riskcode],
+                        value: riskCodeVsDesc[dataItem.riskcode],
                       },
                       {
                         label: "Confidence:",
-                        value: ristCodeVsDesc[dataItem.confidence],
+                        value: riskCodeVsDesc[dataItem.confidence],
                       },
                     ].map((item, index) => (
                       <p
@@ -226,7 +231,7 @@ export default function Dashboard({ _data }) {
                         className="flex gap-2 mb-2
                       "
                       >
-                        <span className="text-sm text-gray-900 font-semibold w-32 flex-shrink-0 dark:text-gray-50">
+                        <span className={labelClass}>
                           {item.label}
                         </span>
                         <Badge variant={getBadgeVariant(item.value)}>
@@ -243,7 +248,7 @@ export default function Dashboard({ _data }) {
                       { label: "Plugin Id:", value: dataItem.pluginid },
                     ].map((item, index) => (
                       <p key={index} className="flex gap-2 mb-2">
-                        <span className="text-sm text-gray-900 font-semibold w-32 flex-shrink-0 dark:text-gray-50">
+                        <span className={labelClass}>
                           {item.label}
                         </span>
                         <span>{item.value}</span>
@@ -262,7 +267,7 @@ export default function Dashboard({ _data }) {
                       },
                     ].map((item, index) => (
                       <p key={index} className="flex gap-2 mb-2">
-                        <span className="text-sm text-gray-900 font-semibold w-32 flex-shrink-0 dark:text-gray-50">
+                        <span className={labelClass}>
                           {item.label}
                         </span>
                         <div className="flex-grow">{item.value}</div>
@@ -271,7 +276,7 @@ export default function Dashboard({ _data }) {
 
                     {/* Reference List */}
                     <div className="flex gap-2 mt-2">
-                      <span className="text-sm text-gray-900 font-semibold w-32 flex-shrink-0 dark:text-gray-50">
+                      <span className={labelClass}>
                         Reference:
                       </span>
                       <ul className="flex-grow list-disc pl-5">
@@ -305,7 +310,7 @@ export default function Dashboard({ _data }) {
                               key={index}
                               className="flex mt-1 dark:text-gray-400"
                             >
-                              <span className="text-sm text-gray-900 font-semibold w-32 flex-shrink-0 dark:text-gray-50">
+                              <span className={labelClass}>
                                 {item.label}
                               </span>
                               <span>{item.value}</span>
