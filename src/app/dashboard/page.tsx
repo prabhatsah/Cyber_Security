@@ -1,12 +1,18 @@
-"use client";
-
 import Dashboard from "@/app/dashboard/components/Dashboard";
 import { RenderAppBreadcrumb } from "@/components/app-breadcrumb";
-import setBreadcrumb from "@/lib/setBreadcrumb";
-import { getSocket } from '@/utils/webSocketComponent';
-import { useEffect } from "react";
+import { ScanNotificationDataModified, ScanNotificationInDatabase } from "@/components/type";
+import { getLoggedInUserProfile } from "@/ikon/utils/api/loginService";
+import { fetchData } from "@/utils/api";
 
-export default function Home() {
+const fetchScanNotificationDetailsOnLogin = async () => {
+  const userId = (await getLoggedInUserProfile()).USER_ID;
+
+  const scanNotificationDataOnLogin = await fetchData("scandetails", "scan_id", [{ column: "user_id", value: userId }]);
+
+  return scanNotificationDataOnLogin;
+}
+
+export default async function Home() {
   // useEffect(() => {
   //   const socket = getSocket();
   //   console.log('inside first useEffect')
@@ -27,14 +33,30 @@ export default function Home() {
   //   };
   // }, []);
 
-  return <>
-    <RenderAppBreadcrumb
-      breadcrumb={{
-        level: 0,
-        title: "Dashboard",
-        href: "/dashboard",
-      }}
-    />
-    <Dashboard />
-  </>;
+  const scanNotificationDataOnLogin: ScanNotificationInDatabase[] = await fetchScanNotificationDetailsOnLogin() ? (await fetchScanNotificationDetailsOnLogin()).data : [];
+
+  const scanNotificationDataOnLoginFormatted: ScanNotificationDataModified[] = scanNotificationDataOnLogin.map(eachScanNotificationData => ({
+    scanId: eachScanNotificationData.scan_id,
+    tool: eachScanNotificationData.tool,
+    target: eachScanNotificationData.target,
+    startTime: eachScanNotificationData.start_time,
+    endTime: eachScanNotificationData.end_time ?? "",
+    status: eachScanNotificationData.status,
+    pentestId: eachScanNotificationData.pentest_id ?? "",
+  }));
+
+  console.log(scanNotificationDataOnLoginFormatted);
+
+  return (
+    <>
+      <RenderAppBreadcrumb
+        breadcrumb={{
+          level: 0,
+          title: "Dashboard",
+          href: "/dashboard",
+        }}
+      />
+      <Dashboard />
+    </>
+  );
 }
