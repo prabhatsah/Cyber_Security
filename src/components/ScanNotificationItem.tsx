@@ -14,7 +14,8 @@ const statusColor = {
 }
 const toolNameMap = {
     "theHarvester": "Public Information",
-    "zap": "Web Scanning",
+    "zapSpider": "Web and API Security",
+    "zapActiveScan": "Web and API Security",
     "virusTotal": "OSINT and Threat Intelligence"
 }
 

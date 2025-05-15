@@ -1,5 +1,5 @@
 "use client";
-import { Bell, Sun, Moon, ChevronsUpDown, ScanLine } from "lucide-react";
+import { Bell, Sun, Moon, ChevronsUpDown, ScanLine, Info } from "lucide-react";
 import GenericBreadcrumb from "./GenericBreadcrumb";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
@@ -109,16 +109,21 @@ export default function Navbar() {
               <DropdownMenuLabel>Recent Scan History</DropdownMenuLabel>
 
               <DropdownMenuSeparator />
-              <DropdownMenuGroup className="p-4 flex flex-col gap-5 max-h-80 overflow-auto">
-
-                {
-                  scanNotificationDataWithPentestId.map((eachPentestScanNotificationData) =>
-                    (<ScanNotificationItemPentest key={eachPentestScanNotificationData.pentestId} pentestScanData={eachPentestScanNotificationData} />))
-                }
-                {
-                  scanNotificationDataWithoutPentestId.map(eachScanNotificationData => <ScanNotificationItem key={eachScanNotificationData.scanId} scanData={eachScanNotificationData} />)
-                }
-              </DropdownMenuGroup>
+              {!scanNotificationDataWithPentestId.length && !scanNotificationDataWithoutPentestId.length ?
+                <DropdownMenuGroup className="p-4 flex flex-col items-center gap-2 max-h-80 overflow-auto">
+                  <Info className="h-5 w-5" />
+                  <small>No Running Scans!</small>
+                </DropdownMenuGroup> :
+                (<DropdownMenuGroup className="p-4 flex flex-col gap-5 max-h-80 overflow-auto">
+                  {
+                    scanNotificationDataWithPentestId.map((eachPentestScanNotificationData) =>
+                      (<ScanNotificationItemPentest key={eachPentestScanNotificationData.pentestId} pentestScanData={eachPentestScanNotificationData} />))
+                  }
+                  {
+                    scanNotificationDataWithoutPentestId.map(eachScanNotificationData => <ScanNotificationItem key={eachScanNotificationData.scanId} scanData={eachScanNotificationData} />)
+                  }
+                </DropdownMenuGroup>)
+              }
             </DropdownMenuContent>
           </DropdownMenu>
           <button

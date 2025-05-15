@@ -22,7 +22,7 @@ export function ScanNotificationProvider({ children }: { children: ReactNode }) 
     const scanNotificationDataWithoutPentestId: ScanNotificationDataModified[] = [];
 
     scanNotificationData.forEach(eachScanNotificationData => {
-        if (eachScanNotificationData.pentestId !== null && eachScanNotificationData.pentestId.trim().length > 0) {
+        if (eachScanNotificationData.pentestId && eachScanNotificationData.pentestId.trim().length > 0) {
             !pentestIdWiseScanDetailsObj[eachScanNotificationData.pentestId] ? pentestIdWiseScanDetailsObj[eachScanNotificationData.pentestId] = [] : undefined;
             pentestIdWiseScanDetailsObj[eachScanNotificationData.pentestId].push(eachScanNotificationData);
         } else {
@@ -34,21 +34,23 @@ export function ScanNotificationProvider({ children }: { children: ReactNode }) 
     const scanNotificationDataWithPentestId: ScanNotificationDataWithGroupedPentestId[] = [];
     for (const eachPentestId in pentestIdWiseScanDetailsObj) {
         const eachPentestDetails = pentestIdWiseScanDetailsObj[eachPentestId];
-        const subScanDetails: PentestEachSubScan[] = [];
+        const latestToolMap = new Map<string, PentestEachSubScan>();
         eachPentestDetails.forEach(eachSubScanDetails => {
-            subScanDetails.push({
-                tool: eachSubScanDetails.tool,
-                endTime: eachSubScanDetails.endTime,
-                startTime: eachSubScanDetails.startTime,
-                status: eachSubScanDetails.status,
-                scanId: eachSubScanDetails.scanId,
-            })
+            const existing = latestToolMap.get(eachSubScanDetails.tool);
+            if (!existing || new Date(eachSubScanDetails.startTime).getTime() > new Date(existing.startTime).getTime()) {
+                latestToolMap.set(eachSubScanDetails.tool, {
+                    tool: eachSubScanDetails.tool,
+                    endTime: eachSubScanDetails.endTime,
+                    startTime: eachSubScanDetails.startTime,
+                    status: eachSubScanDetails.status,
+                    scanId: eachSubScanDetails.scanId,
+                });
+            }
         });
-
         scanNotificationDataWithPentestId.push({
             pentestId: eachPentestId,
             target: eachPentestDetails[0].target,
-            subScanDetails: subScanDetails,
+            subScanDetails: Array.from(latestToolMap.values()),
         });
     }
 
