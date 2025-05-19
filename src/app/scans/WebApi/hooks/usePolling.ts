@@ -163,7 +163,7 @@ export const usePolling = (
           // }
 
           const data = report.report.site.filter(
-            (item) => item["@name"] === query
+            (item) => item["@name"] === query.replace(/\/+$/, "")
           );
 
           onComplete(() => data[0]);
