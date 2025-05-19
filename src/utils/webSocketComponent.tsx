@@ -38,6 +38,7 @@ const ScanStatus = () => {
         (await fetchReqScanNotificationDetails(data.scan_id)).data[0] : {};
 
       const completedScanDataModified: ScanNotificationDataModified = {
+        pentestId: completedScanDataFromDB.pentest_id ?? "",
         scanId: completedScanDataFromDB.scan_id,
         tool: completedScanDataFromDB.tool,
         target: completedScanDataFromDB.target,
