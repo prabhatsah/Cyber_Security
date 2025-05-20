@@ -33,8 +33,9 @@ export interface PenTestModified {
   basicDetails: BasicDetails;
   scanData: {
     amass?: string;
-    whatweb?: any;
-    nmap?: any;
+    whatweb?: string;
+    nmap?: string;
+    theHarvester?: string;
   };
   lastUpdated: string;
 }
@@ -48,8 +49,9 @@ export interface PenTestDefault {
     basicDetails: BasicDetails;
     scandata?: {
       amass?: string;
-      whatweb?: any;
-      nmap?: any;
+      whatweb?: string;
+      nmap?: string;
+      theHarvester?: string;
     };
   };
   lastscanon: string;

@@ -30,7 +30,7 @@ const fetchScanNotificationDetailsOnLogin = async () => {
 export default function Navbar() {
   const [darkMode, setDarkMode] = useState(true);
   const [profileData, setProfileData] = useState<Record<string, any>>();
-  const { scanNotificationData, setScanNotificationData, scanNotificationDataWithoutPentestId, scanNotificationDataWithPentestId } = useScanNotification();
+  const { setScanNotificationData, scanNotificationDataWithoutPentestId, scanNotificationDataWithPentestId } = useScanNotification();
 
   async function logInData() {
     try {
