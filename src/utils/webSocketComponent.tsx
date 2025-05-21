@@ -38,6 +38,7 @@ const ScanStatus = () => {
         (await fetchReqScanNotificationDetails(data.scan_id)).data[0] : {};
 
       const completedScanDataModified: ScanNotificationDataModified = {
+        pentestId: completedScanDataFromDB.pentest_id ?? "",
         scanId: completedScanDataFromDB.scan_id,
         tool: completedScanDataFromDB.tool,
         target: completedScanDataFromDB.target,
@@ -46,11 +47,29 @@ const ScanStatus = () => {
         status: completedScanDataFromDB.status
       }
 
-      const previousScannedDetails = JSON.parse(localStorage.getItem("scanData") ?? "") ?? [];
-      previousScannedDetails.push(completedScanDataModified);
+      const previousScannedDetails: ScanNotificationDataModified[] = JSON.parse(localStorage.getItem("scanData") ?? "") ?? [];
+      previousScannedDetails.map((eachScan) => {
+        if (eachScan.scanId === completedScanDataFromDB.scan_id) {
+          return {
+            ...eachScan,
+            endTime: completedScanDataFromDB.end_time ?? "",
+          };
+        }
+        return eachScan;
+      });
 
       localStorage.setItem("scanData", JSON.stringify(previousScannedDetails));
-      setScanNotificationData(previousScannedDetails);
+      setScanNotificationData((prevScanNotificationData) => {
+        return prevScanNotificationData.map((eachScan) => {
+          if (eachScan.scanId === completedScanDataFromDB.scan_id) {
+            return {
+              ...eachScan,
+              endTime: completedScanDataFromDB.end_time ?? "",
+            };
+          }
+          return eachScan;
+        });
+      })
       setWsData(data);
     });
 

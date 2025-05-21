@@ -38,14 +38,14 @@ const columnArr: Record<string, string>[] = [
  --------------------------------------------------------------------------*/
 //create table
 
-import { tableData } from "@/app/scans/WebApi/data";
-import { Buffer } from "buffer";
 import { getLoggedInUserProfile } from "@/ikon/utils/api/loginService/index";
 
-const baseUrl =
+let baseUrl =
   process.env.NEXT_PUBLIC_BASE_PATH ||
   `http://localhost:${process.env.NEXT_PUBLIC_PORT || 3000}`;
-console.log(baseUrl);
+
+baseUrl += "/cyber-security/";
+console.log("Base URL: ", baseUrl);
 
 export async function createTable(
   tableName: string,
