@@ -26,7 +26,7 @@ export interface Reconnaissance {
   passiveReconnaissance?: Array<string> | Record<string, any> | null;
 }
 
-export interface Instance {
+export interface ZapAlertInstance {
   id: string;
   uri: string;
   method: string;
@@ -35,9 +35,10 @@ export interface Instance {
   evidence: string;
 }
 
-export interface Alert {
+export interface ZapAlert {
   pluginid: string;
   alert: string;
+  alertRef: string;
   riskcode: string;
   confidence: string;
   count: string;
@@ -46,7 +47,15 @@ export interface Alert {
   desc: string;
   solution: string;
   reference: string;
-  instances: Instance[];
+  instances: ZapAlertInstance[];
+}
+
+export interface ZapData {
+  "@name": string;
+  "@host": string;
+  "@port": string;
+  "@ssl": string;
+  alerts: ZapAlert[];
 }
 
 export interface PenTestModified {
@@ -59,13 +68,7 @@ export interface PenTestModified {
     whatweb?: string;
     nmap?: string;
     theHarvester?: string;
-    zap?: {
-      "@name": string;
-      "@host": string;
-      "@port": string;
-      "@ssl": string;
-      alerts: Alert[];
-    };
+    zap?: ZapData;
   };
   lastUpdated: string;
 }
