@@ -32,7 +32,8 @@ export const BasicInfoWidget: React.FC<BasicInfoWidgetProps> = ({ items, useDefa
               key={item.name}
               className="px-0 py-3 lg:px-4 lg:py-2 lg:text-left group"
             >
-              <div className="border-l-2 border-l-white/70 pl-2 hover:border-l-blue-500 transition-colors">
+              {/* <div className="border-l-2 border-l-white/70 pl-2 hover:border-l-blue-500 transition-colors"> */}
+              <div className="border-l-2 border-l-white/70 pl-2 transition-colors">
                 <p
                   className="text-sm font-semibold text-widget-mainHeader truncate"
                   title={item.value}

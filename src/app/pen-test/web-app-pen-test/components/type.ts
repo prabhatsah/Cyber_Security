@@ -26,6 +26,29 @@ export interface Reconnaissance {
   passiveReconnaissance?: Array<string> | Record<string, any> | null;
 }
 
+export interface Instance {
+  id: string;
+  uri: string;
+  method: string;
+  param: string;
+  attack: string;
+  evidence: string;
+}
+
+export interface Alert {
+  pluginid: string;
+  alert: string;
+  riskcode: string;
+  confidence: string;
+  count: string;
+  cweid: string;
+  wascid: string;
+  desc: string;
+  solution: string;
+  reference: string;
+  instances: Instance[];
+}
+
 export interface PenTestModified {
   userId: string;
   pentestId: string;
@@ -36,6 +59,13 @@ export interface PenTestModified {
     whatweb?: string;
     nmap?: string;
     theHarvester?: string;
+    zap?: {
+      "@name": string;
+      "@host": string;
+      "@port": string;
+      "@ssl": string;
+      alerts: Alert[];
+    };
   };
   lastUpdated: string;
 }
