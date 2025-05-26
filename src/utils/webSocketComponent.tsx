@@ -5,6 +5,19 @@ import { getLoggedInUserProfile } from "@/ikon/utils/api/loginService";
 import { fetchData } from "./api";
 import { ScanNotificationDataModified, ScanNotificationInDatabase } from "@/components/type";
 import { useScanNotification } from "@/contexts/ScanNotificationContext";
+import { toast } from "@/lib/toast";
+
+
+const toolNameMap = {
+  "nmap": "Network Mapping",
+  "whatweb": "Technology Discovery",
+  "amass": "SubDomain Enumeration",
+  "zap": "Vulnerability Scanning",
+  "zapSpider": "Web Crawling",
+  "zapActiveScan": "Vulnerability Scanning",
+  "theHarvester": "Information Gathering",
+  "virusTotal": "OSINT and Threat Intelligence"
+}
 
 const fetchReqScanNotificationDetails = async (scanId: string) => {
   const reqScanNotificationData = await fetchData("scandetails", "scan_id", [{ column: "scan_id", value: scanId }]);
@@ -37,16 +50,6 @@ const ScanStatus = () => {
       const completedScanDataFromDB: ScanNotificationInDatabase = await fetchReqScanNotificationDetails(data.scan_id) ?
         (await fetchReqScanNotificationDetails(data.scan_id)).data[0] : {};
 
-      const completedScanDataModified: ScanNotificationDataModified = {
-        pentestId: completedScanDataFromDB.pentest_id ?? "",
-        scanId: completedScanDataFromDB.scan_id,
-        tool: completedScanDataFromDB.tool,
-        target: completedScanDataFromDB.target,
-        startTime: completedScanDataFromDB.start_time,
-        endTime: completedScanDataFromDB.end_time ?? "",
-        status: completedScanDataFromDB.status
-      }
-
       const previousScannedDetails: ScanNotificationDataModified[] = JSON.parse(localStorage.getItem("scanData") ?? "") ?? [];
       previousScannedDetails.map((eachScan) => {
         if (eachScan.scanId === completedScanDataFromDB.scan_id) {
@@ -69,8 +72,11 @@ const ScanStatus = () => {
           }
           return eachScan;
         });
-      })
+      });
       setWsData(data);
+
+      const toastMsg = toolNameMap[completedScanDataFromDB.tool as keyof typeof toolNameMap] + " Completed!";
+      toast.push(toastMsg, "success");
     });
 
     return () => {

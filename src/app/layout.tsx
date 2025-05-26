@@ -10,6 +10,7 @@ import ClientLayout from "@/components/ClientLayout";
 // import { BreadcrumbProvider } from "@/contexts/BreadcrumbContext";
 import { BreadcrumbProvider } from "@/components/app-breadcrumb/BreadcrumbProvider";
 import { ScanNotificationProvider } from "@/contexts/ScanNotificationContext";
+import ToastContainer from "@/components/ToastContainer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -32,6 +33,7 @@ export default function RootLayout({
             <Providers>
               <ScanNotificationProvider>
                 <ClientLayout>{children}</ClientLayout>
+                <ToastContainer />
               </ScanNotificationProvider>
             </Providers>
           </BreadcrumbProvider>
