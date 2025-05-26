@@ -43,8 +43,8 @@ export default function Navbar() {
         scanId: eachScanNotificationData.scan_id,
         tool: eachScanNotificationData.tool,
         target: eachScanNotificationData.target,
-        startTime: eachScanNotificationData.start_time,
-        endTime: eachScanNotificationData.end_time ?? "",
+        startTime: eachScanNotificationData.start_time + "Z",
+        endTime: eachScanNotificationData.end_time ? eachScanNotificationData.end_time + "Z" : "",
         status: eachScanNotificationData.status,
         pentestId: eachScanNotificationData.pentest_id ?? "",
       }));
