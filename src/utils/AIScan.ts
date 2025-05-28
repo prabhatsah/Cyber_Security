@@ -154,7 +154,7 @@ const handleActiveReconClick = async (
     const sources: { key: keyof typeof scanData; source: string }[] = [
         { key: "amass", source: "amass" },
         { key: "nmap", source: "nmap" },
-        // { key: "whatweb", source: "whatweb" },
+        { key: "whatweb", source: "whatweb" },
         // { key: "theHarvester", source: "harvester" },
     ];
 
