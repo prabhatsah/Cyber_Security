@@ -155,7 +155,7 @@ const handleActiveReconClick = async (
         { key: "amass", source: "amass" },
         { key: "nmap", source: "nmap" },
         { key: "whatweb", source: "whatweb" },
-        // { key: "theHarvester", source: "harvester" },
+        { key: "theHarvester", source: "harvester" },
     ];
 
     // Create fetch promises for all scans
