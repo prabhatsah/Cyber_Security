@@ -8,6 +8,7 @@ export interface BasicDetails {
   startDate: string;
   endDate: string;
   timeZone: string;
+  progress: number;
   priorityLevel: string;
   securityLevel?: string | null;
   createdOn: string;
@@ -87,6 +88,23 @@ export interface PenTestDefault {
       theHarvester?: string;
     };
   };
+  lastscanon: string;
+}
+
+export interface PenTestWithoutScanModified {
+  userId: string;
+  pentestId: string;
+  pentestType: string;
+  basicDetails: BasicDetails;
+  lastUpdated: string;
+}
+
+export interface PenTestWithoutScanDefault {
+  id: number;
+  userid: string;
+  pentestid: string;
+  type: string;
+  basicdetails: BasicDetails;
   lastscanon: string;
 }
 

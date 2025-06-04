@@ -4,8 +4,8 @@ import { getLoggedInUserProfile } from "@/ikon/utils/api/loginService";
 import { fetchData } from "@/utils/api";
 import AddPentestBtnWithFormModal from "./components/AddPentestBtnWithFormModal";
 import NoSavedPentestTemplate from "./components/NoSavedPentestTemplate";
-import { PenTestDefault, PenTestModified } from "./components/type";
-import ScanStatus from "./[pentestIdName]/reconnaissance/components/ScanStatus";
+import { PenTestWithoutScanDefault, PenTestWithoutScanModified } from "./components/type";
+
 
 async function fetchLoggedInUserPentestData() {
     const userId = (await getLoggedInUserProfile()).USER_ID;
@@ -14,30 +14,24 @@ async function fetchLoggedInUserPentestData() {
     console.log(userId);
 
 
-    const fetchedData = await fetchData("penetration_testing_history", "id");
+    const fetchedData = await fetchData('penetration_testing_history', 'id', null, null, "pentestid, data->'basicDetails' as basicdetails, userid");
 
     return fetchedData;
 }
 
 export default async function WebAppPenetrationTesting() {
 
-    // const scan_details = await fetchData("scandetails", "scan_id", [{ column: "user_id", value: "38384a69-e2aa-42ad-bc67-47502d563148" }]);
-
-    // console.log("scan detalis ----------------");
-    // console.log(scan_details);
-
-    const loggedInUserPentestData: PenTestDefault[] = await fetchLoggedInUserPentestData() ? (await fetchLoggedInUserPentestData()).data : [];
-    const loggedInUserPentestDataFormatted: PenTestModified[] = loggedInUserPentestData.map((eachPenTestData: PenTestDefault) => {
+    const loggedInUserPentestData: PenTestWithoutScanDefault[] = await fetchLoggedInUserPentestData() ? (await fetchLoggedInUserPentestData()).data : [];
+    const loggedInUserPentestDataFormatted: PenTestWithoutScanModified[] = loggedInUserPentestData.map((eachPenTestData: PenTestWithoutScanDefault) => {
         return {
             userId: eachPenTestData.userid,
             pentestId: eachPenTestData.pentestid,
             pentestType: eachPenTestData.type,
-            basicDetails: { ...eachPenTestData.data.basicDetails },
-            scanData: eachPenTestData.data.scandata ? { ...eachPenTestData.data.scandata } : {},
+            basicDetails: { ...eachPenTestData.basicdetails },
             lastUpdated: eachPenTestData.lastscanon,
         }
     });
-    console.log("Logged In User Pentest Data: ", loggedInUserPentestData);
+    console.log("Pentest Data With New Func: ", loggedInUserPentestDataFormatted);
 
     return (
         <>

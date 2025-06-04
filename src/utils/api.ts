@@ -377,13 +377,20 @@ export async function fetchData(
         keyPath: string[];
         value: string | number;
       }[]
-    | null
+    | null,
+  selectCondition?: string | null
 ) {
   let allColumnFilter: any = [];
   columnFilter?.forEach((e) => {
     allColumnFilter.push(e);
   });
-  const query = { tableName, orderByColumn, allColumnFilter, jsonFilter };
+  const query = {
+    tableName,
+    orderByColumn,
+    allColumnFilter,
+    jsonFilter,
+    selectCondition,
+  };
   console.log("Sending query to backend:", query);
 
   const res = await fetch(`${baseUrl}/api/dbApi`, {
@@ -478,7 +485,8 @@ export async function fetchScannedData(
       }[]
     | null,
   offset?: number | null,
-  limit?: number | null
+  limit?: number | null,
+  selectCondition?: string | null
 ) {
   const userId = (await getLoggedInUserProfile()).USER_ID;
   columnFilter = allInstances ? null : columnFilter;
@@ -490,6 +498,7 @@ export async function fetchScannedData(
     orderByColumn,
     allColumnFilter,
     jsonFilter,
+    selectCondition,
     offset,
     limit,
   };

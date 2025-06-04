@@ -81,7 +81,8 @@ export async function POST(req: Request) {
         query.offset,
         query.limit,
         query.allColumnFilter,
-        query.jsonFilter
+        query.jsonFilter,
+        query.selectCondition
       );
     });
 
@@ -121,7 +122,8 @@ async function fetchPaginatedData(
   columnFilters?: { column: string; value: string | number }[] | null,
   jsonFilters?:
     | { column: string; keyPath: string[]; value: string | number }[]
-    | null
+    | null,
+  selectCondition?: string | null
 ) {
   let hasMore = true;
   let jsonParts: string[] = [];
@@ -131,7 +133,7 @@ async function fetchPaginatedData(
 
   while (hasMore) {
     let whereClauses: string[] = [];
-    let selectClause = "*";
+    let selectClause = selectCondition ? selectCondition : "*";
     let fromClause = tableName;
     if (columnFilters && columnFilters.length > 0) {
       columnFilters.forEach((columnFilter) => {
