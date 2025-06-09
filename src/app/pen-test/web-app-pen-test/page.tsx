@@ -4,7 +4,7 @@ import { getLoggedInUserProfile } from "@/ikon/utils/api/loginService";
 import { fetchData } from "@/utils/api";
 import AddPentestBtnWithFormModal from "./components/AddPentestBtnWithFormModal";
 import NoSavedPentestTemplate from "./components/NoSavedPentestTemplate";
-import { PenTestWithoutScanDefault, PenTestWithoutScanModified } from "./components/type";
+import { PenTestDefault, PenTestWithoutScanDefault, PenTestWithoutScanModified } from "./components/type";
 
 
 async function fetchLoggedInUserPentestData() {
@@ -15,6 +15,19 @@ async function fetchLoggedInUserPentestData() {
 
 
     const fetchedData = await fetchData('penetration_testing_history', 'id', null, null, "pentestid, data->'basicDetails' as basicdetails, userid");
+
+    return fetchedData;
+}
+
+
+async function fetchLoggedInUserPentestDataOld() {
+    const userId = (await getLoggedInUserProfile()).USER_ID;
+
+    console.log("user id ---------")
+    console.log(userId);
+
+
+    const fetchedData = await fetchData('penetration_testing_history', 'id', null, null);
 
     return fetchedData;
 }
@@ -32,6 +45,9 @@ export default async function WebAppPenetrationTesting() {
         }
     });
     console.log("Pentest Data With New Func: ", loggedInUserPentestDataFormatted);
+
+    const loggedInUserPentestDataOld: PenTestDefault[] = await fetchLoggedInUserPentestDataOld() ? (await fetchLoggedInUserPentestDataOld()).data : [];
+    console.log("Pentest Data With Old Func: ", loggedInUserPentestDataOld);
 
     return (
         <>

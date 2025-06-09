@@ -48,6 +48,7 @@ export interface ZapAlert {
   desc: string;
   solution: string;
   reference: string;
+  owasp_title: string;
   instances: ZapAlertInstance[];
 }
 
