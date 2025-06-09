@@ -46,9 +46,6 @@ export default async function WebAppPenetrationTesting() {
     });
     console.log("Pentest Data With New Func: ", loggedInUserPentestDataFormatted);
 
-    const loggedInUserPentestDataOld: PenTestDefault[] = await fetchLoggedInUserPentestDataOld() ? (await fetchLoggedInUserPentestDataOld()).data : [];
-    console.log("Pentest Data With Old Func: ", loggedInUserPentestDataOld);
-
     return (
         <>
             <RenderAppBreadcrumb
