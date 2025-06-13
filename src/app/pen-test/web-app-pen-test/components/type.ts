@@ -52,6 +52,90 @@ export interface ZapAlert {
   instances: ZapAlertInstance[];
 }
 
+export interface NmapAIReport {
+  host: string;
+  latency: string;
+  scan_date: string;
+  ip_address: string;
+  open_ports: Array<{
+    port: string;
+    state: string;
+    service: string;
+    version: string;
+    protocol: string;
+  }>;
+  host_status: string;
+  port_summary: {
+    open_ports_count: number;
+    total_ports_scanned: number;
+    filtered_ports_count: number;
+  };
+  scan_duration: string;
+  firewall_status: string | null;
+  recommendations: {
+    "HTTP Security": string;
+    "Service Ports": string;
+    "Operating System": string;
+    "Web Server (Nginx)": string;
+  };
+  operating_system: {
+    cpe: string | null;
+    name: string | null;
+    details: string | null;
+  };
+  service_insights: Array<{
+    description: string;
+    port_service: string;
+  }>;
+  software_versions: {
+    http: string;
+    "ssl/https": string;
+  };
+}
+
+export interface AmassAIReport {
+  domains: Array<Array<string>>;
+  mx_records: Array<Array<string>>;
+  cname_chains: Array<Array<string>>;
+  domains_info: string;
+  name_servers: Array<Array<string>>;
+  infrastructure: Array<Array<string>>;
+  mx_records_info: string;
+  cname_chains_info: string;
+  executive_summary: {
+    top_asns: Array<Array<string>>;
+    unique_ips_count: number;
+    unique_asns_count: number;
+    unique_fqdns_count: number;
+  };
+  name_servers_info: string;
+  infrastructure_info: string;
+  executive_summary_info: string;
+}
+
+export interface WhatwebAIReport {
+  country: string;
+  ip_address: string;
+  uses_https: string;
+  scanned_url: string;
+  status_code: string;
+  country_code: string;
+  scan_date_gmt: string;
+  web_server_os: string;
+  website_title: string;
+  status_message: string;
+  web_server_name: string;
+  content_encoding: Array<string>;
+  operating_system: string;
+  last_modified_gmt: string;
+  security_protocol: string;
+  web_server_version: string;
+  backend_technologies: Array<string>;
+  frontend_technologies: Array<string>;
+  security_protocol_version: string;
+  security_protocol_standard: string;
+}
+
 export interface ZapData {
   "@name": string;
   "@host": string;
@@ -72,6 +156,11 @@ export interface PenTestModified {
     theHarvester?: string;
     zap?: ZapData;
   };
+  aiReport: {
+    nmap?: NmapAIReport;
+    amass?: AmassAIReport;
+    whatweb?: WhatwebAIReport;
+  };
   lastUpdated: string;
 }
 
@@ -88,6 +177,11 @@ export interface PenTestDefault {
       nmap?: string;
       theHarvester?: string;
     };
+  };
+  ai_report?: {
+    nmap?: NmapAIReport;
+    amass?: AmassAIReport;
+    whatweb?: WhatwebAIReport;
   };
   lastscanon: string;
 }
