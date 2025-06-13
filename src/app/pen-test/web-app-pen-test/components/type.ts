@@ -116,7 +116,7 @@ export interface AmassAIReport {
 export interface WhatwebAIReport {
   country: string;
   ip_address: string;
-  uses_https: string;
+  uses_https: boolean;
   scanned_url: string;
   status_code: string;
   country_code: string;
@@ -162,6 +162,7 @@ export interface PenTestModified {
     whatweb?: WhatwebAIReport;
   };
   lastUpdated: string;
+  scanDataLastUpdatation: boolean;
 }
 
 export interface PenTestDefault {
@@ -177,6 +178,7 @@ export interface PenTestDefault {
       nmap?: string;
       theHarvester?: string;
     };
+    isDataUpdated?: boolean;
   };
   ai_report?: {
     nmap?: NmapAIReport;
