@@ -41,6 +41,8 @@ export interface ZapAlert {
   alert: string;
   alertRef: string;
   riskcode: string;
+  context: string;
+  analysis: string;
   confidence: string;
   count: string;
   cweid: string;
