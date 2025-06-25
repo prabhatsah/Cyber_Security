@@ -4,6 +4,7 @@ import * as fs from "fs";
 import path from "path";
 import * as os from "os";
 import { randomUUID } from "crypto";
+import { IncomingForm } from "formidable";
 
 const tableLocks = new Map<string, Promise<void>>();
 
@@ -91,6 +92,21 @@ export async function POST(req: Request) {
       success: true,
       fullData: result,
       data: fetchedResult ? JSON.parse(fetchedResult) : null,
+    });
+  } else if (instruction === "imageUpload") {
+    console.log(query.pentestid, query.cweId, query.imageBase64);
+    const fetchedResult = await insertProofScreenshot(
+      ssh,
+      query.imageBase64,
+      query.pentestid,
+      query.cweId
+    );
+
+    ssh.dispose();
+
+    return NextResponse.json({
+      success: true,
+      data: fetchedResult ?? null,
     });
   } else {
     result = await ssh.execCommand(
@@ -186,4 +202,24 @@ async function fetchPaginatedData(
   }
 
   return `[${jsonParts.join(",")}]`;
+}
+
+async function insertProofScreenshot(
+  ssh: NodeSSH,
+  imageBase64: string,
+  pentestid: string,
+  cweId: string
+) {
+  const safeBase64 = imageBase64.replace(/'/g, "''");
+
+  const query = `
+    INSERT INTO vulnerabilities_images (pentestid, cweid, image)
+    VALUES ('${pentestid}', '${cweId}', decode('${safeBase64}', 'base64'));
+  `;
+
+  const result = await ssh.execCommand(
+    `PGPASSWORD="postgres" psql -h localhost -U postgres -p 5436 -d cyber_security -c "${query}"`
+  );
+
+  return result;
 }
