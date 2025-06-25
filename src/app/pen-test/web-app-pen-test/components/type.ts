@@ -41,6 +41,8 @@ export interface ZapAlert {
   alert: string;
   alertRef: string;
   riskcode: string;
+  context: string;
+  analysis: string;
   confidence: string;
   count: string;
   cweid: string;
@@ -136,6 +138,12 @@ export interface WhatwebAIReport {
   security_protocol_standard: string;
 }
 
+export interface AIReportData {
+  nmap?: NmapAIReport;
+  amass?: AmassAIReport;
+  whatweb?: WhatwebAIReport;
+}
+
 export interface ZapData {
   "@name": string;
   "@host": string;
@@ -156,11 +164,7 @@ export interface PenTestModified {
     theHarvester?: string;
     zap?: ZapData;
   };
-  aiReport: {
-    nmap?: NmapAIReport;
-    amass?: AmassAIReport;
-    whatweb?: WhatwebAIReport;
-  };
+  aiReport: AIReportData;
   lastUpdated: string;
   scanDataLastUpdatation: boolean;
 }
