@@ -512,3 +512,31 @@ export async function fetchScannedData(
 
   return res.json();
 }
+
+export async function uploadImage(
+  cweId: string,
+  pentestId: string,
+  files: File[]
+) {
+  if (!files) return;
+
+  for (const file of Array.from(files)) {
+    const arrayBuffer = await file.arrayBuffer();
+    const base64 = btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)));
+    let query = {
+      pentestid: pentestId,
+      cweId: cweId,
+      imageBase64: base64,
+    };
+    console.log(query);
+    const response = await fetch(`${baseUrl}/api/dbApi`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ query, instruction: "imageUpload" }),
+    });
+
+    const data = await response.json();
+    console.log(`${file.name} uploaded`, data);
+    return data;
+  }
+}
