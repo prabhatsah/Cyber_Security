@@ -99,7 +99,7 @@ export default function Navbar() {
               >
                 <span className="sr-only">Running Scans</span>
                 <ScanLine className="h-6 w-6" aria-hidden="true" />
-                <span className="absolute top-0 right-0 block h-2 w-2 rounded-full bg-error transform translate-x-1/2 -translate-y-1/2"></span>
+                {/* <span className="absolute top-0 right-0 block h-2 w-2 rounded-full bg-error transform translate-x-1/2 -translate-y-1/2"></span> */}
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
@@ -126,14 +126,14 @@ export default function Navbar() {
               }
             </DropdownMenuContent>
           </DropdownMenu>
-          <button
+          {/* <button
             type="button"
             className="p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary relative"
           >
             <span className="sr-only">View notifications</span>
             <Bell className="h-6 w-6" aria-hidden="true" />
             <span className="absolute top-0 right-0 block h-2 w-2 rounded-full bg-error transform translate-x-1/2 -translate-y-1/2"></span>
-          </button>
+          </button> */}
 
           <div className="relative">
             <div className="flex items-center">
