@@ -1,39 +1,28 @@
 'use client';
 
+import { PenTestWithoutScanModified } from '@/app/pen-test/web-app-pen-test/components/type';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ProgressBar } from '@tremor/react';
 
 import { Globe, Shield, Box, Glasses, Code } from 'lucide-react';
 import { useState } from 'react';
 
-export default function SecurityAlertCard() {
+interface SecurityAlertCardProps {
+    pentestData: PenTestWithoutScanModified[];
+}
+
+const SecurityAlertCard: React.FC<SecurityAlertCardProps> = ({ pentestData }) => {
     const pentests = [
         {
-            website: 'example.com',
+            website: 'target',
             severity: 'critical',
-            type: 'external',
+            type: 'scope',
             methodology: 'black box',
             progress: 65,
             daysAgo: 1
         },
-        {
-            website: 'admin.company.net',
-            severity: 'medium',
-            type: 'internal',
-            methodology: 'grey box',
-            progress: 90,
-            daysAgo: 2
-        },
-        {
-            website: 'api.service.com',
-            severity: 'high',
-            type: 'external',
-            methodology: 'white box',
-            progress: 45,
-            daysAgo: 3
-        }
     ];
-
+    console.log(pentestData);
     const getSeverityColor = (severity: string) => {
         const colors = {
             low: 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300',
@@ -64,59 +53,71 @@ export default function SecurityAlertCard() {
             </CardHeader>
             <CardContent className="px-0 pt-0 ">
                 <div className="overflow-auto">
-                    {pentests.map((pentest, idx) => (
-                        <div
-                            key={idx}
-                            className="border-b  last:border-0 transition-colors"
-                        >
-                            <div className="space-y-3 mb-2">
-                                {/* Website and Severity */}
-                                <div className="flex items-center justify-between pt-2 first:pt-0">
-                                    <h4 className="font-medium">{pentest.website}</h4>
-                                    <span className={`rounded-full px-2 py-1 text-xs font-medium capitalize ${getSeverityColor(pentest.severity)}`}>
-                                        {pentest.severity}
-                                    </span>
-                                </div>
-
-                                {/* Type (External/Internal) */}
-                                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                                    {pentest.type === 'external' ? (
-                                        <>
-                                            <Globe className="h-4 w-4" />
-                                            <span>External Assessment</span>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <Shield className="h-4 w-4" />
-                                            <span>Internal Assessment</span>
-                                        </>
-                                    )}
-                                </div>
-
-                                {/* Methodology */}
-                                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                                    {getMethodologyIcon(pentest.methodology)}
-                                    <span className="capitalize">{pentest.methodology} Testing</span>
-                                </div>
-
-                                {/* Progress */}
-                                <div>
-                                    <div className="flex items-center justify-between text-sm mb-2">
-                                        <span className="text-muted-foreground">Progress</span>
-                                        <span className="font-medium">{pentest.progress}%</span>
-                                    </div>
-                                    <ProgressBar value={pentest.progress} className="h-2" />
-                                </div>
-
-                                {/* Created Date */}
-                                <div className="text-xs text-muted-foreground">
-                                    Created {pentest.daysAgo} {pentest.daysAgo === 1 ? 'day' : 'days'} ago
-                                </div>
-                            </div>
+                    {pentestData.length === 0 ? (
+                        <div className="text-center py-6 text-muted-foreground">
+                            No active penetration tests found.
                         </div>
-                    ))}
+                    ) : (
+                        // Looping through the object (as it's not an array)
+                        Object.keys(pentestData.basicDetails).map((key, idx) => {
+                            const pentest = pentestData.basicDetails[key];
+                            return (
+                                <div
+                                    key={idx}
+                                    className="border-b  last:border-0 transition-colors"
+                                >
+                                    <div className="space-y-3 mb-2">
+                                        {/* Website and Severity */}
+                                        <div className="flex items-center justify-between pt-2 first:pt-0">
+                                            <h4 className="font-medium">{pentest.target}</h4>
+                                            <span className={`rounded-full px-2 py-1 text-xs font-medium capitalize ${getSeverityColor(pentest.priorityLevel)}`}>
+                                                {pentest.priorityLevel}
+                                            </span>
+                                        </div>
+
+                                        {/* Type (External/Internal) */}
+                                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                            {pentest.scope === 'External' ? (
+                                                <>
+                                                    <Globe className="h-4 w-4" />
+                                                    <span>External Assessment</span>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <Shield className="h-4 w-4" />
+                                                    <span>Internal Assessment</span>
+                                                </>
+                                            )}
+                                        </div>
+
+                                        {/* Methodology */}
+                                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                            {getMethodologyIcon(pentest.testingType)}
+                                            <span className="capitalize">{pentest.testingType} Testing</span>
+                                        </div>
+
+                                        {/* Progress */}
+                                        <div>
+                                            <div className="flex items-center justify-between text-sm mb-2">
+                                                <span className="text-muted-foreground">Progress</span>
+                                                <span className="font-medium">{pentest.progress}%</span>
+                                            </div>
+                                            <ProgressBar value={pentest.progress} className="h-2" />
+                                        </div>
+
+                                        {/* Created Date */}
+                                        <div className="text-xs text-muted-foreground">
+                                            Created {new Date(pentest.createdOn).toLocaleString()}
+                                        </div>
+                                    </div>
+                                </div>
+                            );
+                        })
+                    )}
                 </div>
+
             </CardContent>
         </Card>
     );
 }
+export default SecurityAlertCard;
