@@ -6,22 +6,14 @@ import { ProgressBar } from '@tremor/react';
 
 import { Globe, Shield, Box, Glasses, Code } from 'lucide-react';
 import { parse, formatDistanceToNow } from 'date-fns'
+import { parse, formatDistanceToNow } from 'date-fns'
 
 interface SecurityAlertCardProps {
     pentestData: PenTestWithoutScanModified[];
 }
 
 const SecurityAlertCard: React.FC<SecurityAlertCardProps> = ({ pentestData }) => {
-    const pentests = [
-        {
-            website: 'target',
-            severity: 'critical',
-            type: 'scope',
-            methodology: 'black box',
-            progress: 65,
-            daysAgo: 1
-        },
-    ];
+
     console.log(pentestData);
     const getSeverityColor = (severity: string) => {
         const colors = {
@@ -67,11 +59,11 @@ const SecurityAlertCard: React.FC<SecurityAlertCardProps> = ({ pentestData }) =>
                                 >
                                     <div className="space-y-3 mb-2">
                                         {/* Website and Severity */}
-                                        <div className="flex items-center justify-between pt-2 first:pt-0">
+                                        <div className="flex items-center justify-between pt-2 ">
                                             <h4 className="font-medium">{pentest.target}</h4>
                                             <span
                                                 className={`rounded-full px-2 py-1 text-xs font-medium capitalize ${getSeverityColor(
-                                                    pentest.priorityLevel
+                                                    pentest.priorityLevel.toLowerCase()
                                                 )}`}
                                             >
                                                 {pentest.priorityLevel}
@@ -95,7 +87,7 @@ const SecurityAlertCard: React.FC<SecurityAlertCardProps> = ({ pentestData }) =>
 
                                         {/* Methodology */}
                                         <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                                            {getMethodologyIcon(pentest.testingType)}
+                                            {getMethodologyIcon(pentest.testingType.toLowerCase())}
                                             <span className="capitalize">{pentest.testingType} Testing</span>
                                         </div>
 

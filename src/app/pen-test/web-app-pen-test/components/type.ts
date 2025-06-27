@@ -52,6 +52,9 @@ export interface ZapAlert {
   reference: string;
   owasp_title: string;
   instances: ZapAlertInstance[];
+  "CVSS V3 Attack Vector": string;
+  "CVSS V3 Base": string;
+  "CVSS V3 Temporal": string;
 }
 
 export interface NmapAIReport {
@@ -207,6 +210,14 @@ export interface PenTestWithoutScanDefault {
   type: string;
   basicdetails: BasicDetails;
   lastscanon: string;
+}
+
+export interface VulnerabilityImage {
+  id: number;
+  cweid: string;
+  image: string;
+  pentestid: string;
+  uploaded_at: string;
 }
 
 // export interface PenTestModified {
