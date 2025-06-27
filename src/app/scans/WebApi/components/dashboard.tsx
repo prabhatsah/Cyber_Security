@@ -42,7 +42,7 @@ const getBadgeVariant = (value: string) => {
         : "default";
 };
 
-export default function Dashboard({ _data }: { _data: (Site & { scanned_at?: string }) }) {
+export default function Dashboard({ _data, zapAnalysis }: { _data: (Site & { scanned_at?: string }), zapAnalysis: any }) {
   const _severity = [
     {
       severity: "Critical",
@@ -72,6 +72,7 @@ export default function Dashboard({ _data }: { _data: (Site & { scanned_at?: str
   ];
 
   const _alertsCount = _data?.alerts?.length;
+  console.log("vul Ai data: ", zapAnalysis);
 
   if (_alertsCount) {
     for (let i = 0; i < _alertsCount; i++) {
@@ -323,7 +324,102 @@ export default function Dashboard({ _data }: { _data: (Site & { scanned_at?: str
                 </AccordionContent>
               </AccordionItem>
             ))}
+
+            <AccordionItem value="FFUF">
+              <AccordionTrigger>
+                FFUF
+              </AccordionTrigger>
+              <AccordionContent className="px-6">
+                <p>Data: FFUF</p>
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="SSLcheck">
+              <AccordionTrigger>
+                TLS/SSL Security Overview
+              </AccordionTrigger>
+              <AccordionContent className="px-6">
+                {zapAnalysis.ssl &&
+                  Object.entries(zapAnalysis.ssl).map(
+                    ([sectionName, sectionBody]) => {
+                      const body = sectionBody as Record<string, unknown>;
+                      return (
+                        <div key={sectionName} className="mb-6">
+                          <h5 className="text-sm font-semibold mb-2">{sectionName}</h5>
+
+                          <ul className="list-disc list-inside space-y-1">
+                            {Object.entries(body).map(
+                              ([key, val]: [string, unknown]) => (
+                                <li key={key}>
+                                  <span className="font-medium">{key}:</span>{" "}
+                                  {Array.isArray(val) ? (
+                                    <ul className="list-decimal list-inside ml-4 space-y-1">
+                                      {val.map((item, idx) => (
+                                        <li key={idx}>{String(item)}</li>
+                                      ))}
+                                    </ul>
+                                  ) : (
+                                    <span>{String(val)}</span>
+                                  )}
+                                </li>
+                              )
+                            )}
+                          </ul>
+                        </div>
+                      );
+                    }
+                  )
+                }
+
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="Header Poisoning Insights">
+              <AccordionTrigger>
+                Header Manipulation Analysis
+              </AccordionTrigger>
+              <AccordionContent className="px-6">
+                {zapAnalysis.headerPoisoning &&
+                  Object.entries(zapAnalysis.headerPoisoning).map(
+                    ([sectionName, sectionBody]) => {
+                      const body = sectionBody as Record<string, unknown>;
+                      return (
+                        <div key={sectionName} className="mb-6">
+                          {/* Section title */}
+                          <h5 className="text-sm font-semibold mb-2">{sectionName}</h5>
+
+                          {/* Section content */}
+                          <ul className="list-disc list-inside space-y-1">
+                            {Object.entries(body).map(
+                              ([key, val]: [string, unknown]) => (
+                                <li key={key}>
+                                  <span className="font-medium">{key}:</span>{" "}
+                                  {Array.isArray(val) ? (
+                                    /* Nested list for arrays */
+                                    <ul className="list-decimal list-inside ml-4 space-y-1">
+                                      {val.map((item, idx) => (
+                                        <li key={idx}>{String(item)}</li>
+                                      ))}
+                                    </ul>
+                                  ) : (
+                                    /* Plain string */
+                                    <span>{String(val)}</span>
+                                  )}
+                                </li>
+                              )
+                            )}
+                          </ul>
+                        </div>
+                      );
+                    }
+                  )
+                }
+              </AccordionContent>
+            </AccordionItem>
+
           </Accordion>
+
+
         </div>
       </section>
     </div>
