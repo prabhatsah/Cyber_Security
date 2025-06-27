@@ -347,7 +347,6 @@ export default function Dashboard({ _data, zapAnalysis }: { _data: (Site & { sca
                         <div key={sectionName} className="mb-6">
                           <h5 className="text-sm font-semibold mb-2">{sectionName}</h5>
 
-                          {/* Section content */}
                           <ul className="list-disc list-inside space-y-1">
                             {Object.entries(body).map(
                               ([key, val]: [string, unknown]) => (
