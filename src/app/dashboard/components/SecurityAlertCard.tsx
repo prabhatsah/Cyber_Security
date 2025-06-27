@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ProgressBar } from '@tremor/react';
 
 import { Globe, Shield, Box, Glasses, Code } from 'lucide-react';
-import { useState } from 'react';
+import { parse, formatDistanceToNow } from 'date-fns'
 
 interface SecurityAlertCardProps {
     pentestData: PenTestWithoutScanModified[];
@@ -58,26 +58,29 @@ const SecurityAlertCard: React.FC<SecurityAlertCardProps> = ({ pentestData }) =>
                             No active penetration tests found.
                         </div>
                     ) : (
-                        // Looping through the object (as it's not an array)
-                        Object.keys(pentestData.basicDetails).map((key, idx) => {
-                            const pentest = pentestData.basicDetails[key];
+                        pentestData.map((item, idx) => {
+                            const pentest = item.basicDetails;
                             return (
                                 <div
-                                    key={idx}
-                                    className="border-b  last:border-0 transition-colors"
+                                    key={item.pentestId ?? idx}
+                                    className="border-b last:border-0 transition-colors"
                                 >
                                     <div className="space-y-3 mb-2">
                                         {/* Website and Severity */}
                                         <div className="flex items-center justify-between pt-2 first:pt-0">
                                             <h4 className="font-medium">{pentest.target}</h4>
-                                            <span className={`rounded-full px-2 py-1 text-xs font-medium capitalize ${getSeverityColor(pentest.priorityLevel)}`}>
+                                            <span
+                                                className={`rounded-full px-2 py-1 text-xs font-medium capitalize ${getSeverityColor(
+                                                    pentest.priorityLevel
+                                                )}`}
+                                            >
                                                 {pentest.priorityLevel}
                                             </span>
                                         </div>
 
                                         {/* Type (External/Internal) */}
                                         <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                                            {pentest.scope === 'External' ? (
+                                            {pentest.scope === "External" ? (
                                                 <>
                                                     <Globe className="h-4 w-4" />
                                                     <span>External Assessment</span>
@@ -107,7 +110,12 @@ const SecurityAlertCard: React.FC<SecurityAlertCardProps> = ({ pentestData }) =>
 
                                         {/* Created Date */}
                                         <div className="text-xs text-muted-foreground">
-                                            Created {new Date(pentest.createdOn).toLocaleString()}
+                                            Created{' '}
+                                            {formatDistanceToNow(
+                                                // parse “2025-Jun-16 17:13:17” into a Date
+                                                parse(pentest.createdOn, 'yyyy-MMM-dd HH:mm:ss', new Date()),
+                                                { addSuffix: true }
+                                            )}
                                         </div>
                                     </div>
                                 </div>
@@ -115,6 +123,7 @@ const SecurityAlertCard: React.FC<SecurityAlertCardProps> = ({ pentestData }) =>
                         })
                     )}
                 </div>
+
 
             </CardContent>
         </Card>
