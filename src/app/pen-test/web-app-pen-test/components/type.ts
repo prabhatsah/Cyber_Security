@@ -141,10 +141,16 @@ export interface WhatwebAIReport {
   security_protocol_standard: string;
 }
 
+export interface AIReportOverallRiskAssessment {
+  level: string;
+  justification: string;
+}
+
 export interface AIReportData {
   nmap?: NmapAIReport;
   amass?: AmassAIReport;
   whatweb?: WhatwebAIReport;
+  test_apprecitation_level: AIReportOverallRiskAssessment;
 }
 
 export interface ZapData {
@@ -187,11 +193,7 @@ export interface PenTestDefault {
     };
     isDataUpdated?: boolean;
   };
-  ai_report?: {
-    nmap?: NmapAIReport;
-    amass?: AmassAIReport;
-    whatweb?: WhatwebAIReport;
-  };
+  ai_report?: AIReportData;
   lastscanon: string;
 }
 
