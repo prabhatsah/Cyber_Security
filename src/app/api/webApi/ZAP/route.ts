@@ -38,7 +38,7 @@ export async function POST(req: Request) {
       const response = await fetch(
         `${zapApiUrl}/JSON/${type}/action/scan/?url=${encodeURIComponent(
           url
-        )}&recurse=false&scanPolicyName=SQLInjectionPolicy`
+        )}&recurse=false`
       );
       const data = await response.json();
 
