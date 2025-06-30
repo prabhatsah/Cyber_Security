@@ -7,7 +7,6 @@ import { ProgressBar } from '@tremor/react';
 import { Globe, Shield, Box, Glasses, Code } from 'lucide-react';
 import { parse, formatDistanceToNow } from 'date-fns'
 
-
 interface SecurityAlertCardProps {
     pentestData: PenTestWithoutScanModified[];
 }
