@@ -516,7 +516,9 @@ export async function fetchScannedData(
 export async function uploadImage(
   cweId: string,
   pentestId: string,
-  files: File[]
+  files: File[],
+  title: String,
+  description: String
 ) {
   if (!files) return;
 
@@ -527,6 +529,8 @@ export async function uploadImage(
       pentestid: pentestId,
       cweId: cweId,
       imageBase64: base64,
+      title: title,
+      description: description,
     };
     console.log(query);
     const response = await fetch(`${baseUrl}/api/dbApi`, {

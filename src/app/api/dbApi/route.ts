@@ -99,7 +99,9 @@ export async function POST(req: Request) {
       ssh,
       query.imageBase64,
       query.pentestid,
-      query.cweId
+      query.cweId,
+      query.title,
+      query.description
     );
 
     ssh.dispose();
@@ -208,13 +210,15 @@ async function insertProofScreenshot(
   ssh: NodeSSH,
   imageBase64: string,
   pentestid: string,
-  cweId: string
+  cweId: string,
+  title: string,
+  description: string
 ) {
   const safeBase64 = imageBase64.replace(/'/g, "''");
 
   const query = `
-    INSERT INTO vulnerabilities_images (pentestid, cweid, image)
-    VALUES ('${pentestid}', '${cweId}', decode('${safeBase64}', 'base64'));
+    INSERT INTO vulnerabilities_images (pentestid, cweid, image, title, description)
+    VALUES ('${pentestid}', '${cweId}', decode('${safeBase64}', 'base64'),'${title}', '${description}');
   `;
 
   const result = await ssh.execCommand(

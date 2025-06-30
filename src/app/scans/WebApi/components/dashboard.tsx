@@ -95,7 +95,7 @@ export default function Dashboard({ _data, zapAnalysis }: { _data: (Site & { sca
 
   return (
     <div className="min-h-[90vh]">
-      <section className="my-4">
+      <section className="my-4 p-1">
         <div className="grid grid-cols-4 gap-5">
           <Card
             className="col-span-1 bg-tremor-background ring-tremor-ring shadow-tremor-card dark:ring-dark-tremor-ring dark:shadow-dark-tremor-card border-tremor-brand dark:border-dark-tremor-brand relative flex flex-col rounded-lg justify-between
@@ -264,7 +264,7 @@ export default function Dashboard({ _data, zapAnalysis }: { _data: (Site & { sca
                         value: removePTags(dataItem.desc),
                       },
                       {
-                        label: "Solution:",
+                        label: "Recomendation:",
                         value: removePTags(dataItem.solution),
                       },
                     ].map((item, index) => (
