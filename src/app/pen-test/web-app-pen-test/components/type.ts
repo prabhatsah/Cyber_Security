@@ -142,7 +142,7 @@ export interface WhatwebAIReport {
 }
 
 export interface AIReportOverallRiskAssessment {
-  level: string;
+  level: "Adequate" | "Effective" | "Partial" | "Exposed";
   justification: string;
 }
 
@@ -217,8 +217,10 @@ export interface PenTestWithoutScanDefault {
 export interface VulnerabilityImage {
   id: number;
   cweid: string;
+  description: string;
   image: string;
   pentestid: string;
+  title: string;
   uploaded_at: string;
 }
 
