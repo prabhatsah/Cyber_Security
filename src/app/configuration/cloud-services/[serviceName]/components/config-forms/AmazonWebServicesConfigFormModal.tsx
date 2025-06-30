@@ -38,7 +38,7 @@ export default function AmazonWebServicesConfigFormModal({
     region: savedDataToBePopulated?.region ?? "",
   });
 
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [ errors, setErrors] = useState<{ [key: string]: string }>({});
   const [isLoading, setIsLoading] = useState(false);
   const [testConnectionResult, setTestConnectionResult] = useState("");
   const [isConnected, setIsConnected] = useState(false);
