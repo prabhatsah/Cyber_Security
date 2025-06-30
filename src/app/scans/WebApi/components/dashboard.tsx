@@ -10,6 +10,7 @@ import {
 import { RiAlertLine, RiLink } from "@remixicon/react";
 import { Badge } from "@/components/Badge";
 import { Site } from "../types/alertTypes";
+import GlobalLoader from "@/components/GlobalLoader";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -325,104 +326,192 @@ export default function Dashboard({ _data, zapAnalysis }: { _data: (Site & { sca
               </AccordionItem>
             ))}
 
-            <AccordionItem value="FFUF">
+            {/* <AccordionItem value="FFUF">
               <AccordionTrigger>
                 FFUF
               </AccordionTrigger>
               <AccordionContent className="px-6">
                 <p>Data: FFUF</p>
               </AccordionContent>
-            </AccordionItem>
+            </AccordionItem> */}
+            {(!zapAnalysis || !zapAnalysis.ssl || !zapAnalysis.headerPoisoning) ? (
+              <GlobalLoader />
+            ) : (
+              <>
+                <AccordionItem value="SSLcheck">
+                  <AccordionTrigger>
+                    {/* TLS/SSL Security Overview */}
+                    {zapAnalysis && zapAnalysis.ssl && (
+                      <span className="flex items-center gap-2 h-8">
+                        <RiAlertLine
+                          className={`size-4 ${riskCodeVsDesc[zapAnalysis.ssl["Average Risk Code"]] === "Critical"
+                            ? "text-red-900 dark:text-red-400"
+                            : riskCodeVsDesc[zapAnalysis.ssl["Average Risk Code"]] === "High"
+                              ? "text-red-900 dark:text-red-400"
+                              : riskCodeVsDesc[zapAnalysis.ssl["Average Risk Code"]] === "Medium"
+                                ? "text-yellow-900 dark:text-yellow-400"
+                                : riskCodeVsDesc[zapAnalysis.ssl["Average Risk Code"]] === "Low"
+                                  ? "text-emerald-900 dark:text-emerald-400"
+                                  : "text-blue-900 dark:text-blue-400"
+                            }`}
+                        />
+                        TLS/SSL Security Overview
+                        <Badge
+                          variant={
+                            riskCodeVsDesc[zapAnalysis.ssl["Average Risk Code"]] === "Critical" ||
+                              riskCodeVsDesc[zapAnalysis.ssl["Average Risk Code"]] === "High"
+                              ? "error"
+                              : riskCodeVsDesc[zapAnalysis.ssl["Average Risk Code"]] === "Medium"
+                                ? "warning"
+                                : riskCodeVsDesc[zapAnalysis.ssl["Average Risk Code"]] === "Low"
+                                  ? "success"
+                                  : "default"
+                          }
+                        >
+                          {riskCodeVsDesc[zapAnalysis.ssl["Average Risk Code"]]}
+                        </Badge>
+                        {/* <Badge variant="neutral">{zapAnalysis.ssl["Average Risk Code"]}</Badge> */}
+                      </span>
+                    )}
+                  </AccordionTrigger>
+                  <AccordionContent className="px-6">
+                    {zapAnalysis.ssl &&
+                      Object.entries(zapAnalysis.ssl)
+                        .filter(
+                          ([sectionName]) =>
+                            sectionName !== "Average Risk Code" &&
+                            sectionName !== "Risk Desc"
+                        ).map(
+                          ([sectionName, sectionBody]) => {
+                            const body = sectionBody as Record<string, unknown>;
+                            return (
+                              <div key={sectionName} className="mb-6">
+                                <h5 className="text-sm font-semibold mb-2">{sectionName}</h5>
 
-            <AccordionItem value="SSLcheck">
-              <AccordionTrigger>
-                TLS/SSL Security Overview
-              </AccordionTrigger>
-              <AccordionContent className="px-6">
-                {zapAnalysis.ssl &&
-                  Object.entries(zapAnalysis.ssl).map(
-                    ([sectionName, sectionBody]) => {
-                      const body = sectionBody as Record<string, unknown>;
-                      return (
-                        <div key={sectionName} className="mb-6">
-                          <h5 className="text-sm font-semibold mb-2">{sectionName}</h5>
-
-                          <ul className="list-disc list-inside space-y-1">
-                            {Object.entries(body).map(
-                              ([key, val]: [string, unknown]) => (
-                                <li key={key}>
-                                  <span className="font-medium">{key}:</span>{" "}
-                                  {Array.isArray(val) ? (
-                                    <ul className="list-decimal list-inside ml-4 space-y-1">
-                                      {val.map((item, idx) => (
-                                        <li key={idx}>{String(item)}</li>
-                                      ))}
-                                    </ul>
-                                  ) : (
-                                    <span>{String(val)}</span>
+                                <ul className="list-disc list-inside space-y-1">
+                                  {Object.entries(body).map(
+                                    ([key, val]: [string, unknown]) => (
+                                      <li key={key}>
+                                        {Array.isArray(val) ? (
+                                          <ul className="list-decimal list-inside ml-4 space-y-1">
+                                            {val.map((item, idx) => (
+                                              <li key={idx}>{String(item)}</li>
+                                            ))}
+                                          </ul>
+                                        ) : (
+                                          <span>{String(val)}</span>
+                                        )}
+                                      </li>
+                                    )
                                   )}
-                                </li>
-                              )
-                            )}
-                          </ul>
-                        </div>
-                      );
+                                </ul>
+                              </div>
+                            );
+                          }
+                        )
                     }
-                  )
-                }
 
-              </AccordionContent>
-            </AccordionItem>
+                  </AccordionContent>
+                </AccordionItem>
 
-            <AccordionItem value="Header Poisoning Insights">
-              <AccordionTrigger>
-                Header Manipulation Analysis
-              </AccordionTrigger>
-              <AccordionContent className="px-6">
-                {zapAnalysis.headerPoisoning &&
-                  Object.entries(zapAnalysis.headerPoisoning).map(
-                    ([sectionName, sectionBody]) => {
-                      const body = sectionBody as Record<string, unknown>;
-                      return (
-                        <div key={sectionName} className="mb-6">
-                          {/* Section title */}
-                          <h5 className="text-sm font-semibold mb-2">{sectionName}</h5>
+                <AccordionItem value="Header Poisoning Insights">
+                  <AccordionTrigger>
+                    {zapAnalysis && zapAnalysis.headerPoisoning && (
+                      <span className="flex items-center gap-2 h-8">
+                        <RiAlertLine
+                          className={`size-4 ${riskCodeVsDesc[zapAnalysis.headerPoisoning["Average Risk Code"]] === "Critical"
+                            ? "text-red-900 dark:text-red-400"
+                            : riskCodeVsDesc[zapAnalysis.headerPoisoning["Average Risk Code"]] === "High"
+                              ? "text-red-900 dark:text-red-400"
+                              : riskCodeVsDesc[zapAnalysis.headerPoisoning["Average Risk Code"]] === "Medium"
+                                ? "text-yellow-900 dark:text-yellow-400"
+                                : riskCodeVsDesc[zapAnalysis.headerPoisoning["Average Risk Code"]] === "Low"
+                                  ? "text-emerald-900 dark:text-emerald-400"
+                                  : "text-blue-900 dark:text-blue-400"
+                            }`}
+                        />
+                        Header Manipulation Analysis
+                        <Badge
+                          variant={
+                            riskCodeVsDesc[zapAnalysis.headerPoisoning["Average Risk Code"]] === "Critical" ||
+                              riskCodeVsDesc[zapAnalysis.headerPoisoning["Average Risk Code"]] === "High"
+                              ? "error"
+                              : riskCodeVsDesc[zapAnalysis.headerPoisoning["Average Risk Code"]] === "Medium"
+                                ? "warning"
+                                : riskCodeVsDesc[zapAnalysis.headerPoisoning["Average Risk Code"]] === "Low"
+                                  ? "success"
+                                  : "default"
+                          }
+                        >
+                          {riskCodeVsDesc[zapAnalysis.headerPoisoning["Average Risk Code"]]}
+                        </Badge>
+                        {/* <Badge variant="neutral">{zapAnalysis.headerPoisoning["Average Risk Code"]}</Badge> */}
+                      </span>
+                    )}
+                  </AccordionTrigger>
+                  <AccordionContent className="px-6">
+                    {zapAnalysis.headerPoisoning &&
+                      Object.entries(zapAnalysis.headerPoisoning)
+                        .filter(
+                          ([sectionName]) =>
+                            sectionName !== "Average Risk Code" &&
+                            sectionName !== "Risk Desc"
+                        )
+                        .map(([sectionName, sectionBody]) => {
+                          const body = sectionBody as Record<string, unknown>;
 
-                          {/* Section content */}
-                          <ul className="list-disc list-inside space-y-1">
-                            {Object.entries(body).map(
-                              ([key, val]: [string, unknown]) => (
-                                <li key={key}>
-                                  <span className="font-medium">{key}:</span>{" "}
-                                  {Array.isArray(val) ? (
-                                    /* Nested list for arrays */
-                                    <ul className="list-decimal list-inside ml-4 space-y-1">
-                                      {val.map((item, idx) => (
-                                        <li key={idx}>{String(item)}</li>
-                                      ))}
-                                    </ul>
-                                  ) : (
-                                    /* Plain string */
-                                    <span>{String(val)}</span>
-                                  )}
-                                </li>
-                              )
-                            )}
-                          </ul>
-                        </div>
-                      );
-                    }
-                  )
-                }
-              </AccordionContent>
-            </AccordionItem>
+                          return (
+                            <div key={sectionName} className="mb-6">
+                              <h5 className="text-sm font-semibold mb-2">
+                                {sectionName}
+                              </h5>
+
+                              <ul className="list-disc list-inside space-y-1">
+                                {Object.entries(body).map(
+                                  ([key, val]: [string, unknown]) => (
+                                    <li key={key}>
+                                      <span className="font-medium">{key}:</span>{" "}
+                                      {Array.isArray(val) ? (
+                                        <ul className="list-decimal list-inside ml-4 space-y-1">
+                                          {(val as unknown[]).map((item, idx) => (
+                                            <li key={idx}>{String(item)}</li>
+                                          ))}
+                                        </ul>
+                                      ) : val && typeof val === "object" ? (
+                                        <ul className="list-disc list-inside ml-4 space-y-1">
+                                          {Object.entries(val as Record<string, unknown>).map(
+                                            ([subKey, subVal]) => (
+                                              <li key={subKey}>
+                                                <span className="font-medium">{subKey}:</span>{" "}
+                                                {String(subVal)}
+                                              </li>
+                                            )
+                                          )}
+                                        </ul>
+                                      ) : (
+                                        <span>{String(val)}</span>
+                                      )}
+                                    </li>
+                                  )
+                                )}
+                              </ul>
+                            </div>
+                          );
+                        })}
+
+                  </AccordionContent>
+
+                </AccordionItem>
+              </>
+            )}
+            
 
           </Accordion>
 
 
         </div>
-      </section>
-    </div>
+      </section >
+    </div >
   );
 }
 
