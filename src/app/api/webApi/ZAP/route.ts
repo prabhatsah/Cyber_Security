@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
-const zapApiUrl = "https://ikoncloud-dev.keross.com/scan";
+const zapApiUrl =
+  process.env.ZAP_CONTAINER_URL || "https://ikoncloud-dev.keross.com/scan";
 
 export async function POST(req: Request) {
   try {

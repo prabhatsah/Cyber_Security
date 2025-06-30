@@ -35,6 +35,7 @@ export default function Navbar() {
   async function logInData() {
     try {
       const profile = await getProfileData();
+      setProfileData(profile);
 
       localStorage.clear();
       const scanNotificationDataOnLogin: ScanNotificationInDatabase[] = await fetchScanNotificationDetailsOnLogin() ? (await fetchScanNotificationDetailsOnLogin()).data : [];
@@ -51,7 +52,6 @@ export default function Navbar() {
 
       localStorage.setItem("scanData", JSON.stringify(scanNotificationDataOnLoginFormatted));
       setScanNotificationData(scanNotificationDataOnLoginFormatted);
-      setProfileData(profile);
     } catch (error) {
       console.error(error)
     }
