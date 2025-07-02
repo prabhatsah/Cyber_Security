@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ProgressBar } from '@tremor/react';
 
 import { Globe, Shield, Box, Glasses, Code } from 'lucide-react';
-import { parse, formatDistanceToNow } from 'date-fns'
+import { parse, formatDistanceToNow } from 'date-fns';
 
 interface SecurityAlertCardProps {
     pentestData: PenTestWithoutScanModified[];
