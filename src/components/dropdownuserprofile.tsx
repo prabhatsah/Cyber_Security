@@ -5,7 +5,8 @@ import { ArrowUpRight, Monitor, Moon, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
 import * as React from "react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "./ui/dropdown-menu"
-import {signOut} from "@/ikon/utils/actions/auth/index"
+import { signOut } from "@/ikon/utils/actions/auth/index"
+import Link from "next/link"
 
 export type DropdownUserProfileProps = {
     children: React.ReactNode
@@ -36,7 +37,7 @@ export function DropdownUserProfile({
             console.error(error)
         }
     }
-    
+
     return (
         <>
             <DropdownMenu>
@@ -50,14 +51,18 @@ export function DropdownUserProfile({
                     <DropdownMenuSeparator />
                     <DropdownMenuGroup>
                         <DropdownMenuItem>
-                            Profile
+                            <Link href="/profile">
+                                Profile
+                            </Link>
                             <ArrowUpRight
                                 className="mb-1 ml-1 size-3 shrink-0 text-gray-500 dark:text-gray-500"
                                 aria-hidden="true"
                             />
                         </DropdownMenuItem>
                         <DropdownMenuItem>
-                            Documentation
+                            <Link href="/documentation">
+                                Documentation
+                            </Link>
                             <ArrowUpRight
                                 className="mb-1 ml-1 size-3 shrink-0 text-gray-500"
                                 aria-hidden="true"

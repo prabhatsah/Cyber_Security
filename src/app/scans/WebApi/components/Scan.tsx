@@ -36,6 +36,7 @@ export default function Scan() {
   const [data, setData] = useState<(Site & { scanned_at?: string }) | null>(null);
   const [pastScans, setPastScans] = useState<PastScansData[]>([]);
   const [openTabs, setOpenTabs] = useState(false);
+  const [loadingPastScans, setLoadingPastScans] = useState(true);
 
   const {
     isScanning,
@@ -50,6 +51,7 @@ export default function Scan() {
     const getPastScans = async () => {
       const data = await fetchScannedData("web_api_scan_history", 'id', false, null, null, 0, 10);
       setPastScans(data.data);
+      setLoadingPastScans(false);
     };
 
     getPastScans();
@@ -126,6 +128,6 @@ export default function Scan() {
 
     {data && <Dashboard _data={data} />}
 
-    <PastScans pastScans={pastScansForWidget} onOpenPastScan={handleOpenPastScan} />
+    <PastScans pastScans={pastScansForWidget} loading={loadingPastScans} onOpenPastScan={handleOpenPastScan} />
   </>
 }
