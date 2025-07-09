@@ -5,6 +5,8 @@ import { Card } from "@tremor/react";
 import { AlertCircle, CheckCircle2, Eye, ArrowRight, User, Calendar, Info } from 'lucide-react';
 import { getProfileData } from '@/ikon/utils/actions/auth';
 import { Badge } from './ui/badge';
+import GlobalLoader from './GlobalLoader';
+import FullPageLoading from './FullPageLoading';
 
 // const data = [
 //     {
@@ -81,8 +83,9 @@ function cx(...classes: (string | boolean | undefined | null)[]) {
     return classes.filter(Boolean).join(' ');
 }
 
-export default function Example({ pastScans, onOpenPastScan }: {
+export default function Example({ pastScans, loading, onOpenPastScan }: {
     pastScans: PastScans[];
+    loading: boolean;
     onOpenPastScan: (key: string) => void;
 }) {
 
@@ -107,69 +110,74 @@ export default function Example({ pastScans, onOpenPastScan }: {
 
     return (
 
-        <div className="">
+        <div className="flex flex-1 flex-col">
             <h2 className=" font-bold text-widget-title text-widgetHeader mt-4">Scan History</h2>
+            {
+                loading ? <div><FullPageLoading /></div> :
+                    pastScans.length ? <dl className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 mt-4">
+                        {
+                            pastScans.map((item, index) => {
+                                const StatusIcon = statusConfig[item.status as keyof typeof statusConfig]?.icon;
+                                const statusLabel = statusConfig[item.status as keyof typeof statusConfig]?.label;
+                                return (
+                                    <Card key={index} className="relative overflow-hidden hover:shadow-lg transition-shadow duration-300 rounded-lg">
+                                        <div className="absolute top-0 right-0 w-24 h-24 -mr-8 -mt-8 from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 rounded-full opacity-50"></div>
 
-            <dl className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 mt-4">
-                {pastScans.length ? pastScans.map((item, index) => {
-                    const StatusIcon = statusConfig[item.status as keyof typeof statusConfig]?.icon;
-                    const statusLabel = statusConfig[item.status as keyof typeof statusConfig]?.label;
-                    return (
-                        <Card key={index} className="relative overflow-hidden hover:shadow-lg transition-shadow duration-300 rounded-lg">
-                            <div className="absolute top-0 right-0 w-24 h-24 -mr-8 -mt-8 from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 rounded-full opacity-50"></div>
+                                        <div className="relative">
+                                            <dt className="flex items-center space-x-2 text-sm font-medium text-widget-mainHeader">
+                                                <span>{item.titleHeading}</span>
+                                                {item.key === openedScan && <Badge className='text-white'>opened</Badge>}
+                                            </dt>
+                                            <dd className="mt-1 text-lg font-bold text-widget-mainDesc truncate" title={item.title}>
 
-                            <div className="relative">
-                                <dt className="flex items-center space-x-2 text-sm font-medium text-widget-mainHeader">
-                                    <span>{item.titleHeading}</span>
-                                    {item.key === openedScan && <Badge className='text-white'>opened</Badge>}
-                                </dt>
-                                <dd className="mt-1 text-lg font-bold text-widget-mainDesc truncate" title={item.title}>
-
-                                    {item.title}
-                                </dd>
-                            </div>
-
-                            <div className="mt-6 space-y-4">
-                                <div className="flex items-center justify-between p-3 bg-white dark:bg-gray-800 rounded-lg shadow-sm cursor-pointer" onClick={() => handleClick(item.key)}>
-                                    <div className="flex items-center space-x-3" >
-                                        <span className={cx(
-                                            statusConfig[item.status as keyof typeof statusConfig]?.bgColor,
-                                            'flex h-10 w-10 items-center justify-center rounded-lg text-white'
-                                        )}>
-                                            {StatusIcon && <StatusIcon className="h-5 w-5" />}
-                                        </span>
-                                        <div>
-                                            <p className="text-sm text-widget-secondaryheader">
-                                                Issues: {item.noOfIssue}/{item.totalIssue}
-                                            </p>
-                                            <p className={cx(
-                                                statusConfig[item.status as keyof typeof statusConfig]?.textColor,
-                                                'text-sm font-medium capitalize'
-                                            )}>
-                                                {statusLabel} {/* Display the new status label */}
-                                            </p>
+                                                {item.title}
+                                            </dd>
                                         </div>
-                                    </div>
-                                    <ArrowRight className="h-5 w-5 text-gray-400" />
-                                </div>
 
-                                <div className="flex items-center justify-between text-sm text-widget-secondaryDesc">
-                                    <div className="flex items-center space-x-2">
-                                        <User className="h-4 w-4" />
-                                        <span>{profileData.USER_NAME}</span>
-                                    </div>
-                                    <div className="flex items-center space-x-2">
-                                        <Calendar className="h-4 w-4" />
-                                        <span className="font-medium">{item.scanOn}</span>
-                                    </div>
-                                </div>
-                            </div>
+                                        <div className="mt-6 space-y-4">
+                                            <div className="flex items-center justify-between p-3 bg-white dark:bg-gray-800 rounded-lg shadow-sm cursor-pointer" onClick={() => handleClick(item.key)}>
+                                                <div className="flex items-center space-x-3" >
+                                                    <span className={cx(
+                                                        statusConfig[item.status as keyof typeof statusConfig]?.bgColor,
+                                                        'flex h-10 w-10 items-center justify-center rounded-lg text-white'
+                                                    )}>
+                                                        {StatusIcon && <StatusIcon className="h-5 w-5" />}
+                                                    </span>
+                                                    <div>
+                                                        <p className="text-sm text-widget-secondaryheader">
+                                                            Issues: {item.noOfIssue}/{item.totalIssue}
+                                                        </p>
+                                                        <p className={cx(
+                                                            statusConfig[item.status as keyof typeof statusConfig]?.textColor,
+                                                            'text-sm font-medium capitalize'
+                                                        )}>
+                                                            {statusLabel} {/* Display the new status label */}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <ArrowRight className="h-5 w-5 text-gray-400" />
+                                            </div>
 
-                            {/* <a href={item.href} className="absolute inset-0" aria-hidden="true" /> */}
-                        </Card>
-                    );
-                }) : <p>Loading past scans...</p>}
-            </dl>
+                                            <div className="flex items-center justify-between text-sm text-widget-secondaryDesc">
+                                                <div className="flex items-center space-x-2">
+                                                    <User className="h-4 w-4" />
+                                                    <span>{profileData.USER_NAME}</span>
+                                                </div>
+                                                <div className="flex items-center space-x-2">
+                                                    <Calendar className="h-4 w-4" />
+                                                    <span className="font-medium">{item.scanOn}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* <a href={item.href} className="absolute inset-0" aria-hidden="true" /> */}
+                                    </Card>
+                                );
+                            })
+
+                        }
+                    </dl> : <div className='flex flex-1 items-center justify-center'><p className='text-center'>Scan history not available</p></div>
+            }
         </div>
     );
 }
