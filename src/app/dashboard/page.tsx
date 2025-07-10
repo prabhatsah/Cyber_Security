@@ -6,7 +6,7 @@ import { getLoggedInUserProfile } from '@/ikon/utils/api/loginService';
 import { fetchData } from '@/utils/api';
 import { PenTestWithoutScanDefault, PenTestWithoutScanModified } from '../pen-test/web-app-pen-test/components/type';
 import SecurityAlertCard from './components/SecurityAlertCard';
-
+import AiAssistantPage from './components/aiAssistantPage';
 async function fetchLoggedInUserPentestData() {
   const userId = (await getLoggedInUserProfile()).USER_ID;
 
@@ -31,7 +31,11 @@ export default async function Dashboard() {
   });
 
   console.log("Pentest Data With New Func: ", loggedInUserPentestDataFormatted);
-
+  const paramsData = {
+    id: loggedInUserPentestDataFormatted[0]?.userId,  // Assuming you want to use the first user's ID         
+    floorId: loggedInUserPentestDataFormatted[0]?.pentestId,
+    equipmentId: "Sidhu"// Assuming you want to use the first pentest ID
+  };
   return (
     <div className="space-y-6 h-full">
       <div className="space-y-2">
@@ -56,6 +60,10 @@ export default async function Dashboard() {
             <SecurityAlertCard pentestData={loggedInUserPentestDataFormatted} />
           )}
         </div>
+
+      </div>
+      <div className="md:col-span-1">
+        <AiAssistantPage className="w-full h-full mb-2" params={paramsData} />
       </div>
     </div>
   );
