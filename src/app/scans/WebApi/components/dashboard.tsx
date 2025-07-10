@@ -335,7 +335,8 @@ export default function Dashboard({ _data, zapAnalysis }: { _data: (Site & { sca
               </AccordionContent>
             </AccordionItem> */}
             {(!zapAnalysis || !zapAnalysis.ssl || !zapAnalysis.headerPoisoning) ? (
-              <GlobalLoader />
+              // <GlobalLoader />
+              null
             ) : (
               <>
                 <AccordionItem value="SSLcheck">
@@ -504,7 +505,7 @@ export default function Dashboard({ _data, zapAnalysis }: { _data: (Site & { sca
                 </AccordionItem>
               </>
             )}
-            
+
 
           </Accordion>
 
