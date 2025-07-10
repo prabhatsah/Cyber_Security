@@ -1,9 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
-  basePath: process.env.NEXT_BASE_PATH || "",
-  assetPrefix: process.env.NEXT_BASE_PATH || "",
+  basePath: "/IkonApps",
+  assetPrefix: "/IkonApps",
   experimental: {
     serverActions: {
       bodySizeLimit: "10mb",
@@ -16,7 +15,7 @@ const nextConfig: NextConfig = {
     ],
   },
   images: {
-    // domains: [process.env?.IKON_DOMAIN || ""],
+    domains: ["images.unsplash.com"],
     remotePatterns: [
       {
         protocol: "https",
@@ -35,30 +34,22 @@ const nextConfig: NextConfig = {
     NEXT_BASE_PATH_URL: process.env.NEXT_BASE_PATH_URL,
     NEXT_BASE_PATH: process.env.NEXT_BASE_PATH,
   },
-  // async rewrites() {
-  //   return [
-  //     {
-  //       source: "/api/workflows",
-  //       destination:
-  //         "https://ikoncloud-dev.keross.com/aiagent/api/v1/workflows",
-  //     },
-  //   ];
-  // },
+  
+  webpack: (config, { isServer }) => {
+    if (isServer) {
+      config.externals = [...config.externals, "ssh2"];
+    }
+    return config;
+  },
+
   typescript: {
-    // !! WARN !!
-    // Dangerously allow production builds to successfully complete even if
-    // your project has type errors.
-    // !! WARN !!
     ignoreBuildErrors: true,
   },
 
   eslint: {
-    // !! WARN !!
-    // Dangerously allow production builds to successfully complete even if
-    // your project has ESLint errors.
-    // !! WARN !!
     ignoreDuringBuilds: true,
   },
+
 };
 
 export default nextConfig;

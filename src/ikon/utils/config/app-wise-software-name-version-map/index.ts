@@ -115,9 +115,14 @@ export const appWiseSoftwareNameVersionMap: {
     version: "1",
     icon: BrainCircuit,
   },
-  atkins: {
+  "atkins": {
     softwareName: "Atkins",
     version: "1",
     icon: BrainCircuit,
   },
+  "cyber-security" : {
+    softwareName: "Test S2 Cyber Security",
+    version: "1",
+    icon: ShieldCheck,
+  }
 };
