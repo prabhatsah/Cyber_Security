@@ -1,10 +1,10 @@
-import { LucideProps } from "lucide-react";
-import { ForwardRefExoticComponent, RefAttributes } from "react";
+import type { LucideProps } from "lucide-react";
+import type { ForwardRefExoticComponent, RefAttributes } from "react";
 
 export interface ActionMenuProps {
   items?: ActionMenuProps[];
   type?: "sub" | "group" | "separator" | "label" | null;
-  label: string;
+  label: ((...args: any) => string) | string;
   icon?: ForwardRefExoticComponent<
     Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>
   >;

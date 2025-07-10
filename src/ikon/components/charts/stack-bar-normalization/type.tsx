@@ -1,6 +1,6 @@
 export interface EChartProps {
-  chartData: number[][];  // Array of data for the chart
-  chartConfiguration: {
+  chartData: number[][]; // Array of data for the chart
+  configurationObj: {
     title: string;
     seriesNames: string[];
     showLegend?: boolean;

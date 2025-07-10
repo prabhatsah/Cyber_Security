@@ -3,6 +3,7 @@ export interface ComboBoxInputProps {
   items: ComboboxItemProps[];
   onSelect?: (value: string | string[]) => void;
   disabled?: ((...args: any) => boolean) | boolean;
+  defaultValue?:string,
 }
 
 export interface ComboboxItemProps {

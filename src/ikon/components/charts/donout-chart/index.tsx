@@ -1,16 +1,32 @@
 'use client'
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import { Props } from "./types";
-import * as echarts from "echarts";
 import useDarkModeObserver from "../useDarkModeObserver";
 import useECharts from "../useECharts";
 import { useThemeOptions } from '@/ikon/components/theme-provider';
 import { getColorScale } from "../common-function";
 
-const DonoutChart: React.FC<Props> = ({ chartData, chartConfiguration }) => {
+const DonoutChart: React.FC<Props> = ({ chartData, configurationObj }) => {
+  console.log(chartData)
   const chartRef = useRef<HTMLDivElement>(null);
   const chartInstance: any = useECharts(chartRef as React.RefObject<HTMLDivElement>);
+  // const { state } = useThemeOptions();
+
   const { state } = useThemeOptions();
+  
+  const chartColor = useMemo(() =>
+    state.mode === 'dark' ? Object.values(state.dark) : Object.values(state.light)
+    , []);
+
+  const textColor = useMemo(() => {
+    if (state.mode === 'dark') {
+      return `hsl(${getComputedStyle(document.documentElement).getPropertyValue('--foreground').trim()})`;
+    } else {
+      return `hsl(${getComputedStyle(document.documentElement).getPropertyValue('--background').trim()})`;
+    }
+  }, []);
+
+  
 
   useEffect(() => {
     const darkModeEnabled = document.getElementById("protectedMainContainer")?.classList.contains("dark") || false;
@@ -26,7 +42,7 @@ const DonoutChart: React.FC<Props> = ({ chartData, chartConfiguration }) => {
         showCursor,
         showoverallTooltip,
         overallTooltip,
-      } = chartConfiguration;
+      } = configurationObj;
 
       const defaultTooltip = {
         trigger: "item",
@@ -44,22 +60,28 @@ const DonoutChart: React.FC<Props> = ({ chartData, chartConfiguration }) => {
       const options = {
         title: {
           text: title,
-        },
-        // visualMap: {
-        //   inRange: {
-        //     color: darkModeEnabled ? DarkColorPalette : lightColorPalette
-        //   }
-        // },
-        // ...(colorPalette && { color: colorPalette }),
-        tooltip: showoverallTooltip !== undefined ? (showoverallTooltip ? defaultTooltip : undefined) : defaultTooltip,
-        legend: showLegend !== undefined ? (showLegend ? defaultLegend : undefined) : defaultLegend,
-        toolbox: {
-          feature: {
-            dataView: { show: true, readOnly: false },
-            magicType: { show: true, type: ['pie'] },
-            restore: { show: true },
-            saveAsImage: { show: true },
+          textStyle: {
+            color: textColor,
           },
+        },
+
+        // tooltip: showoverallTooltip !== undefined ? (showoverallTooltip ? defaultTooltip : undefined) : defaultTooltip,
+        tooltip: {
+          trigger: "item",
+          formatter: "{b}: {c} ({d}%)"
+        },
+        legend: {
+          orient: 'horizontal',
+          left: 'right',
+          top: "bottom",
+          textStyle: {
+            color: textColor,
+            borderWidth: 0
+          },
+          itemStyle: {
+            borderWidth: 0, 
+            borderColor: "transparent", 
+          }
         },
         series: [
           {
@@ -67,41 +89,26 @@ const DonoutChart: React.FC<Props> = ({ chartData, chartConfiguration }) => {
             type: 'pie',
             radius: ['40%', '70%'],
             avoidLabelOverlap: false,
-            //   label: {
-            //     show: false,
-            //     position: 'center'
-            //   },
             label: {
-              show: true,
-              color: 'inherit', // Optional: ensure labels take on the default color
-              // formatter: '{b}: {c}', // Display label and value
-              formatter: (params: any) => {
-                const total = chartData.reduce((sum: number, item: any) => sum + item.value, 0);
-                const percent = ((params.value / total) * 100).toFixed(2);
-                return `${params.name}: ${percent}%`;
-              }
-            },
-            itemStyle: {
-              color: (params: any) => colorScale[params.dataIndex % colorScale.length],
+              show: false,
             },
             emphasis: {
               label: {
-                show: true,
-                fontSize: 20,
-                fontWeight: 'bold'
+                show: false,
               }
-              // itemStyle: {
-              //     // Removed shadow part
-              //     shadowBlur: 0, // Ensure no shadow effect
-              //     shadowOffsetX: 0,
-              //     shadowOffsetY: 0,
-              //     shadowColor: 'rgba(0, 0, 0, 0)',
-              //   },
             },
             labelLine: {
-              show: true
+              show: false
             },
-            data: chartData,
+            data: chartData.map((data: Record<string, string | number>, index: number) => ({
+              value: data.value,
+              name: data.name,
+              itemStyle: { 
+                color: chartColor[index % chartColor.length],
+                borderWidth: 2, 
+                borderColor: textColor
+              },
+            })),
           }
         ]
       };

@@ -13,18 +13,18 @@ import {
   UserIdWiseUserDetailsMapProps,
 } from "./type";
 import { getBaseSoftwareId, getCurrentSoftwareId } from "../software";
-import { getProfileData } from "../auth";
+import { getCurrentUserId, getProfileData } from "../auth";
 import { cookies } from "next/headers";
 
 export const getUserDashboardPlatformUtilData = async (
-  parameters: UserDashboardPlatformUtilParamsProps
+  parameters: UserDashboardPlatformUtilParamsProps, isServerApi?: boolean
 ): Promise<any> => {
   const baseSoftwareId = await getBaseSoftwareId();
   const utilInstances = await getMyInstancesV2({
     processName: "User Dashboard Platform Util - All For Next",
     projections: null,
     softwareId: baseSoftwareId,
-  });
+  }, isServerApi);
   const taskId = utilInstances[0].taskId;
   const userDetailsMap = await getParameterizedDataForTaskId<any>({
     taskId,
@@ -42,18 +42,18 @@ export const getUserIdWiseUserDetailsMap =
       .join("; "); // Convert to a valid Cookie header string
 
     // Fetch API with cookies
-    const resp = await fetch(`${process.env.NEXT_BASE_PATH}/api/user/list`, {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-            "Cookie": cookieHeader, // ✅ Send all cookies
-        },
-        cache: "force-cache",
-        next: {
-            revalidate: 600,
-            tags: ['userMap']
-        }
+    const resp = await fetch(`${process.env.NEXT_BASE_PATH_URL}/api/user/list`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Cookie: cookieHeader, // ✅ Send all cookies
+      },
+      cache: "force-cache",
+      next: {
+        revalidate: 600,
+        tags: ["userMap"],
+      },
     });
 
     if (!resp.ok) throw new Error("Failed to fetch users");
@@ -70,20 +70,21 @@ export const getGroupNameWiseUserDetailsMap = async (
     .map(({ name, value }) => `${name}=${value}`)
     .join("; "); // Convert to a valid Cookie header string
 
-    // Fetch API with cookies
-    const resp = await fetch(`${process.env.NEXT_BASE_PATH}/api/user/groups`, {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-            "Cookie": cookieHeader, // ✅ Send all cookies
-        },
-        cache: "force-cache",
-        body: JSON.stringify(groupNames),
-        next: {
-            revalidate: 600
-        }
-    });
+    console.log("groupNames",groupNames)
+  // Fetch API with cookies
+  const resp = await fetch(`${process.env.NEXT_BASE_PATH_URL}/api/user/groups`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      Cookie: cookieHeader, // ✅ Send all cookies
+    },
+    //cache: "force-cache",
+    body: JSON.stringify({groupNames:groupNames}),
+    // next: {
+    //   revalidate: 600,
+    // },
+  });
 
   if (!resp.ok) throw new Error("Failed to fetch roles");
 
@@ -111,19 +112,22 @@ export const getUsersByGroupName = async (
     .map(({ name, value }) => `${name}=${value}`)
     .join("; "); // Convert to a valid Cookie header string
 
-    // Fetch API with cookies
-    const resp = await fetch(`${process.env.NEXT_BASE_PATH}/api/user/group/${groupName}`, {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-            "Cookie": cookieHeader, // ✅ Send all cookies
-        },
-        cache: "force-cache",
-        next: {
-            revalidate: 600
-        }
-    });
+  // Fetch API with cookies
+  const resp = await fetch(
+    `${process.env.NEXT_BASE_PATH_URL}/api/user/group/${groupName}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Cookie: cookieHeader, // ✅ Send all cookies
+      },
+      cache: "force-cache",
+      next: {
+        revalidate: 600,
+      },
+    }
+  );
 
   if (!resp.ok) throw new Error("Failed to fetch groups");
 
@@ -151,20 +155,20 @@ export const getRoleNameWiseUserDetailsMap = async (
     .map(({ name, value }) => `${name}=${value}`)
     .join("; "); // Convert to a valid Cookie header string
 
-    // Fetch API with cookies
-    const resp = await fetch(`${process.env.NEXT_BASE_PATH}/api/user/roles`, {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-            "Cookie": cookieHeader, // ✅ Send all cookies
-        },
-        cache: "force-cache",
-        body: JSON.stringify(roleNames),
-        next: {
-            revalidate: 600
-        }
-    });
+  // Fetch API with cookies
+  const resp = await fetch(`${process.env.NEXT_BASE_PATH_URL}/api/user/roles`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      Cookie: cookieHeader, // ✅ Send all cookies
+    },
+    cache: "force-cache",
+    body: JSON.stringify(roleNames),
+    next: {
+      revalidate: 600,
+    },
+  });
 
   if (!resp.ok) throw new Error("Failed to fetch roles");
 
@@ -192,19 +196,22 @@ export const getUsersByRoleName = async (
     .map(({ name, value }) => `${name}=${value}`)
     .join("; "); // Convert to a valid Cookie header string
 
-    // Fetch API with cookies
-    const resp = await fetch(`${process.env.NEXT_BASE_PATH}/api/user/role/${roleName}`, {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-            "Cookie": cookieHeader, // ✅ Send all cookies
-        },
-        cache: "force-cache",
-        next: {
-            revalidate: 600
-        }
-    });
+  // Fetch API with cookies
+  const resp = await fetch(
+    `${process.env.NEXT_BASE_PATH_URL}/api/user/role/${roleName}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Cookie: cookieHeader, // ✅ Send all cookies
+      },
+      cache: "force-cache",
+      next: {
+        revalidate: 600,
+      },
+    }
+  );
 
   if (!resp.ok) throw new Error("Failed to fetch roles");
 
@@ -231,19 +238,22 @@ export const getUserRoles = async (userId?: string): Promise<any> => {
     .map(({ name, value }) => `${name}=${value}`)
     .join("; "); // Convert to a valid Cookie header string
 
-    // Fetch API with cookies
-    const resp = await fetch(`${process.env.NEXT_BASE_PATH}/api/user/${userId}/roles`, {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-            "Cookie": cookieHeader, // ✅ Send all cookies
-        },
-        cache: "force-cache",
-        next: {
-            revalidate: 600
-        }
-    });
+  // Fetch API with cookies
+  const resp = await fetch(
+    `${process.env.NEXT_BASE_PATH_URL}/api/user/${userId}/roles`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Cookie: cookieHeader, // ✅ Send all cookies
+      },
+      cache: "force-cache",
+      next: {
+        revalidate: 600,
+      },
+    }
+  );
 
   if (!resp.ok) throw new Error("Failed to fetch roles");
 
@@ -258,23 +268,38 @@ export const getUserGroups = async (userId?: string): Promise<any> => {
     .join("; "); // Convert to a valid Cookie header string
 
   // Fetch API with cookies
-  const resp = await fetch(`${process.env.NEXT_BASE_PATH}/api/user/${userId}/groups`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-      Cookie: cookieHeader, // ✅ Send all cookies
-    },
-    //SANJIB WILL CHECK THIS BEFORE MERGING
-    // cache: "force-cache",
-    // next: {
-    //   revalidate: 600,
-    //   tags: ["userGroups"],
-    // },
-  });
+  const resp = await fetch(
+    `${process.env.NEXT_BASE_PATH_URL}/api/user/${userId}/groups`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Cookie: cookieHeader, // ✅ Send all cookies
+      },
+      //SANJIB WILL CHECK THIS BEFORE MERGING
+      // cache: "force-cache",
+      // next: {
+      //   revalidate: 600,
+      //   tags: ["userGroups"],
+      // },
+    }
+  );
 
   if (!resp.ok) throw new Error("Failed to fetch groups");
 
-    return resp.json();
-}
+  return resp.json();
+};
 
+export const getCurrentUserAccountGroups = async (
+  userId?: string
+): Promise<any> => {
+  userId = userId ?? (await getCurrentUserId());
+  const userDetailsMap = await getUserDashboardPlatformUtilData({
+    isUserGroups: true,
+    userId: userId,
+  });
+  console.log("userDetailsMap", userDetailsMap);
+  const groups = userDetailsMap.groups.map((group) => group.groupName);
+  return groups;
+};

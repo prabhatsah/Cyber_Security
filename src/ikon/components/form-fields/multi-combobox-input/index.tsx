@@ -6,8 +6,8 @@ import {
   FormLabel,
   FormMessage,
 } from "@/shadcn/ui/form";
-import React, { useState } from "react";
-import { ComboboxItemProps, FormComboboxInputProps } from "../types";
+import React, { useState, useEffect, useRef, useCallback } from "react";
+// import { FormComboboxInputProps } from "@/ikon/components/form-fields/types";
 import { Popover, PopoverContent, PopoverTrigger } from "@/shadcn/ui/popover";
 import { Button } from "@/shadcn/ui/button";
 import { cn } from "@/shadcn/lib/utils";
@@ -20,126 +20,261 @@ import {
   CommandItem,
   CommandList,
 } from "@/shadcn/ui/command";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/shadcn/ui/tooltip";
+import { X } from "lucide-react";
+import { FormComboboxInputProps as BaseFormComboboxInputProps } from "@/ikon/components/form-fields/types";
 
+interface FormComboboxInputProps extends BaseFormComboboxInputProps {
+  defaultOptions?: number; // Add defaultOptions to the type
+}
 export default function FormMultiComboboxInput({
   formControl,
   name,
   label,
   placeholder,
   formDescription,
-  items,
+  items = [], // fallback to empty array
   disabled,
   onSelect,
+  defaultValue = [],
+  defaultOptions = 2,
 }: FormComboboxInputProps) {
-  const [selectedItems, setSelectedItems] = useState<string[]>([]);
-  const onItemSelect = (
-    value: string,
-    fieldOnChange: (updatedItems: string[]) => void
-  ) => {
-    let updatedItems;
-    if (selectedItems.includes(value)) {
-      updatedItems = selectedItems.filter((val) => val !== value);
-    } else {
-      updatedItems = [...selectedItems, value];
-    }
-    setSelectedItems(updatedItems);
-    fieldOnChange(updatedItems);
-  };
+  const [search, setSearch] = useState("");
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  
+  // Filter items based on search
+  const filteredItems = items.filter((item) =>
+      item.label?.toLowerCase().includes(search.toLowerCase())
+  )
+      .sort((a, b) => (a?.label ?? "").localeCompare(b?.label ?? ""));
+
+
+
   return (
-    <>
       <FormField
-        control={formControl}
-        name={name}
-        render={({ field }) => (
-          <FormItem className="">
-            {label && (
-              <>
-                <FormLabel>{label}</FormLabel>
-                <br />
-              </>
-            )}
-            <Popover>
-              <PopoverTrigger asChild className="w-full">
-                <FormControl>
-                  <Button
-                    variant="outline"
-                    role="combobox"
-                    className={cn(
-                      "justify-between",
-                      !field.value && "text-muted-foreground"
-                    )}
-                    disabled={
-                      disabled == true ||
-                      (disabled && disabled(...arguments))
-                    }
-                  >
-                    {field?.value && field.value.length > 0 ? (
-                      <div className="flex gap-2 items-center">
-                        {field.value.map((value: string) => (
-                          <span
-                            key={value}
-                            className="px-2 py-1 bg-secondary text-secondary-foreground rounded-md"
-                          >
-                            {items.find((item) => item.value === value)
-                              ?.label || value}
-                          </span>
-                        ))}
-                      </div>
-                    ) : (
-                      placeholder
-                    )}
-                    <ChevronsUpDown className="opacity-50" />
-                  </Button>
-                </FormControl>
-              </PopoverTrigger>
-              <PopoverContent className="p-0" align="start">
-                <Command>
-                  <CommandInput placeholder="Search..." />
-                  <CommandList>
-                    <CommandEmpty>No items found.</CommandEmpty>
-                    <CommandGroup>
-                      {items.map((item) => {
-                        const isSelected = selectedItems.includes(item.value);
-                        return (
-                          <CommandItem
-                            value={item.value}
-                            key={item.value}
-                            onSelect={(value) => {
-                              let updatedItems;
-                              if (selectedItems.includes(value)) {
-                                updatedItems = selectedItems.filter(
-                                  (val) => val !== value
-                                );
-                              } else {
-                                updatedItems = [...selectedItems, value];
+          control={formControl}
+          name={name}
+          render={({ field }) => {
+              // Initialize defaultValue if field.value is undefined
+              useEffect(() => {
+                  if (
+                      (field.value === undefined || field.value === null) &&
+                      defaultValue.length > 0
+                  ) {
+                      field.onChange(defaultValue);
+                  }
+              }, [defaultValue, field]);
+
+              // field.value is the selected array, default to [] if undefined
+              const selectedItems = field.value || [];
+              const [visibleCount, setVisibleCount] = useState(selectedItems.length);
+
+              const calculateVisibleItems = useCallback(() => {
+                  const container = containerRef.current;
+                  if (!container) return visibleCount;
+                  
+                  const children = Array.from(container.children) as HTMLElement[];
+
+                  let availableWidth = container.offsetWidth;
+                  let usedWidth = 0;
+                  let fitCount = 0;
+
+                  for (const child of children) {
+                      const childWidth = child.offsetWidth + 4; // gap/margin
+                      if (usedWidth + childWidth <= availableWidth) {
+                          usedWidth += childWidth;
+                          fitCount++;
+                      } else {
+                          break;
+                      }
+                  }
+
+                  return fitCount;
+              }, []); // No dependencies
+
+              useEffect(() => {
+                  const container = containerRef.current;
+                  if (!container) return;
+
+                  let animationFrameId: number | null = null;
+
+                  const resizeObserver = new ResizeObserver(() => {
+                      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+                      animationFrameId = requestAnimationFrame(() => {
+                          const newVisibleCount = calculateVisibleItems();
+                          setVisibleCount((prevVisibleCount: number) => {
+                              
+                              if (prevVisibleCount !== newVisibleCount) {
+                                  return newVisibleCount;
                               }
-                              setSelectedItems(updatedItems);
-                              field.onChange(updatedItems);
-                              onSelect && onSelect(updatedItems);
-                            }}
-                          >
-                            {item?.label || item.value}
-                            <Check
-                              className={cn(
-                                "ml-auto",
-                                isSelected ? "opacity-100" : "opacity-0"
-                              )}
-                            />
-                          </CommandItem>
-                        );
-                      })}
-                    </CommandGroup>
-                  </CommandList>
-                </Command>
-              </PopoverContent>
-            </Popover>
-            {formDescription && (
-              <FormDescription>{formDescription}</FormDescription>
-            )}
-            <FormMessage />
-          </FormItem>
-        )}
+                              return prevVisibleCount;
+                          });
+                      });
+                  });
+
+                  resizeObserver.observe(container);
+
+                  // Initial calculation
+                  setVisibleCount(calculateVisibleItems());
+
+                  // Cleanup
+                  return () => {
+                      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+                      resizeObserver.disconnect();
+                  };
+              }, [calculateVisibleItems]); // Only depend on calculateVisibleItems
+
+              // Toggle select/unselect item
+              const toggleItem = (value: string) => {
+                  let updatedItems;
+                  if (selectedItems.includes(value)) {
+                      updatedItems = selectedItems.filter((v: string) => v !== value);
+                  } else {
+                      updatedItems = [...selectedItems, value];
+                  }
+                  field.onChange(updatedItems);
+                  onSelect && onSelect(updatedItems);
+              };
+
+              const onWheel = (e: React.WheelEvent<HTMLDivElement>) => {
+                  const el = e.currentTarget;
+                  el.scrollTop += e.deltaY; // manually scroll
+                  e.preventDefault(); // prevent parent scroll
+              };
+
+              return (
+                  <FormItem>
+                      {label && <FormLabel>{label}</FormLabel>}
+
+                      <Popover>
+                          <PopoverTrigger asChild className="w-full">
+                              <FormControl>
+                                  <Button
+                                      variant="outline"
+                                      role="combobox"
+                                      className={cn(
+                                          "justify-between",
+                                          !selectedItems.length && "text-foreground/50"
+                                      )}
+                                      disabled={
+                                          disabled === true || (disabled && disabled(...arguments))
+                                      }
+                                  >
+                                      {selectedItems.length > 0 ? (
+                                          <TooltipProvider>
+                                              <div ref={containerRef} className="flex flex-wrap gap-2 items-center overflow-hidden">
+                                                  {selectedItems.slice(0, defaultOptions).map((value: string) => {
+                                                      const label = items.find((item) => item.value === value)?.label || value;
+                                                      return (
+                                                          <span
+                                                              key={value}
+                                                              className="flex items-center px-2 py-1 bg-secondary text-secondary-foreground rounded-md truncate max-w-full"
+                                                              title={label}
+                                                          >
+                                                              <span className="truncate max-w-[120px]">{label}</span>
+                                                              <span
+                                                                  role="button"
+                                                                  tabIndex={0}
+                                                                  onClick={(e) => {
+                                                                      e.stopPropagation(); // prevent popover toggle
+                                                                      const updated = selectedItems.filter((v: string) => v !== value);
+                                                                      field.onChange(updated);
+                                                                      onSelect && onSelect(updated);
+                                                                  }}
+                                                                  onKeyDown={(e) => {
+                                                                      if (e.key === 'Enter' || e.key === ' ') {
+                                                                          e.preventDefault();
+                                                                          e.stopPropagation();
+                                                                          const updated = selectedItems.filter((v: string) => v !== value);
+                                                                          field.onChange(updated);
+                                                                          onSelect && onSelect(updated);
+                                                                      }
+                                                                  }}
+                                                                  className="ml-1 text-muted-foreground hover:text-destructive cursor-pointer outline-none"
+                                                              >
+                                                                  <X className="w-3 h-3 ml-1" />
+                                                              </span>
+                                                          </span>
+                                                      );
+                                                  })}
+
+                                                  {selectedItems.length > defaultOptions && (
+                                                      <Tooltip>
+                                                          <TooltipTrigger asChild>
+                                                              <span className="px-2 py-1 bg-secondary text-secondary-foreground rounded-md cursor-pointer">
+                                                                  +{selectedItems.length - defaultOptions} more
+                                                              </span>
+                                                          </TooltipTrigger>
+                                                          <TooltipContent className="max-w-xs break-words">
+                                                              <div
+                                                                  onWheel={onWheel}
+                                                                  className="flex flex-col gap-1 max-h-[200px] overflow-auto"
+                                                              >
+                                                                  {selectedItems.slice(defaultOptions).map((value: string) => (
+                                                                      <span key={value} className="text-sm">
+                                                                          {items.find((item) => item.value === value)?.label || value}
+                                                                      </span>
+                                                                  ))}
+                                                              </div>
+                                                          </TooltipContent>
+                                                      </Tooltip>
+                                                  )}
+                                              </div>
+                                          </TooltipProvider>
+                                      ) : (
+                                          placeholder
+                                      )}
+                                      <ChevronsUpDown className="opacity-50" />
+                                  </Button>
+                              </FormControl>
+                          </PopoverTrigger>
+
+                          <PopoverContent id="multiSelectPopover" className="p-0 w-full max-w-[300px]" align="start">
+                              <Command id="commandPopover">
+                                  <CommandInput
+                                      placeholder="Search..."
+                                      value={search}
+                                      onValueChange={setSearch}
+                                      autoFocus
+                                  />
+                                  <CommandList
+                                      className="max-h-60 overflow-auto"
+                                      onWheel={onWheel}
+                                  >
+                                      <CommandEmpty>No items found.</CommandEmpty>
+                                      <CommandGroup>
+                                          {filteredItems.map((item) => {
+                                              const isSelected = selectedItems.includes(item.value);
+                                              return (
+                                                  <CommandItem
+                                                      value={item.label ?? ""}
+                                                      key={item.value}
+                                                      onSelect={() => toggleItem(item.value)}
+                                                  >
+                                                      {item.label}
+                                                      <Check
+                                                          className={cn(
+                                                              "ml-auto",
+                                                              isSelected ? "opacity-100" : "opacity-0"
+                                                          )}
+                                                      />
+                                                  </CommandItem>
+                                              );
+                                          })}
+                                      </CommandGroup>
+                                  </CommandList>
+                              </Command>
+                          </PopoverContent>
+                      </Popover>
+
+                      {formDescription && (
+                          <FormDescription>{formDescription}</FormDescription>
+                      )}
+                      <FormMessage />
+                  </FormItem>
+              );
+          }}
       />
-    </>
   );
 }

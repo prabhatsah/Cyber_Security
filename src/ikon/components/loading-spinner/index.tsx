@@ -18,7 +18,7 @@ export const LoadingSpinner = ({
   if (!visible) return null; // Return null if not visible
 
   return (
-    <div className="relative h-full w-full">
+    <div className="h-full w-full">
       <div className="absolute inset-0 flex justify-center items-center z-50">
         <svg
           xmlns="http://www.w3.org/2000/svg"

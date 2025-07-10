@@ -13,19 +13,43 @@ export const getTicket = async (): Promise<string | undefined> => {
 };
 
 export const getProfileData = async (): Promise<GetLoggedInUserProfileReturnProps & GetLoggedInUserProfileDetailsReturnProps> => {
-    let data1: GetLoggedInUserProfileReturnProps = {} as GetLoggedInUserProfileReturnProps;
-    try {
-        data1 = await getLoggedInUserProfile();
-    } catch (error) {
-        console.error(error)
-    }
-    let data2: GetLoggedInUserProfileDetailsReturnProps = {} as GetLoggedInUserProfileDetailsReturnProps;
-    try {
-        data2 = await getLoggedInUserProfileDetails();
-    } catch (error) {
-        console.error(error)
-    }
-    return { ...data1, ...data2 };
+
+    
+    const cookieStore = await cookies();
+    const cookieHeader = cookieStore.getAll()
+        .map(({ name, value }) => `${name}=${value}`)
+        .join("; "); // Convert to a valid Cookie header string
+
+    // Fetch API with cookies
+    const resp = await fetch(`${process.env.NEXT_BASE_PATH_URL}/api/profile`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "Cookie": cookieHeader, // ✅ Send all cookies
+        },
+        cache: "force-cache",
+        next: {
+            tags: ["profile"]
+        }
+    });
+
+    return resp.json();
+
+    // let data1: GetLoggedInUserProfileReturnProps = {} as GetLoggedInUserProfileReturnProps;
+    // try {
+    //     data1 = await getLoggedInUserProfile();
+    // } catch (error) {
+    //     console.error(error)
+    // }
+    // let data2: GetLoggedInUserProfileDetailsReturnProps = {} as GetLoggedInUserProfileDetailsReturnProps;
+    // try {
+    //     data2 = await getLoggedInUserProfileDetails();
+    // } catch (error) {
+    //     console.error(error)
+    // }
+    // return { ...data1, ...data2 };
+
 }
 
 export async function signOut() {

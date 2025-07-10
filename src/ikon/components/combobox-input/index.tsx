@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import React, { useEffect, useState } from "react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/shadcn/ui/popover";
+import { Button } from "@/shadcn/ui/button";
+import { cn } from "@/shadcn/lib/utils";
 import { Check, ChevronsUpDown } from "lucide-react";
 import {
   Command,
@@ -10,7 +10,7 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/components/ui/command";
+} from "@/shadcn/ui/command";
 import { ComboBoxInputProps } from "./type";
 
 export default function ComboboxInput({
@@ -18,8 +18,9 @@ export default function ComboboxInput({
   items,
   disabled,
   onSelect,
+  defaultValue
 }: ComboBoxInputProps) {
-  const [value, setValue] = useState("");
+  const [value, setValue] = useState(defaultValue?defaultValue:'');
   return (
     <>
       <Popover>

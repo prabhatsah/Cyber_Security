@@ -1,9 +1,10 @@
 {
   "compilerOptions": {
-    "target": "es2018",
+    "target": "ES2017",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
-    "skipLibCheck": true,
+    // "skipLibCheck": true,
+     "skipLibCheck": false,
     "strict": true,
     "noEmit": true,
     "esModuleInterop": true,
@@ -27,8 +28,8 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src/app/scans/OSINT/Widgets.js",
-    "src/app/scans/cloudContainer/cloud/[serviceName]/dashboard_discarded.tsx"
+    "src/app/(protected)/(apps)/grc-v2/outer-configurator/policynew/_components/TextEditorDialog.tsx"
   ],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules"],
+  "sourceMap": true
 }

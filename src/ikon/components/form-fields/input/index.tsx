@@ -1,5 +1,5 @@
-import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
+import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/shadcn/ui/form'
+import { Input } from '@/shadcn/ui/input'
 import React from 'react'
 import { FormInputProps } from '../types'
 

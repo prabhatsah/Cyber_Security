@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
 @layer base {
   * {
     @apply border-border;
@@ -34,5 +33,50 @@
     -webkit-box-shadow: 0 0 0 1000px hsl(var(--background)) inset !important;
     box-shadow: 0 0 0 1000px hsl(var(--background)) inset !important;
     -webkit-text-fill-color: hsl(var(--foreground)) !important;
+  }
+
+  .gradient-background-dark {
+    background: linear-gradient(
+      104.96deg,
+      #131a29 0%,
+      #1d2634 56.6%,
+      #2f2e78 100.68%
+    );
+  }
+
+  .bg-sidebar-new {
+    background: linear-gradient(
+      180deg,
+      hsl(var(--primary)) 0%,
+      hsl(var(--secondary)) 100%
+    );
+  }
+
+  .border-gradient-new {
+    border-bottom-color: linear-gradient(
+      180deg,
+      hsl(var(--primary)) 0%,
+      hsl(var(--secondary)) 100%
+    );
+  }
+
+  .dark .bg-sidebar-accent-new {
+    background: #27272a;
+  }
+
+  .light .bg-sidebar-accent-new {
+    background: #f4f4f5;
+  }
+
+  .dark .border-l-submenu {
+    border-left: solid 2px #27272a;
+  }
+
+  .light .border-l-submenu {
+    border-left: solid 2px #f4f4f5;
+  }
+  .k-animation-container,
+  .k-popup {
+    z-index: 99999999 !important;
   }
 }

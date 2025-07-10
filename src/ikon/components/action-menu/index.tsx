@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { Button } from "@/shadcn/ui/button";
 import {
   DropdownMenu,
@@ -15,7 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@/shadcn/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
-import { ActionMenuProps, ExtraActionParams } from "./type";
+import type { ActionMenuProps, ExtraActionParams } from "./type";
 import { IconButtonWithTooltip } from "../buttons";
 
 export default function ActionMenu({
@@ -25,17 +25,16 @@ export default function ActionMenu({
   actionMenus: ActionMenuProps[];
   extraActionParams?: ExtraActionParams;
 }) {
-
-
-
   const renderMenuItems = (items: ActionMenuProps[]) => {
     items = items.filter((item) => {
-      return (item?.visibility == undefined || item.visibility == true || (item.visibility && item.visibility(...(extraActionParams?.arguments || []))))
+      // biome-ignore lint/complexity/useOptionalChain: <explanation>
+      return (item?.visibility === undefined || item.visibility === true || (item.visibility && item.visibility(...(extraActionParams?.arguments || []))))
     })
-    if (items.length == 0) {
+    if (items.length === 0) {
       return <DropdownMenuItem className="text-center">No action available.</DropdownMenuItem>
     }
     return items.map((item, index) => {
+      // console.log(item, index)
       if (item.type === "label") {
         return <DropdownMenuLabel key={index}>{item.label}</DropdownMenuLabel>;
       }
@@ -64,18 +63,26 @@ export default function ActionMenu({
           </DropdownMenuSub>
         );
       }
-
+   
+        let labelContent = "";
+        if (typeof item.label === "function") {
+          labelContent = item.label(...(extraActionParams?.arguments || []));
+        } else {
+          labelContent = item.label;
+        }
       return (
+
         <DropdownMenuItem
           key={index}
           disabled={item.disabled}
           onClick={() =>
+            // biome-ignore lint/complexity/useOptionalChain: <explanation>
             item.onClick &&
             item.onClick(...(extraActionParams?.arguments || []))
           }
         >
           {item.icon && <item.icon />}
-          {item.label}
+          {labelContent}
           {/* {item.shortcut && <DropdownMenuShortcut>{item.shortcut}</DropdownMenuShortcut>} */}
         </DropdownMenuItem>
       );
@@ -85,7 +92,11 @@ export default function ActionMenu({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <IconButtonWithTooltip variant="ghost" tooltipContent="Actions" className="h-8 w-8 p-0">
+        <IconButtonWithTooltip
+          variant="ghost"
+          tooltipContent="Actions"
+          className="h-8 w-8 p-0"
+        >
           <MoreHorizontal />
         </IconButtonWithTooltip>
       </DropdownMenuTrigger>

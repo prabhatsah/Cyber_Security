@@ -8,7 +8,7 @@ export type EChartBarChartWithNegativeProps = {
   chartData: {
     [key: string]: number[]; // Key can be any string, and the value is an array of numbers
   }
-  chartConfiguration: {
+  configurationObj: {
     title?: string;
     showLegend?: boolean;
     showScrollx?: boolean;

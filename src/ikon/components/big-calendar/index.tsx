@@ -56,3 +56,4 @@ export default function BigCalendar({ events, extraParamsEvent, extraTools }: Bi
     );
 }
 
+  

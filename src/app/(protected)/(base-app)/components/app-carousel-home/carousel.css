@@ -1,0 +1,24 @@
+.bg-active-software {
+  background: linear-gradient(
+    314.75deg,
+    #118ae4 -6.13%,
+    #13f1fb 37.66%,
+    #7d1db0 89.49%
+  );
+}
+
+.bg-indicator-software {
+  background: #5d59c4;
+}
+
+.border-circle-app-carousel {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: linear-gradient(190deg, #4f46e5 9.92%, #000000 69.87%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    padding: 2px;
+}

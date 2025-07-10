@@ -14,8 +14,11 @@ export async function setCookieSession(sessionName: string, data: string) {
 
 
 export async function getCookieSession(sessionName: string): Promise<string | undefined> {
+ console.log('getCookieSession', sessionName)
   const cookieStore = await cookies()
+  console.log('getCookieSession cookieStore', cookieStore)
   const cookie = cookieStore.get(cookiePrefix + sessionName)?.value
+  console.log('getCookieSession cookie', cookie)
   return cookie;
 }
 

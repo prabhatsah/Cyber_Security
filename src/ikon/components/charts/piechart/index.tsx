@@ -6,7 +6,7 @@ import useECharts from "../useECharts";
 import { useThemeOptions } from "@/ikon/components/theme-provider";
 import { getColorScale } from "../common-function";
 
-const PieChart: React.FC<Props> = ({ chartData, chartConfiguration }) => {
+const PieChart: React.FC<Props> = ({ chartData, configurationObj }) => {
   const { state } = useThemeOptions();
   console.log(state);
   const chartRef = useRef<HTMLDivElement>(null);
@@ -17,16 +17,17 @@ const PieChart: React.FC<Props> = ({ chartData, chartConfiguration }) => {
   useEffect(() => {
     if (chartInstance) {
       const colorScale = getColorScale(chartData, state);
-      const {
-        title,
-        DarkColorPalette,
-        lightColorPalette,
-        showLegend,
-        colorPalette,
-        showCursor,
-        showoverallTooltip,
-        overallTooltip,
-      } = chartConfiguration;
+      // const {
+      //   title,
+      //   DarkColorPalette,
+      //   lightColorPalette,
+      //   showLegend,
+      //   colorPalette,
+      //   showCursor,
+      //   showoverallTooltip,
+      //   overallTooltip,
+      // } = configurationObj;
+      const { title, showLegend, showToolbox = false, showCursor, showoverallTooltip, overallTooltip } = configurationObj;
 
       const defaultTooltip = {
         trigger: "item",
@@ -41,68 +42,108 @@ const PieChart: React.FC<Props> = ({ chartData, chartConfiguration }) => {
         bottom: 0,
         left: "right",
       };
+      const verticalLegend = {
+        orient: "vertical", 
+        right: 0, 
+        top: "center", 
+      };
+      // const options = {
+      //   title: {
+      //     text: title,
+      //   },
+      //   tooltip:
+      //     showoverallTooltip !== undefined
+      //       ? showoverallTooltip
+      //         ? defaultTooltip
+      //         : undefined
+      //       : defaultTooltip,
+      //   // legend:
+      //   //   showLegend !== undefined
+      //   //     ? showLegend
+      //   //       ? defaultLegend
+      //   //       : undefined
+      //   //     : defaultLegend,
+      //   legend: showLegend ? verticalLegend : defaultLegend,
+      //   toolbox: {
+      //     feature: {
+      //       dataView: { show: true, readOnly: false },
+      //       magicType: { show: true, type: ["pie"] },
+      //       restore: { show: true },
+      //       saveAsImage: { show: true },
+      //     },
+      //   },
+      //   series: [
+      //     {
+      //       name: "Access From",
+      //       type: "pie",
+      //       radius: "50%",
+      //       data: chartData,
+      //       emphasis: {
+      //         itemStyle: {
+      //           // Removed shadow part
+      //           shadowBlur: 0, // Ensure no shadow effect
+      //           shadowOffsetX: 0,
+      //           shadowOffsetY: 0,
+      //           shadowColor: "rgba(0, 0, 0, 0)",
+      //         },
+      //       },
+      //       label: {
+      //         show: true,
+      //         color: "inherit", // Optional: ensure labels take on the default color
+      //       },
+      //       itemStyle: {
+      //         color: (params: any) =>
+      //           colorScale[params.dataIndex % colorScale.length],
+      //         //     shadowBlur: 0, // Ensure no shadow effect
+      //         //     shadowOffsetX: 0,
+      //         //     shadowOffsetY: 0,
+      //         //     shadowColor: 'rgba(0, 0, 0, 0)',
+      //       },
+      //       emphasis: {
+      //         label: {
+      //           show: true,
+      //           fontSize: 20,
+      //           fontWeight: "bold",
+      //         },
+      //       },
+      //       labelLine: {
+      //         show: true,
+      //       },
+      //       //data: chartData,
+      //     },
+      //   ],
+      // };
       const options = {
         title: {
           text: title,
+          left: "center",
         },
-        tooltip:
-          showoverallTooltip !== undefined
-            ? showoverallTooltip
-              ? defaultTooltip
-              : undefined
-            : defaultTooltip,
-        legend:
-          showLegend !== undefined
-            ? showLegend
-              ? defaultLegend
-              : undefined
-            : defaultLegend,
-        toolbox: {
-          feature: {
-            dataView: { show: true, readOnly: false },
-            magicType: { show: true, type: ["pie"] },
-            restore: { show: true },
-            saveAsImage: { show: true },
-          },
-        },
+        tooltip: showoverallTooltip ? defaultTooltip : undefined,
+        legend: showLegend ? verticalLegend : defaultLegend,
+        toolbox: showToolbox
+          ? {
+              feature: {
+                dataView: { show: true, readOnly: false },
+                restore: { show: true },
+                saveAsImage: { show: true },
+              },
+            }
+          : undefined, // Toolbox only appears if showToolbox is true
         series: [
           {
             name: "Access From",
             type: "pie",
             radius: "50%",
             data: chartData,
-            emphasis: {
-              itemStyle: {
-                // Removed shadow part
-                shadowBlur: 0, // Ensure no shadow effect
-                shadowOffsetX: 0,
-                shadowOffsetY: 0,
-                shadowColor: "rgba(0, 0, 0, 0)",
-              },
-            },
-            label: {
-              show: true,
-              color: "inherit", // Optional: ensure labels take on the default color
-            },
+            label: { show: true, color: "inherit" },
             itemStyle: {
               color: (params: any) =>
                 colorScale[params.dataIndex % colorScale.length],
-              //     shadowBlur: 0, // Ensure no shadow effect
-              //     shadowOffsetX: 0,
-              //     shadowOffsetY: 0,
-              //     shadowColor: 'rgba(0, 0, 0, 0)',
             },
             emphasis: {
-              label: {
-                show: true,
-                fontSize: 20,
-                fontWeight: "bold",
-              },
+              label: { show: true, fontSize: 20, fontWeight: "bold" },
             },
-            labelLine: {
-              show: true,
-            },
-            data: chartData,
+            labelLine: { show: true },
           },
         ],
       };

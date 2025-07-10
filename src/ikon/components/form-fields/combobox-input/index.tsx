@@ -1,36 +1,18 @@
-import {
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/shadcn/ui/form";
 import React from "react";
 import { FormComboboxInputProps } from "../types";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { Popover, PopoverContent, PopoverTrigger } from "@/shadcn/ui/popover";
+import { Button } from "@/shadcn/ui/button";
+import { cn } from "@/shadcn/lib/utils";
 import { Check, ChevronsUpDown } from "lucide-react";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/shadcn/ui/command";
 
-export default function FormComboboxInput({
-  formControl,
-  name,
-  label,
-  placeholder,
-  formDescription,
-  items,
-  disabled,
-  onSelect,
-}: FormComboboxInputProps) {
+export default function FormComboboxInput({ formControl, name, label, placeholder, formDescription, items, disabled, onSelect }: FormComboboxInputProps) {
+  const onWheel = (e: React.WheelEvent<HTMLDivElement>) => {
+    const el = e.currentTarget;
+    el.scrollTop += e.deltaY; // manually scroll
+    e.preventDefault(); // prevent parent scroll
+  };
   return (
     <>
       <FormField
@@ -52,11 +34,10 @@ export default function FormComboboxInput({
                     role="combobox"
                     className={cn(
                       "justify-between",
-                      !field.value && "text-muted-foreground"
+                      !field.value && "text-foreground/50"
                     )}
                     disabled={
-                      disabled == true ||
-                      (disabled && disabled(...arguments))
+                      disabled == true || (disabled && disabled(...arguments))
                     }
                   >
                     {field.value
@@ -70,20 +51,25 @@ export default function FormComboboxInput({
               <PopoverContent className="p-0" align="start">
                 <Command>
                   <CommandInput placeholder="Search..." />
-                  <CommandList>
+                  <CommandList onWheel={onWheel}>
                     <CommandEmpty>No items found.</CommandEmpty>
                     <CommandGroup>
                       {items.map((item) => (
                         <CommandItem
+                          // value={(item.label || item.value).toLowerCase()}
                           value={item.value}
                           key={item.value}
-                          disabled={( item.disabled == true || (item.disabled && item.disabled(item)))}
-                          onSelect={(value) => {
-                            field.onChange(value);
-                            onSelect && onSelect(value);
+                          disabled={
+                            item.disabled === true ||
+                            (typeof item.disabled === "function" &&
+                              item.disabled(item))
+                          }
+                          onSelect={() => {
+                            field.onChange(item.value);
+                            onSelect?.(item.value);
                           }}
                         >
-                          {item?.label || item.value}
+                          {item.label || item.value}
                           <Check
                             className={cn(
                               "ml-auto",

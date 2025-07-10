@@ -30,10 +30,11 @@ const useDarkModeObserver = (chartInstance?: echarts.ECharts | null, isDarkModeE
       }
 
       if (chartInstance.getOption().yAxis) {
-        options.yAxis = {
+        options.yAxis = (chartInstance.getOption().yAxis as echarts.EChartsCoreOption['yAxis'][]).map((yAxis) => ({
+          ...(typeof yAxis === 'object' ? yAxis : {}),
           axisLine: { lineStyle: { color: textColor } },
           axisLabel: { color: textColor },
-        };
+        }));
       }
       // Conditionally apply visualMap styles only if it exists
       const visualMapOption = chartInstance.getOption().visualMap as EChartsCoreOption['visualMap'][];

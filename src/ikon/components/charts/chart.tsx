@@ -26,13 +26,13 @@ const Chart: React.FC<Props> = ({ type, chartData, configurationObj }) => {
       case 'Bar-Chart':
         return <EChartBarChart chartData={chartData} configurationObj={configurationObj} />
       case 'Stack-Bar-Chart':
-        return <EChartStackBarNormalization chartData={chartData} chartConfiguration={configurationObj} />
+        return <EChartStackBarNormalization chartData={chartData} configurationObj={configurationObj} />
       case 'Bar-Chart-Negative':
-        return <EchartBarChartWithNegative chartData={chartData} chartConfiguration={configurationObj} />
+        return <EchartBarChartWithNegative chartData={chartData} configurationObj={configurationObj} />
       case 'stack-bar-chart-negative':
-        return <EChartStackBarNormalization chartData={chartData} chartConfiguration={configurationObj} />
+        return <EChartStackBarNormalization chartData={chartData} configurationObj={configurationObj} />
       case 'sorted-bar-chart':
-        return <EChartSortedBarChart chartData={chartData} chartConfiguration={configurationObj} />
+        return <EChartSortedBarChart chartData={chartData} configurationObj={configurationObj} />
       default:
         return <div>Invalid chart type</div>;
     }

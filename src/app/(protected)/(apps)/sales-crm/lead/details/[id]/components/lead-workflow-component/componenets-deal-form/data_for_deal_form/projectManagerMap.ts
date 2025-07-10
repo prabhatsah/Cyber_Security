@@ -1,0 +1,26 @@
+export const projectManagers = [
+    {id: "57869ce9-91bf-4996-b7b5-a1b76ce69deb", name: "Baishali Roy Chowdhury"},
+    {id: "22f07c70-b453-430c-8776-aca6fa7fd045", name: "Ankita Saha"},
+    {id: "d6b225ac-cbe8-4109-94f6-4829134815cb", name: "HCM Test User"},
+    {id: "a9a4b788-8e5b-4924-9679-45e345a46da3", name: "Saranik Dey"},
+    {id: "562c7920-74ef-495e-93e7-38ba4da5a310", name: "Abhishek Kumar Mishra"},
+    {id: "38384a69-e2aa-42ad-bc67-47502d563148", name: "Rizwan Ansari"},
+    {id: "95254903-82c5-42da-bb0f-0f834de3cebf", name: "Sushmita Chakraborty"},
+    {id: "f3da3f80-fdfa-4bf0-afc2-4deec3600738", name: "Debraj Ghosh"},
+    {id: "ffaba6a2-a41f-43a4-8421-b9b33f20107d", name: "Suman Sur"},
+    {id: "e50c11e1-7847-42ba-93cd-dfbd65583e29", name: "Emrys Said"},
+    {id: "8f4707b7-5a53-416c-b127-7c7caacd538c", name: "Ankit Kumar Ghosh"},
+    {id: "a0a3ada4-9fd5-4ffd-aaca-7b29b4dc1d8e", name: "Ankush Kumar"},
+    {id: "a317a0d3-ce9e-4ce0-a8c7-e35907657983", name: "Farouk Said"},
+    {id: "05318128-1f2c-4319-9962-2f5823b862c4", name: "Ankush Banerjee"},
+    {id: "71534aba-18ca-475f-b443-fe0d83f97377", name: "Kunal Das"},
+    {id: "9bbcc044-2f72-4fce-8508-bb812092af2c", name: "Sayoni Chatterjee"},
+    {id: "94707127-8639-4d4f-901c-aee7dbca1d0d", name: "Anushri Dutta"},
+    {id: "e5061a4c-bcec-479e-9371-4fa4bd1dc07c", name: "Purban Roy Chowdhury"},
+    {id: "5c502abb-af58-4317-9f31-02d97dae7a8f", name: "Prabhat Kumar"},
+    {id: "a4118a20-3344-4f68-9e8c-40218fb3ee1a", name: "Baishakhi Negel"},
+    {id: "b3683fff-4a28-4949-b9f0-48155df0ee59", name: "Madhurima Dey"},
+    {id: "dc6caca7-4e81-47ff-9c4a-176fe16677d2", name: "Moumita Audhya"},
+    {id: "a3544940-dc6a-44f1-8e59-ed0644e0b0ad", name: "Prity Karmakar"}
+ ]
+ 

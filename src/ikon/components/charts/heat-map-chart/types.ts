@@ -19,6 +19,5 @@ interface ConfigurationObj {
 
 interface Props {
     chartData: any;
-    configurationObj: any;
 }
 export type { Props };

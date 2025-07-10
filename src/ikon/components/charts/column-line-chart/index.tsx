@@ -7,6 +7,7 @@ import useDarkModeObserver from "../useDarkModeObserver";
 import * as echarts from "echarts";
 import { useThemeOptions } from '@/ikon/components/theme-provider';
 import { getColorScale } from "../common-function";
+import { labels } from "@progress/kendo-react-common";
 
 const ColumnLineChart: React.FC<Props> = ({ chartData, configurationObj }) => {
     const chartRef = useRef<HTMLDivElement>(null);
@@ -15,6 +16,7 @@ const ColumnLineChart: React.FC<Props> = ({ chartData, configurationObj }) => {
     useEffect(() => {
         if (chartInstance) {
             const colorScale = getColorScale(chartData, state);
+            console.log("colorScale", colorScale);
             const {
                 categoryKey,
                 seriesCreationArrayofObj,
@@ -56,15 +58,17 @@ const ColumnLineChart: React.FC<Props> = ({ chartData, configurationObj }) => {
                     text: configurationObj.title,
                 },
                 tooltip: showoverallTooltip !== undefined ? (showoverallTooltip ? defaultTooltip : undefined) : defaultTooltip,
-                legend: showLegend !== undefined ? (showLegend ? defaultLegend : undefined) : defaultLegend,
-                toolbox: {
-                    feature: {
-                        dataView: { show: true, readOnly: false },
-                        magicType: { show: true, type: ['line', 'bar'] },
-                        restore: { show: true },
-                        saveAsImage: { show: true }
-                    }
+                legend: {
+                    show: false
                 },
+                // toolbox: {
+                //     feature: {
+                //         dataView: { show: true, readOnly: false },
+                //         magicType: { show: true, type: ['line', 'bar'] },
+                //         restore: { show: true },
+                //         saveAsImage: { show: true }
+                //     }
+                // },
                 xAxis: [
                     {
                         type: 'category',
@@ -76,6 +80,7 @@ const ColumnLineChart: React.FC<Props> = ({ chartData, configurationObj }) => {
                     }
                 ],
                 yAxis: yAxisParams,
+                
                 dataZoom: [
                     showScrollx
                         ? {
@@ -96,16 +101,17 @@ const ColumnLineChart: React.FC<Props> = ({ chartData, configurationObj }) => {
                 series: seriesCreationArrayofObj.map((seriesConfig: any, index: number) => ({
                     name: seriesConfig.seriesName,
                     type: seriesConfig.seriesType === "column" ? "bar" : "line",
-                    data: chartData.map((data: any) => data[seriesConfig.seriesName]),
+                    // CHANGE THIS LINE - use valueField instead of seriesName:
+                    data: chartData.map((data: any) => data[seriesConfig.valueField]),
                     itemStyle: {
                         color: colorScale[index % colorScale.length]
                     },
-                    tooltip: seriesConfig.showSeriesTooltip
-                        ? {
-                            valueFormatter: (value: any) =>
-                                `${value} ${seriesConfig.seriesTooltipText}`,
-                        }
-                        : undefined,
+                    stack: seriesConfig.stack,
+                    tooltip: {
+                        valueFormatter: (value: any) => value?.toFixed?.(1) || value
+                    },
+                    symbol: seriesConfig.bullet?.shape || 'circle',
+                    symbolSize: 8
                 })),
             };
             chartInstance.setOption(options);

@@ -15,3 +15,15 @@ export async function downloadResource(fileInfo: FileinfoProps) {
     const resourceUrl = await getResourceUrl(fileInfo)
     window.open(encodeURI(resourceUrl))
 }
+
+export async function openFileInNewTab(url: string) {
+    const encodedLink = encodeURI(url);
+    try {
+        const response = await fetch(encodedLink);
+        const blob = await response.blob();
+        const blobUrl = URL.createObjectURL(blob);
+        window.open(blobUrl, '_blank');
+    } catch (err) {
+        console.error('Failed to open file in new tab:', err);
+    }
+};

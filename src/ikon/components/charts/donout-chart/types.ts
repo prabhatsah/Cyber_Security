@@ -8,7 +8,7 @@ type ConfigurationObj = {
   };
   interface Props {
     chartData: any;
-    chartConfiguration: any
+    configurationObj: any
   }
   
   export type { Props };

@@ -1,14 +1,29 @@
-import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/shadcn/ui/form'
-import React from 'react'
-import { FormDateInputProps } from '../types'
-import { Popover, PopoverContent, PopoverTrigger } from '@/shadcn/ui/popover'
-import { Button } from '@/shadcn/ui/button'
-import { cn } from '@/shadcn/lib/utils'
-import { format } from 'date-fns'
-import { CalendarIcon } from 'lucide-react'
-import { Calendar } from '@/shadcn/ui/calendar'
+import {
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/shadcn/ui/form";
+import React from "react";
+import { FormDateInputProps } from "../types";
+import { Popover, PopoverContent, PopoverTrigger } from "@/shadcn/ui/popover";
+import { Button } from "@/shadcn/ui/button";
+import { cn } from "@/shadcn/lib/utils";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
+import { Calendar } from "@/shadcn/ui/calendar";
 
-export default function FormDateInput({ formControl, name, label, placeholder, dateFormat, calendarDateDisabled, formDescription }: FormDateInputProps) {
+export default function FormDateInput({
+  formControl,
+  name,
+  label,
+  placeholder,
+  dateFormat,
+  calendarDateDisabled,
+  formDescription,
+}: FormDateInputProps) {
   return (
     <>
       <FormField
@@ -16,15 +31,18 @@ export default function FormDateInput({ formControl, name, label, placeholder, d
         name={name}
         render={({ field }) => (
           <FormItem>
-            {label && <><FormLabel>{label}</FormLabel><br /></>}
+            {label && (
+              <>
+                <FormLabel>{label}</FormLabel>
+                <br />
+              </>
+            )}
             <Popover>
-              <PopoverTrigger asChild className='w-full'>
+              <PopoverTrigger asChild className="w-full">
                 <FormControl>
                   <Button
                     variant={"outline"}
-                    className={cn(
-                      !field.value && "text-muted-foreground"
-                    )}
+                    className={cn(!field.value && "text-foreground/50")}
                   >
                     {field.value ? (
                       format(field.value, dateFormat || "PPP")
@@ -48,11 +66,13 @@ export default function FormDateInput({ formControl, name, label, placeholder, d
                 />
               </PopoverContent>
             </Popover>
-            {formDescription && <FormDescription>{formDescription}</FormDescription>}
+            {formDescription && (
+              <FormDescription>{formDescription}</FormDescription>
+            )}
             <FormMessage />
           </FormItem>
         )}
       />
     </>
-  )
+  );
 }

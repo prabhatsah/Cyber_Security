@@ -23,3 +23,17 @@ export interface getMySoftwaresV2Props {
 export interface getAvailableSoftwaresForAccountProps {
     accountId?: string
 }
+
+export interface SubscribeSoftwareProps {
+    ACCOUNT_ID: string;
+    SOFTWARE_ID: string;
+    SOFTWARE_NAME: string;
+    SOFTWARE_VERSION: number;
+    SOFTWARE_DESCRIPTION: string;
+    SOFTWARE_OWNER_ID: string;
+    SOFTWARE_OWNER_NAME: string;
+    SOFTWARE_ACCESSIBILITY: 'PUBLIC' | 'PRIVATE'; // assuming only these two possible values
+    ACTIVE: boolean;
+    PURCHASE_DATE: string; // ISO date string
+    EXPIRES_ON: string | null; // ISO date string or null
+};

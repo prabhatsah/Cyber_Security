@@ -41,18 +41,20 @@ export const logout = async () => {
     })
     return result.data
 }
-export const getLoggedInUserProfile = async (): Promise<GetLoggedInUserProfileReturnProps> => {
+export const getLoggedInUserProfile = async (isServerApi?: boolean): Promise<GetLoggedInUserProfileReturnProps> => {
     const result = await ikonBaseApi({
         service: "loginService",
-        operation: "getLoggedInUserProfile"
+        operation: "getLoggedInUserProfile",
+        isServerApi
     })
     return result.data
 }
 
-export const getLoggedInUserProfileDetails = async (): Promise<GetLoggedInUserProfileDetailsReturnProps> => {
+export const getLoggedInUserProfileDetails = async (isServerApi?: boolean): Promise<GetLoggedInUserProfileDetailsReturnProps> => {
     const result = await ikonBaseApi({
         service: "loginService",
         operation: "getLoggedInUserProfileDetails",
+        isServerApi
     })
     return result.data
 }

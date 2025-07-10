@@ -2,3 +2,21 @@
     --kendo-color-surface-alt: var(--background);
     --kendo-color-on-app-surface: var(--foreground)
 }
+
+.k-animation-container {
+    z-index: 9999 !important;
+}
+
+.light {
+    /* Primary */
+    --kendo-color-primary-subtle: hsl(var(--accent));
+    --kendo-color-primary-subtle-hover: hsl(var(--accent-foreground));
+    --kendo-color-primary-subtle-active: hsl(var(--primary));
+    --kendo-color-primary: hsl(var(--primary));
+    --kendo-color-primary-hover: hsl(var(--primary-foreground));
+    --kendo-color-primary-active: hsl(var(--secondary-foreground));
+    --kendo-color-primary-emphasis: hsl(var(--primary));
+    --kendo-color-primary-on-subtle: hsl(var(--foreground));
+    --kendo-color-on-primary: hsl(var(--primary-foreground));
+    --kendo-color-primary-on-surface: hsl(var(--primary));
+}

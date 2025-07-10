@@ -102,7 +102,7 @@ class ThemePalette {
     }
 }
 
-function generateThemeVariables(options: ThemeColorProps, isDarkTheme: boolean): ColorVariables {
+export function generateThemeVariables(options: ThemeColorProps, isDarkTheme: boolean): ColorVariables {
     const palette = new ThemePalette(options, isDarkTheme);
 
     const background = palette.getBackground();

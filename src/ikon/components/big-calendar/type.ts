@@ -5,11 +5,13 @@ export interface BigCalendarProps {
   events: BigCalendarEventProps[];
   extraParamsEvent?: ExtraParamsEvent;
   extraTools?: ReactNode[];
+  onDateClick?: (date: Date) => void;
 }
 
 export interface ExtraParamsEvent {
   defaultView?: string;
   isEditableAll?: boolean;
+  isViewable?: boolean;  
   onEditEventClick?: (event: BigCalendarEventProps) => void;
   onViewEventClick?: (event: BigCalendarEventProps) => void;
   height?: string;
@@ -18,6 +20,7 @@ export interface ExtraParamsEvent {
 
 export interface BigCalendarEventProps extends Event {
   isEditable?: boolean;
+  isViewable?: boolean;
   onEventClick?: (event: any) => void;
 }
 
@@ -27,4 +30,5 @@ export interface BigCalenderToolbarProps {
   label: string;
   extraTools?: ReactNode[];
   view: "month" | "week" | "work_week" | "day" | "agenda";
+  //extraParamsEvent?: ExtraParamsEvent;
 }

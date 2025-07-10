@@ -19,8 +19,8 @@ export async function subscribeToProcessEvents({
     connectionClosedFunction
 }: {
     viewComponentId: string;
-    accountId: string;
-    softwareId: string;
+    accountId?: string;
+    softwareId?: string;
     processId: string;
     processInstanceId?: string;
     eventCallbackFunction: (event: any) => void;
@@ -95,4 +95,138 @@ export function clearWs(viewComponentId: string): void {
         ws.close();
         delete componentWebsocketMap[viewComponentId];
     }
+}
+
+export async function openConnectionForViewComponent(
+    {
+        viewComponentId,
+        accountId,
+        softwareId,
+        processId,
+        processInstanceId,
+        eventCallbackFunction,
+        connectionOpenFunction,
+        connectionClosedFunction
+    }: {
+        viewComponentId: string;
+        accountId: string;
+        softwareId: string;
+        processId: string;
+        processInstanceId?: string;
+        eventCallbackFunction: (event: any) => void;
+        connectionOpenFunction?: () => void;
+        connectionClosedFunction?: () => void;
+    }
+    
+) :Promise<void> {
+    const globalTicket = await getTicket();
+
+    if (!accountId) {
+        const activeAccountId = await getActiveAccountId()
+        if (activeAccountId) {
+            accountId = activeAccountId;
+        }
+    }
+
+    if (!softwareId) {
+        const currentSoftwareId = await getCurrentSoftwareId()
+        if (currentSoftwareId) {
+            softwareId = currentSoftwareId;
+        }
+    }
+
+    if (!accountId) throw new Error("accountId cannot be null or undefined.");
+    if (!softwareId) throw new Error("softwareId cannot be null or undefined.");
+
+
+    console.log("Creating new websocket connection");
+    const ws = new WebSocket(`${WS_URL}/processevent/${globalTicket}`);
+    ws.binaryType = "arraybuffer";
+
+    ws.onopen = () => {
+        console.log("Websocket opened");
+        componentWebsocketMap[viewComponentId] = ws;
+
+        IkonDomNodeRemoval.registerDomNodeRemovalFunction(viewComponentId, clearWs);
+        connectionOpenFunction?.();
+        
+    };
+
+    
+
+    ws.onmessage = (evt) => {
+        const result = pako.ungzip(evt.data, { to: "string" });
+        const event = JSON.parse(result);
+        eventCallbackFunction(event);
+    };
+
+    ws.onclose = (evt) => {
+        console.log("Websocket closed");
+      
+        connectionClosedFunction?.();
+    };
+}
+export async function unsubscribeProcessEvents(
+    viewComponentId: string,
+    accountId: string,
+    softwareId: string,
+    processId: string,
+    processInstanceId: string,
+    taskId: string
+){
+
+    const globalTicket = await getTicket();
+
+   if (!accountId) {
+        const activeAccountId = await getActiveAccountId()
+        if (activeAccountId) {
+            accountId = activeAccountId;
+        }
+    }
+
+    if (!softwareId) {
+        const currentSoftwareId = await getCurrentSoftwareId()
+        if (currentSoftwareId) {
+            softwareId = currentSoftwareId;
+        }
+    }
+
+    if (!accountId) throw new Error("accountId cannot be null or undefined.");
+    if (!softwareId) throw new Error("softwareId cannot be null or undefined.");
+
+    var ws = componentWebsocketMap[viewComponentId];
+    var unsubscription;
+
+    if (taskId) {
+         unsubscription = {
+            accountId: accountId,
+            softwareId: softwareId,
+            processId: processId,
+            processInstanceId: processInstanceId,
+            taskId: taskId,
+            action: "unsubscription",
+            ticket: globalTicket
+        }
+    }    
+    else if (processInstanceId) {
+         unsubscription = {
+            accountId: accountId,
+            softwareId: softwareId,
+            processId: processId,
+            processInstanceId: processInstanceId,
+            action: "unsubscription",
+            ticket: globalTicket
+        }
+    }
+    else {
+         unsubscription = {
+            accountId: accountId,
+            softwareId: softwareId,
+            processId: processId,
+            action: "unsubscription",
+            ticket: globalTicket
+        }
+    }
+
+    ws.send(JSON.stringify(unsubscription));
 }

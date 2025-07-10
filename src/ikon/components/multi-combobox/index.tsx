@@ -5,8 +5,15 @@ import { cn } from '@/shadcn/lib/utils'
 import { Check, ChevronsUpDown } from 'lucide-react'
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/shadcn/ui/command'
 
-export default function MultiCombobox({ placeholder, items, onValueChange }) {
-  const [selectedItems, setSelectedItems] = useState<string[]>([])
+interface MultiComboboxProps {
+  placeholder: string;
+  items: { value: string; label?: string }[];
+  onValueChange: (selectedItems: string[]) => void;
+  defaultValue?: string[];
+}
+
+export default function MultiCombobox({ placeholder, items, onValueChange, defaultValue }: MultiComboboxProps) {
+  const [selectedItems, setSelectedItems] = useState<string[]>(defaultValue ? defaultValue : []);
   useEffect(() => {
     onValueChange(selectedItems)
   }, [selectedItems])

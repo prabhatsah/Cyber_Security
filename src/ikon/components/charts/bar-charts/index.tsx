@@ -158,17 +158,14 @@ const EChartBarChart: React.FC<BarChartProps> = ({ chartData, configurationObj }
   const [isClient, setIsClient] = useState(false);
   const { state } = useThemeOptions();
 
-  // Using the useECharts hook to handle chart initialization and resizing
   const chartInstance = useECharts(chartRef as React.RefObject<HTMLDivElement>);
 
-  // Use useEffect to delay initialization until client-side rendering
   useEffect(() => {
-    setIsClient(true); // Mark component as client-rendered
-
+    setIsClient(true);
   }, []);
+
   useEffect(() => {
     if (chartInstance) {
-      // Destructure configurationObj to extract values
       const colorScale = getColorScale(chartData, state);
       const {
         title,
@@ -180,6 +177,10 @@ const EChartBarChart: React.FC<BarChartProps> = ({ chartData, configurationObj }
         showoverallTooltip,
         overallTooltip,
       } = configurationObj;
+
+      const categories = chartData.map((item: any) => item[categoryKey]);
+      const values = chartData.map((item: any) => item[valueKey]);
+
       const defaultTooltip = {
         trigger: "item",
         formatter: overallTooltip,
@@ -188,28 +189,28 @@ const EChartBarChart: React.FC<BarChartProps> = ({ chartData, configurationObj }
         },
       };
 
-      const defaultLegend = {
-        orient: "horizontal",
-        bottom: 0,
-        left: "right",
-      };
       const options = {
         title: {
-          text: title || 'Default Title',
-          // left: 'center',
+          text: title || '',
         },
-        // tooltip: {
-        //   trigger: 'axis',
+        tooltip: showoverallTooltip ? defaultTooltip : undefined,
+        // legend: {
+        //   show: showLegend !== undefined ? showLegend : true,
+        //   data: categories, // Ensuring legend items match the categories
+        //   textStyle: {
+        //     color: state.mode === "dark" ? "#fff" : "#000",
+        //   },
         // },
         legend: {
           show: showLegend !== undefined ? showLegend : true,
-          // data: chartData.map((item: any) => item.name), // Use 'name' for legend
+          data: chartData.map((item: any) => item[categoryKey]), // Match legend with bar names
+          textStyle: {
+            color: state.mode === "dark" ? "#fff" : "#000",
+          },
         },
-        tooltip: showoverallTooltip !== undefined ? (showoverallTooltip ? defaultTooltip : undefined) : defaultTooltip,
-        // legend: showLegend !== undefined ? (showLegend ? defaultLegend : undefined) : defaultLegend,
         xAxis: {
           type: 'category',
-          data: chartData.map((item: any) => item[categoryKey]),
+          data: categories,
           axisLabel: {
             interval: showScrollx ? 'auto' : 0,
           },
@@ -217,45 +218,41 @@ const EChartBarChart: React.FC<BarChartProps> = ({ chartData, configurationObj }
         yAxis: {
           type: 'value',
         },
-        series: [
-          {
-            name: 'Value',
-            type: 'bar',
-            data: chartData.map((item: any) => item[valueKey]),
-            barWidth: '60%',
-            itemStyle: {
-              color: (params: any) => colorScale[params.dataIndex % colorScale.length],
-            },
+        // series: [
+        //   {
+        //     name: title, // Assigning title to match legend
+        //     type: 'bar',
+        //     data: values,
+        //     barWidth: '60%',
+        //     itemStyle: {
+        //       color: (params: any) => colorScale[params.dataIndex % colorScale.length],
+        //     },
+        //   },
+        // ],
+        series: chartData.map((item: any, index: number) => ({
+          name: item[categoryKey], // This name should match legend items
+          type: "bar",
+          data: [{ value: item[valueKey], name: item[categoryKey] }],
+          barWidth: "60%",
+          barGap: "-100%",  // Ensures the bars are centrally aligned
+          barCategoryGap: "50%",
+          itemStyle: {
+            color: (params: any) => colorScale[params.dataIndex % colorScale.length], // Ensure color consistency
           },
-        ],
+        })),
         grid: {
           left: '3%',
           right: '4%',
           bottom: '3%',
           containLabel: true,
         },
-        cursor: configurationObj.showCursor ? 'pointer' : 'default',
-        dataZoom: [
-          // {
-          //   type: 'slider',    // Use the slider type for zooming
-          //   show: true,
-          //   xAxisIndex: [0],   // Enable zoom on the x-axis (category axis)
-          //   start: configurationObj.zoomStartIndex || 0,  // Start zoom
-          //   end: configurationObj.zoomEndIndex || 100,   // End zoom
-          // },
-          {
-            type: 'inside',    // Use the inside zoom, allowing zooming with mouse wheel or touch
-            xAxisIndex: [0],   // Enable zoom on the x-axis (category axis)
-            start: configurationObj.zoomStartIndex || 0,  // Start zoom
-            end: configurationObj.zoomEndIndex || 100,   // End zoom
-          }
-        ],
-      };
-
-      // Apply the options to the chart
+        cursor: showCursor ? 'pointer' : 'default',
+      };     
       chartInstance.setOption(options);
     }
   }, [chartInstance, chartData, configurationObj]);
+
+
 
   const isDarkModeEnabled = state.mode === "dark";
   useDarkModeObserver(chartInstance, isDarkModeEnabled);
@@ -264,3 +261,4 @@ const EChartBarChart: React.FC<BarChartProps> = ({ chartData, configurationObj }
 };
 
 export default EChartBarChart;
+

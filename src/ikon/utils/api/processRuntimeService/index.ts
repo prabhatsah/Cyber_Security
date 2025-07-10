@@ -26,7 +26,7 @@ export async function getMyInstancesV2<TData>({
   mongoWhereClause = null,
   projections = ["Data"],
   allInstances = false,
-}: getMyInstancesV2Props): Promise<InstanceV2Props<TData>[]> {
+}: getMyInstancesV2Props, isServerApi?: boolean): Promise<InstanceV2Props<TData>[]> {
   const result = await ikonBaseApi({
     accountId,
     softwareId,
@@ -42,6 +42,7 @@ export async function getMyInstancesV2<TData>({
       projections,
       allInstances,
     ],
+    isServerApi
   });
   return result.data;
 }
@@ -203,28 +204,24 @@ export const invokeAction = async (
     data,
     processInstanceIdentifierField,
     accountId,
-    softwareId
-}: invokeActionProps, tags?: string[]) => {
-    const result = await ikonBaseApi({
-        accountId,
-        softwareId,
-        service: 'processRuntimeService',
-        operation: 'invokeAction',
-        arguments_: [
-            taskId,
-            transitionName,
-            data,
-            processInstanceIdentifierField
-        ]
-    })
-    if (tags) {
-        for (const tag of tags) {
-            revalidateTag(tag)
-        }
+    softwareId,
+  }: invokeActionProps,
+  tags?: string[]
+) => {
+  const result = await ikonBaseApi({
+    accountId,
+    softwareId,
+    service: "processRuntimeService",
+    operation: "invokeAction",
+    arguments_: [taskId, transitionName, data, processInstanceIdentifierField],
+  });
+  if (tags) {
+    for (const tag of tags) {
+      revalidateTag(tag);
     }
-    return result.data
-}
-
+  }
+  return result.data;
+};
 
 export async function getDataForTaskId<TData>({
   taskId,
@@ -243,12 +240,13 @@ export async function getParameterizedDataForTaskId<TData>({
   taskId,
   parameters,
   accountId,
-}: getParameterizedDataForTaskIdProps): Promise<TData> {
+}: getParameterizedDataForTaskIdProps, isServerApi?: boolean): Promise<TData> {
   const result = await ikonBaseApi({
     accountId,
     service: "processRuntimeService",
     operation: "getParameterizedDataForTaskId",
     arguments_: [taskId, parameters],
+    isServerApi
   });
   return result.data;
 }
@@ -278,6 +276,19 @@ export const invokeTaskScript = async ({
     service: "processRuntimeService",
     operation: "invokeTaskScript",
     arguments_: [taskId, parameters],
+  });
+  return result.data;
+};
+
+export const deleteProcessInstance = async ({
+  processInstanceId,
+}: {
+  processInstanceId: string;
+}) => {
+  const result = await ikonBaseApi({
+    service: "processRuntimeService",
+    operation: "deleteProcessInstance",
+    arguments_: [processInstanceId],
   });
   return result.data;
 };

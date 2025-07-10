@@ -1,13 +1,22 @@
 import { Command } from "cmdk";
-import { InputHTMLAttributes, ReactNode, TextareaHTMLAttributes } from "react";
+import React, { InputHTMLAttributes, ReactNode, TextareaHTMLAttributes } from "react";
 import { Matcher } from "react-day-picker";
 
 export interface FormFieldProps {
   formControl: any;
-  label?: string;
+  label?: string | ReactNode;
   formItemClass?: string;
   formDescription?: string;
   extraFormComponent?: (value: string) => ReactNode;
+}
+
+export interface FormTimeInputProps {
+  formControl: any;
+  name: string;
+  label?: string;
+  placeholder?: string;
+  formDescription?: string;
+  timeFormat?: string;
 }
 
 export interface FormInputProps
@@ -35,6 +44,7 @@ export interface FormComboboxInputProps extends FormFieldProps {
   items: ComboboxItemProps[];
   onSelect?: (value: string | string[]) => void;
   disabled?: ((...args: any) => boolean) | boolean;
+  defaultValue?:string[];
 }
 export interface ComboboxItemProps {
   value: string;

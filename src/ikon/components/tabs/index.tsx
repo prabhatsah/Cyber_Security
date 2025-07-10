@@ -14,7 +14,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/shadcn/ui/dropdown-menu";
-import { Ellipsis } from "lucide-react";
+import { Ellipsis, EllipsisVertical } from "lucide-react";
 import { TextButton } from "@/ikon/components/buttons";
 import { Card } from "@/shadcn/ui/card";
 import { useEffect, useState } from "react";
@@ -96,8 +96,8 @@ export default function Tabs({
           {groupedTabs.length > 0 && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <TextButton variant="ghost">
-                  <Ellipsis />
+                <TextButton variant="outline" size='smIcon' className="mt-1">
+                  <EllipsisVertical />
                 </TextButton>
               </DropdownMenuTrigger>
               <DropdownMenuContent>

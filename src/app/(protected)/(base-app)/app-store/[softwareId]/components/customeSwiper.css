@@ -1,0 +1,15 @@
+.swiper-button-next {
+    @apply text-primary;
+  }
+  
+  .swiper-button-prev {
+    @apply text-primary;
+  }
+
+  .swiper-pagination-bullet {
+    @apply bg-secondary; /* Default bullet color */
+  }
+
+  .swiper-pagination-bullet-active {
+    @apply bg-primary; /* Active bullet color */
+  }

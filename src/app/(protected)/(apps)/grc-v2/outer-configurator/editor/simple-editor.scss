@@ -1,0 +1,90 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+
+/* Global variables for toolbar and text color */
+.tiptap body {
+  --tt-toolbar-height: 44px;
+  --tt-theme-text: var(--tt-gray-light-900);
+
+  .tiptap.dark & {
+    --tt-theme-text: var(--tt-gray-dark-900);
+  }
+}
+
+/* Global font setup */
+.tiptap body {
+  font-family: "Inter", sans-serif;
+  color: black;
+  background-color: white;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  padding: 0;
+  overflow: hidden;
+}
+
+.tiptap html,
+.tiptap body,
+.tiptap #root,
+.tiptap #app {
+  height: 100%;
+  color: black;
+  background-color: white;
+}
+
+/* Content area */
+.tiptap.ProseMirror {
+  font-family: "DM Sans", sans-serif;
+}
+
+/* Scrollable wrapper */
+.tiptap .content-wrapper {
+  height: calc(100% - var(--tt-toolbar-height));
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    display: block;
+    width: 0.5rem;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--tt-scrollbar-color);
+    border-radius: 4px;
+  }
+
+  scrollbar-width: thin;
+  scrollbar-color: var(--tt-scrollbar-color) transparent;
+}
+
+/* Main editor container */
+.tiptap .simple-editor-content {
+  max-width: 640px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* Editor area styles - white background, black text, border */
+.tiptap .simple-editor-content .tiptap.ProseMirror {
+  padding: 3rem 3rem;
+  background-color: white !important;
+  color: black !important;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  min-height: 300px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* Make sure all inner content stays black */
+.tiptap .simple-editor-content .tiptap.ProseMirror * {
+  color: black !important;
+}
+
+/* Mobile responsive padding */
+@media screen and (max-width: 480px) {
+  .tiptap .simple-editor-content .tiptap.ProseMirror {
+    padding: 1rem 1.5rem;
+  }
+}

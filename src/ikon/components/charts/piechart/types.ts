@@ -1,6 +1,6 @@
 // Type for ECharts options
 // type EChartsOption = echarts.EChartsOption;
-type ConfigurationObj = {
+type configurationObj = {
   title?: string;
   showLegend: boolean;
   showCursor: boolean;
@@ -9,10 +9,10 @@ type ConfigurationObj = {
   colors: string[];
 };
 interface Props {
-    chartData: any;
-    configurationObj: any
-  }
-  
-  export type { Props };
-  
-  
+  chartData: any;
+  chartConfiguration?: any;
+  configurationObj?: any
+}
+
+export type { Props };
+

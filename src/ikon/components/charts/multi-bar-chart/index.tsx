@@ -10,9 +10,9 @@ import { getColorScale } from "../common-function";
 
 interface Props {
     chartData: any;
-    chartConfiguration: any;
+    configurationObj: any;
 }
-const MultiBarChart: React.FC<Props> = ({ chartData, chartConfiguration }) => {
+const MultiBarChart: React.FC<Props> = ({ chartData, configurationObj }) => {
     const chartRef = useRef<HTMLDivElement>(null);
     const chartInstance: any = useECharts(chartRef as React.RefObject<HTMLDivElement>);
     const { state } = useThemeOptions();
@@ -36,7 +36,7 @@ const MultiBarChart: React.FC<Props> = ({ chartData, chartConfiguration }) => {
                 zoomEndIndex,
                 showoverallTooltip,
                 dimensions
-            } = chartConfiguration;
+            } = configurationObj;
 
             const defaultTooltip = {
                 position: 'top',

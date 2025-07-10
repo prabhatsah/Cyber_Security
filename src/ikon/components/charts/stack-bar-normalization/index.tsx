@@ -2,7 +2,7 @@
 // import * as echarts from 'echarts';
 // import { EChartProps } from './type';
 
-// const EChartStackBarNormalization: React.FC<EChartProps> = ({ chartData, chartConfiguration }) => {
+// const EChartStackBarNormalization: React.FC<EChartProps> = ({ chartData, configurationObj }) => {
 //   const chartRef = useRef<HTMLDivElement>(null);
 //   const chartInstanceRef = useRef<echarts.ECharts | null>(null);
 
@@ -25,15 +25,15 @@
 //       // Configure chart options dynamically using props
 //       const chartOption = {
 //         title: {
-//           text: chartConfiguration.title || 'Mixed Bar and Line Chart',
+//           text: configurationObj.title || 'Mixed Bar and Line Chart',
 //           left: 'center',
 //         },
 //         tooltip: {
 //           trigger: 'axis',
 //         },
 //         legend: {
-//           show: chartConfiguration.showLegend ?? true,
-//           data: chartConfiguration.seriesNames, // Use passed series names
+//           show: configurationObj.showLegend ?? true,
+//           data: configurationObj.seriesNames, // Use passed series names
 //           bottom: 10, // Position legend at the bottom
 //         },
 //         xAxis: {
@@ -46,7 +46,7 @@
 //             name: 'Stacked Values',
 //           },
 //         ],
-//         series: chartConfiguration.seriesNames.map((name, sid) => ({
+//         series: configurationObj.seriesNames.map((name, sid) => ({
 //           name,
 //           type: 'bar',
 //           stack: 'total',
@@ -102,38 +102,37 @@
 //         }
 //       };
 //     }
-//   }, [chartData, chartConfiguration]);
+//   }, [chartData, configurationObj]);
 
 //   return <div ref={chartRef} style={{ width: '100%', height: '100%' }} />;
 // };
 
 // export default EChartStackBarNormalization;
 
+import React, { useEffect, useRef } from "react";
+import * as echarts from "echarts";
+import { EChartProps } from "./type";
+import useECharts from "../useECharts";
+import useDarkModeObserver from "../useDarkModeObserver";
+import { getColorScale } from "../common-function";
+import { useThemeOptions } from "../../theme-provider";
 
-
-
-
-import React, { useEffect, useRef } from 'react';
-import * as echarts from 'echarts';
-import { EChartProps } from './type';
-import useECharts from '../useECharts';
-import useDarkModeObserver from '../useDarkModeObserver';
-
-const EChartStackBarNormalization: React.FC<EChartProps> = ({ chartData, chartConfiguration }) => {
+const EChartStackBarNormalization: React.FC<EChartProps> = ({
+  chartData,
+  configurationObj,
+}) => {
   const chartRef = useRef<HTMLDivElement>(null);
   const chartInstanceRef = useRef<echarts.ECharts | null>(null);
   const chartInstance = useECharts(chartRef);
+  const { state } = useThemeOptions();
   useEffect(() => {
     if (chartInstance) {
+      const colorScale = getColorScale(chartData, state);
       // Initialize the chart instance
       // const myChart = echarts.init(chartRef.current);
       // chartInstanceRef.current = myChart;
 
-      // Define dynamic colors (use chartConfiguration.colors or fallback to default colors)
-      const colors = chartConfiguration.colors || [
-        '#5470C6', '#91CC75', '#EE6666', '#FFB980', '#FF99C3', '#D7AEE0',
-        '#F7B7A3', '#FF8247', '#A1E4D9',
-      ];
+      // Define dynamic colors (use configurationObj.colors or fallback to default colors)
 
       // Prepare totalData by summing up values of each column in the rawData
       const totalData: number[] = [];
@@ -147,48 +146,51 @@ const EChartStackBarNormalization: React.FC<EChartProps> = ({ chartData, chartCo
 
       // Prepare series data (normalize each category's value and assign dynamic colors)
       const series = chartData.map((data: number[], index: number) => ({
-        name: chartConfiguration.seriesNames ? chartConfiguration.seriesNames[index] : `Series ${index + 1}`,
-        type: 'bar',
-        stack: 'stack',  // Stack the bars
+        name: configurationObj.seriesNames
+          ? configurationObj.seriesNames[index]
+          : `Series ${index + 1}`,
+        type: "bar",
+        stack: "stack", // Stack the bars
         data: data,
         itemStyle: {
-          color: colors[index % colors.length], // Use the color from configuration or default
+          color: (params: any) =>
+            colorScale[params.dataIndex % colorScale.length], // Use the color from configuration or default
         },
       }));
 
       // Prepare chart options
       const chartOption = {
         title: {
-          text: chartConfiguration.title || 'Stacked Bar Chart with Negative Values',
-          left: 'center',
+          text:
+            configurationObj.title || "Stacked Bar Chart with Negative Values",
+          left: "center",
         },
         tooltip: {
-          trigger: 'axis',
+          trigger: "axis",
           axisPointer: {
-            type: 'shadow',
+            type: "shadow",
           },
         },
         legend: {
-          data: chartConfiguration.seriesNames || series.map((s) => s.name),  // Dynamic legend
-          show: chartConfiguration.showLegend ?? true,  // Use the showLegend config (default to true)
-          bottom: '0%',  // Position the legend at the bottom of the chart
-          left: 'center',  // Optionally center-align the legend horizontally
-          itemGap: 20,  // Adjust the space between legend items
-          itemWidth: 20,  // Set width of legend items
-          itemHeight: 10,  // Set height of legend items
+          data: configurationObj.seriesNames || series.map((s) => s.name), // Dynamic legend
+          show: configurationObj.showLegend ?? true, // Use the showLegend config (default to true)
+          bottom: "0%", // Position the legend at the bottom of the chart
+          left: "center", // Optionally center-align the legend horizontally
+          itemGap: 20, // Adjust the space between legend items
+          itemWidth: 20, // Set width of legend items
+          itemHeight: 10, // Set height of legend items
           textStyle: {
             fontSize: 14, // Customize font size for legend text
           },
         },
         xAxis: {
-          type: 'category',
+          type: "category",
           data: chartData[0].map((_, index) => `Category ${index + 1}`), // Dynamically label x-axis
         },
         yAxis: {
-          type: 'value',
+          type: "value",
         },
         series: series, // Dynamically generated series
-
 
         dataZoom: [
           // {
@@ -199,11 +201,11 @@ const EChartStackBarNormalization: React.FC<EChartProps> = ({ chartData, chartCo
           //   end: configurationObj.zoomEndIndex || 100,   // End zoom
           // },
           {
-            type: 'inside',    // Use the inside zoom, allowing zooming with mouse wheel or touch
-            xAxisIndex: [0],   // Enable zoom on the x-axis (category axis)
-            start:0,  // Start zoom
-            end: 100,   // End zoom
-          }
+            type: "inside", // Use the inside zoom, allowing zooming with mouse wheel or touch
+            xAxisIndex: [0], // Enable zoom on the x-axis (category axis)
+            start: 0, // Start zoom
+            end: 100, // End zoom
+          },
         ],
       };
 
@@ -228,11 +230,12 @@ const EChartStackBarNormalization: React.FC<EChartProps> = ({ chartData, chartCo
       //   myChart.dispose();
       // };
     }
-  }, [chartData, chartConfiguration, chartInstance]);
+  }, [chartData, configurationObj, chartInstance]);
 
-  useDarkModeObserver(chartInstance);
+  const isDarkModeEnabled = state.mode === "dark";
+    useDarkModeObserver(chartInstance, isDarkModeEnabled);
 
-  return <div ref={chartRef} style={{ width: '100%', height: '100%' }} />
+  return <div ref={chartRef} style={{ width: "100%", height: "100%" }} />;
 };
 
 export default EChartStackBarNormalization;

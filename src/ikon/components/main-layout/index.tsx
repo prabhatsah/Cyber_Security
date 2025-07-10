@@ -19,14 +19,14 @@ function MainLayout({ children }: { children: ReactNode }) {
         >
           <MainSideBar />
           <SidebarInset className="flex h-screen overflow-hidden">
-            <Header />
-            <div className="flex-grow overflow-hidden flex">
-              <AppSidebarProvider>
+            <AppSidebarProvider>
+              <Header />
+              <div className="flex-grow overflow-hidden flex">
                 <AppSidebar />
-                <div className="p-2 lg:p-4 flex-grow overflow-hidden">{children}</div>
-              </AppSidebarProvider>
-            </div>
-            <Footer />
+                <div className="p-2 lg:p-4 flex-grow overflow-hidden ">{children}</div>
+              </div>
+              <Footer />
+            </AppSidebarProvider>
           </SidebarInset>
         </SidebarProvider>
       </BreadcrumbProvider>

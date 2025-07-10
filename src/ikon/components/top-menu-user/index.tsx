@@ -14,7 +14,7 @@ export default async function TopMenuUser() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon">
+        <Button variant="outline" size="icon" className="rounded-full">
           <Avatar className="rounded-full">
             <AvatarImage
               src={getSrcFromBase64String(user?.USER_THUMBNAIL)}

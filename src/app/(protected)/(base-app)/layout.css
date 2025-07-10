@@ -1,0 +1,136 @@
+.form-section {
+    width : 430px;
+    height : 485px;
+  }
+  
+  .login-left-text {
+    font-family: Poppins;
+    font-size: 32px;
+    font-style: italic;
+    font-weight: 700;
+    line-height: 52px;
+    text-align: left;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+    width: 510px;
+  }
+  
+  .ikon-sub-text {
+    font-family: Poppins;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 27px;
+    text-align: left;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+    color: #d1d5db;
+  }
+  
+  .form-input-bg {
+    background: #111827;
+    color: white;
+    border: 1px solid #ced4da;
+    height: 50px;
+  }
+  
+  .forgot-password-text {
+    color: #d1d5db;
+    font-size: 14px;
+  }
+  
+  .login-btn {
+    width: 190px;
+    height: 50px;
+    top: 317px;
+    left: 210px;
+    gap: 0px;
+    border-radius: 5px;
+    /* opacity: 0px; */
+    background: #4f46e5;
+    font-family: Poppins;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 24px;
+    text-align: center;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+    color: #ffffff;
+  }
+  
+  .login-btn:hover {
+    animation-timing-function: linear;
+    animation-duration: 100ms;
+  }
+  
+  .reset-btn {
+    width: 190px;
+    height: 50px;
+    top: 317px;
+    gap: 0px;
+    border-radius: 5px 0px 0px 0px;
+    border: 1.2px 0px 0px 0px;
+    /* opacity: 0px; */
+    border: 1.2px solid #374151;
+    font-family: Poppins;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 24px;
+    text-align: center;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+    color: #ffffff;
+  }
+  
+  .signup-text {
+    font-family: Poppins;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 21px;
+    text-align: left;
+    text-decoration-line: underline;
+    text-decoration-style: solid;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: auto;
+  }
+  
+  .dont-have-acct-text {
+    font-family: Poppins;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 21px;
+    text-align: left;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+  }
+  
+  .support-text {
+    font-family: Poppins;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 21px;
+    text-align: left;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+    color: #babbf8;
+  }
+  
+  .version-text {
+    font-family: Poppins;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 18px;
+    text-align: left;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+    color: #d1d5db;
+  }
+  
+  .terminal-box {
+      height : 530px;
+      width : 555px;
+  }
+
+  .home-carousel-box {
+    width : 459px;
+  }
+  

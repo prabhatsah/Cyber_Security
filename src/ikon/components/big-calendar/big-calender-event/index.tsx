@@ -32,8 +32,6 @@ export default function BigCalenderEvent({ event, extraParamsEvent }: { event: B
                         <Eye size={16} />
                     </button>
                 </Tooltip>
-
-
             </span>
         </div>
     );

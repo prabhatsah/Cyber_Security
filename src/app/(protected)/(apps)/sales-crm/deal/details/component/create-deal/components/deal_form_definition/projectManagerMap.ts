@@ -1,0 +1,26 @@
+export const projectManagers = [
+    {value: "57869ce9-91bf-4996-b7b5-a1b76ce69deb", label: "Baishali Roy Chowdhury"},
+    {value: "22f07c70-b453-430c-8776-aca6fa7fd045", label: "Ankita Saha"},
+    {value: "d6b225ac-cbe8-4109-94f6-4829134815cb", label: "HCM Test User"},
+    {value: "a9a4b788-8e5b-4924-9679-45e345a46da3", label: "Saranik Dey"},
+    {valueid: "562c7920-74ef-495e-93e7-38ba4da5a310", label: "Abhishek Kumar Mishra"},
+    {value: "38384a69-e2aa-42ad-bc67-47502d563148", label: "Rizwan Ansari"},
+    {value: "95254903-82c5-42da-bb0f-0f834de3cebf", label: "Sushmita Chakraborty"},
+    {value: "f3da3f80-fdfa-4bf0-afc2-4deec3600738", label: "Debraj Ghosh"},
+    {value: "ffaba6a2-a41f-43a4-8421-b9b33f20107d", label: "Suman Sur"},
+    {value: "e50c11e1-7847-42ba-93cd-dfbd65583e29", label: "Emrys Said"},
+    {value: "8f4707b7-5a53-416c-b127-7c7caacd538c", label: "Ankit Kumar Ghosh"},
+    {value: "a0a3ada4-9fd5-4ffd-aaca-7b29b4dc1d8e", label: "Ankush Kumar"},
+    {value: "a317a0d3-ce9e-4ce0-a8c7-e35907657983", label: "Farouk Said"},
+    {value: "05318128-1f2c-4319-9962-2f5823b862c4", label: "Ankush Banerjee"},
+    {value: "71534aba-18ca-475f-b443-fe0d83f97377", label: "Kunal Das"},
+    {value: "9bbcc044-2f72-4fce-8508-bb812092af2c", label: "Sayoni Chatterjee"},
+    {value: "94707127-8639-4d4f-901c-aee7dbca1d0d", label: "Anushri Dutta"},
+    {value: "e5061a4c-bcec-479e-9371-4fa4bd1dc07c", label: "Purban Roy Chowdhury"},
+    {value: "5c502abb-af58-4317-9f31-02d97dae7a8f", label: "Prabhat Kumar"},
+    {value: "a4118a20-3344-4f68-9e8c-40218fb3ee1a", label: "Baishakhi Negel"},
+    {value: "b3683fff-4a28-4949-b9f0-48155df0ee59", label: "Madhurima Dey"},
+    {value: "dc6caca7-4e81-47ff-9c4a-176fe16677d2", label: "Moumita Audhya"},
+    {value: "a3544940-dc6a-44f1-8e59-ed0644e0b0ad", label: "Prity Karmakar"}
+ ]
+ 

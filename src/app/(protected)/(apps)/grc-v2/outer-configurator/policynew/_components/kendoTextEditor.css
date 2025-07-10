@@ -1,0 +1,35 @@
+/* .k-button {
+  color: white !important;
+}
+.k-input-value-text:hover,
+.k-icon:hover,
+.k-dropdownlist:hover {
+  color: black !important;
+}
+.k-input-value-text .k-icon {
+  color: white !important;
+} */
+/* styles/kendo-editor-overrides.css */
+
+/* Toolbar buttons */
+.k-editor-toolbar .k-button {
+  color: white !important;
+  background-color: #ff6358; /* Example primary color */
+}
+
+/* Hover states */
+.k-editor .k-input-value-text:hover,
+.k-editor .k-icon:hover,
+.k-editor .k-dropdownlist:hover {
+  color: black !important;
+}
+
+/* Nested elements */
+.k-editor .k-input-value-text .k-icon {
+  color: white !important;
+}
+
+/* Format dropdown specific styling */
+.k-editor-format-dropdown .k-dropdown-wrap {
+  background-color: #ff6358;
+}
