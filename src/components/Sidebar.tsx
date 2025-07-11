@@ -23,6 +23,7 @@ import {
 import { RiArrowDownSLine } from "@remixicon/react";
 import { cn } from "@/lib/utils";
 import { Button } from "@tremor/react";
+import { AiFillAlert } from "react-icons/ai";
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
@@ -57,6 +58,7 @@ const navigation = [
       },
     ],
   },
+  { name: "Ai Agent", href: "/ai-agent", icon: AiFillAlert },
 ];
 
 export default function Sidebar() {
