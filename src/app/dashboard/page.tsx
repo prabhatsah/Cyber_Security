@@ -6,7 +6,6 @@ import { getLoggedInUserProfile } from '@/ikon/utils/api/loginService';
 import { fetchData } from '@/utils/api';
 import { PenTestWithoutScanDefault, PenTestWithoutScanModified } from '../pen-test/web-app-pen-test/components/type';
 import SecurityAlertCard from './components/SecurityAlertCard';
-import AiAssistantPage from './components/aiAssistantPage';
 async function fetchLoggedInUserPentestData() {
   const userId = (await getLoggedInUserProfile()).USER_ID;
 
@@ -61,9 +60,6 @@ export default async function Dashboard() {
           )}
         </div>
 
-      </div>
-      <div className="md:col-span-1">
-        <AiAssistantPage className="w-full h-full mb-2" params={paramsData} />
       </div>
     </div>
   );
