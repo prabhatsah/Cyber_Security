@@ -1,5 +1,5 @@
 "use client";
-import { useLoading } from "../contexts/LoadingContext";
+import { useLoading } from "@/contexts/LoadingContext";
 import { ShieldEllipsis, LoaderCircle } from "lucide-react";
 
 const GlobalLoadingSpinner = () => {

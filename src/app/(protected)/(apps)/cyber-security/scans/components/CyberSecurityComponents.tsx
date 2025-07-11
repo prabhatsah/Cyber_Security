@@ -80,7 +80,7 @@ const comps: AIAgent[] = [
     ],
     description:
       "Monitoring and analyzing network traffic to detect and prevent security threats.",
-    route: "/scans/networkIntrusion",
+    route: "/cyber-security/scans/networkIntrusion",
   },
   {
     id: "web-api-security",
@@ -94,7 +94,7 @@ const comps: AIAgent[] = [
     ],
     description:
       "Ensuring security of web applications and APIs against vulnerabilities and attacks.",
-    route: "/scans/WebApi",
+    route: "/cyber-security/scans/WebApi",
   },
   {
     id: "cloud-container-security",
@@ -108,7 +108,7 @@ const comps: AIAgent[] = [
     ],
     description:
       "Securing cloud environments and containerized applications from threats and misconfigurations.",
-    route: "/scans/cloudContainer",
+    route: "/cyber-security/scans/cloudContainer",
   },
   {
     id: "endpoint-malware-analysis",
@@ -122,7 +122,7 @@ const comps: AIAgent[] = [
     ],
     description:
       "Protecting endpoints from malware and analyzing threats for prevention and mitigation.",
-    route: "/scans/endpointMalware",
+    route: "/cyber-security/scans/endpointMalware",
   },
   {
     id: "active-directory-security",
@@ -137,7 +137,7 @@ const comps: AIAgent[] = [
     ],
     description:
       "Securing Active Directory environments against privilege escalation and unauthorized access.",
-    route: "/scans/activeDirectory",
+    route: "/cyber-security/scans/activeDirectory",
   },
   {
     id: "osint-threat-intelligence",
@@ -151,7 +151,7 @@ const comps: AIAgent[] = [
     ],
     description:
       "Gathering and analyzing intelligence to identify emerging cyber threats and attack vectors.",
-    route: "/scans/OSINT",
+    route: "/cyber-security/scans/OSINT",
   },
   {
     id: "soar-security-automation",
@@ -165,7 +165,7 @@ const comps: AIAgent[] = [
     ],
     description:
       "Automating security operations to improve response time and efficiency in threat management.",
-    route: "/scans/SOAR",
+    route: "/cyber-security/scans/SOAR",
   },
   {
     id: "ai-driven-security-analysis",
@@ -179,7 +179,7 @@ const comps: AIAgent[] = [
     ],
     description:
       "Leveraging AI and machine learning to enhance security analysis and threat detection.",
-    route: "/scans/aiDrivenAnalysis",
+    route: "/cyber-security/scans/aiDrivenAnalysis",
   },
 ];
 

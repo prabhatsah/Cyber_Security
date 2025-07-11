@@ -1,4 +1,4 @@
-import { Scans } from "@/app/scans/components/Scans";
+import { Scans } from "./components/Scans";
 import { RenderAppBreadcrumb } from "@/components/app-breadcrumb";
 
 export default function ScansPage() {

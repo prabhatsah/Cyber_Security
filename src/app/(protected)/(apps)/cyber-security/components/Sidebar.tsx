@@ -21,7 +21,7 @@ import {
   HelpCircle,
 } from "lucide-react";
 import { RiArrowDownSLine } from "@remixicon/react";
-import { cn } from "../lib/utils";
+import { cn } from "@/lib/utils";
 import { Button } from "@tremor/react";
 
 const navigation = [

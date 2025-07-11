@@ -1,16 +1,16 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Providers } from "./providers";
-// import "../styles/globals.css";
+import "@/styles/globals.css";
 // import { BreadcrumbProvider } from "@/contexts/BreadcrumbContext";
 import { LoadingProvider } from "./contexts/LoadingContext";
 import GlobalLoadingSpinner from "./components/GlobalLoadingSpinner";
-import Layout from "./components/Layout";
-import ClientLayout from "./components/ClientLayout";
+import Layout from "@/components/Layout";
+import ClientLayout from "@/components/ClientLayout";
 // import { BreadcrumbProvider } from "@/contexts/BreadcrumbContext";
-import { BreadcrumbProvider } from "./components/app-breadcrumb/BreadcrumbProvider";
-import { ScanNotificationProvider } from "./contexts/ScanNotificationContext";
-import ToastContainer from "./components/ToastContainer";
+import { BreadcrumbProvider } from "@/components/app-breadcrumb/BreadcrumbProvider";
+import { ScanNotificationProvider } from "@/contexts/ScanNotificationContext";
+import ToastContainer from "@/components/ToastContainer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -26,9 +26,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="dark">
-      <body className="">
+      <body >
         <LoadingProvider>
-          <GlobalLoadingSpinner />
+          {/* <GlobalLoadingSpinner /> */}
           <BreadcrumbProvider>
             <Providers>
               <ScanNotificationProvider>

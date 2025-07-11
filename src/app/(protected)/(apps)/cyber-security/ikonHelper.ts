@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 export async function handleAuthRedirect() {
   const user = await getLoggedInUserProfile();
   if (user?.USER_ID) {
-    redirect("/dashboard");
+    redirect("/cyber-security/dashboard");
   } else {
     redirect("/login");
   }

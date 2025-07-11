@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Toast from "./Toast";
-import { toast } from "../lib/toast";
+import { toast } from "@/lib/toast";
 
 // Helper to generate a unique ID
 const generateId = (() => {

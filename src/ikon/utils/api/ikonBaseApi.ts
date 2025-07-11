@@ -88,7 +88,7 @@ async function ikonBaseApi({ service, operation, arguments_, accountId, software
         // if (status === 401) {
         //     redirect("/login")
         // }
-        // throw Error(error.message)
+        throw Error(error.message)
 
         const ikonErrorCode = response?.headers?.["ikon-error-code"];
         console.error(ikonErrorCode)

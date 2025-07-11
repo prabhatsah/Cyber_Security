@@ -38,13 +38,13 @@ const columnArr: Record<string, string>[] = [
  --------------------------------------------------------------------------*/
 //create table
 
-import { tableData } from "@/app/scans/WebApi/data";
 import { Buffer } from "buffer";
 import { getLoggedInUserProfile } from "@/ikon/utils/api/loginService/index";
 
-const baseUrl =
+let baseUrl =
   process.env.NEXT_PUBLIC_BASE_PATH ||
   `http://localhost:${process.env.NEXT_PUBLIC_PORT || 3000}`;
+ baseUrl += "/IkonApps/";
 console.log(baseUrl);
 
 export async function createTable(
@@ -377,13 +377,20 @@ export async function fetchData(
         keyPath: string[];
         value: string | number;
       }[]
-    | null
+    | null,
+  selectCondition?: string | null
 ) {
   let allColumnFilter: any = [];
   columnFilter?.forEach((e) => {
     allColumnFilter.push(e);
   });
-  const query = { tableName, orderByColumn, allColumnFilter, jsonFilter };
+  const query = {
+    tableName,
+    orderByColumn,
+    allColumnFilter,
+    jsonFilter,
+    selectCondition,
+  };
   console.log("Sending query to backend:", query);
 
   const res = await fetch(`${baseUrl}/api/dbApi`, {
@@ -478,7 +485,8 @@ export async function fetchScannedData(
       }[]
     | null,
   offset?: number | null,
-  limit?: number | null
+  limit?: number | null,
+  selectCondition?: string | null
 ) {
   const userId = (await getLoggedInUserProfile()).USER_ID;
   columnFilter = allInstances ? null : columnFilter;
@@ -490,6 +498,7 @@ export async function fetchScannedData(
     orderByColumn,
     allColumnFilter,
     jsonFilter,
+    selectCondition,
     offset,
     limit,
   };
@@ -503,3 +512,36 @@ export async function fetchScannedData(
 
   return res.json();
 }
+
+export async function uploadImage(
+  cweId: string,
+  pentestId: string,
+  files: File[],
+  title: String,
+  description: String
+) {
+  if (!files) return;
+
+  for (const file of Array.from(files)) {
+    const arrayBuffer = await file.arrayBuffer();
+    const base64 = btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)));
+    let query = {
+      pentestid: pentestId,
+      cweId: cweId,
+      imageBase64: base64,
+      title: title,
+      description: description,
+    };
+    console.log(query);
+    const response = await fetch(`${baseUrl}/api/dbApi`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ query, instruction: "imageUpload" }),
+    });
+
+    const data = await response.json();
+    console.log(`${file.name} uploaded`, data);
+    return data;
+  }
+}
+

@@ -44,7 +44,7 @@ let baseUrl =
   process.env.NEXT_PUBLIC_BASE_PATH ||
   `http://localhost:${process.env.NEXT_PUBLIC_PORT || 3000}`;
 
-baseUrl += "/cyber-security/";
+baseUrl += "/IkonApps/";
 console.log("Base URL: ", baseUrl);
 
 export async function createTable(

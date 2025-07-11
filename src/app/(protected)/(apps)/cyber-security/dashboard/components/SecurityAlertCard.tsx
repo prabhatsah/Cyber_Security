@@ -1,6 +1,6 @@
 'use client';
 
-import { PenTestWithoutScanModified } from '@/app/pen-test/web-app-pen-test/components/type';
+import { PenTestWithoutScanModified } from '@/app/(protected)/(apps)/cyber-security/pen-test/web-app-pen-test/components/type';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ProgressBar } from '@tremor/react';
 

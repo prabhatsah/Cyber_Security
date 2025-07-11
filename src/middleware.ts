@@ -8,7 +8,7 @@ import {
 import { appWiseSoftwareNameVersionMap } from "./ikon/utils/config/app-wise-software-name-version-map";
 import { getLoggedInUserProfile } from "./ikon/utils/api/loginService";
 
-const loginUrl = "/login";
+const loginUrl = "/cyber-security/login";
 
 // 1. Specify public routes
 const publicRoutes = ["/login", "/signup", "/forgot-password", "/otp"];
@@ -22,29 +22,28 @@ export default async function middleware(req: NextRequest) {
   // 2. Check authentication status via cookies
   const ticket = req.cookies.get(cookiePrefix + "ticket");
 
+  console.log("req - ", req);
+  console.log("isPublicRoute - ", isPublicRoute);
+  console.log("ticket - ", ticket);
+
   if (!isPublicRoute && !ticket) {
     return NextResponse.redirect(new URL(loginUrl, req.url));
   }
 
   if (!isPublicRoute && ticket) {
     const currentUserId = req.cookies.get(cookiePrefix + "currentUserId");
-    if (!currentUserId) {
-      try {
-        const profile = await getLoggedInUserProfile();
-        nextResponse.cookies.set(
-          cookiePrefix + "currentUserId",
-          profile.USER_ID
-        );
-      } catch (error) {
-        console.error("Error fetching profile data:", error);
-        return NextResponse.redirect(new URL(loginUrl, req.url));
-      }
+    // if (!currentUserId) {
+    try {
+      const profile = await getLoggedInUserProfile();
+      nextResponse.cookies.set(cookiePrefix + "currentUserId", profile.USER_ID);
+    } catch (error) {
+      console.error("Error fetching profile data:", error);
+      return NextResponse.redirect(new URL(loginUrl, req.url));
     }
+    // }
 
     const activeAccountId = req.cookies.get(cookiePrefix + "activeAccountId");
-    //console.log("activeAccountId", activeAccountId);
     if (!activeAccountId) {
-      console.log("activeAccountId not found in cookies");
       try {
         const account = await getAccountTree();
         nextResponse.cookies.set(
@@ -73,6 +72,19 @@ export default async function middleware(req: NextRequest) {
         console.error("Error fetching baseSoftwareId:", error);
       }
     }
+    let cyberSecuritySoftwareId = "";
+
+    try {
+      cyberSecuritySoftwareId = await mapSoftwareName({
+        softwareName: "Test S2 Cyber Security",
+        version: "1",
+      });
+      console.log("this is the software id--> " + cyberSecuritySoftwareId);
+    } catch (error) {
+      console.error("Error fetching cyberSecuritySoftwareId:", error);
+    }
+
+    //console.log("Cyber Security Software Id: ", cyberSecuritySoftwareId);
 
     const pathParts = path.split("/");
     if (pathParts.length > 1 && pathParts[1] !== "") {
@@ -94,10 +106,12 @@ export default async function middleware(req: NextRequest) {
           }
         } else {
           try {
-            const appName = "base-app";
+            //const appName = "base-app";
+            const appName = "cyber-security";
             nextResponse.cookies.set(
               currentSoftwareIdSessionKey,
-              baseSoftwareId
+              //baseSoftwareId
+              cyberSecuritySoftwareId
             );
             nextResponse.cookies.set(cookiePrefix + "currentAppName", appName);
           } catch (error) {
@@ -111,9 +125,6 @@ export default async function middleware(req: NextRequest) {
   return nextResponse;
 }
 
-// export const config = {
-//   matcher: ["/((?!_next|assets|api).*)"], // Exclude static and API routes
-// };
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|.*\\..*).*)"],
+  matcher: ["/((?!_next|assets|api).*)"], // Exclude static and API routes
 };

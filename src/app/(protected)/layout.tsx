@@ -1,3 +1,4 @@
+import "@/styles/globals.css";
 import "@/ikon/styles/globals.css";
 import "@progress/kendo-theme-default/dist/all.css";
 import "@/ikon/styles/ikon-custom.css";
@@ -55,6 +56,7 @@ export default async function RootLayout({
       <html lang="en" className={themeMode}>
         <body className={`${fontClass} antialiased`} suppressHydrationWarning>
           <style id="ikonThemeCSS">{themeCssVariables}</style>
+          
           <ThemeProvider
             themeData={themeData}
             fontNameWiseClassName={fontNameWiseClassName}

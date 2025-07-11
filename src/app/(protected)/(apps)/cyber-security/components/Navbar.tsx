@@ -6,15 +6,15 @@ import { motion } from "framer-motion";
 import AppBreadcrumb from "./app-breadcrumb";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "./ui/dropdown-menu"
 
-import ScanStatus from '../utils/webSocketComponent';
-import { cx, focusRing } from "../lib/utils";
+import ScanStatus from '@/utils/webSocketComponent';
+import { cx, focusRing } from "@/lib/utils";
 import { Button } from "@tremor/react";
 import { DropdownUserProfile } from "./dropdownuserprofile";
 import { getProfileData } from "@/ikon/utils/actions/auth";
-import { useScanNotification } from "../contexts/ScanNotificationContext";
+import { useScanNotification } from "@/contexts/ScanNotificationContext";
 import ScanNotificationItem from "./ScanNotificationItem";
-
-import { fetchData } from "../utils/api";
+import { getterWsData } from "@/utils/getterSetterWs";
+import { fetchData } from "@/utils/api";
 import { getLoggedInUserProfile } from "@/ikon/utils/api/loginService";
 import { ScanNotificationDataModified, ScanNotificationDataWithoutPentestId, ScanNotificationDataWithPentestId, ScanNotificationInDatabase } from "./type";
 import ScanNotificationItemPentest from "./ScanNotificationItemPentest";
