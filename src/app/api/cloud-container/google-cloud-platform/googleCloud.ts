@@ -7,7 +7,7 @@ export async function GoogleCloudConnection(
   }
 
   try {
-    const response = await fetch("/api/cloud-container/google-cloud-platform", {
+    const response = await fetch("/cyber-security/api/cloud-container/google-cloud-platform", {
       method: "POST",
       body: JSON.stringify({
         serviceAccountKey: serviceAccountKey,

@@ -10,7 +10,7 @@ export async function AWSConnection(
   }
 
   try {
-    const response = await fetch("/api/cloud-container/amazon-web-services", {
+    const response = await fetch("/cyber-security/api/cloud-container/amazon-web-services", {
       method: "POST",
       body: JSON.stringify({
         accessKeyId: accessKeyId,
