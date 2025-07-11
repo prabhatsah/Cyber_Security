@@ -365,9 +365,9 @@ export default function aiAssistantPage({ params }: { params: Promise<{ id: stri
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <Card className="lg:col-span-2">
                         <CardHeader>
-                            <CardTitle>Building Management Assistant</CardTitle>
+                            <CardTitle>Cyber Security Assistant</CardTitle>
                             <CardDescription>
-                                Ask questions, request analysis, or get recommendations for your building systems
+                                Ask questions, request analysis, or get recommendations for cyber security systems
                             </CardDescription>
                         </CardHeader>
                         <CardContent className="p-0">
