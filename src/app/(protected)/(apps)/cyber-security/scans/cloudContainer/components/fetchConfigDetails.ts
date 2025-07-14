@@ -5,12 +5,11 @@ export async function fetchConfigDetails(
   configId?: string
 ) {
   const providerFilter = providerName
-    ? { column: "name", value: providerName }
-    : null;
+    ? [{ column: "name", value: providerName }]: null;
 
-  const dataFilter = configId
-    ? [{ column: "data", keyPath: ["configId"], value: configId }]
-    : null;
+  const dataFilter = configId? [{ column: "data", keyPath: ["configId"], value: configId }]: null;
+
+  console.log("Fetching config details for provider: ", providerName, " and configId: ", configId);
 
   const fetchedData = await fetchData(
     "cloud_config",
@@ -18,6 +17,6 @@ export async function fetchConfigDetails(
     providerFilter,
     dataFilter
   );
-
+  console.log("Fetched Data: ", fetchedData);
   return fetchedData;
 }

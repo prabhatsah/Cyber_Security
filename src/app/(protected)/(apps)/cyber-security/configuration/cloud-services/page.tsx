@@ -21,7 +21,7 @@ const cloudConfigList = [
       "AWS CloudFormation is a service that enables infrastructure as code, allowing users to define and provision AWS resources using templates.",
     configurationCount: 0,
     icon: <RiAmazonLine className="size-5" aria-hidden={true} />,
-    href: "/configuration/cloud-services/amazon-web-services",
+    href: "/cyber-security/configuration/cloud-services/amazon-web-services",
   },
   {
     name: "Microsoft Azure",
@@ -29,7 +29,7 @@ const cloudConfigList = [
       "Azure Resource Manager (ARM) is a service that enables infrastructure as code, allowing users to deploy, manage, and organize Azure resources using declarative templates.",
     configurationCount: 0,
     icon: <RiWindowsFill className="size-5" aria-hidden={true} />,
-    href: "/configuration/cloud-services/microsoft-azure",
+    href: "/cyber-security/configuration/cloud-services/microsoft-azure",
   },
   {
     name: "Google Cloud Platform",
@@ -37,7 +37,7 @@ const cloudConfigList = [
       "Google Cloud Deployment Manager is a service that enables infrastructure as code, allowing users to define, deploy, and manage Google Cloud resources using configuration templates.",
     configurationCount: 0,
     icon: <RiGoogleFill className="size-5" aria-hidden={true} />,
-    href: "/configuration/cloud-services/google-cloud-platform",
+    href: "/cyber-security/configuration/cloud-services/google-cloud-platform",
   },
   {
     name: "IBM Cloud",
@@ -45,7 +45,7 @@ const cloudConfigList = [
       "IBM Cloud Schematics enables infrastructure as code, automating the deployment and management of IBM Cloud resources using Terraform.",
     configurationCount: 0,
     icon: <RiCloudLine className="size-5" aria-hidden={true} />,
-    href: "/configuration/cloud-services/ibm-cloud",
+    href: "/cyber-security/configuration/cloud-services/ibm-cloud",
   },
   {
     name: "Oracle Cloud Infrastructure",
@@ -53,7 +53,7 @@ const cloudConfigList = [
       "Oracle Cloud Infrastructure (OCI) Resource Manager enables infrastructure as code, allowing users to automate resource deployment and management using Terraform.",
     configurationCount: 0,
     icon: <RiCloudy2Line className="size-5" aria-hidden={true} />,
-    href: "/configuration/cloud-services/oracle-cloud-infrastructure",
+    href: "/cyber-security/configuration/cloud-services/oracle-cloud-infrastructure",
   },
   {
     name: "Alibaba Cloud",
@@ -61,7 +61,7 @@ const cloudConfigList = [
       "Alibaba Cloud Resource Orchestration Service (ROS) enables infrastructure as code, allowing users to define and manage cloud resources using templates.",
     configurationCount: 0,
     icon: <RiAlibabaCloudFill className="size-5" aria-hidden={true} />,
-    href: "/configuration/cloud-services/alibaba-cloud",
+    href: "/cyber-security/configuration/cloud-services/alibaba-cloud",
   },
 ];
 
@@ -104,7 +104,7 @@ export default async function CloudServicesConfig() {
         breadcrumb={{
           level: 1,
           title: "Cloud Services",
-          href: "/configuration/cloud-services",
+          href: "/cyber-security/configuration/cloud-services",
         }}
       />
       <div className=" flex flex-col relative">

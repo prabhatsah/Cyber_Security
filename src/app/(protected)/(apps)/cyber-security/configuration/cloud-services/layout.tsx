@@ -29,7 +29,7 @@ export default async function RootLayout({
         breadcrumb={{
           level: 1,
           title: "Cloud Services",
-          href: "/configuration/cloud-services",
+          href: "/cyber-security/configuration/cloud-services",
         }}
       />
       <div className="flex h-full">

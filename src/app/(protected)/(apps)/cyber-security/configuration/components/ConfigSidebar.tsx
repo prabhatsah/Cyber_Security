@@ -6,17 +6,17 @@ import { usePathname } from "next/navigation";
 const navigation = [
   {
     name: "Cloud Services",
-    href: "/configuration/cloud-services",
+    href: "/cyber-security/configuration/cloud-services",
     icon: CloudCog,
   },
   {
     name: "Network Services",
-    href: "/configuration/network-services",
+    href: "/cyber-security/configuration/network-services",
     icon: Network,
   },
   {
     name: "Container Services",
-    href: "/configuration/container-services",
+    href: "/cyber-security/configuration/container-services",
     icon: PackageOpen,
   },
 ];

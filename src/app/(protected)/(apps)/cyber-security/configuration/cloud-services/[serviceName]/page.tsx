@@ -47,14 +47,14 @@ export default function CloudServiceDetails({
         breadcrumb={{
           level: 1,
           title: "Cloud Services",
-          href: "/configuration/cloud-services",
+          href: "/cyber-security/configuration/cloud-services",
         }}
       />
       <RenderAppBreadcrumb
         breadcrumb={{
           level: 2,
           title: serviceName,
-          href: `/configuration/cloud-services/${serviceUrl}`
+          href: `/cyber-security/configuration/cloud-services/${serviceUrl}`
         }}
       />
       <div className=" flex flex-col flex-grow">

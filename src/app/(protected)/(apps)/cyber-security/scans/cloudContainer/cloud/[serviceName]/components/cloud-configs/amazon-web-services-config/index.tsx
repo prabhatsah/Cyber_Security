@@ -1,5 +1,5 @@
 import ConfigHeader from "../../components/ConfigHeader";
-import { AmazonWebServicesConfiguration } from "@/app/configuration/components/type";
+import { AmazonWebServicesConfiguration } from "@/app/(protected)/(apps)/cyber-security/configuration/components/type";
 import NoSavedConfigTemplate from "../../components/NoSavedConfigTemplate";
 import AmazonWebServicesConfigWidget from "./AmazonWebServicesConfigWidget";
 import { fetchData } from "@/utils/api";
@@ -12,6 +12,7 @@ export default async function AmazonWebServicesConfig({
   serviceName: string;
 }) {
 
+  console.log("Service URL: ", serviceUrl, " Service Name: ", serviceName);
   const fetchedData = (await fetchData("cloud_config", "id", [{ column: "name", value: serviceUrl }], null)).data;
   // const fetchedData = (await fetchConfigDetails(serviceUrl)).data;
   // let fetchedData: any = configDataGetter();

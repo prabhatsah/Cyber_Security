@@ -199,7 +199,7 @@ export default function CyberSecurityComponents() {
     };
 
     setSchedules(prev => [...prev, schedule]); */
-    router.push('/scans/Intrusion');
+    router.push('/cyber-security/scans/Intrusion');
   };
 
   return (

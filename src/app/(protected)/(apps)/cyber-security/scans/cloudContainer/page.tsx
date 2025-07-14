@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
 
 export default function GeneralDashboard() {
-  redirect("/scans/cloudContainer/cloud");
+  redirect("/cyber-security/scans/cloudContainer/cloud");
 }

@@ -37,22 +37,22 @@ const navigation = [
     submenus: [
       {
         name: "Cloud Services",
-        href: "/configuration/cloud-services",
+        href: "/cyber-security/configuration/cloud-services",
         icon: CloudCog,
       },
       {
         name: "Network Services",
-        href: "/configuration/network-services",
+        href: "/cyber-security/configuration/network-services",
         icon: Network,
       },
       {
         name: "Container Tools",
-        href: "/configuration/container-tools",
+        href: "/cyber-security/configuration/container-tools",
         icon: PackageOpen,
       },
       {
         name: "Endpoint Tools",
-        href: "/configuration/endpoint-tools",
+        href: "/cyber-security/configuration/endpoint-tools",
         icon: ShieldCheck,
       },
     ],

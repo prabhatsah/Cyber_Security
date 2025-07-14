@@ -31,7 +31,7 @@ export default function GoogleCloudConfigWidget({
     setIsLoading(true);
 
     setTimeout(() => {
-      redirect(`/scans/cloudContainer/cloud/google-cloud-platform/${eachConfigDetails.configId}`);
+      redirect(`/cyber-security/scans/cloudContainer/cloud/google-cloud-platform/${eachConfigDetails.configId}`);
     }, 100);
   }
 

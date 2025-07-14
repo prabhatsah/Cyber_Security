@@ -1,6 +1,6 @@
 "use client";
 
-import { AmazonWebServicesConfiguration } from "@/app/configuration/components/type";
+import { AmazonWebServicesConfiguration } from "@/app/(protected)/(apps)/cyber-security/configuration/components/type";
 import GlobalLoader from "@/components/GlobalLoader";
 import { RiCalendarScheduleLine, RiPlayLargeFill } from "@remixicon/react";
 import { Card } from "@tremor/react";
@@ -32,7 +32,7 @@ export default function AmazonWebServicesConfigWidget({
         setIsLoading(true);
 
         setTimeout(() => {
-            redirect(`/scans/cloudContainer/cloud/amazon-web-services/${eachConfigDetails.configId}`);
+            redirect(`/cyber-security/scans/cloudContainer/cloud/amazon-web-services/${eachConfigDetails.configId}`);
         }, 100);
     }
 

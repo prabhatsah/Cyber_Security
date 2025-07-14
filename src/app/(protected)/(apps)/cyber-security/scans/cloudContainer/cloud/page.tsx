@@ -21,7 +21,7 @@ const cloudConfigList = [
             "AWS CloudFormation is a service that enables infrastructure as code, allowing users to define and provision AWS resources using templates.",
         configurationCount: 0,
         icon: <RiAmazonLine className="size-5" aria-hidden={true} />,
-        href: "/scans/cloudContainer/cloud/amazon-web-services",
+        href: "/cyber-security/scans/cloudContainer/cloud/amazon-web-services",
     },
     {
         name: "Microsoft Azure",
@@ -29,7 +29,7 @@ const cloudConfigList = [
             "Azure Resource Manager (ARM) is a service that enables infrastructure as code, allowing users to deploy, manage, and organize Azure resources using declarative templates.",
         configurationCount: 0,
         icon: <RiWindowsFill className="size-5" aria-hidden={true} />,
-        href: "/scans/cloudContainer/cloud/microsoft-azure",
+        href: "/cyber-security/scans/cloudContainer/cloud/microsoft-azure",
     },
     {
         name: "Google Cloud Platform",
@@ -37,7 +37,7 @@ const cloudConfigList = [
             "Google Cloud Deployment Manager is a service that enables infrastructure as code, allowing users to define, deploy, and manage Google Cloud resources using configuration templates.",
         configurationCount: 0,
         icon: <RiGoogleFill className="size-5" aria-hidden={true} />,
-        href: "/scans/cloudContainer/cloud/google-cloud-platform",
+        href: "/cyber-security/scans/cloudContainer/cloud/google-cloud-platform",
     },
     {
         name: "IBM Cloud",
@@ -45,7 +45,7 @@ const cloudConfigList = [
             "IBM Cloud Schematics enables infrastructure as code, automating the deployment and management of IBM Cloud resources using Terraform.",
         configurationCount: 0,
         icon: <RiCloudLine className="size-5" aria-hidden={true} />,
-        href: "/scans/cloudContainer/cloud/ibm-cloud",
+        href: "/cyber-security/scans/cloudContainer/cloud/ibm-cloud",
     },
     {
         name: "Oracle Cloud Infrastructure",
@@ -53,7 +53,7 @@ const cloudConfigList = [
             "Oracle Cloud Infrastructure (OCI) Resource Manager enables infrastructure as code, allowing users to automate resource deployment and management using Terraform.",
         configurationCount: 0,
         icon: <RiCloudy2Line className="size-5" aria-hidden={true} />,
-        href: "/scans/cloudContainer/cloud/oracle-cloud-infrastructure",
+        href: "/cyber-security/scans/cloudContainer/cloud/oracle-cloud-infrastructure",
     },
     {
         name: "Alibaba Cloud",
@@ -61,12 +61,13 @@ const cloudConfigList = [
             "Alibaba Cloud Resource Orchestration Service (ROS) enables infrastructure as code, allowing users to define and manage cloud resources using templates.",
         configurationCount: 0,
         icon: <RiAlibabaCloudFill className="size-5" aria-hidden={true} />,
-        href: "/scans/cloudContainer/cloud/alibaba-cloud",
+        href: "/cyber-security/scans/cloudContainer/cloud/alibaba-cloud",
     },
 ];
 
 export default async function CloudServicesConfig() {
-    const fetchedData = (await fetchData("cloud_config", "id")).data;
+    const fetchedData = (await fetchData("cloud_config", "id",null,null,null)).data;
+    console.log("Fetched data ", fetchedData);
 
     let configDataFormatted: Record<string, EachConfigDataFormatted> = {};
     if (fetchedData && fetchedData.length > 0) {
@@ -77,10 +78,11 @@ export default async function CloudServicesConfig() {
             };
         });
     }
+    console.log("Config Data Formatted: ", configDataFormatted);
 
     const updatedCloudConfigList = cloudConfigList.map((cloudService) => {
-        const cloudServiceName = cloudService.href.split("/")[4];
-
+        const slashCount = (cloudService.href.match(/\//g) || []).length
+        const cloudServiceName = cloudService.href.split("/")[slashCount];
         if (configDataFormatted[cloudServiceName]) {
             return {
                 ...cloudService,
@@ -88,7 +90,7 @@ export default async function CloudServicesConfig() {
                     .length,
             };
         }
-
+        
         return { ...cloudService, configurationCount: 0 };
     });
 
@@ -98,7 +100,7 @@ export default async function CloudServicesConfig() {
                 breadcrumb={{
                     level: 2,
                     title: "Cloud Security",
-                    href: "/scans/cloudContainer/cloud",
+                    href: "/cyber-security/scans/cloudContainer/cloud",
                 }}
             />
             <div className=" flex flex-col relative">

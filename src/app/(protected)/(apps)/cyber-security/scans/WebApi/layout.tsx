@@ -11,7 +11,7 @@ export default function RootLayout({
         breadcrumb={{
           level: 1,
           title: "Web & API Security",
-          href: "/scans/WebApi",
+          href: "/cyber-security/scans/WebApi",
         }}
       />
       <div className="flex flex-col h-full">

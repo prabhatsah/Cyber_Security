@@ -15,7 +15,7 @@ import { usePolling } from "../hooks/usePolling";
 import { fetchScannedData } from "@/utils/api";
 import { Alert, PastScansData, Site } from "../types/alertTypes";
 
-const apiUrl = process.env.NEXT_PUBLIC_API_URL || "/api/webApi/ZAP";
+const apiUrl = process.env.NEXT_PUBLIC_API_URL || "/IkonApps/api/webApi/ZAP";
 
 const getRiskAndIssues = (alerts: Alert[]) => {
   let success = 0, warning = 0, critical = 0;

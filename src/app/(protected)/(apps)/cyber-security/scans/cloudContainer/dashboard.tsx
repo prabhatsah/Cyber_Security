@@ -13,7 +13,7 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/accordion";
+} from "@/components/Accordion";
 
 import {
   RiBuildingFill,

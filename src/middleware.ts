@@ -8,7 +8,7 @@ import {
 import { appWiseSoftwareNameVersionMap } from "./ikon/utils/config/app-wise-software-name-version-map";
 import { getLoggedInUserProfile } from "./ikon/utils/api/loginService";
 
-const loginUrl = "/cyber-security/login";
+const loginUrl = "/IkonApps/login";
 
 // 1. Specify public routes
 const publicRoutes = ["/login", "/signup", "/forgot-password", "/otp"];

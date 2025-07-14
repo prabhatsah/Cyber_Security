@@ -123,7 +123,7 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
     setError(null);
     setLoading(commandKey)
     setScanningItem(itemId)
-    const response = await fetch("/api/cloud-container/run-docker", {
+    const response = await fetch("/IkonApps/api/cloud-container/run-docker", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ commandKey, params }),
@@ -266,14 +266,14 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
         breadcrumb={{
           level: 2,
           title: "Containers",
-          href: "/scans/cloudContainer/container",
+          href: "/cyber-security/scans/cloudContainer/container",
         }}
       />
       <RenderAppBreadcrumb
         breadcrumb={{
           level: 3,
           title: "Docker",
-          href: "/scans/cloudContainer/container/docker",
+          href: "/cyber-security/scans/cloudContainer/container/docker",
         }}
       />
 

@@ -1,7 +1,6 @@
 import { NextRequest } from "next/server";
 import { spawn } from "child_process";
-import commands from "@/app/scans/cloudContainer/container/docker-commands.json";
-
+import commands from "@/app/(protected)/(apps)/cyber-security/scans/cloudContainer/container/docker-commands.json";
 export async function POST(req: NextRequest) {
   const { commandKey, params } = await req.json();
 

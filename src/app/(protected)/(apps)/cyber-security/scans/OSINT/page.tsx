@@ -102,7 +102,7 @@ export default function TheHarvesterDashboard() {
         // `/api/OSINT/virusTotal?domain=http://malware.wicar.org`
         // `/api/OSINT/virusTotal?domain=amazon.com`
         //`/api/OSINT/virusTotal?domain=${query}`
-        `http://localhost:3333/cyber-security/api/OSINT/virusTotal?query=${query}`
+        `http://localhost:3333/IkonApps/api/OSINT/virusTotal?query=${query}`
       );
 
       const result: ApiResponse = await response.json();

@@ -12,14 +12,14 @@ export default async function RootLayout({
         breadcrumb={{
           level: 0,
           title: "Scans",
-          href: "/scans",
+          href: "/cyber-security/scans",
         }}
       />
       <RenderAppBreadcrumb
         breadcrumb={{
           level: 1,
           title: "Cloud & Container",
-          href: "/scans/cloudContainer",
+          href: "/cyber-security/scans/cloudContainer",
         }}
       />
       <div className="flex flex-col h-full">

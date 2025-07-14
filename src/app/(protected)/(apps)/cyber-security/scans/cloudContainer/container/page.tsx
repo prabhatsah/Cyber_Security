@@ -48,7 +48,7 @@ export default function Dashboard() {
     <div className="flex flex-col items-center">
       <>
         <h1 className="text-2xl mb-8 text-widget-title">Container Tools</h1>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full">
+        <div className="grid grid-cols-1 md:grid-cols-1 gap-8 w-full">
           {/* Docker Card */}
           <Card className="cursor-default rounded-lg p-0 duration-300 shadow-lg hover:shadow-2xl flex flex-col">
             <div className="flex flex-row items-center gap-4 p-6 w-full text-white rounded-t">
@@ -75,7 +75,7 @@ export default function Dashboard() {
                 color="blue"
                 size="lg"
                 className="rounded-sm px-8 py-3"
-                onClick={() => router.push("/scans/cloudContainer/container/docker")}
+                onClick={() => router.push("/cyber-security/scans/cloudContainer/container/docker")}
               >
                 Scan Docker
               </Button>
@@ -83,7 +83,7 @@ export default function Dashboard() {
           </Card>
 
           {/* Kubernetes Card */}
-          <Card className="cursor-default rounded-lg p-0 shadow-lg hover:shadow-2xl flex flex-col">
+          {/* <Card className="cursor-default rounded-lg p-0 shadow-lg hover:shadow-2xl flex flex-col">
             <div className="flex flex-row items-center gap-4 p-6 w-full text-white rounded-t">
               <BiLogoKubernetes className="w-10 h-10" />
               <p className="text-2xl text-widget-mainHeader font-semibold">Kubernetes</p>
@@ -107,12 +107,12 @@ export default function Dashboard() {
                 color="blue"
                 size="lg"
                 className="rounded-sm px-8 py-3"
-                onClick={() => router.push("/scans/cloudContainer/container/kubernetes")}
+                onClick={() => router.push("/cyber-security/scans/cloudContainer/container/kubernetes")}
               >
                 Scan Kubernetes
               </Button>
             </div>
-          </Card>
+          </Card> */}
         </div>
       </>
     </div>

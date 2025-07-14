@@ -8,7 +8,7 @@ export default function ScansPage() {
         breadcrumb={{
           level: 0,
           title: "Scans",
-          href: "/scans",
+          href: "/cyber-security/scans",
         }}
       />
       <Scans />

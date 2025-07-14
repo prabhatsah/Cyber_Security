@@ -9,11 +9,11 @@ import { useState } from "react";
 const navigation = [
   {
     name: "Cloud",
-    href: "/scans/cloudContainer/cloud",
+    href: "/cyber-security/scans/cloudContainer/cloud",
   },
   {
     name: "Container",
-    href: "/scans/cloudContainer/containers",
+    href: "/cyber-security/scans/cloudContainer/containers",
   },
 ];
 
@@ -24,7 +24,7 @@ export default function CloudContainerTabs() {
 
   const handleTabChange = (value: string) => {
     setSelectedTab(value);
-    redirect(`/scans/cloudContainer/${value}`)
+    redirect(`/cyber-security/scans/cloudContainer/${value}`)
   };
 
   return (

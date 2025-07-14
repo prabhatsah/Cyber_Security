@@ -9,5 +9,5 @@ export default function ConfigurationPage() {
   //   setItems([{ label: "Configuration", href: "/configuration" }]);
   // }, []);
 
-  redirect("/configuration/cloud-services");
+  redirect("/Cyber-security/configuration/cloud-services");
 }

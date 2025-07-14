@@ -1,6 +1,6 @@
 import { RenderAppBreadcrumb } from "@/components/app-breadcrumb";
 import { fetchData } from "@/utils/api";
-import { AmazonWebServicesConfiguration, GoogleCloudConfiguration } from "@/app/configuration/components/type";
+import { AmazonWebServicesConfiguration, GoogleCloudConfiguration } from "@/app/(protected)/(apps)/cyber-security/configuration/components/type";
 import { ScoutSuiteScanData } from "@/app/api/cloud-container/scan/scoutSuite";
 import { Label } from "@radix-ui/react-label";
 import Header from "./components/Header";
@@ -68,14 +68,14 @@ export default async function CloudConfigScanningMainDashboard({
         breadcrumb={{
           level: 3,
           title: serviceNameAsDisplayStr,
-          href: `/scans/cloudContainer/cloud/${serviceName}`,
+          href: `/cyber-security/scans/cloudContainer/cloud/${serviceName}`,
         }}
       />
       <RenderAppBreadcrumb
         breadcrumb={{
           level: 4,
           title: "Scanning Dashboard",
-          href: `/scans/cloudContainer/cloud/${serviceName}/${configId}`,
+          href: `/cyber-security/scans/cloudContainer/cloud/${serviceName}/${configId}`,
         }}
       />
       {/* <Dashboard serviceName={serviceName} serviceNameAsDisplayStr={serviceNameAsDisplayStr} configId={configId} /> */}

@@ -47,7 +47,7 @@ export default async function CloudServiceDetails({
         breadcrumb={{
           level: 3,
           title: serviceName,
-          href: `/scans/cloudContainer/cloud/${serviceUrl}`
+          href: `/cyber-security/scans/cloudContainer/cloud/${serviceUrl}`
         }}
       />
       <div className=" flex flex-col flex-grow">
