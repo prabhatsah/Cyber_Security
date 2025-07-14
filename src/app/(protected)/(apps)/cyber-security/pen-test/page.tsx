@@ -19,7 +19,7 @@ export default async function EndPointToolsConfig() {
                 "Web app penetration testing identifies and exploits security vulnerabilities in web applications to assess and improve their security posture.",
             configurationCount: await getPententCount('web_app'),
             icon: <GlobeLock className="size-5" aria-hidden={true} />,
-            href: "/pen-test/web-app-pen-test",
+            href: "/cyber-security/pen-test/web-app-pen-test",
         },
         {
             name: "Cloud Security Penetration Testing",
@@ -27,7 +27,7 @@ export default async function EndPointToolsConfig() {
                 "Cloud security pentesting identifies and exploits vulnerabilities in cloud environments to improve security.",
             configurationCount: await getPententCount('cloud_security'),
             icon: <CloudCog className="size-5" aria-hidden={true} />,
-            href: "/pen-test/cloud-security-pen-test",
+            href: "/cyber-security/pen-test/cloud-security-pen-test",
         },
         {
             name: "API Penetration Testing",
@@ -35,7 +35,7 @@ export default async function EndPointToolsConfig() {
                 "API pentesting finds and exploits vulnerabilities in APIs to ensure secure data exchange and functionality.",
             configurationCount: await getPententCount('api'),
             icon: <FolderCog className="size-5" aria-hidden={true} />,
-            href: "/pen-test/api-pen-test",
+            href: "/cyber-security/pen-test/api-pen-test",
         },
         {
             name: "Network Penetration Testing",
@@ -43,7 +43,7 @@ export default async function EndPointToolsConfig() {
                 "Network pentesting identifies and exploits security weaknesses in network infrastructure to prevent unauthorized access.",
             configurationCount: await getPententCount('network'),
             icon: <Network className="size-5" aria-hidden={true} />,
-            href: "/pen-test/network-pen-test",
+            href: "/cyber-security/pen-test/network-pen-test",
         },
         {
             name: "Mobile Application Penetration Testing",
@@ -51,7 +51,7 @@ export default async function EndPointToolsConfig() {
                 "Mobile app pentesting identifies security flaws in mobile applications to protect user data and prevent attacks.",
             configurationCount: await getPententCount('mobile'),
             icon: <TabletSmartphone className="size-5" aria-hidden={true} />,
-            href: "/pen-test/mobile-app-pen-test",
+            href: "/cyber-security/pen-test/mobile-app-pen-test",
         },
     ];
 
@@ -61,7 +61,7 @@ export default async function EndPointToolsConfig() {
                 breadcrumb={{
                     level: 0,
                     title: "Penetration Testing",
-                    href: "/pen-test",
+                    href: "/cyber-security/pen-test",
                 }}
             />
             <div className=" flex flex-col relative">

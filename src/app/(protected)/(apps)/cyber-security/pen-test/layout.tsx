@@ -11,7 +11,7 @@ export default async function RootLayout({
         breadcrumb={{
           level: 0,
           title: "Penetration Testing",
-          href: "/pen-test",
+          href: "/cyber-security/pen-test",
         }}
       />
       <div className="flex h-full">{children}</div>
