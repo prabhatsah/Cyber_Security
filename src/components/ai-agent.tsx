@@ -134,7 +134,7 @@ export default function Ai_agent({ params }: { params: Promise<{ id: string; flo
         {
             id: "welcome",
             type: "assistant",
-            content: "Hello! I'm your Building Management AI Assistant. How can I help you today?",
+            content: "Hello! I'm your CyberrExpert. How can I help you today?",
             timestamp: new Date()
         }
     ]);
@@ -146,17 +146,8 @@ export default function Ai_agent({ params }: { params: Promise<{ id: string; flo
     const [showExamplePrompts, setShowExamplePrompts] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
-    let temp_url = 'https://ikoncloud-dev.keross.com/aiagent/webhook/ai-assisstant';
-    let aiFeatures = ahu_ai_features; // Default to AHU features
-    // if (equipmentId.toLowerCase().includes("chiller")) {
-    //     temp_url = 'https://ikoncloud-dev.keross.com/aiagent/webhook/e88d29f2-ea6f-4327-97a9-b6698117889f';
-    //     aiFeatures = chiller_ai_features;
-    // }
-    // else if (equipmentId.toLowerCase().includes("ahu")) {
-    //     temp_url = 'https://ikoncloud-dev.keross.com/aiagent/webhook/d2a0e887-9e8a-433f-9134-d6918a47e190';
-    //     //const url = 'https://ikoncloud-dev.keross.com/aiagent/webhook/ai-assisstant';
-    //     aiFeatures = ahu_ai_features;
-    // }
+    let temp_url = 'https://ikoncloud-uat.keross.com/cstools/ai-assistant' //'http://127.0.0.1:5000/ai-assistant'
+    let aiFeatures = ahu_ai_features; 
 
     // Scroll to bottom of messages
     useEffect(() => {
@@ -200,71 +191,147 @@ export default function Ai_agent({ params }: { params: Promise<{ id: string; flo
 
         const url = temp_url;
         let ticket = await getTicket()
-
-        debugger;
-
-
-        const currentSoftwareId = await mapSoftwareName({
-            softwareName: "BMS",
-            version: "1",
-        });
         const accountId = await getActiveAccountId();
 
-        // Define the data to be sent in the request body
-        const requestBody = {
-            "chatInput": message,
-            /* "ticket": "2138350a-0377-48db-9891-f4cb0a93c101" */
-            "ticket": ticket,
-            "currentSoftwareId": currentSoftwareId,
-            "accountId": accountId,
-        };
-
-        console.log("Request Body:", requestBody);
-
-        // Define the options for the fetch request
-        const requestOptions = {
-            method: 'POST', // Specify the HTTP method
-            headers: {
-                'Content-Type': 'application/json' // Indicate that the body is JSON
-                // Add any other headers if required, based on the "Headers (9)" in the image
-                // For example: 'Authorization': 'Bearer YOUR_TOKEN'
-            },
-            body: JSON.stringify(requestBody) // Convert the JavaScript object to a JSON string
-        };
-
-        // Perform the fetch request
-        debugger;
-        fetch(url, requestOptions)
-            .then(response => {
-                // Check if the response was successful (status code 200-299)
-                if (!response.ok) {
-                    // If not successful, throw an error with the status text
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                // Parse the JSON response
-                return response.json();
-
-            })
-            .then(data => {
-                // Handle the successful response data
-                console.log('Success:', data);
-                // You can process the data received from the server here
-                const responseContent = data['output'] || "No response from AI";
-                const assistantMessage: Message = {
-                    id: (Date.now() + 1).toString(),
-                    type: "assistant",
-                    content: responseContent,
-                    timestamp: new Date()
-                };
-
-                setMessages(prev => [...prev, assistantMessage]);
-                setIsLoading(false);
-            })
-            .catch(error => {
-                // Handle any errors that occurred during the fetch operation
-                console.error('Error:', error);
-                // Display an error message to the user or log it
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    "chatInput": message,
+                    "ticket": ticket,
+                    "accountId": accountId,
+                    "sessionId": ticket
+                })
             });
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                const errorMessage = errorData.error || `HTTP error! status: ${response.status}`;
+                throw new Error(errorMessage);
+            }
+
+            const reader = response.body?.getReader();
+            const decoder = new TextDecoder('utf-8');
+
+            if (!reader) {
+                throw new Error("Failed to get reader from response body.");
+            }
+
+            const assistantMessageId = (Date.now() + 1).toString();
+            let accumulatedContent = "";
+            let newAssistantMessage: Message = {
+                id: assistantMessageId,
+                type: "assistant",
+                content: "",
+                timestamp: new Date(),
+            };
+
+            setMessages(prev => [...prev, newAssistantMessage]);
+
+            let buffer = '';
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) {
+                    break;
+                }
+
+                buffer += decoder.decode(value, { stream: true });
+
+                const lines = buffer.split('\n');
+                buffer = lines.pop() || ''; 
+
+                for (const line of lines) {
+                    if (line.startsWith('data: ')) {
+                        const data = line.substring(6);
+                        if (data === '[DONE]') {
+                            setIsLoading(false);
+                            reader.cancel(); 
+                            return;
+                        }
+                        accumulatedContent += data;
+                        setMessages(prevMessages =>
+                            prevMessages.map(msg =>
+                                msg.id === assistantMessageId
+                                    ? { ...msg, content: accumulatedContent }
+                                    : msg
+                            )
+                        );
+                    } else if (line.trim() !== '') {
+                    }
+                }
+            }
+            setIsLoading(false);
+
+        } catch (error) {
+            console.error('Error during fetch or streaming:', error);
+            setIsLoading(false);
+            setMessages((prev) => [
+                ...prev,
+                {
+                    id: Date.now().toString() + "-error",
+                    type: "assistant",
+                    content: `Sorry, there was an error processing your request: ${error instanceof Error ? error.message : String(error)}. Please check your network or try again.`,
+                    timestamp: new Date(),
+                },
+            ]);
+        }
+
+        // // Define the data to be sent in the request body
+        // const requestBody = {
+        //     "chatInput": message,
+        //     /* "ticket": "2138350a-0377-48db-9891-f4cb0a93c101" */
+        //     "ticket": ticket,
+        //     "currentSoftwareId": currentSoftwareId,
+        //     "accountId": accountId,
+        // };
+
+        // console.log("Request Body:", requestBody);
+
+        // const requestOptions = {
+        //     method: 'POST', // Specify the HTTP method
+        //     headers: {
+        //         'Content-Type': 'application/json' // Indicate that the body is JSON
+        //     },
+        //     body: JSON.stringify(requestBody) // Convert the JavaScript object to a JSON string
+        // };
+
+        // // Perform the fetch request
+        // debugger;
+        // fetch(url, requestOptions)
+        //     .then(response => {
+        //         // Check if the response was successful (status code 200-299)
+        //         if (!response.ok) {
+        //             // If not successful, throw an error with the status text
+        //             throw new Error(`HTTP error! status: ${response.status}`);
+        //         }
+        //         // Parse the JSON response
+        //         return response.json();
+
+        //     })
+        //     .then(data => {
+        //         // Handle the successful response data
+        //         console.log('Success:', data);
+        //         // You can process the data received from the server here
+        //         const responseContent = data['output'] || "No response from AI";
+        //         const assistantMessage: Message = {
+        //             id: (Date.now() + 1).toString(),
+        //             type: "assistant",
+        //             content: responseContent,
+        //             timestamp: new Date()
+        //         };
+
+        //         setMessages(prev => [...prev, assistantMessage]);
+        //         setIsLoading(false);
+        //     })
+        //     .catch(error => {
+        //         // Handle any errors that occurred during the fetch operation
+        //         console.error('Error:', error);
+        //         // Display an error message to the user or log it
+        //     });
 
     };
 
@@ -282,7 +349,7 @@ export default function Ai_agent({ params }: { params: Promise<{ id: string; flo
             {
                 id: "welcome",
                 type: "assistant",
-                content: "Hello! I'm your Building Management AI Assistant. How can I help you today?",
+                content: "Hello! I'm your CyberrExpert. How can I help you today?",
                 timestamp: new Date()
             }
         ]);
@@ -396,7 +463,7 @@ export default function Ai_agent({ params }: { params: Promise<{ id: string; flo
                                                                 ? "bg-muted text-foreground"
                                                                 : "bg-primary text-primary-foreground"
                                                                 }`}>
-                                                                <div className="whitespace-pre-wrap">
+                                                                <div className="whitespace-pre-wrap">   
                                                                     <ReactMarkdown>{message.content}</ReactMarkdown>
                                                                 </div>
                                                                 <div className={`text-xs mt-1 ${message.type === "assistant"
