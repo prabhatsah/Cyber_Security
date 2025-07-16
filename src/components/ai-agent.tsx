@@ -147,7 +147,7 @@ export default function Ai_agent({ params }: { params: Promise<{ id: string; flo
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     let temp_url = 'https://ikoncloud-uat.keross.com/cstools/ai-assistant' //'http://127.0.0.1:5000/ai-assistant'
-    let aiFeatures = ahu_ai_features; 
+    let aiFeatures = ahu_ai_features;
 
     // Scroll to bottom of messages
     useEffect(() => {
@@ -242,14 +242,14 @@ export default function Ai_agent({ params }: { params: Promise<{ id: string; flo
                 buffer += decoder.decode(value, { stream: true });
 
                 const lines = buffer.split('\n');
-                buffer = lines.pop() || ''; 
+                buffer = lines.pop() || '';
 
                 for (const line of lines) {
                     if (line.startsWith('data: ')) {
                         const data = line.substring(6);
                         if (data === '[DONE]') {
                             setIsLoading(false);
-                            reader.cancel(); 
+                            reader.cancel();
                             return;
                         }
                         accumulatedContent += data;
@@ -418,10 +418,10 @@ export default function Ai_agent({ params }: { params: Promise<{ id: string; flo
                 <div className="flex items-center justify-between">
                     <h1 className="text-3xl font-bold">AI Assistant</h1>
                     <div className="flex items-center gap-2">
-                        <Button className="gap-2" onClick={handleClearChat}>
+                        {/* <Button className="gap-2" onClick={handleClearChat}>
                             <Trash className="h-4 w-4" />
                             <span>Clear Chat</span>
-                        </Button>
+                        </Button> */}
                         <Button className="gap-2">
                             <Download className="h-4 w-4" />
                             <span>Export</span>
@@ -463,7 +463,7 @@ export default function Ai_agent({ params }: { params: Promise<{ id: string; flo
                                                                 ? "bg-muted text-foreground"
                                                                 : "bg-primary text-primary-foreground"
                                                                 }`}>
-                                                                <div className="whitespace-pre-wrap">   
+                                                                <div className="whitespace-pre-wrap">
                                                                     <ReactMarkdown>{message.content}</ReactMarkdown>
                                                                 </div>
                                                                 <div className={`text-xs mt-1 ${message.type === "assistant"
@@ -554,7 +554,7 @@ export default function Ai_agent({ params }: { params: Promise<{ id: string; flo
                         <CardHeader>
                             <CardTitle>AI Assistant Features</CardTitle>
                             <CardDescription>
-                                Capabilities of your building management AI
+                                Capabilities of your building Cyber Security  AI
                             </CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-4">
