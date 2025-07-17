@@ -416,7 +416,8 @@ export default function Ai_agent({ params }: { params: Promise<{ id: string; flo
         <>
             <div className="space-y-6">
                 <div className="flex items-center justify-between">
-                    <h1 className="text-3xl font-bold">AI Assistant</h1>
+                    <h1 className="text-3xl font-bold">Cyber Security  Assistant</h1>
+
                     <div className="flex items-center gap-2">
                         {/* <Button className="gap-2" onClick={handleClearChat}>
                             <Trash className="h-4 w-4" />
@@ -428,24 +429,15 @@ export default function Ai_agent({ params }: { params: Promise<{ id: string; flo
                         </Button>
                     </div>
                 </div>
-
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <span className="mt-2">Ask questions, request analysis, or get recommendations for cyber security systems</span>
+                <div className="grid grid-cols-1">
                     <Card className="lg:col-span-2">
-                        <CardHeader>
-                            <CardTitle>Cyber Security Assistant</CardTitle>
-                            <CardDescription>
-                                Ask questions, request analysis, or get recommendations for cyber security systems
-                            </CardDescription>
-                        </CardHeader>
                         <CardContent className="p-0">
                             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                                <TabsList className="grid grid-cols-2 mx-6 my-2">
-                                    <TabsTrigger value="chat">Chat</TabsTrigger>
-                                    <TabsTrigger value="analyze">Data Analysis</TabsTrigger>
-                                </TabsList>
+
 
                                 <TabsContent value="chat" className="m-0">
-                                    <div className="flex flex-col h-[60vh]">
+                                    <div className="flex flex-col h-[80vh]">
                                         <ScrollArea className="flex-1 px-6 py-4">
                                             <div className="space-y-4">
                                                 {messages.map((message) => (
@@ -550,7 +542,7 @@ export default function Ai_agent({ params }: { params: Promise<{ id: string; flo
                         </CardContent>
                     </Card>
 
-                    <Card>
+                    {/* <Card>
                         <CardHeader>
                             <CardTitle>AI Assistant Features</CardTitle>
                             <CardDescription>
@@ -625,7 +617,7 @@ export default function Ai_agent({ params }: { params: Promise<{ id: string; flo
                                 View Documentation
                             </Button>
                         </CardFooter>
-                    </Card>
+                    </Card> */}
                 </div>
             </div>
         </>
