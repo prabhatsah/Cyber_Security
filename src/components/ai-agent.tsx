@@ -367,7 +367,7 @@ export default function Ai_agent({ params }: { params: Promise<{ id: string; flo
                         <Button variant="outline" className="gap-2" onClick={handleClearChat}>
                             <Trash className="h-4 w-4" />
                             <span>Clear Chat</span>
-                        </Button>
+                        </Button> */}
                         <Button className="gap-2">
                             <Download className="h-4 w-4" />
                             <span>Export</span>
@@ -515,6 +515,7 @@ export default function Ai_agent({ params }: { params: Promise<{ id: string; flo
                         </CardContent>
                     </Card>
 
+                    {/* <Card>
                     {/* <Card>
                         <CardHeader>
                             <CardTitle>AI Assistant Capabilities</CardTitle>
