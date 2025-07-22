@@ -871,7 +871,7 @@ export default function Ai_agent({ params }: { params: Promise<{ id: string; flo
                                                     </div>
                                                     <div className={`text-xs mt-2 ${message.type === "assistant"
                                                         ? ""
-                                                        : "text-blue-100"
+                                                        : ""
                                                         }`}>
                                                         {message.timestamp.toLocaleTimeString('en-US', {
                                                             hour: '2-digit',
