@@ -145,7 +145,7 @@ const MarkdownComponents = {
         </h1>
     ),
     h2: ({ children }: any) => (
-        <h2 className="text-xl font-semibold  mb-3 mt-6">
+        <h2 className="text-sm font-semibold  mb-3 mt-6">
             {children}
         </h2>
     ),
