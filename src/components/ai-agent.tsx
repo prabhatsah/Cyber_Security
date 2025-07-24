@@ -90,21 +90,21 @@ const ai_features = [
             "Recommend security controls for identified threats"
         ]
     },
-    {
-        id: "technical-support",
-        title: "Technical Support",
-        description: "Get help with cybersecurity tools, programming, and technical questions",
-        icon: Cpu,
-        color: "text-green-500",
-        bgColor: "bg-green-500/10",
-        borderColor: "border-green-200",
-        examplePrompts: [
-            "How do I configure a vulnerability scanner?",
-            "Write a Python script for log analysis",
-            "Explain how SQL injection attacks work",
-            "Help me understand penetration testing methodology"
-        ]
-    }
+    // {
+    //     id: "technical-support",
+    //     title: "Technical Support",
+    //     description: "Get help with cybersecurity tools, programming, and technical questions",
+    //     icon: Cpu,
+    //     color: "text-green-500",
+    //     bgColor: "bg-green-500/10",
+    //     borderColor: "border-green-200",
+    //     examplePrompts: [
+    //         "How do I configure a vulnerability scanner?",
+    //         "Write a Python script for log analysis",
+    //         "Explain how SQL injection attacks work",
+    //         "Help me understand penetration testing methodology"
+    //     ]
+    // }
 ];
 
 // Quick action buttons
@@ -268,6 +268,7 @@ export default function Ai_agent({ params }: { params: Promise<{ id: string; flo
             timestamp: new Date()
         }
     ]);
+    console.log("Initial messages:", messages);
     const [inputValue, setInputValue] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [activeTab, setActiveTab] = useState("chat");
@@ -906,7 +907,7 @@ export default function Ai_agent({ params }: { params: Promise<{ id: string; flo
                             </ScrollArea>
 
                             {/* Quick Actions */}
-                            {selectedTable && (
+                            {/* {selectedTable && (
                                 <div className="px-6 py-3 border-t  flex-shrink-0">
                                     <div className="flex gap-2 flex-wrap">
                                         {quickActions.map((action, index) => (
@@ -924,7 +925,7 @@ export default function Ai_agent({ params }: { params: Promise<{ id: string; flo
                                         ))}
                                     </div>
                                 </div>
-                            )}
+                            )} */}
 
                             {/* Input Area */}
                             <div className="p-6 border-t  flex-shrink-0">
