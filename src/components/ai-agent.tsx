@@ -18,6 +18,8 @@ import { getActiveAccountId } from "@/ikon/utils/actions/account";
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw'
 import remarkBreaks from 'remark-breaks';
+import { getLoggedInUserProfile } from "@/ikon/utils/api/loginService";
+
 
 // Base API URL - update this to match your backend
 const API_BASE_URL = 'https://ikoncloud-uat.keross.com/cstools';
@@ -396,6 +398,7 @@ export default function Ai_agent({ params }: { params: Promise<{ id: string; flo
         try {
             const ticket = await getTicket();
             const accountId = await getActiveAccountId();
+            const profile = await getLoggedInUserProfile().then((data) => data.USER_ID);
 
             const response = await fetch(`${API_BASE_URL}/ai-assistant`, {
                 method: 'POST',
@@ -406,7 +409,8 @@ export default function Ai_agent({ params }: { params: Promise<{ id: string; flo
                     "chatInput": message,
                     "ticket": ticket,
                     "accountId": accountId,
-                    "sessionId": ticket
+                    "sessionId": ticket,
+                    "userid": profile,
                 })
             });
 

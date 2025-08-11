@@ -18,7 +18,6 @@ import {
   BugPlay,
   ChevronLeft,
   ChevronRight,
-  HelpCircle,
 } from "lucide-react";
 import { RiArrowDownSLine } from "@remixicon/react";
 import { cn } from "@/lib/utils";
@@ -28,7 +27,7 @@ import { AiFillAlert } from "react-icons/ai";
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "Vulnerability Scans", href: "/scans", icon: Scan },
-  { name: "PenTest", href: "/pen-test", icon: BugPlay },
+  { name: "Penetration Tests", href: "/pen-test", icon: BugPlay },
   { name: "Reports", href: "/reports", icon: FileText },
   { name: "Audit Log", href: "/audit", icon: Activity },
   { name: "Settings", href: "/settings", icon: Settings },
@@ -36,6 +35,11 @@ const navigation = [
     name: "Configuration",
     icon: PackageCheck,
     submenus: [
+      {
+        name: "PenTest Configurations",
+        href: "/configuration/pentest-configs",
+        icon: BugPlay,
+      },
       {
         name: "Cloud Services",
         href: "/configuration/cloud-services",
@@ -58,7 +62,7 @@ const navigation = [
       },
     ],
   },
-  { name: "Ai Agent", href: "/ai-agent", icon: AiFillAlert },
+  { name: "AI Agent", href: "/ai-agent", icon: AiFillAlert },
 ];
 
 export default function Sidebar() {
