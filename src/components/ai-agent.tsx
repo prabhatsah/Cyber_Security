@@ -56,7 +56,7 @@ const ai_features = [
         bgColor: "bg-blue-500/10",
         borderColor: "border-blue-200",
         examplePrompts: [
-            "Show me all penetration testing records",
+            // "Show me all penetration testing records",
             "How many vulnerability scans were performed this month?",
             "Find the latest security assessment results",
             "What are the medium level vulnerabilities found during pentesting?"
