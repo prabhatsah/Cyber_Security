@@ -20,7 +20,6 @@ import rehypeRaw from 'rehype-raw'
 import remarkBreaks from 'remark-breaks';
 import { getLoggedInUserProfile } from "@/ikon/utils/api/loginService";
 
-
 // Base API URL - update this to match your backend
 const API_BASE_URL = 'https://ikoncloud-uat.keross.com/cstools';
 
@@ -287,6 +286,7 @@ export default function Ai_agent({ params }: { params: Promise<{ id: string; flo
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }, [messages]);
+    console.log("isLoading:", isLoading);
 
     // Load initial data from backend
     useEffect(() => {
@@ -305,7 +305,7 @@ export default function Ai_agent({ params }: { params: Promise<{ id: string; flo
         };
         initializeApp();
     }, []);
-
+    console.log("showExamplePrompts:", showExamplePrompts);
     // Fetch table options from backend
     const fetchTableOptions = async () => {
         try {
@@ -399,6 +399,8 @@ export default function Ai_agent({ params }: { params: Promise<{ id: string; flo
             const ticket = await getTicket();
             const accountId = await getActiveAccountId();
             const profile = await getLoggedInUserProfile().then((data) => data.USER_ID);
+
+
 
             const response = await fetch(`${API_BASE_URL}/ai-assistant`, {
                 method: 'POST',
@@ -665,6 +667,8 @@ export default function Ai_agent({ params }: { params: Promise<{ id: string; flo
             "Find recent activities"
         ];
     };
+    console.log("Selected table:", selectedTable);
+    console.log("isLoading:", isLoading);
 
     return (
         <div className="">
