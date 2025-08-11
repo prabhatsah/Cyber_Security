@@ -20,6 +20,7 @@ import rehypeRaw from 'rehype-raw'
 import remarkBreaks from 'remark-breaks';
 import { getLoggedInUserProfile } from "@/ikon/utils/api/loginService";
 
+
 // Base API URL - update this to match your backend
 const API_BASE_URL = 'https://ikoncloud-uat.keross.com/cstools';
 
@@ -58,7 +59,7 @@ const ai_features = [
             "Show me all penetration testing records",
             "How many vulnerability scans were performed this month?",
             "Find the latest security assessment results",
-            "What are the most critical vulnerabilities found?"
+            "What are the medium level vulnerabilities found?"
         ]
     },
     {
@@ -349,146 +350,172 @@ export default function Ai_agent({ params }: { params: Promise<{ id: string; flo
         }
     };
 
-    // Clean up content for better formatting
     const cleanupContent = (rawContent: string): string => {
-        let cleaned = rawContent;
+    let cleaned = rawContent;
 
-        // Remove excessive whitespace but preserve intentional spacing
-        cleaned = cleaned.replace(/\n{3,}/g, '\n\n');
+    // Remove excessive whitespace but preserve intentional double line breaks
+    cleaned = cleaned.replace(/\n{4,}/g, '\n\n\n'); // Max 3 line breaks
+    cleaned = cleaned.replace(/\n{3}/g, '\n\n'); // Convert triple to double
 
-        // Fix markdown formatting issues
-        cleaned = cleaned.replace(/\*\*([^*]+)\*\*/g, '**$1**');
-        cleaned = cleaned.replace(/\*([^*]+)\*/g, '*$1*');
+    // Preserve markdown formatting
+    cleaned = cleaned.replace(/\*\*([^*]+)\*\*/g, '**$1**');
+    cleaned = cleaned.replace(/\*([^*]+)\*/g, '*$1*');
 
-        // Fix list formatting
-        cleaned = cleaned.replace(/^(\s*)[-*+]\s+/gm, '$1- ');
-        cleaned = cleaned.replace(/^(\s*)\d+\.\s+/gm, '$1$&');
+    // Fix list formatting - preserve line breaks in lists
+    cleaned = cleaned.replace(/^(\s*)[-*+]\s+/gm, '$1- ');
+    cleaned = cleaned.replace(/^(\s*)\d+\.\s+/gm, '$1$&');
 
-        // Fix table formatting
-        cleaned = cleaned.replace(/\|\s*\|\s*$/gm, '|');
-        cleaned = cleaned.replace(/\|\s+/g, '| ');
-        cleaned = cleaned.replace(/\s+\|/g, ' |');
+    // Ensure proper spacing around numbered lists with sub-items
+    cleaned = cleaned.replace(/(\d+\.\s+\*\*[^*]+\*\*\n)(\s*-\s+\*\*[^*]+\*\*[^\n]*\n)/g, '$1$2');
 
-        // Ensure proper spacing around headers
-        cleaned = cleaned.replace(/^(#{1,6})\s*/gm, '$1 ');
+    // Fix table formatting
+    cleaned = cleaned.replace(/\|\s*\|\s*$/gm, '|');
+    cleaned = cleaned.replace(/\|\s+/g, '| ');
+    cleaned = cleaned.replace(/\s+\|/g, ' |');
 
-        // Fix code block formatting
-        cleaned = cleaned.replace(/```(\w*)\n/g, '```$1\n');
+    // Ensure proper spacing around headers
+    cleaned = cleaned.replace(/^(#{1,6})\s*/gm, '$1 ');
 
-        return cleaned.trim();
-    };
+    // Fix code block formatting
+    cleaned = cleaned.replace(/```(\w*)\n/g, '```$1\n');
+
+    // Ensure proper line breaks before and after major sections
+    cleaned = cleaned.replace(/(\n\d+\.\s+\*\*[^*]+\*\*)/g, '\n$1');
+
+    return cleaned.trim();
+};
 
     // Handle sending a message
-    const handleSendMessage = async (message = inputValue) => {
-        if (!message.trim()) return;
+    // Replace your handleSendMessage function with this updated version
 
-        // Add user message
-        const userMessage: Message = {
-            id: Date.now().toString(),
-            type: "user",
-            content: message,
-            timestamp: new Date()
+const handleSendMessage = async (message = inputValue) => {
+    if (!message.trim()) return;
+
+    // Add user message
+    const userMessage: Message = {
+        id: Date.now().toString(),
+        type: "user",
+        content: message,
+        timestamp: new Date()
+    };
+
+    setMessages(prev => [...prev, userMessage]);
+    setInputValue("");
+    setIsLoading(true);
+    setShowExamplePrompts(false);
+
+    try {
+        const ticket = await getTicket();
+        const accountId = await getActiveAccountId();
+        const profile = await getLoggedInUserProfile().then((data) => data.USER_ID);
+
+        const response = await fetch(`${API_BASE_URL}/ai-assistant`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                "chatInput": message,
+                "ticket": ticket,
+                "accountId": accountId,
+                "sessionId": ticket,
+                "userid": profile,
+            })
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            const errorMessage = errorData.error || `HTTP error! status: ${response.status}`;
+            throw new Error(errorMessage);
+        }
+
+        const reader = response.body?.getReader();
+        const decoder = new TextDecoder('utf-8');
+
+        if (!reader) {
+            throw new Error("Failed to get reader from response body.");
+        }
+
+        const assistantMessageId = (Date.now() + 1).toString();
+        let accumulatedContent = "";
+        let newAssistantMessage: Message = {
+            id: assistantMessageId,
+            type: "assistant",
+            content: "",
+            timestamp: new Date(),
         };
 
-        setMessages(prev => [...prev, userMessage]);
-        setInputValue("");
-        setIsLoading(true);
-        setShowExamplePrompts(false);
+        setMessages(prev => [...prev, newAssistantMessage]);
 
-        try {
-            const ticket = await getTicket();
-            const accountId = await getActiveAccountId();
-            const profile = await getLoggedInUserProfile().then((data) => data.USER_ID);
+        let buffer = '';
 
-
-
-            const response = await fetch(`${API_BASE_URL}/ai-assistant`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    "chatInput": message,
-                    "ticket": ticket,
-                    "accountId": accountId,
-                    "sessionId": ticket,
-                    "userid": profile,
-                })
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json().catch(() => ({}));
-                const errorMessage = errorData.error || `HTTP error! status: ${response.status}`;
-                throw new Error(errorMessage);
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) {
+                break;
             }
 
-            const reader = response.body?.getReader();
-            const decoder = new TextDecoder('utf-8');
+            buffer += decoder.decode(value, { stream: true });
 
-            if (!reader) {
-                throw new Error("Failed to get reader from response body.");
-            }
+            const lines = buffer.split('\n');
+            buffer = lines.pop() || '';
 
-            const assistantMessageId = (Date.now() + 1).toString();
-            let accumulatedContent = "";
-            let newAssistantMessage: Message = {
-                id: assistantMessageId,
-                type: "assistant",
-                content: "",
-                timestamp: new Date(),
-            };
-
-            setMessages(prev => [...prev, newAssistantMessage]);
-
-            let buffer = '';
-
-            while (true) {
-                const { done, value } = await reader.read();
-                if (done) {
-                    break;
-                }
-
-                buffer += decoder.decode(value, { stream: true });
-
-                const lines = buffer.split('\n');
-                buffer = lines.pop() || '';
-
-                for (const line of lines) {
-                    if (line.startsWith('data: ')) {
-                        const data = line.substring(6);
-                        if (data === '[DONE]') {
-                            setIsLoading(false);
-                            reader.cancel();
-                            return;
-                        }
-                        accumulatedContent += data;
-                        const cleanedContent = cleanupContent(accumulatedContent);
+            for (const line of lines) {
+                if (line.startsWith('data: ')) {
+                    const data = line.substring(6);
+                    if (data === '[DONE]') {
+                        setIsLoading(false);
+                        
+                        const finalContent = accumulatedContent
+                            .replace(/\|NEWLINE\|/g, '\n') 
+                            .replace(/\n{3,}/g, '\n\n')    
+                            .trim();
+                        
                         setMessages(prevMessages =>
                             prevMessages.map(msg =>
                                 msg.id === assistantMessageId
-                                    ? { ...msg, content: cleanedContent }
+                                    ? { ...msg, content: finalContent }
                                     : msg
                             )
                         );
+                        
+                        reader.cancel();
+                        return;
                     }
+                    
+                    accumulatedContent += data;
+                    
+                    const streamingContent = accumulatedContent
+                        .replace(/\|NEWLINE\|/g, '\n')
+                        .replace(/\n{3,}/g, '\n\n')
+                        .trim();
+                    
+                    setMessages(prevMessages =>
+                        prevMessages.map(msg =>
+                            msg.id === assistantMessageId
+                                ? { ...msg, content: streamingContent }
+                                : msg
+                        )
+                    );
                 }
             }
-            setIsLoading(false);
-
-        } catch (error) {
-            console.error('Error during fetch or streaming:', error);
-            setIsLoading(false);
-            setMessages((prev) => [
-                ...prev,
-                {
-                    id: Date.now().toString() + "-error",
-                    type: "assistant",
-                    content: `❌ **Error**: ${error instanceof Error ? error.message : String(error)}\n\nPlease check your connection and try again.`,
-                    timestamp: new Date(),
-                },
-            ]);
         }
-    };
+        setIsLoading(false);
+
+    } catch (error) {
+        console.error('Error during fetch or streaming:', error);
+        setIsLoading(false);
+        setMessages((prev) => [
+            ...prev,
+            {
+                id: Date.now().toString() + "-error",
+                type: "assistant",
+                content: `❌ **Error**: ${error instanceof Error ? error.message : String(error)}\n\nPlease check your connection and try again.`,
+                timestamp: new Date(),
+            },
+        ]);
+    }
+};
 
     // Handle key press (Enter to send)
     const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -963,13 +990,13 @@ export default function Ai_agent({ params }: { params: Promise<{ id: string; flo
                                         )}
                                     </Button>
                                 </div>
-                                <div className="flex items-center justify-between mt-3 text-xs ">
+                                {/* <div className="flex items-center justify-between mt-3 text-xs ">
                                     <span>Press Enter to send, Shift+Enter for new line</span>
                                     <div className="flex items-center gap-1">
                                         <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                                         <span>AI Ready</span>
                                     </div>
-                                </div>
+                                </div> */}
                             </div>
                         </Card>
                     </div>
