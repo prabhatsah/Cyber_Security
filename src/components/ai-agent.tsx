@@ -59,7 +59,7 @@ const ai_features = [
             "Show me all penetration testing records",
             "How many vulnerability scans were performed this month?",
             "Find the latest security assessment results",
-            "What are the medium level vulnerabilities found?"
+            "What are the medium level vulnerabilities found during pentesting?"
         ]
     },
     {
