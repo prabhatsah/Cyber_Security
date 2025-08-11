@@ -287,6 +287,7 @@ export default function Ai_agent({ params }: { params: Promise<{ id: string; flo
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }, [messages]);
+    console.log("isLoading:", isLoading);
 
     // Load initial data from backend
     useEffect(() => {
@@ -305,7 +306,7 @@ export default function Ai_agent({ params }: { params: Promise<{ id: string; flo
         };
         initializeApp();
     }, []);
-
+    console.log("showExamplePrompts:", showExamplePrompts);
     // Fetch table options from backend
     const fetchTableOptions = async () => {
         try {
@@ -693,6 +694,8 @@ const handleSendMessage = async (message = inputValue) => {
             "Find recent activities"
         ];
     };
+    console.log("Selected table:", selectedTable);
+    console.log("isLoading:", isLoading);
 
     return (
         <div className="">

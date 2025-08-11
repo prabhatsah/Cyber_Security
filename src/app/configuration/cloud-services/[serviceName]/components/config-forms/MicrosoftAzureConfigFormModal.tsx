@@ -7,15 +7,18 @@ import {
   Select,
   SelectItem,
 } from "@tremor/react";
+import { useState } from "react";
 
 export default function MicrosoftAzureConfigFormModal({
   serviceUrl,
   isFormModalOpen,
   onClose,
+  savedDataToBePopulated
 }: {
   serviceUrl: string;
   isFormModalOpen: boolean;
   onClose: () => void;
+  savedDataToBePopulated?: any;
 }) {
   const serviceNameArray = serviceUrl.split("-");
   let serviceName = "";
@@ -26,6 +29,29 @@ export default function MicrosoftAzureConfigFormModal({
       " ";
   });
   serviceName.trim();
+
+  const [formData, setFormData] = useState({
+    configurationName: savedDataToBePopulated?.configurationName ?? "",
+    accessKeyId: savedDataToBePopulated?.accessKeyId ?? "",
+    secretAccessKey: savedDataToBePopulated?.secretAccessKey ?? "",
+    region: savedDataToBePopulated?.region ?? "",
+  });
+
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [isLoading, setIsLoading] = useState(false);
+  const [testConnectionResult, setTestConnectionResult] = useState("");
+  const [isConnected, setIsConnected] = useState(false);
+
+  const handleChange = (
+    e:
+      | React.ChangeEvent<HTMLInputElement>
+      | React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+
+    setErrors({});
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
   return (
     <>
@@ -102,7 +128,135 @@ export default function MicrosoftAzureConfigFormModal({
                   </button>
                 </div>
               </div>
-              <div className="flex-1 space-y-8 p-6 md:px-6 md:pb-20 md:pt-6"></div>
+              <div className="flex-1 space-y-8 p-6 md:px-6 md:pb-20 md:pt-6">
+                <div>
+                  <div className="flex flex-col space-y-3">
+                    <label
+                      htmlFor="configurationName"
+                      className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                    >
+                      Configuration Name
+                    </label>
+
+                    <Input
+                      id="configurationName"
+                      name="configurationName"
+                      value={formData.configurationName}
+                      className={
+                        errors.configurationName
+                          ? "w-full border border-red-500 rounded-md"
+                          : "w-full"
+                      }
+                      onChange={handleChange}
+                      placeholder="Enter Configuration Name"
+                    />
+
+                    {errors.configurationName ? (
+                      <p className="text-xs text-red-500">
+                        {errors.configurationName}
+                      </p>
+                    ) : (
+                      <p className="text-xs text-gray-500 dark:text-gray-300">
+                        A user-friendly name for this GCP configuration
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div>
+                  <div className="flex flex-col space-y-3">
+                    <label
+                      htmlFor="accessKeyId"
+                      className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                    >
+                      Access Key Id
+                    </label>
+
+                    <Input
+                      id="accessKeyId"
+                      name="accessKeyId"
+                      value={formData.accessKeyId}
+                      disabled={savedDataToBePopulated ? true : false}
+                      type="password"
+                      className={`w-full ${savedDataToBePopulated ? "cursor-not-allowed" : ""} ${errors.accessKeyId ? "border border-red-500 rounded-md" : ""}`}
+                      onChange={handleChange}
+                      placeholder="Enter Access Key Id"
+                    />
+
+                    {errors.accessKeyId ? (
+                      <p className="text-xs text-red-500">{errors.accessKeyId}</p>
+                    ) : (
+                      <p className="text-xs text-gray-500 dark:text-gray-300">
+                        The unique identifier for the user's access
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div>
+                  <div className="flex flex-col space-y-3">
+                    <label
+                      htmlFor="accessKeyId"
+                      className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                    >
+                      Secret Access Key
+                    </label>
+
+                    <Input
+                      id="secretAccessKey"
+                      name="secretAccessKey"
+                      value={formData.secretAccessKey}
+                      disabled={savedDataToBePopulated ? true : false}
+                      type="password"
+                      className={`w-full ${savedDataToBePopulated ? "cursor-not-allowed" : ""} ${errors.accessKeyId ? "border border-red-500 rounded-md" : ""}`}
+                      onChange={handleChange}
+                      placeholder="Enter Secret Access Key"
+                    />
+
+                    {errors.secretAccessKey ? (
+                      <p className="text-xs text-red-500">{errors.secretAccessKey}</p>
+                    ) : (
+                      <p className="text-xs text-gray-500 dark:text-gray-300">
+                        The unique access key provided to the user
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div>
+                  <div className="flex flex-col space-y-3">
+                    <label
+                      htmlFor="region"
+                      className="text-tremor-default font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong"
+                    >
+                      Select Region/Zone (Optional)
+                    </label>
+
+                    <Select
+                      id="region"
+                      name="region"
+                      className={
+                        errors.region
+                          ? "w-full border border-red-500 rounded-md"
+                          : "w-full"
+                      }
+                      value={formData.region}
+                      onValueChange={(val) =>
+                        setFormData((prev) => ({ ...prev, region: val }))
+                      }
+                    >
+                      <SelectItem value="us-central">US Central</SelectItem>
+                      <SelectItem value="europe-west">Europe West</SelectItem>
+                      <SelectItem value="asia-east">Asia East</SelectItem>
+                    </Select>
+                    <p className="text-xs text-gray-500 dark:text-gray-300">
+                      The Region or Zone where the resources are located. It
+                      helps narrow down the scan if the user only wants to scan
+                      a Specific Region
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
           </form>
         </DialogPanel>

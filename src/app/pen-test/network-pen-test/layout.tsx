@@ -21,7 +21,7 @@ export default async function RootLayout({
           href: "/pen-test/network-pen-test",
         }}
       />
-      <div className="flex h-full">{children}</div>
+      <div className="h-full w-full">{children}</div>
     </>
   );
 }

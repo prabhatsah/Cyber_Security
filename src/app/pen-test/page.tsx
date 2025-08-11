@@ -41,7 +41,8 @@ export default async function EndPointToolsConfig() {
             name: "Network Penetration Testing",
             description:
                 "Network pentesting identifies and exploits security weaknesses in network infrastructure to prevent unauthorized access.",
-            configurationCount: await getPententCount('network'),
+            // configurationCount: await getPententCount('network'),
+            configurationCount: 2,
             icon: <Network className="size-5" aria-hidden={true} />,
             href: "/pen-test/network-pen-test",
         },
