@@ -48,16 +48,16 @@ const DEFAULT_TABLE_OPTIONS: TableOption[] = [
 // AI feature data updated for cybersecurity focus
 const ai_features = [
     {
-        id: "database-queries",
-        title: "Database Queries",
-        description: "Query penetration testing and vulnerability scan data from your security database",
+        id: "domain-queries",
+        title: "Domain Queries",
+        description: "Query penetration testing and vulnerability scan data from your security sections",
         icon: Database,
         color: "text-blue-500",
         bgColor: "bg-blue-500/10",
         borderColor: "border-blue-200",
         examplePrompts: [
             // "Show me all penetration testing records",
-            "How many vulnerability scans were performed this month?",
+            "How many pentest scans were performed this month?",
             "Find the latest security assessment results",
             "What are the medium level vulnerabilities found during pentesting?"
         ]
@@ -266,7 +266,7 @@ export default function Ai_agent({ params }: { params: Promise<{ id: string; flo
         {
             id: "welcome",
             type: "assistant",
-            content: "👋 **Welcome to CyberSecurity AI Assistant!**\n\nI'm your intelligent security companion, ready to help you with:\n\n🔍 **Database Queries** - Access and analyze your security data\n🛡️ **Threat Analysis** - Deep dive into vulnerabilities and risks\n💡 **Security Insights** - Get actionable recommendations\n🔧 **Technical Support** - Expert help with tools and methodologies\n\n**Get started by selecting a data source above, then ask me anything!**",
+            content: "👋 **Welcome to CyberSecurity AI Assistant!**\n\nI'm your intelligent security companion, ready to help you with:\n\n🔍 **Domain Queries** - Access and analyze your security data\n🛡️ **Threat Analysis** - Deep dive into vulnerabilities and risks\n💡 **Security Insights** - Get actionable recommendations\n🔧 **Technical Support** - Expert help with tools and methodologies\n\n**Get started by selecting a data source above, then ask me anything!**",
             timestamp: new Date()
         }
     ]);
@@ -510,7 +510,7 @@ const handleSendMessage = async (message = inputValue) => {
             {
                 id: Date.now().toString() + "-error",
                 type: "assistant",
-                content: `❌ **Error**: ${error instanceof Error ? error.message : String(error)}\n\nPlease check your connection and try again.`,
+                content: `It looks like you're not logged in. Please sign in to continue using our services.\n\nAlso please check your connection and try again.`,
                 timestamp: new Date(),
             },
         ]);
@@ -544,7 +544,7 @@ const handleSendMessage = async (message = inputValue) => {
                 {
                     id: "welcome",
                     type: "assistant",
-                    content: "Hello! I'm your **CyberSecurity Expert**. I can help you with:\n\n🔍 **Database Queries** - Access penetration testing and vulnerability scan data\n🛡️ **Threat Analysis** - Analyze security assessments and vulnerabilities\n💡 **Security Insights** - Get recommendations for security improvements\n🔧 **Technical Support** - Help with cybersecurity tools and programming\n\n**To get started:**\n1. Select a data source from the dropdown above for database queries\n2. Or ask me any general cybersecurity questions\n\nHow can I help you today?",
+                    content: "Hello! I'm your **CyberSecurity Expert**. I can help you with:\n\n🔍 **Domain Queries** - Access penetration testing and vulnerability scan data\n🛡️ **Threat Analysis** - Analyze security assessments and vulnerabilities\n💡 **Security Insights** - Get recommendations for security improvements\n🔧 **Technical Support** - Help with cybersecurity tools and programming\n\n**To get started:**\n1. Select a data source from the dropdown above for domain specific queries\n2. Or ask me any general cybersecurity questions\n\nHow can I help you today?",
                     timestamp: new Date()
                 }
             ]);
