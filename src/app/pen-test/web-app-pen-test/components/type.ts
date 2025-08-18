@@ -2,6 +2,7 @@ export interface BasicDetails {
   pentestId: string;
   target: string;
   pentestName: string;
+  clientName?: string;
   pentestDescription: string;
   scope: string;
   testingType: string;
