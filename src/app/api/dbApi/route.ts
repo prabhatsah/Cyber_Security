@@ -67,9 +67,12 @@ export async function POST(req: Request) {
     await withTableLock(query.tableName, async () => {
       fs.writeFileSync(localFilePath, query, "utf8");
       await ssh.putFile(localFilePath, remoteFilePath);
+      const print = await ssh.execCommand(`cat ${remoteFilePath}`);
+      console.log("Remote file content:", print.stdout);
       result = await ssh.execCommand(
-        `PGPASSWORD="postgres" psql -h localhost -U postgres -p 5436 -d cyber_security -f "${remoteFilePath}"`
+        `PGPASSWORD="postgres" psql -h localhost -U postgres -p 5436 -d ikonv9_postgres -f "${remoteFilePath}"`
       );
+      console.log("Update result:", result);
     });
   } else if (instruction === "fetch") {
     console.log("this is query inside fetch--> ");
@@ -137,12 +140,20 @@ async function fetchPaginatedData(
   orderByColumn: string,
   offset?: number | null,
   limit?: number | null,
-  columnFilters?: { column: string; value: string | number }[] | null,
+  columnFilters?:
+    | { table: string; column: string; value: string | number }[]
+    | null,
   jsonFilters?:
-    | { column: string; keyPath: string[]; value: string | number }[]
+    | {
+        table: string;
+        column: string;
+        keyPath: string[];
+        value: string | number;
+      }[]
     | null,
   selectCondition?: string | null
 ) {
+  console.log(jsonFilters, columnFilters, orderByColumn, offset, limit);
   let hasMore = true;
   let jsonParts: string[] = [];
 
@@ -151,19 +162,38 @@ async function fetchPaginatedData(
 
   while (hasMore) {
     let whereClauses: string[] = [];
-    let selectClause = selectCondition ? selectCondition : "*";
-    let fromClause = tableName;
+
+    // Default select clause
+    let selectClause = selectCondition
+      ? `${selectCondition},
+         group_membership.groupid,
+         user_membership.userid,
+         user_membership.generatedby,
+         user_membership.generatedfor`
+      : `group_membership.*,
+         user_membership.*,
+         ${tableName}.*`;
+
+    // FROM + JOIN clause (no aliases)
+    const fromClause = `
+      group_membership
+      JOIN user_membership ON group_membership.rowid = user_membership.rowid
+      JOIN ${tableName} ON group_membership.rowid = ${tableName}.rowid
+    `;
+
+    // Add column filters
     if (columnFilters && columnFilters.length > 0) {
-      columnFilters.forEach((columnFilter) => {
-        whereClauses.push(`"${columnFilter.column}" = '${columnFilter.value}'`);
+      columnFilters.forEach((f) => {
+        whereClauses.push(`${f.table}.${f.column} = '${f.value}'`);
       });
     }
 
+    // Add JSON filters
     if (jsonFilters && jsonFilters.length > 0) {
-      jsonFilters.forEach((jsonFilter) => {
-        const path = jsonFilter.keyPath.map((k) => `'${k}'`).join(",");
+      jsonFilters.forEach((jf) => {
+        const path = jf.keyPath.map((k) => `'${k}'`).join(",");
         whereClauses.push(
-          `"${jsonFilter.column}" #>> ARRAY[${path}] = '${jsonFilter.value}'`
+          `${jf.table}.${jf.column} #>> ARRAY[${path}] = '${jf.value}'`
         );
       });
     }
@@ -172,11 +202,11 @@ async function fetchPaginatedData(
       whereClauses.length > 0 ? `WHERE ${whereClauses.join(" AND ")}` : "";
 
     const query = `
-      SELECT COALESCE(jsonb_agg(t), '[]') FROM (
+      SELECT COALESCE(jsonb_agg(t), '[]') AS data FROM (
         SELECT ${selectClause}
         FROM ${fromClause}
         ${whereClause}
-        ORDER BY "${orderByColumn}" DESC
+        ORDER BY ${tableName}."${orderByColumn}" DESC
         LIMIT ${limit} OFFSET ${offset}
       ) t;
     `;
@@ -184,7 +214,7 @@ async function fetchPaginatedData(
     console.log("Query: ", query);
 
     const result = await ssh.execCommand(
-      `PGPASSWORD="postgres" psql -h localhost -U postgres -p 5436 -d cyber_security -A -t -c "${query}"`
+      `PGPASSWORD="postgres" psql -h localhost -U postgres -p 5436 -d ikonv9_postgres -A -t -c "${query}"`
     );
 
     try {

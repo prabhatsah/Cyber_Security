@@ -14,8 +14,8 @@ async function fetchLoggedInUserPentestData() {
     console.log(userId);
 
 
-    const fetchedData = await fetchData('penetration_testing_history', 'id', [{ column: 'type', value: 'network' }], null,
-        "pentestid, data->'basicDetails' as basicdetails, userid, lastscanon");
+    const fetchedData = await fetchData('pentest_data', 'last_scan_on', [{table: "user_membership" ,  column: 'type', value: 'network' }], null,
+        "pentest_data.pentestid, pentest_data.data->'basicDetails' as basicdetails, pentest_data.last_scan_on");
 
     return fetchedData;
 }

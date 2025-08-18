@@ -206,6 +206,7 @@ export interface PenTestWithoutScanModified {
 }
 
 export interface PenTestWithoutScanDefault {
+  groupid: any;
   id: number;
   userid: string;
   pentestid: string;

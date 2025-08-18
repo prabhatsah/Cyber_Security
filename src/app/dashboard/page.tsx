@@ -6,14 +6,22 @@ import { getLoggedInUserProfile } from '@/ikon/utils/api/loginService';
 import { fetchData } from '@/utils/api';
 import { PenTestWithoutScanDefault, PenTestWithoutScanModified } from '../pen-test/web-app-pen-test/components/type';
 import SecurityAlertCard from './components/SecurityAlertCard';
+import { secureGaurdService } from '@/utils/secureGaurdService';
+
+
 async function fetchLoggedInUserPentestData() {
   const userId = (await getLoggedInUserProfile()).USER_ID;
 
   console.log("user id ---------")
   console.log(userId);
-
-  const fetchedData = await fetchData('penetration_testing_history', 'id', null, null, "pentestid, data->'basicDetails' as basicdetails, userid, lastscanon");
-
+  const currentRole = (await secureGaurdService.userDetails.getUserRolesForthisSoftware())[0].ROLE_NAME;
+  const currentAccountId = await secureGaurdService.userDetails.getAccountId()
+  console.log("user current role-->", currentRole)
+  let fetchedData = []
+  if (currentRole == "Pentest Admin")
+    fetchedData = await fetchData("pentest_data", "last_scan_on", [{ table: "user_membership", column: "generatedby", value: currentAccountId }], null, "pentest_data.pentestid , pentest_data.data->'basicDetails' as basicdetails,pentest_data.last_scan_on");
+  else
+    fetchedData = await fetchData("pentest_data", "last_scan_on", [{ table: "user_membership", column: "generatedby", value: currentAccountId }, { table: "user_membership", column: "userid", value: userId }], null, "pentest_data.pentestid , pentest_data.data->'basicDetails' as basicdetails,pentest_data.last_scan_on");
   return fetchedData;
 }
 
@@ -22,6 +30,7 @@ export default async function Dashboard() {
   const loggedInUserPentestDataFormatted: PenTestWithoutScanModified[] = loggedInUserPentestData.map((eachPenTestData: PenTestWithoutScanDefault) => {
     return {
       userId: eachPenTestData.userid,
+      groupId: eachPenTestData.groupid,
       pentestId: eachPenTestData.pentestid,
       pentestType: eachPenTestData.type,
       basicDetails: { ...eachPenTestData.basicdetails },
@@ -29,7 +38,7 @@ export default async function Dashboard() {
     }
   });
 
-  console.log("Pentest Data With New Func: ", loggedInUserPentestDataFormatted);
+  console.log("Pentest Data With New Func: ", loggedInUserPentestData);
   const paramsData = {
     id: loggedInUserPentestDataFormatted[0]?.userId,  // Assuming you want to use the first user's ID         
     floorId: loggedInUserPentestDataFormatted[0]?.pentestId,

@@ -5,6 +5,7 @@ import { fetchData } from "@/utils/api";
 import AddPentestBtnWithFormModal from "./components/AddPentestBtnWithFormModal";
 import NoSavedPentestTemplate from "./components/NoSavedPentestTemplate";
 import { PenTestDefault, PenTestWithoutScanDefault, PenTestWithoutScanModified } from "./components/type";
+import { secureGaurdService } from "@/utils/secureGaurdService";
 
 
 async function fetchLoggedInUserPentestData() {
@@ -12,10 +13,17 @@ async function fetchLoggedInUserPentestData() {
 
     console.log("user id ---------")
     console.log(userId);
+    const currentRole = (await secureGaurdService.userDetails.getUserRolesForthisSoftware())[0].ROLE_NAME;
+    const currentAccountId = await secureGaurdService.userDetails.getAccountId()
 
-
-    const fetchedData = await fetchData('penetration_testing_history', 'id', [{ column: 'type', value: 'web_app' }], null,
-        "pentestid, data->'basicDetails' as basicdetails, userid, lastscanon");
+    let fetchedData = []
+    if (currentRole == "Pentest Admin") {
+        fetchedData = await fetchData('pentest_data', 'last_scan_on', [{ table: "user_membership", column: "generatedby", value: currentAccountId }, { table: "pentest_data", column: 'type', value: 'web_app' }], null,
+            "pentest_data.pentestid, pentest_data.data->'basicDetails' as basicdetails, pentest_data.last_scan_on");
+    }
+    else
+        fetchedData = await fetchData('pentest_data', 'last_scan_on', [{ table: "user_membership", column: "generatedby", value: currentAccountId }, { table: "pentest_data", column: 'type', value: 'web_app' }, { table: "user_membership", column: "userid", value: userId }], null,
+            "pentest_data.pentestid, pentest_data.data->'basicDetails' as basicdetails, pentest_data.last_scan_on");
 
     return fetchedData;
 }
@@ -28,7 +36,7 @@ async function fetchLoggedInUserPentestDataOld() {
     console.log(userId);
 
 
-    const fetchedData = await fetchData('penetration_testing_history', 'id', null, null);
+    const fetchedData = await fetchData('pentest_data', 'last_scan_on', null, null);
 
     return fetchedData;
 }
