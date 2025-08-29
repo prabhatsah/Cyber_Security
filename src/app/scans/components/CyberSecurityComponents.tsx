@@ -5,6 +5,7 @@ import {
   BrainCircuit,
   Calendar,
   Clock,
+  FolderSearch,
   GlobeLock,
   Play,
   ScanSearch,
@@ -109,6 +110,20 @@ const comps: AIAgent[] = [
     description:
       "Securing cloud environments and containerized applications from threats and misconfigurations.",
     route: "/scans/cloudContainer",
+  },
+  {
+    id: "file-system-scanning",
+    name: "File System Scanning",
+    role: "Endpoint Security Specialist",
+    icon: FolderSearch,
+    expertise: [
+      "Malware detection & removal",
+      "File integrity monitoring",
+      "Suspicious behavior analysis",
+    ],
+    description:
+      "Scanning local files and directories for malware, vulnerabilities, and anomalous activities.",
+    route: "/scans/fileSystem",
   },
   {
     id: "endpoint-malware-analysis",
@@ -347,22 +362,22 @@ export default function CyberSecurityComponents() {
                   <div className="flex items-center space-x-3">
                     <div
                       className={`p-2 rounded-lg ${schedule.status === "running"
-                          ? "bg-blue-50"
-                          : schedule.status === "completed"
-                            ? "bg-green-50"
-                            : schedule.status === "failed"
-                              ? "bg-red-50"
-                              : "bg-gray-50"
+                        ? "bg-blue-50"
+                        : schedule.status === "completed"
+                          ? "bg-green-50"
+                          : schedule.status === "failed"
+                            ? "bg-red-50"
+                            : "bg-gray-50"
                         }`}
                     >
                       <agent.icon
                         className={`h-5 w-5 ${schedule.status === "running"
-                            ? "text-blue-600"
-                            : schedule.status === "completed"
-                              ? "text-green-600"
-                              : schedule.status === "failed"
-                                ? "text-red-600"
-                                : "text-gray-600"
+                          ? "text-blue-600"
+                          : schedule.status === "completed"
+                            ? "text-green-600"
+                            : schedule.status === "failed"
+                              ? "text-red-600"
+                              : "text-gray-600"
                           }`}
                       />
                     </div>
@@ -380,12 +395,12 @@ export default function CyberSecurityComponents() {
                   </div>
                   <span
                     className={`px-2 py-1 text-xs font-medium rounded-full ${schedule.status === "running"
-                        ? "bg-blue-100 text-blue-800"
-                        : schedule.status === "completed"
-                          ? "bg-green-100 text-green-800"
-                          : schedule.status === "failed"
-                            ? "bg-red-100 text-red-800"
-                            : "bg-gray-100 text-gray-800"
+                      ? "bg-blue-100 text-blue-800"
+                      : schedule.status === "completed"
+                        ? "bg-green-100 text-green-800"
+                        : schedule.status === "failed"
+                          ? "bg-red-100 text-red-800"
+                          : "bg-gray-100 text-gray-800"
                       }`}
                   >
                     {schedule.status}

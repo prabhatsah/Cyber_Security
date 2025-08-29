@@ -1,16 +1,25 @@
 export interface NetworkDetails {
   pentestId: string;
-  aggressiveness: string;
   clientName: string;
+  pentestName: string;
+  pentestDescription: string;
+  aggressiveness: string;
+  progress: number;
+  scopeType: string;
+  ipAddresses: Array<string>;
+  startIp: string;
+  endIp: string;
+  cidrRange: string;
+  hostName: string;
+  allowedActions: Array<string>;
+  agentIp: string;
+  subnetMask: string;
+  defaultGateway: string;
   createdOn: string;
   createdBy: {
     userId: string;
     userName: string;
   };
-  pentestName: string;
-  progress: number;
-  scopeType: string;
-  startDate: string;
 }
 
 export interface NetworkPenTestModified {

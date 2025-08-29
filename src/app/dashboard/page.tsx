@@ -44,14 +44,10 @@ export default async function Dashboard() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-4 h-full">
-        <div className="md:col-span-2">
+      <div className="grid grid-cols-1 md:grid-cols-[7fr_3fr] gap-6 h-full">
+        {/* <div className="md:col-span-2">
           <ScanOverviewCard />
-        </div>
-
-        <div className="md:col-span-1">
-          <RecentScansCard />
-        </div>
+        </div> */}
 
         {/* Pass the fetched data as a prop */}
         <div className="md:col-span-1">
@@ -59,6 +55,11 @@ export default async function Dashboard() {
             <SecurityAlertCard pentestData={loggedInUserPentestDataFormatted} />
           )}
         </div>
+        <div className="md:col-span-1">
+          <RecentScansCard />
+        </div>
+
+
 
       </div>
     </div>

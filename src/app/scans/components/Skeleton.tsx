@@ -7,7 +7,7 @@ export function SkeletonCard() {
   return (
     <div className="grid grid-cols-3 gap-4 ">
       {skeletons.map((_, index) => (
-        <Card
+        <Card key={index}
           className="flex flex-col space-y-5 w-full rounded-lg justify-between !bg-dark-bgPrimary
          hover:bg-tremor-background-muted
          hover:dark:bg-dark-tremor-background-muted"
