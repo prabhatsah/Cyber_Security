@@ -86,7 +86,8 @@ export async function POST(req: Request) {
         query.limit,
         query.allColumnFilter,
         query.jsonFilter,
-        query.selectCondition
+        query.selectCondition,
+        query.joinRelations
       );
     });
 
@@ -151,7 +152,8 @@ async function fetchPaginatedData(
         value: string | number;
       }[]
     | null,
-  selectCondition?: string | null
+  selectCondition?: string | null,
+  joinRelations: boolean = true
 ) {
   console.log(jsonFilters, columnFilters, orderByColumn, offset, limit);
   let hasMore = true;
@@ -164,22 +166,30 @@ async function fetchPaginatedData(
     let whereClauses: string[] = [];
 
     // Default select clause
-    let selectClause = selectCondition
-      ? `${selectCondition},
-         group_membership.groupid,
-         user_membership.userid,
-         user_membership.generatedby,
-         user_membership.generatedfor`
-      : `group_membership.*,
-         user_membership.*,
-         ${tableName}.*`;
+    let selectClause: string;
+    let fromClause: string;
 
-    // FROM + JOIN clause (no aliases)
-    const fromClause = `
-      group_membership
-      JOIN user_membership ON group_membership.rowid = user_membership.rowid
-      JOIN ${tableName} ON group_membership.rowid = ${tableName}.rowid
-    `;
+    if (joinRelations) {
+      selectClause = selectCondition
+        ? `${selectCondition},
+           group_membership.groupid,
+           user_membership.userid,
+           user_membership.generatedby,
+           user_membership.generatedfor`
+        : `group_membership.*,
+           user_membership.*,
+           ${tableName}.*`;
+
+      fromClause = `
+        group_membership
+        JOIN user_membership ON group_membership.rowid = user_membership.rowid
+        JOIN ${tableName} ON group_membership.rowid = ${tableName}.rowid
+      `;
+    } else {
+      // case: only the table itself
+      selectClause = selectCondition ? selectCondition : `${tableName}.*`;
+      fromClause = tableName;
+    }
 
     // Add column filters
     if (columnFilters && columnFilters.length > 0) {

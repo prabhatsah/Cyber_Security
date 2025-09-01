@@ -41,6 +41,7 @@ const columnArr: Record<string, string>[] = [
 import { getLoggedInUserProfile } from "@/ikon/utils/api/loginService/index";
 import { v4 as uuidv4 } from "uuid";
 import { secureGaurdService } from "./secureGaurdService";
+import { join } from "path";
 
 let baseUrl =
   process.env.NEXT_PUBLIC_BASE_PATH ||
@@ -419,7 +420,8 @@ export async function fetchData(
         value: string | number;
       }[]
     | null,
-  selectCondition?: string | null
+  selectCondition?: string | null,
+  joinRelations: boolean = true
 ) {
   let allColumnFilter: any = [];
   columnFilter?.forEach((e) => {
@@ -431,6 +433,7 @@ export async function fetchData(
     allColumnFilter,
     jsonFilter,
     selectCondition,
+    joinRelations,
   };
   console.log("Sending query to backend:", query);
 
