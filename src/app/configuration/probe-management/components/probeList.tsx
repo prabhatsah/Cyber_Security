@@ -10,6 +10,7 @@ import {
     TableCell,
     TableCaption,
 } from "@/components/ui/table"; // adjust path if needed
+import { CheckCircle, XCircle } from "lucide-react";
 
 type Probe = {
     PROBE_ID: string;
@@ -29,6 +30,7 @@ export default function ProbeTable({ probes }: { probes: any[] }) {
                         <TableHead>Probe ID</TableHead>
                         <TableHead>Name</TableHead>
                         <TableHead>User</TableHead>
+                        <TableHead>Live</TableHead>
                         <TableHead>Active</TableHead>
                         <TableHead>Last Heartbeat</TableHead>
                     </TableRow>
@@ -41,7 +43,12 @@ export default function ProbeTable({ probes }: { probes: any[] }) {
                             <TableCell>{probe.PROBE_ID}</TableCell>
                             <TableCell>{probe.PROBE_NAME}</TableCell>
                             <TableCell>{probe.USER_NAME}</TableCell>
-                            <TableCell>{probe.ACTIVE ? "✅ Yes" : "❌ No"}</TableCell>
+                            <TableCell>{probe.ALIVE ? (
+                                <CheckCircle className="h-5 w-5 text-green-500" />
+                            ) : (
+                                <XCircle className="h-5 w-5 text-red-500" />
+                            )}</TableCell>
+                            <TableCell>{probe.ACTIVE ? "Yes" : "No"}</TableCell>
                             <TableCell>{probe.LAST_HEARTBEAT}</TableCell>
                         </TableRow>
                     ))}

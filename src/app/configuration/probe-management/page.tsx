@@ -5,8 +5,9 @@ import { getActiveAccountId } from "@/ikon/utils/actions/account";
 import { getCurrentSoftwareId } from "@/ikon/utils/actions/software";
 import { getDataForTaskId, getMyInstancesV2 } from "@/ikon/utils/api/processRuntimeService";
 import ProbeTable from "./components/probeList";
+import moment from "moment";
 
-interface ProbeData {
+type ProbeData = {
     probeDetails: any[]
 }
 
@@ -31,6 +32,28 @@ async function getProbeDetails(userAccoutId: string, softwareId: string) {
     let probeDetailsArray = [];
     if (ProbeData && ProbeData?.probeDetails && ProbeData.probeDetails.length > 0)
         probeDetailsArray = ProbeData.probeDetails
+
+    for (var i = 0; i < probeDetailsArray.length; i++) {
+        var heartbeat = probeDetailsArray[i].LAST_HEARTBEAT;
+
+        if (heartbeat == null) {
+            probeDetailsArray[i].ALIVE = false;
+            probeDetailsArray[i].LAST_HEARTBEAT = "No Heartbeat";
+        } else {
+            var heartbeatTime = moment(probeDetailsArray[i].LAST_HEARTBEAT, "YYYY-MM-DDTHH:mm:ss.SSSZZ");
+            var now = moment(new Date());
+            var diff = now.diff(heartbeatTime, "seconds");
+            if (diff < 30) {
+                probeDetailsArray[i].ALIVE = true;
+            } else {
+                probeDetailsArray[i].ALIVE = false;
+            }
+            probeDetailsArray[i].LAST_HEARTBEAT = heartbeatTime.format("YYYY-MM-DD HH:mm:ss");
+        }
+    }
+
+    console.log("Probe Details Array: ", probeDetailsArray);
+
     return probeDetailsArray;
 }
 
