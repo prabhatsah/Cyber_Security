@@ -23,7 +23,7 @@ type Probe = {
 export default function ProbeTable({ probes }: { probes: any[] }) {
     console.log(probes)
     return (
-        <div className="p-6 overflow-x-auto">
+        <div className=" overflow-auto">
             <Table className="min-w-[800px] ">
                 <TableHeader>
                     <TableRow>
