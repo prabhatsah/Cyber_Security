@@ -1,28 +1,47 @@
 import { RenderAppBreadcrumb } from "@/components/app-breadcrumb";
-import { CloudCog, FolderCog, GlobeLock, Network, TabletSmartphone } from "lucide-react";
-import { fetchData } from "@/utils/api";
-import EachPenTestTypeWidget from "../pentest-configs/components/EachPenTestTypeWidget";
-import { secureGaurdService } from "@/utils/secureGaurdService";
-import { getLoggedInUserProfile } from "@/ikon/utils/api/loginService";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Settings, List } from "lucide-react";
+import { getActiveAccountId } from "@/ikon/utils/actions/account";
+import { getCurrentSoftwareId } from "@/ikon/utils/actions/software";
+import { getDataForTaskId, getMyInstancesV2 } from "@/ikon/utils/api/processRuntimeService";
+import ProbeTable from "./components/probeList";
 
-export async function getPententCount(pentestType: string) {
-    const currentRole = (await secureGaurdService.userDetails.getUserRolesForthisSoftware())[0]?.ROLE_NAME;
-    const currentAccountId = await secureGaurdService.userDetails.getAccountId()
-    const userId = (await getLoggedInUserProfile()).USER_ID;
-    let pentestData = [];
-    if (currentRole == "Pentest Admin")
-        pentestData = await fetchData("pentest_data", "last_scan_on", [{ table: "pentest_data", column: "type", value: pentestType }, { table: "user_membership", column: "generatedby", value: currentAccountId }], null, "pentest_data.pentestid");
-    else
-        pentestData = await fetchData("pentest_data", "last_scan_on", [{ table: "user_membership", column: "generatedby", value: currentAccountId }, { table: "user_membership", column: "userid", value: userId }], null, "pentest_data.pentestid");
+interface ProbeData {
+    probeDetails: any[]
+}
 
-    const pentestCount = pentestData.data.length
-    return pentestCount;
+async function getProbeDetails(userAccoutId: string, softwareId: string) {
+    let processName = 'Probe Management Process';
+    let taskName_ = 'View Probe';
+    console.log("Inside Fetching Process : " + processName);
+    var predefinedFilters = { "taskName": taskName_ };
+    var processVariableFilters = null;
+    var taskVariableFilter = null;
+    var mongoWhereClause = null;
+    var projection = ['Data'];
+    var isFetchAllInstances = false;
+    let probeInstances = await getMyInstancesV2({
+        accountId: userAccoutId, softwareId: softwareId, processName: processName, predefinedFilters: predefinedFilters, processVariableFilters: processVariableFilters,
+        taskVariableFilters: taskVariableFilter,
+        mongoWhereClause: mongoWhereClause, projections: projection, allInstances: isFetchAllInstances
+    });
+    console.log("Probe Instances Fetched: ", (probeInstances[0]));
+    let taskIdRequired = probeInstances[0].taskId;
+    let ProbeData: ProbeData = await getDataForTaskId({ taskId: taskIdRequired, accountId: userAccoutId });
+    let probeDetailsArray = [];
+    if (ProbeData && ProbeData?.probeDetails && ProbeData.probeDetails.length > 0)
+        probeDetailsArray = ProbeData.probeDetails
+    return probeDetailsArray;
 }
 
 
-export default function probeMainPage() {
+export default async function probeMainPage() {
+
+    let userAccoutId = await getActiveAccountId();
+    let softwareId = await getCurrentSoftwareId();
+    console.log("Active Account ID in Probe Management Page: " + userAccoutId, "Software ID: " + softwareId);
+
+    let ProbeData = await getProbeDetails(userAccoutId, softwareId);
 
     return (
         <>
@@ -41,7 +60,6 @@ export default function probeMainPage() {
             />
             <div className="flex-1 flex flex-col relative">
                 <Tabs defaultValue="list" className="">
-                    {/* Tab headers */}
                     <TabsList className="">
                         <TabsTrigger value="list" className="flex items-center gap-2">
                             <Settings className="w-4 h-4" /> Probe List
@@ -50,17 +68,14 @@ export default function probeMainPage() {
                             <List className="w-4 h-4" /> Probe Configs
                         </TabsTrigger>
                     </TabsList>
-
-                    {/* Tab content */}
                     <TabsContent value="configs" className="p-4">
                         {/* Replace with your real component */}
                         <p className="text-gray-700 dark:text-gray-300">
                             Here you can configure probes.
                         </p>
                     </TabsContent>
-
                     <TabsContent value="list" className="p-4">
-                        {/* Replace with your real component */}
+                        <ProbeTable probes={ProbeData}></ProbeTable>
                         <p className="text-gray-700 dark:text-gray-300">
                             Here is the list of probes.
                         </p>
