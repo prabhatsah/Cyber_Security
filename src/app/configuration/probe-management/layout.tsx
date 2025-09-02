@@ -20,7 +20,7 @@ export default async function RootLayout({
                     href: "/configuration/pentest-management",
                 }}
             />
-            <div className="flex h-full w-full">{children}</div>
+            <div className="flex h-full w-full overflow-auto">{children}</div>
         </>
     );
 }
