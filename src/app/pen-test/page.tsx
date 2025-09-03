@@ -2,9 +2,19 @@ import { RenderAppBreadcrumb } from "@/components/app-breadcrumb";
 import { CloudCog, FolderCog, GlobeLock, Network, TabletSmartphone } from "lucide-react";
 import EachPenTestTypeWidget from "./components/EachPenTestTypeWidget";
 import { fetchData } from "@/utils/api";
+import { secureGaurdService } from "@/utils/secureGaurdService";
+import { getLoggedInUserProfile } from "@/ikon/utils/api/loginService";
 
 export async function getPententCount(pentestType: string) {
-    const pentestData = await fetchData("penetration_testing_history", "id", [{ column: "type", value: pentestType }], null, "pentestid");
+    const currentRole = (await secureGaurdService.userDetails.getUserRolesForthisSoftware())[0].ROLE_NAME;
+    const currentAccountId = await secureGaurdService.userDetails.getAccountId()
+    let pentestData = [];
+    const userId = (await getLoggedInUserProfile()).USER_ID;
+    if (currentRole == "Pentest Admin")
+        pentestData = await fetchData("pentest_data", "last_scan_on", [{ table: "user_membership", column: "generatedby", value: currentAccountId }, { table: "pentest_data", column: "type", value: pentestType }], null, "pentest_data.pentestid");
+    else
+        pentestData = await fetchData("pentest_data", "last_scan_on", [{ table: "user_membership", column: "generatedby", value: currentAccountId }, { table: "user_membership", column: "userid", value: userId }], null, "pentest_data.pentestid");
+
     const pentestCount = pentestData.data.length
     return pentestCount;
 }

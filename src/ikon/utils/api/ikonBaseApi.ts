@@ -21,6 +21,7 @@ interface IkonBaseApiProps {
 }
 
 // Create an Axios instance
+console.log("this is the base url", BASE_API_URL);
 export const axiosInstance = axios.create({
   baseURL: BASE_API_URL,
 });

@@ -22,7 +22,7 @@ import ScanNotificationItemPentest from "./ScanNotificationItemPentest";
 const fetchScanNotificationDetailsOnLogin = async () => {
   const userId = (await getLoggedInUserProfile()).USER_ID;
 
-  const scanNotificationDataOnLogin = await fetchData("scandetails", "scan_id", [{ column: "user_id", value: userId }]);
+  const scanNotificationDataOnLogin = await fetchData("scandetails", "scan_id", [{ table: "scandetails", column: "user_id", value: userId }], null, null, false);
 
   return scanNotificationDataOnLogin;
 }

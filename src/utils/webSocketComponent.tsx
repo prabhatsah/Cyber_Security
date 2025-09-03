@@ -20,7 +20,8 @@ const toolNameMap = {
 }
 
 const fetchReqScanNotificationDetails = async (scanId: string) => {
-  const reqScanNotificationData = await fetchData("scandetails", "scan_id", [{ column: "scan_id", value: scanId }]);
+  const reqScanNotificationData = await fetchData("scandetails", "scan_id", [{ table: "scandetails", column: "scan_id", value: scanId }], null, null, false);
+  console.log(reqScanNotificationData)
 
   return reqScanNotificationData;
 }

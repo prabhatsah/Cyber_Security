@@ -1,5 +1,8 @@
+export const dynamic = 'force-dynamic'
+
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import "@/utils/secureGaurdService";
 import { Providers } from "./providers";
 import "../styles/globals.css";
 // import { BreadcrumbProvider } from "@/contexts/BreadcrumbContext";

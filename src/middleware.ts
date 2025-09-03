@@ -22,9 +22,9 @@ export default async function middleware(req: NextRequest) {
   // 2. Check authentication status via cookies
   const ticket = req.cookies.get(cookiePrefix + "ticket");
 
-  console.log("req - ", req);
-  console.log("isPublicRoute - ", isPublicRoute);
-  console.log("ticket - ", ticket);
+  // console.log("req - ", req);
+  // console.log("isPublicRoute - ", isPublicRoute);
+  // console.log("ticket - ", ticket);
 
   if (!isPublicRoute && !ticket) {
     return NextResponse.redirect(new URL(loginUrl, req.url));

@@ -19,6 +19,7 @@ import {
   ChevronLeft,
   ChevronRight,
   FileCog,
+  Radar
 } from "lucide-react";
 import { RiArrowDownSLine } from "@remixicon/react";
 import { cn } from "@/lib/utils";
@@ -65,6 +66,11 @@ const navigation = [
         name: "Endpoint Tools",
         href: "/configuration/endpoint-tools",
         icon: ShieldCheck,
+      },
+      {
+        name: "Probe Management",
+        href: "/configuration/probe-management",
+        icon: Radar,
       },
     ],
   },
