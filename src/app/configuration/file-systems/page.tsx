@@ -1,0 +1,93 @@
+import { RenderAppBreadcrumb } from "@/components/app-breadcrumb";
+import { getDataForTaskId, getMyInstancesV2 } from "@/ikon/utils/api/processRuntimeService";
+import { FileSystemConfigData, ProbeDetails } from "@/app/globalType";
+import { getLoggedInUserProfile } from "@/ikon/utils/api/loginService";
+import AddFileSystemBtnWithFormModal from "./components/AddFileSystemBtnWithFormModal";
+import EachFileSystemWidget from "./components/EachFileSystemWidget";
+import { createUserMap } from "../../utils/UserIdUserNameUtils";
+
+const fetchPresentUserConfigDetails = async () => {
+    const presentUserId = (await getLoggedInUserProfile()).USER_ID;
+
+    const configInstances = await getMyInstancesV2<FileSystemConfigData>({
+        processName: "File System Configuration",
+        predefinedFilters: { taskName: "View Config Details" },
+        processVariableFilters: { created_by: presentUserId },
+        projections: ["Data"],
+    });
+
+    let configDataArray: FileSystemConfigData[] = [];
+    if (configInstances.length) {
+        configDataArray = configInstances.map(eachInstance => eachInstance.data);
+    }
+
+    return configDataArray;
+}
+
+const fetchProbeList = async () => {
+    const probeManagementInstance = await getMyInstancesV2({
+        processName: "Probe Management Process",
+        predefinedFilters: { taskName: "View Probe" },
+        projections: ["Data"],
+    });
+
+    const allProbesDetails = await getDataForTaskId<{ "probeDetails": ProbeDetails[] }>({
+        taskId: probeManagementInstance[0].taskId
+    });
+
+    return allProbesDetails ? allProbesDetails.probeDetails : [];
+}
+
+export default async function FileSystemConfig() {
+    const presentUserConfigDetails: FileSystemConfigData[] = await fetchPresentUserConfigDetails();
+    // const formattedConfigDetails: FileSystemConfigDataModified[] = presentUserConfigDetails.map(eachConfigDetails => {
+    //     const createdByName = getUserNameById(eachConfigDetails.created_by);
+    //     return {
+    //         ...eachConfigDetails,
+    //         created_by_name: createdByName,
+    //     }
+    // });
+    console.log("Fetched Details: ", presentUserConfigDetails);
+
+    const userIdNameMap: { value: string; label: string }[] = await createUserMap();
+    const allProbesArray: ProbeDetails[] = await fetchProbeList();
+
+    return (
+        <>
+            <RenderAppBreadcrumb
+                breadcrumb={{
+                    level: 0,
+                    title: "Configuration",
+                }}
+            />
+            <RenderAppBreadcrumb
+                breadcrumb={{
+                    level: 1,
+                    title: "File Systems",
+                    href: "/configuration/file-systems",
+                }}
+            />
+
+            <div className="flex-1">
+                <div className="space-y-6">
+                    <div className="flex justify-between items-center">
+                        <div>
+                            <h2 className="text-xl font-semibold text-blue-400 mb-1">
+                                File System Configurations
+                                <span className="ml-2 text-sm bg-blue-600 text-white px-2 py-1 rounded-full">{presentUserConfigDetails.length}</span>
+                            </h2>
+                        </div>
+
+                        <AddFileSystemBtnWithFormModal />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {presentUserConfigDetails.map((config) => (
+                            <EachFileSystemWidget key={config.config_id} fileSystemConfigDetails={config} userIdNameMap={userIdNameMap} />
+                        ))}
+                    </div>
+                </div>
+            </div>
+        </>
+    )
+}

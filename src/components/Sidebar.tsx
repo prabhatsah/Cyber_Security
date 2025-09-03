@@ -18,6 +18,7 @@ import {
   BugPlay,
   ChevronLeft,
   ChevronRight,
+  FileCog,
 } from "lucide-react";
 import { RiArrowDownSLine } from "@remixicon/react";
 import { cn } from "@/lib/utils";
@@ -39,6 +40,11 @@ const navigation = [
         name: "PenTest Configurations",
         href: "/configuration/pentest-configs",
         icon: BugPlay,
+      },
+      {
+        name: "File Systems",
+        href: "/configuration/file-systems",
+        icon: FileCog,
       },
       {
         name: "Cloud Services",
