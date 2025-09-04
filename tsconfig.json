@@ -29,6 +29,6 @@
     ".next/types/**/*.ts",
     "src/app/scans/OSINT/Widgets.js",
     "src/app/scans/cloudContainer/cloud/[serviceName]/dashboard_discarded.tsx"
-  ],
+, "src/contexts/AuthContext.tsx"  ],
   "exclude": ["node_modules"]
 }
