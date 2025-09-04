@@ -1,11 +1,13 @@
 "use client";
-
+import { v4 as uuidv4 } from "uuid";
 import { useEffect, useMemo, useState } from "react";
 import SearchBar from "./components/SearchBar";
 // import { ApiResponse, HarvesterData } from "./components/type";
 import PastScans from "@/components/PastScans";
 import { RenderAppBreadcrumb } from "@/components/app-breadcrumb";
 import { fetchScannedData, saveScannedData } from "@/utils/api";
+import { getLoggedInUserProfile } from "@/ikon/utils/api/loginService";
+import { mapProcessName, startProcessV2 } from "@/ikon/utils/api/processRuntimeService";
 
 function formatTimestamp(timestamp: string) {
     const date = new Date(Number(timestamp));
@@ -92,21 +94,15 @@ export default function TheHarvesterDashboard() {
 
     const fetchData1 = async (searchType: string): Promise<void> => {
         try {
-            // const response = await fetch(
-            //     `http://localhost:3333/cyber-security/api/OSINT/virusTotal?query=${query}`
-            // );
+            let userInfo = await getLoggedInUserProfile()
+            let user_id = userInfo?.USER_ID;
+            let user_login = userInfo?.USER_LOGIN;
+            let file_system_id = uuidv4();
+            let scan_path = query;
 
-            // const result: ApiResponse = await response.json();
-
-            // if (result.error) throw new Error(result.error);
-            // const insertScanDataResp = await insertScanData(result.data);
-            // if (insertScanDataResp.error) throw new Error(insertScanDataResp.error);
-            // setData(result.data);
-            // setError(null);
-
-
-
-            console.log("SUCCESS");
+            let processId = await mapProcessName({ processName: "File System Scan" })
+            console.log("SUCCESS", processId, scan_path);
+            await startProcessV2({ processId: processId, data: { user_id: user_id, user_login: user_login, file_system_id: file_system_id, scan_path: scan_path }, processIdentifierFields: "file_system_id" })
         } catch (err) {
             if (err instanceof Error) {
                 setError(err.message);
@@ -212,3 +208,4 @@ export default function TheHarvesterDashboard() {
         </>
     );
 }
+

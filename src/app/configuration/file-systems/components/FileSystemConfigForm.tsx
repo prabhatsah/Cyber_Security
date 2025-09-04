@@ -251,7 +251,7 @@ export default function FileSystemConfigForm({ isFormModalOpen, onClose, savedDa
             hostname: savedDataToBePopulated?.hostname ?? "",
         });
         setErrors({});
-
+        setSysInfo(null);
         onClose();
     };
 
@@ -261,6 +261,7 @@ export default function FileSystemConfigForm({ isFormModalOpen, onClose, savedDa
 
         if (configData && configData.length > 0) {
             let taskId = configData[0].taskId;
+            invokeAction({ taskId: taskId, transitionName: "Fetch System Info", data: { config_id: configId, probe_id: formData.probe_id }, processInstanceIdentifierField: "config_id" });
         }
         else {
             let processId = await mapProcessName({ processName: "Fetch ip os and hostname" });
@@ -268,9 +269,10 @@ export default function FileSystemConfigForm({ isFormModalOpen, onClose, savedDa
         }
 
         while (true) {
-            let configDataAgain = await getMyInstancesV2({ processName: "Fetch ip os and hostname", processVariableFilters: { config_id: configId }, projections: ["Data"] });
+            let configDataAgain: any = await getMyInstancesV2({ processName: "Fetch ip os and hostname", processVariableFilters: { config_id: configId }, projections: ["Data"] });
             console.log("configDataAgain", configDataAgain);
             setSysInfo(configDataAgain[0].data.sysInfo);
+
             if (configDataAgain && configDataAgain.length > 0 && configDataAgain[0].data.sysInfo)
                 break;
         }
@@ -458,7 +460,7 @@ export default function FileSystemConfigForm({ isFormModalOpen, onClose, savedDa
                         {/* Form Actions */}
                         <div className="flex justify-end gap-3 py-4 px-6 border-t border-slate-200 dark:border-slate-700">
                             <Button type="button" variant="outline" onClick={onClose} className="border-slate-600 text-slate-300 hover:text-white bg-transparent">
-                                Cancel
+
                             </Button>
                             <Button className="bg-blue-600 hover:bg-blue-700 text-white"
                                 onClick={savedDataToBePopulated ? handleConfigUpdate : handleSubmit}>
