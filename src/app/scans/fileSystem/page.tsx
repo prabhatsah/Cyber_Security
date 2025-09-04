@@ -6,6 +6,7 @@ import SearchBar from "./components/SearchBar";
 import PastScans from "@/components/PastScans";
 import { RenderAppBreadcrumb } from "@/components/app-breadcrumb";
 import { fetchScannedData, saveScannedData } from "@/utils/api";
+import ScanDashboard from "./components/ScanDashboard";
 
 function formatTimestamp(timestamp: string) {
     const date = new Date(Number(timestamp));
@@ -199,6 +200,8 @@ export default function TheHarvesterDashboard() {
                     .
                 </div>
 
+
+
                 {/* {data && (
                     <div className="space-y-8">
                         <Widgets widgetData={data} queryUrl={query} />
@@ -209,6 +212,8 @@ export default function TheHarvesterDashboard() {
                     <PastScans pastScans={pastScansForWidget} onOpenPastScan={handleOpenPastScan} />
                 </div> */}
             </div>
+
+            <ScanDashboard />
         </>
     );
 }
