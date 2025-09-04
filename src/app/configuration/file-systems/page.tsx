@@ -1,18 +1,25 @@
 import { RenderAppBreadcrumb } from "@/components/app-breadcrumb";
 import { getDataForTaskId, getMyInstancesV2 } from "@/ikon/utils/api/processRuntimeService";
 import { FileSystemConfigData, ProbeDetails } from "@/app/globalType";
-import { getLoggedInUserProfile } from "@/ikon/utils/api/loginService";
 import AddFileSystemBtnWithFormModal from "./components/AddFileSystemBtnWithFormModal";
 import EachFileSystemWidget from "./components/EachFileSystemWidget";
-import { createUserMap } from "../../utils/UserIdUserNameUtils";
+import { createUserMap } from "../../utils/UserDetailsUtils";
+import { getCurrentUserId } from "@/ikon/utils/actions/auth";
+import { getUserDashboardPlatformUtilData } from "@/ikon/utils/actions/users";
+import { getCurrentSoftwareId } from "@/ikon/utils/actions/software";
 
 const fetchPresentUserConfigDetails = async () => {
-    const presentUserId = (await getLoggedInUserProfile()).USER_ID;
+    const presentUserId = await getCurrentUserId();
+    const softwareId = await getCurrentSoftwareId();
+    const pentestAdminGroupDetails = await getUserDashboardPlatformUtilData({ softwareId, isGroupNameWiseUserDetailsMap: true, groupNames: ["Pentest Admin"] });
+    const pentestAdminUsers = Object.keys(pentestAdminGroupDetails["Pentest Admin"].users);
+
+    console.log("Pentest Admin Users: ", pentestAdminUsers);
 
     const configInstances = await getMyInstancesV2<FileSystemConfigData>({
         processName: "File System Configuration",
         predefinedFilters: { taskName: "View Config Details" },
-        processVariableFilters: { created_by: presentUserId },
+        processVariableFilters: pentestAdminUsers.includes(presentUserId) ? null : { created_by: presentUserId },
         projections: ["Data"],
     });
 
@@ -40,14 +47,7 @@ const fetchProbeList = async () => {
 
 export default async function FileSystemConfig() {
     const presentUserConfigDetails: FileSystemConfigData[] = await fetchPresentUserConfigDetails();
-    // const formattedConfigDetails: FileSystemConfigDataModified[] = presentUserConfigDetails.map(eachConfigDetails => {
-    //     const createdByName = getUserNameById(eachConfigDetails.created_by);
-    //     return {
-    //         ...eachConfigDetails,
-    //         created_by_name: createdByName,
-    //     }
-    // });
-    console.log("Fetched Details: ", presentUserConfigDetails);
+    console.log("Fetched Config Details: ", presentUserConfigDetails);
 
     const userIdNameMap: { value: string; label: string }[] = await createUserMap();
     const allProbesArray: ProbeDetails[] = await fetchProbeList();

@@ -230,7 +230,6 @@ export default function FileSystemConfigForm({ isFormModalOpen, onClose, savedDa
                 data: dataToBeUpdated,
                 processInstanceIdentifierField: "config_id,created_by,probe_id"
             });
-            console.log("File Config Updated Successfully");
 
             handleClose();
             toast.push("File System Configuration Updated Successfully", "success");
@@ -447,7 +446,9 @@ export default function FileSystemConfigForm({ isFormModalOpen, onClose, savedDa
                                                         errors.probe_machine_os_type
                                                             ? "w-full border border-red-500 rounded-md"
                                                             : "w-full"
-                                                    }></Input>
+                                                    }
+                                                    onChange={handleInputChange}
+                                                />
 
                                                 {errors.probe_machine_os_type ? (
                                                     <p className="text-xs text-red-500">

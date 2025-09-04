@@ -6,28 +6,67 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { format } from "date-fns"
 import { Edit, MoreHorizontal, Trash2 } from "lucide-react"
 import { useState } from "react"
-import { deleteConfigWithKey } from "@/utils/api"
 import FileSystemConfigForm from "./FileSystemConfigForm"
 import { FileSystemConfigData } from "@/app/globalType"
+import { deleteProcessInstance, getMyInstancesV2 } from "@/ikon/utils/api/processRuntimeService";
+import { toast } from "@/lib/toast";
+import GlobalLoader from "@/components/GlobalLoader";
+import { useDialog } from "@/components/alert-dialog/dialog-context";
 
 
 export default function EachFileSystemWidget({ fileSystemConfigDetails, userIdNameMap }: {
     fileSystemConfigDetails: FileSystemConfigData,
     userIdNameMap: { value: string; label: string }[]
 }) {
+    const { openDialog } = useDialog();
     const [isEditFormOpen, setEditFormOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
+
 
     const toggleFormModal = function () {
         setEditFormOpen((prev) => !prev);
     };
 
-    const handleDeletePentestConfig = async function (pentestId: string) {
-        await deleteConfigWithKey("penetration_testing_history", "pentestid", pentestId);
+    const handleConfirmDelete = async (config_id: string) => {
+        setLoading(true);
+
+        const fileSystemConfigInstance = await getMyInstancesV2<FileSystemConfigData>({
+            processName: "File System Configuration",
+            predefinedFilters: { taskName: "Edit Config Details" },
+            processVariableFilters: { config_id: config_id },
+            projections: ["Data.config_name, Data.config_id"]
+        });
+
+        try {
+            await deleteProcessInstance({ processInstanceId: fileSystemConfigInstance[0].processInstanceId });
+
+            toast.push("File System Configuration Deleted Successfully", "success");
+            setLoading(false);
+        } catch (error) {
+            console.error("Failed to update date:", error);
+            toast.push("Error in deleting File System Configuration", "error");
+            setLoading(false);
+        }
+    }
+
+    const handleDeleteConfig = async function (config_id: string) {
+        openDialog({
+            title: "Confirm Delete",
+            description: "This will delete this File System Configuration permanently!",
+            confirmText: "Delete",
+            cancelText: "Cancel",
+            onCancel: () => console.log("Delete cancelled"),
+            onConfirm: () => handleConfirmDelete(config_id),
+            confirmVariant: "red"
+        });
+
     };
 
     const checkTitleStr = (title: string) => {
         return title.length > 45 ? title.substring(0, 45) + "..." : title;
     }
+
+    if (loading) return <GlobalLoader />;
 
     return (
         <>
@@ -61,7 +100,8 @@ export default function EachFileSystemWidget({ fileSystemConfigDetails, userIdNa
                                     <Edit className="w-4 h-4 mr-2" />
                                     Edit
                                 </DropdownMenuItem>
-                                <DropdownMenuItem className="text-red-400 hover:text-red-300 hover:bg-slate-700">
+                                <DropdownMenuItem onClick={() => handleDeleteConfig(fileSystemConfigDetails.config_id)} className="text-red-400 hover:text-red-300
+                                hover:bg-slate-700">
                                     <Trash2 className="w-4 h-4 mr-2" />
                                     Delete
                                 </DropdownMenuItem>
