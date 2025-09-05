@@ -49,7 +49,7 @@ export function VulnTable({ items }: { items: Vuln[] }) {
     const counts = countBySeverity(items)
 
     return (
-        <Card className="rounded-xl border-border/50 bg-card/60 p-4">
+        <Card className="rounded-xl border-border/50  p-4">
             <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                 <div className="flex flex-wrap items-center gap-2">
                     {(["ALL", "CRITICAL", "HIGH", "MEDIUM", "LOW"] as const).map((s) => (
@@ -61,7 +61,7 @@ export function VulnTable({ items }: { items: Vuln[] }) {
                             className={cn(
                                 "rounded-full",
                                 s === "ALL" ? "" : severityButtonTone(s as any),
-                                sev === s ? "" : "bg-transparent",
+                                sev === s ? "" : "",
                             )}
                         >
                             <span className="mr-1">{s}</span>
@@ -82,7 +82,7 @@ export function VulnTable({ items }: { items: Vuln[] }) {
             <div className="overflow-x-auto">
                 <Table>
                     <TableHeader>
-                        <TableRow className="hover:bg-transparent">
+                        <TableRow className="">
                             <TableHead className="w-[160px]">CVE</TableHead>
                             <TableHead>Title</TableHead>
                             <TableHead className="w-[240px]">Package</TableHead>
@@ -92,10 +92,10 @@ export function VulnTable({ items }: { items: Vuln[] }) {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {filtered.map((v, i) => (
+                        {filtered.map((v) => (
                             <TableRow
-                                key={`${v.VulnerabilityID}-${v.PkgName}-${i}`}
-                                className="cursor-pointer hover:bg-muted/30"
+                                key={`${v.VulnerabilityID}-${v.PkgName}`}
+                                className="cursor-pointer "
                                 onClick={() => onRowClick(v)}
                             >
                                 <TableCell className="font-mono text-xs">{v.VulnerabilityID}</TableCell>
@@ -121,7 +121,7 @@ export function VulnTable({ items }: { items: Vuln[] }) {
                         ))}
                         {filtered.length === 0 ? (
                             <TableRow>
-                                <TableCell colSpan={6} className="text-center text-muted-foreground">
+                                <TableCell colSpan={6} className="text-center ">
                                     No vulnerabilities match your filters.
                                 </TableCell>
                             </TableRow>
@@ -150,13 +150,13 @@ function countBySeverity(items: Vuln[]) {
 function severityButtonTone(s: Severity | "ALL") {
     switch (s) {
         case "CRITICAL":
-            return "border-red-500/30 text-red-400 hover:bg-red-500/10"
+            return "border-red-500/30 bg-red-500/10 text-red-400 hover:bg-red-500/10"
         case "HIGH":
-            return "border-orange-500/30 text-orange-400 hover:bg-orange-500/10"
+            return "border-orange-500/30 bg-orange-500/10 text-orange-400 hover:bg-orange-500/10"
         case "MEDIUM":
-            return "border-yellow-500/30 text-yellow-400 hover:bg-yellow-500/10"
+            return "border-yellow-500/30 text-yellow-400 hover:bg-yellow-500/10 bg-yellow-500/10"
         case "LOW":
-            return "border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10"
+            return "border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10 bg-emerald-500/10"
         default:
             return ""
     }
