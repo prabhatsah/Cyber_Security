@@ -230,7 +230,6 @@ export default function FileSystemConfigForm({ isFormModalOpen, onClose, savedDa
                 data: dataToBeUpdated,
                 processInstanceIdentifierField: "config_id,created_by,probe_id"
             });
-            console.log("File Config Updated Successfully");
 
             handleClose();
             toast.push("File System Configuration Updated Successfully", "success");
@@ -303,7 +302,9 @@ export default function FileSystemConfigForm({ isFormModalOpen, onClose, savedDa
                         <div className="max-h-[80vh] overflow-y-auto py-4 px-6 space-y-8">
                             {/* Section 1: Basic Information */}
                             <div className="space-y-4">
-                                <h3 className="text-lg text-gray-600 dark:text-slate-300 border-b border-slate-200 dark:border-slate-700 pb-2">Basic Information</h3>
+                                {/* <h3 className="text-lg text-gray-600 dark:text-slate-300 border-b border-slate-200 dark:border-slate-700 pb-2">
+                                    Basic Information
+                                </h3> */}
 
                                 <div className="flex-1 space-y-2">
                                     <Label htmlFor="config_name" className="text-sm font-medium text-widget-mainHeader">
@@ -371,6 +372,10 @@ export default function FileSystemConfigForm({ isFormModalOpen, onClose, savedDa
 
                             {/* Section 2: Probe Machine Configuration */}
                             <div className="space-y-4">
+                                {/* <h3 className="text-lg text-gray-600 dark:text-slate-300 border-b border-slate-200 dark:border-slate-700 pb-2">
+                                    Probe Machine Configuration
+                                </h3> */}
+
                                 <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-2">
                                     <h3 className="text-lg text-gray-600 dark:text-slate-300">
                                         Probe Machine Configuration
@@ -443,7 +448,9 @@ export default function FileSystemConfigForm({ isFormModalOpen, onClose, savedDa
                                                         errors.probe_machine_os_type
                                                             ? "w-full border border-red-500 rounded-md"
                                                             : "w-full"
-                                                    }></Input>
+                                                    }
+                                                    onChange={handleInputChange}
+                                                />
 
                                                 {errors.probe_machine_os_type ? (
                                                     <p className="text-xs text-red-500">

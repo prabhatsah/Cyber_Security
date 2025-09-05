@@ -14,6 +14,7 @@ import ClientLayout from "@/components/ClientLayout";
 import { BreadcrumbProvider } from "@/components/app-breadcrumb/BreadcrumbProvider";
 import { ScanNotificationProvider } from "@/contexts/ScanNotificationContext";
 import ToastContainer from "@/components/ToastContainer";
+import { DialogProvider } from "@/components/alert-dialog/dialog-context";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -34,10 +35,12 @@ export default function RootLayout({
           <GlobalLoadingSpinner />
           <BreadcrumbProvider>
             <Providers>
-              <ScanNotificationProvider>
-                <ClientLayout>{children}</ClientLayout>
-                <ToastContainer />
-              </ScanNotificationProvider>
+              <DialogProvider>
+                <ScanNotificationProvider>
+                  <ClientLayout>{children}</ClientLayout>
+                  <ToastContainer />
+                </ScanNotificationProvider>
+              </DialogProvider>
             </Providers>
           </BreadcrumbProvider>
         </LoadingProvider>

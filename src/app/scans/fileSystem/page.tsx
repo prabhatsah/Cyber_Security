@@ -6,8 +6,11 @@ import SearchBar from "./components/SearchBar";
 import PastScans from "@/components/PastScans";
 import { RenderAppBreadcrumb } from "@/components/app-breadcrumb";
 import { fetchScannedData, saveScannedData } from "@/utils/api";
+import ScanDashboard from "./components/ScanDashboard";
 import { getLoggedInUserProfile } from "@/ikon/utils/api/loginService";
-import { mapProcessName, startProcessV2 } from "@/ikon/utils/api/processRuntimeService";
+import { getMyInstancesV2, mapProcessName, startProcessV2 } from "@/ikon/utils/api/processRuntimeService";
+import { fi } from "date-fns/locale";
+import { set } from "date-fns";
 
 function formatTimestamp(timestamp: string) {
     const date = new Date(Number(timestamp));
@@ -79,6 +82,8 @@ export default function TheHarvesterDashboard() {
     const [query, setQuery] = useState<string>("");
     // const [data, setData] = useState<HarvesterData | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const [scannedData, setScannedData] = useState<any>(null);
+    console.log("scannedData", scannedData);
     // const [pastScans, setPastScans] = useState([]);
 
     // useEffect(() => {
@@ -102,8 +107,20 @@ export default function TheHarvesterDashboard() {
 
             let processId = await mapProcessName({ processName: "File System Scan" })
             console.log("SUCCESS", processId, scan_path);
+
             await startProcessV2({ processId: processId, data: { user_id: user_id, user_login: user_login, file_system_id: file_system_id, scan_path: scan_path }, processIdentifierFields: "file_system_id" })
-        } catch (err) {
+
+            var result: any = {}
+            while (true) {
+                result = await getMyInstancesV2({ processName: 'File System Scan', processVariableFilters: { 'file_system_id': file_system_id } })
+                if (result && result[0].data.scan_data) {
+                    console.log("result[0].data.scan_data", result[0].data);
+                    setScannedData(result[0].data.scan_data);
+                    break;
+                }
+            }
+        }
+        catch (err) {
             if (err instanceof Error) {
                 setError(err.message);
             } else {
@@ -195,6 +212,8 @@ export default function TheHarvesterDashboard() {
                     .
                 </div>
 
+
+
                 {/* {data && (
                     <div className="space-y-8">
                         <Widgets widgetData={data} queryUrl={query} />
@@ -205,6 +224,8 @@ export default function TheHarvesterDashboard() {
                     <PastScans pastScans={pastScansForWidget} onOpenPastScan={handleOpenPastScan} />
                 </div> */}
             </div>
+
+            {scannedData && <ScanDashboard scanResult={scannedData} />}
         </>
     );
 }

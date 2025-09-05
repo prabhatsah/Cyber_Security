@@ -1,6 +1,7 @@
 "use server";
 import ikonBaseApi from "@/ikon/utils/api/ikonBaseApi";
 import {
+  deleteProcessInstanceProps,
   getDataForTaskIdProps,
   getMyInstancesCountV2Props,
   getMyInstancesV2Props,
@@ -203,28 +204,24 @@ export const invokeAction = async (
     data,
     processInstanceIdentifierField,
     accountId,
-    softwareId
-}: invokeActionProps, tags?: string[]) => {
-    const result = await ikonBaseApi({
-        accountId,
-        softwareId,
-        service: 'processRuntimeService',
-        operation: 'invokeAction',
-        arguments_: [
-            taskId,
-            transitionName,
-            data,
-            processInstanceIdentifierField
-        ]
-    })
-    if (tags) {
-        for (const tag of tags) {
-            revalidateTag(tag)
-        }
+    softwareId,
+  }: invokeActionProps,
+  tags?: string[]
+) => {
+  const result = await ikonBaseApi({
+    accountId,
+    softwareId,
+    service: "processRuntimeService",
+    operation: "invokeAction",
+    arguments_: [taskId, transitionName, data, processInstanceIdentifierField],
+  });
+  if (tags) {
+    for (const tag of tags) {
+      revalidateTag(tag);
     }
-    return result.data
-}
-
+  }
+  return result.data;
+};
 
 export async function getDataForTaskId<TData>({
   taskId,
@@ -278,6 +275,21 @@ export const invokeTaskScript = async ({
     service: "processRuntimeService",
     operation: "invokeTaskScript",
     arguments_: [taskId, parameters],
+  });
+  return result.data;
+};
+
+export const deleteProcessInstance = async ({
+  processInstanceId,
+  accountId,
+  softwareId,
+}: deleteProcessInstanceProps) => {
+  const result = await ikonBaseApi({
+    accountId,
+    softwareId,
+    service: "processRuntimeService",
+    operation: "deleteProcessInstance",
+    arguments_: [processInstanceId],
   });
   return result.data;
 };

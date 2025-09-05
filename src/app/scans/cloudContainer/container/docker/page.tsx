@@ -611,7 +611,7 @@ export default function ContainerDashboard({ onBack }: { onBack: () => void }) {
                       >
                         <path d="M12 2L4 5v6c0 5 3.84 9.27 8 10 4.16-.73 8-5 8-10V5l-8-3zM6 11V6.3l6-2.25L18 6.3V11c0 3.63-2.62 7-6 7s-6-3.37-6-7zm10.7 6.3a1 1 0 00-1.4 1.4l2 2a1 1 0 001.4-1.4l-2-2zM12 8a3 3 0 100 6 3 3 0 000-6zm0 2a1 1 0 110 2 1 1 0 010-2z" />
                       </svg>
-                      Scan
+                      Scan FileSystem
                     </>
                   )}
                 </button>
