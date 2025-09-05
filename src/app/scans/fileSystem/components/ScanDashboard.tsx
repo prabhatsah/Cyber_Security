@@ -11,27 +11,32 @@ import { SeverityDonut } from "./severity-chart"
 import { StatCard } from "./stat-chart"
 import { VulnTable } from "./vuln-table"
 
-export default function ScanDashboard() {
-    const scan = scanSample
-    const vulns = scan.Results[0]?.Vulnerabilities ?? []
+export default function ScanDashboard({ scanResult }: { scanResult: any }) {
+    const scan = scanResult
+
+    // Convert Results object → flat array of vulnerabilities
+    const vulns = Object.values(scan.Results || {}).flatMap((res: any) =>
+        res.Vulnerabilities ? Object.values(res.Vulnerabilities) : []
+    )
 
     const severityCounts = groupBySeverity(vulns)
+
     const donutData = ["CRITICAL", "HIGH", "MEDIUM", "LOW"].map((k) => ({
         name: k,
-        value: severityCounts[k as keyof typeof severityCounts] || 0,
+        value: severityCounts[k] || 0,
     }))
 
-    const affectedPackages = Array.from(new Set(vulns.map((v) => v.PkgName))).length
+    const affectedPackages = Array.from(new Set(vulns.map((v: any) => v.PkgName))).length
     const criticals = severityCounts.CRITICAL || 0
-    const fixable = vulns.filter((v) => (v.FixedVersion || "").trim().length > 0).length
+    const fixable = vulns.filter((v: any) => (v.FixedVersion || "").trim().length > 0).length
 
     return (
-        <main className="  space-y-3 py-4 border-t mt-5">
+        <main className="space-y-3 py-4 border-t mt-5">
             {/* Title row */}
             <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                 <div>
                     <p className="text-balance text-md font-semibold">Artifact</p>
-                    <p className="text-sm ">
+                    <p className="text-sm">
                         {scan.ArtifactName} • {new Date(scan.CreatedAt).toLocaleString()}
                     </p>
                 </div>
@@ -49,7 +54,7 @@ export default function ScanDashboard() {
                 <Card className="col-span-1 flex items-center justify-between gap-4 rounded-xl border-border/50 bg-card/60 p-4">
                     <div className="space-y-2">
                         <div className="text-sm text-muted-foreground">Severity Distribution</div>
-                        <div className="">
+                        <div>
                             {donutData.map((d) => (
                                 <div key={d.name} className="flex items-center gap-2 mb-2">
                                     <SeverityBadge severity={d.name as any} value={d.value} />
@@ -63,12 +68,17 @@ export default function ScanDashboard() {
                 <div className="col-span-2 grid gap-4 sm:grid-cols-3">
                     <StatCard label="Total Vulnerabilities" value={vulns.length} hint="Detected in dependency graph" />
                     <StatCard label="Critical Findings" value={criticals} hint="Immediate attention recommended" />
-                    <StatCard label="Affected Packages" value={affectedPackages} hint="Unique npm packages" />
-                    <StatCard label="Fixes Available" value={fixable} hint="Provide upgrade paths" className="sm:col-span-2" />
+                    <StatCard label="Affected Packages" value={affectedPackages} hint="Unique packages" />
+                    <StatCard
+                        label="Fixes Available"
+                        value={fixable}
+                        hint="Provide upgrade paths"
+                        className="sm:col-span-2"
+                    />
                     <StatCard
                         label="Scan Source"
-                        value={scan.Results[0]?.Target || "—"}
-                        hint={scan.Results[0]?.Type?.toUpperCase()}
+                        value={Object.values(scan.Results || {})[0]?.Target || "—"}
+                        hint={Object.values(scan.Results || {})[0]?.Type?.toUpperCase()}
                     />
                 </div>
             </div>
@@ -89,19 +99,17 @@ export default function ScanDashboard() {
                 </div>
                 <Separator className="mb-3" />
                 <ul className="list-inside list-disc space-y-2 text-sm text-muted-foreground">
-                    <li>
-                        Upgrade Next.js to patched versions (15.2.3+, 15.4.5+, or listed LTS) to address middleware, cache, and
-                        image issues.
-                    </li>
+                    <li>Upgrade Next.js to patched versions (15.2.3+, 15.4.5+).</li>
                     <li>Update axios to 1.8.2+ and avoid absolute URLs in requests.</li>
-                    <li>Upgrade @babel/runtime to 7.26.10+ and recompile the app.</li>
-                    <li>Patch transitive packages (form-data, brace-expansion) to their fixed versions.</li>
+                    <li>Upgrade @babel/runtime to 7.26.10+.</li>
+                    <li>Patch transitive packages (form-data, brace-expansion).</li>
                     <li>Review middleware and header forwarding to prevent SSRF in self-hosted environments.</li>
                 </ul>
             </Card>
         </main>
     )
 }
+
 
 function MetaKV({ k, v, hint }: { k: string; v: string; hint?: string }) {
     return (
