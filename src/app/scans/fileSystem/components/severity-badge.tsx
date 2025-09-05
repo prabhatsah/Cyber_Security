@@ -1,26 +1,53 @@
+"use client"
+
 import { Badge } from "@/components/ui/badge"
+import { AlertTriangle, Shield, AlertCircle, Info } from "lucide-react"
 
 export type Severity = "CRITICAL" | "HIGH" | "MEDIUM" | "LOW" | "UNKNOWN"
 
-export function SeverityBadge({ severity, value }: { severity: Severity, value: number }) {
-  const map: Record<Severity, string> = {
-    CRITICAL: "bg-red-500/20 text-red-400 border-red-500/30",
-    HIGH: "bg-orange-500/20 text-orange-400 border-orange-500/30",
-    MEDIUM: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
-    LOW: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
-    UNKNOWN: "bg-slate-500/20 text-slate-300 border-slate-500/30",
+export function SeverityBadge({ severity }: { severity: Severity }) {
+  const getSeverityConfig = (sev: Severity) => {
+    switch (sev) {
+      case "CRITICAL":
+        return {
+          icon: AlertTriangle,
+          className: "bg-red-500 text-white border-red-600 hover:bg-red-600",
+          label: "Critical"
+        }
+      case "HIGH":
+        return {
+          icon: AlertCircle,
+          className: "bg-orange-500 text-white border-orange-600 hover:bg-orange-600",
+          label: "High"
+        }
+      case "MEDIUM":
+        return {
+          icon: AlertCircle,
+          className: "bg-yellow-500 text-white border-yellow-600 hover:bg-yellow-600",
+          label: "Medium"
+        }
+      case "LOW":
+        return {
+          icon: Info,
+          className: "bg-blue-500 text-white border-blue-600 hover:bg-blue-600",
+          label: "Low"
+        }
+      default:
+        return {
+          icon: Shield,
+          className: "bg-gray-500 text-white border-gray-600 hover:bg-gray-600",
+          label: "Unknown"
+        }
+    }
   }
-  const spanMap: Record<Severity, string> = {
-    CRITICAL: "bg-red-500/30 text-white ms-2 px-1 rounded-full",
-    HIGH: "bg-orange-500/30 text-white ms-2 px-1 rounded-full",
-    MEDIUM: "bg-yellow-500/30 text-white ms-2 px-1 rounded-full",
-    LOW: "bg-emerald-500/30 text-white ms-2 px-1 rounded-full",
-    UNKNOWN: "bg-slate-500/30 text-white ms-2 px-1 rounded-full",
-  }
+
+  const config = getSeverityConfig(severity)
+  const IconComponent = config.icon
+
   return (
-    <Badge variant="outline" className={`rounded-full px-2 py-1 text-xs ${map[severity]}`}>
-      {severity}
-      <span className={`${spanMap[severity]}`}>{value}</span>
+    <Badge className={`${config.className} flex items-center gap-1 px-2 py-1`}>
+      <IconComponent className="h-3 w-3" />
+      <span className="text-xs font-semibold">{config.label}</span>
     </Badge>
   )
 }

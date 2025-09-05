@@ -2,20 +2,28 @@
 
 import type React from "react"
 
-import { ChangeEvent, useEffect, useState } from "react"
+import { ChangeEvent, useEffect, useMemo, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/Input"
 import { Label } from "@/components/ui/label"
-import { X } from "lucide-react"
-import { TooltipProvider } from "@/components/ui/tooltip"
-import { Dialog, DialogPanel, Select, SelectItem } from "@tremor/react"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Plus, Trash2, Info, X } from "lucide-react"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { Dialog, DialogPanel, Select, SelectItem, Textarea } from "@tremor/react"
 import IpInput from "@/components/IpInput"
+import CidrInput from "@/components/CidrInput"
 import { FileSystemConfigData, ProbeDetails } from "@/app/globalType"
-import { fetchAllProbes } from "../../../utils/FetchAllProbes"
+import { fetchAllProbes } from "./FetchAllProbes"
 import GlobalLoader from "@/components/GlobalLoader"
 import { getMyInstancesV2, invokeAction, mapProcessName, startProcessV2 } from "@/ikon/utils/api/processRuntimeService"
 import { getLoggedInUserProfile } from "@/ikon/utils/api/loginService"
+import { UUID } from "crypto"
 import { toast } from "@/lib/toast"
+import { getCurrentSoftwareId } from "@/ikon/utils/actions/software"
+import { getActiveAccountId } from "@/ikon/utils/actions/account"
+import { getCurrentUserId } from "@/ikon/utils/actions/auth"
+import { config } from "googleapis/build/src/apis/config"
 
 interface FileSystemConfigFormProps {
     isFormModalOpen: boolean;
@@ -242,7 +250,7 @@ export default function FileSystemConfigForm({ isFormModalOpen, onClose, savedDa
             hostname: savedDataToBePopulated?.hostname ?? "",
         });
         setErrors({});
-        setSysInfo(null);
+
         onClose();
     };
 
@@ -252,7 +260,6 @@ export default function FileSystemConfigForm({ isFormModalOpen, onClose, savedDa
 
         if (configData && configData.length > 0) {
             let taskId = configData[0].taskId;
-            invokeAction({ taskId: taskId, transitionName: "Fetch System Info", data: { config_id: configId, probe_id: formData.probe_id }, processInstanceIdentifierField: "config_id" });
         }
         else {
             let processId = await mapProcessName({ processName: "Fetch ip os and hostname" });
@@ -260,10 +267,9 @@ export default function FileSystemConfigForm({ isFormModalOpen, onClose, savedDa
         }
 
         while (true) {
-            let configDataAgain: any = await getMyInstancesV2({ processName: "Fetch ip os and hostname", processVariableFilters: { config_id: configId }, projections: ["Data"] });
+            let configDataAgain = await getMyInstancesV2({ processName: "Fetch ip os and hostname", processVariableFilters: { config_id: configId }, projections: ["Data"] });
             console.log("configDataAgain", configDataAgain);
             setSysInfo(configDataAgain[0].data.sysInfo);
-
             if (configDataAgain && configDataAgain.length > 0 && configDataAgain[0].data.sysInfo)
                 break;
         }
@@ -459,7 +465,7 @@ export default function FileSystemConfigForm({ isFormModalOpen, onClose, savedDa
                         {/* Form Actions */}
                         <div className="flex justify-end gap-3 py-4 px-6 border-t border-slate-200 dark:border-slate-700">
                             <Button type="button" variant="outline" onClick={onClose} className="border-slate-600 text-slate-300 hover:text-white bg-transparent">
-
+                                Cancel
                             </Button>
                             <Button className="bg-blue-600 hover:bg-blue-700 text-white"
                                 onClick={savedDataToBePopulated ? handleConfigUpdate : handleSubmit}>
