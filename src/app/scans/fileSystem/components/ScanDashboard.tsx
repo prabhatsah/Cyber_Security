@@ -9,15 +9,13 @@ import { StatCard } from "./stat-chart"
 import { VulnTable } from "./vuln-table"
 import { Package, Calendar, FileText, Clock } from "lucide-react"
 
-export default function ScanDashboard() {
-    interface ScanCardProps {
-        scan: {
-            ArtifactName: string;
-            CreatedAt: string;
-        };
-    }
-    const scan = scanSample
-    const vulns = scan.Results[0]?.Vulnerabilities ?? []
+export default function ScanDashboard({ scanResult }: { scanResult: any }) {
+    const scan = scanResult;
+
+    // Convert Results object → flat array of vulnerabilities
+    const vulns = Object.values(scan.Results || {}).flatMap((res: any) =>
+        res.Vulnerabilities ? Object.values(res.Vulnerabilities) : []
+    );
 
     const severityCounts = groupBySeverity(vulns)
     const donutData = ["CRITICAL", "HIGH", "MEDIUM", "LOW"].map((k) => ({
@@ -25,9 +23,9 @@ export default function ScanDashboard() {
         value: severityCounts[k as keyof typeof severityCounts] || 0,
     }))
 
-    const affectedPackages = Array.from(new Set(vulns.map((v) => v.PkgName))).length
+    const affectedPackages = Array.from(new Set(vulns.map((v: any) => v.PkgName))).length
     const criticals = severityCounts.CRITICAL || 0
-    const fixable = vulns.filter((v) => (v.FixedVersion || "").trim().length > 0).length
+    const fixable = vulns.filter((v: any) => (v.FixedVersion || "").trim().length > 0).length
 
     return (
         <main className="  space-y-3 py-4 border-t mt-5">

@@ -210,7 +210,7 @@ export default function FileSystemScanningMainTemplate({ fileSystemConfigDetails
                         Privacy Notice
                     </a>
                     , and to the{" "}
-                    <strong className="text-white">
+                    <strong>
                         sharing of your submission with the security community.
                     </strong>{" "}
                     Please do not submit any personal information; we are not responsible

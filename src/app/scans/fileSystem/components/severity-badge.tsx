@@ -5,7 +5,7 @@ import { AlertTriangle, Shield, AlertCircle, Info } from "lucide-react"
 
 export type Severity = "CRITICAL" | "HIGH" | "MEDIUM" | "LOW" | "UNKNOWN"
 
-export function SeverityBadge({ severity }: { severity: Severity }) {
+export function SeverityBadge({ severity, value }: { severity: Severity, value: number }) {
   const getSeverityConfig = (sev: Severity) => {
     switch (sev) {
       case "CRITICAL":
@@ -48,6 +48,7 @@ export function SeverityBadge({ severity }: { severity: Severity }) {
     <Badge className={`${config.className} flex items-center gap-1 px-2 py-1`}>
       <IconComponent className="h-3 w-3" />
       <span className="text-xs font-semibold">{config.label}</span>
+      <span>{value}</span>
     </Badge>
   )
 }
