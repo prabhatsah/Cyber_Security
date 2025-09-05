@@ -92,9 +92,9 @@ export function VulnTable({ items }: { items: Vuln[] }) {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {filtered.map((v) => (
+                        {filtered.map((v, i) => (
                             <TableRow
-                                key={`${v.VulnerabilityID}-${v.PkgName}`}
+                                key={`${v.VulnerabilityID}-${v.PkgName}-${i}`}
                                 className="cursor-pointer hover:bg-muted/30"
                                 onClick={() => onRowClick(v)}
                             >
