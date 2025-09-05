@@ -32,12 +32,13 @@ export function VulnDetailsDialog({
 }) {
     if (!vuln) return null
 
+    console.log("vuln", vuln)
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="max-w-2xl">
                 <DialogHeader>
                     <DialogTitle className="flex items-center gap-2">
-                        <SeverityBadge severity={(vuln.Severity as Severity) ?? "UNKNOWN"} />
+                        <SeverityBadge severity={(vuln.Severity as Severity) ?? "UNKNOWN"} value={0} />
                         {vuln.VulnerabilityID}
                     </DialogTitle>
                 </DialogHeader>
@@ -57,7 +58,7 @@ export function VulnDetailsDialog({
                         <KV k="Status" v={vuln.Status || "—"} />
                         <KV k="Published" v={dateFmt(vuln.PublishedDate)} />
                         <KV k="Modified" v={dateFmt(vuln.LastModifiedDate)} />
-                        <KV k="CWE" v={(vuln.CweIDs || []).join(", ") || "—"} />
+                        <KV k="CWE" v={vuln.CweIDs ? Object.values(vuln.CweIDs).join(", ") : "—"} />
                     </div>
 
                     <Separator />
@@ -65,17 +66,25 @@ export function VulnDetailsDialog({
                     <div className="space-y-2">
                         <div className="text-sm text-muted-foreground">References</div>
                         <div className="flex flex-wrap gap-2">
-                            {(vuln.References || []).slice(0, 12).map((r, i) => (
-                                <a
-                                    key={i}
-                                    href={r}
-                                    target="_blank"
-                                    className="truncate rounded-md border border-border/50 bg-muted/20 px-2 py-1 text-xs text-blue-400 hover:underline"
-                                    rel="noreferrer"
-                                >
-                                    {r}
-                                </a>
-                            ))}
+                            {(
+                                vuln.References
+                                    ? Array.isArray(vuln.References)
+                                        ? vuln.References
+                                        : Object.values(vuln.References)
+                                    : []
+                            )
+                                .slice(0, 12)
+                                .map((r, i) => (
+                                    <a
+                                        key={i}
+                                        href={r}
+                                        target="_blank"
+                                        className="truncate rounded-md border border-border/50 bg-muted/20 px-2 py-1 text-xs text-blue-400 hover:underline"
+                                        rel="noreferrer"
+                                    >
+                                        {r}
+                                    </a>
+                                ))}
                         </div>
                     </div>
                 </div>
