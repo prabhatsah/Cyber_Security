@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import SearchBar from "./SearchBar";
+import { v4 as uuidv4 } from "uuid";
 import { RenderAppBreadcrumb } from "@/components/app-breadcrumb";
 import ScanDashboard from "./ScanDashboard";
 import { Select, SelectItem } from "@tremor/react"
@@ -9,6 +9,9 @@ import { Input } from "@/components/Input"
 import { FileSystemConfigData } from "@/app/globalType";
 import { LuRefreshCw } from "react-icons/lu";
 import { GiElectric } from "react-icons/gi";
+import { getLoggedInUserProfile } from "@/ikon/utils/api/loginService";
+import { getMyInstancesV2, mapProcessName, startProcessV2 } from "@/ikon/utils/api/processRuntimeService";
+import { toast } from "@/lib/toast";
 
 interface ErrorState {
     [key: string]: string | Array<string>;
@@ -19,23 +22,77 @@ export default function FileSystemScanningMainTemplate({ fileSystemConfigDetails
     const [filePath, setFilePath] = useState<string>("");
     const [errors, setErrors] = useState<ErrorState>({});
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [scannedData, setScannedData] = useState<any>(null);
 
-    const handleSearch = async () => {
+    console.log("scannedData", scannedData);
+
+    const validateSearch = (): boolean => {
+        const newErrors: ErrorState = {};
+
+        if (!selectedProbeId) {
+            newErrors.probeId = "Please select a Configuration";
+        } else if (!fileSystemConfigDetails.find(eachConfigDetails => eachConfigDetails.probe_id === selectedProbeId)) {
+            newErrors.probeId =
+                "Please select a valid Configuration";
+        }
+
+        const filePathRegex = /^(?:[a-zA-Z]:\\|\/)(?:[^<>:"|?*\n]+[\\/])*[^<>:"|?*\n]+$/;
+        if (!filePath) {
+            newErrors.filePath = "File Path cannot be blank. Please provide a valid File Path";
+        } else if (!filePath.match(filePathRegex)) {
+            newErrors.filePath = "Please provide a valid File Path";
+        }
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    }
+
+    const handleSearch = async (): Promise<void> => {
+        setErrors({});
         setIsLoading(true);
 
-        setIsLoading(false);
-    };
+        if (!validateSearch()) {
+            setIsLoading(false);
+            return;
+        }
 
-    const fetchData1 = async (searchType: string): Promise<void> => {
-        // try {
-        //     console.log("SUCCESS");
-        // } catch (err) {
-        //     if (err instanceof Error) {
-        //         setError(err.message);
-        //     } else {
-        //         setError("An unknown error occurred");
-        //     }
-        // }
+        try {
+            let userInfo = await getLoggedInUserProfile()
+            let user_id = userInfo?.USER_ID;
+            let user_login = userInfo?.USER_LOGIN;
+            let file_system_id = uuidv4();
+            let scan_path = filePath;
+
+            let processId = await mapProcessName({ processName: "File System Scan" });
+            console.log("SUCCESS", processId, scan_path);
+
+            await startProcessV2({
+                processId: processId,
+                data: { user_id: user_id, user_login: user_login, file_system_id: file_system_id, scan_path: scan_path },
+                processIdentifierFields: "file_system_id,user_id,user_login"
+            })
+
+            let result: any = {};
+            while (true) {
+                result = await getMyInstancesV2({ processName: 'File System Scan', processVariableFilters: { 'file_system_id': file_system_id } })
+                if (result && result[0].data.scan_data) {
+                    console.log("result[0].data.scan_data", result[0].data);
+                    setScannedData(result[0].data.scan_data);
+                    setIsLoading(false);
+                    setErrors({});
+                    toast.push("File System Scanned Successfully", "success");
+                    break;
+                }
+            }
+        }
+        catch (err) {
+            setIsLoading(false);
+            if (err instanceof Error) {
+                toast.push(err.message, "error");
+            } else {
+                toast.push("An unknown error occurred", "error");
+            }
+        }
     };
 
     return (
@@ -167,19 +224,12 @@ export default function FileSystemScanningMainTemplate({ fileSystemConfigDetails
                     .
                 </div>
 
-
-                {/* {data && (
-                    <div className="space-y-8">
-                        <Widgets widgetData={data} queryUrl={query} />
-                    </div>
-                )} */}
-
                 {/* <div>
                     <PastScans pastScans={pastScansForWidget} onOpenPastScan={handleOpenPastScan} />
                 </div> */}
             </div>
 
-            <ScanDashboard />
+            {scannedData && <ScanDashboard scanResult={scannedData} />}
         </>
     );
 }
