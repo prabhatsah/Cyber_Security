@@ -6,12 +6,13 @@ import { RenderAppBreadcrumb } from "@/components/app-breadcrumb";
 import ScanDashboard from "./ScanDashboard";
 import { Select, SelectItem } from "@tremor/react"
 import { Input } from "@/components/Input"
-import { FileSystemConfigData } from "@/app/globalType";
+import { FileSystemConfigData, FileSystemFullInstanceData } from "@/app/globalType";
 import { LuRefreshCw } from "react-icons/lu";
 import { GiElectric } from "react-icons/gi";
 import { getLoggedInUserProfile } from "@/ikon/utils/api/loginService";
 import { getMyInstancesV2, mapProcessName, startProcessV2 } from "@/ikon/utils/api/processRuntimeService";
 import { toast } from "@/lib/toast";
+import PastScans from "@/components/PastScans";
 
 interface ErrorState {
     [key: string]: string | Array<string>;
@@ -72,9 +73,12 @@ export default function FileSystemScanningMainTemplate({ fileSystemConfigDetails
                 processIdentifierFields: "file_system_id,user_id,user_login"
             })
 
-            let result: any = {};
+            let result;
             while (true) {
-                result = await getMyInstancesV2({ processName: 'File System Scan', processVariableFilters: { 'file_system_id': file_system_id } })
+                result = await getMyInstancesV2<FileSystemFullInstanceData>({
+                    processName: 'File System Scan',
+                    processVariableFilters: { 'file_system_id': file_system_id }
+                });
                 if (result && result[0].data.scan_data) {
                     console.log("result[0].data.scan_data", result[0].data);
                     setScannedData(result[0].data.scan_data);
@@ -167,8 +171,6 @@ export default function FileSystemScanningMainTemplate({ fileSystemConfigDetails
                                 {errors.filePath}
                             </p>
                         )}
-                        {/* <SearchBar query={query} setQuery={setQuery} fetchData={fetchData1} /> */}
-                        {/* {error && <p className="text-red-600 text-center">{error}</p>} */}
                     </div>
 
                     <div className="py-4">
