@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { ChangeEvent, useEffect, useMemo, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/Input"
@@ -24,6 +23,7 @@ import { getCurrentSoftwareId } from "@/ikon/utils/actions/software"
 import { getActiveAccountId } from "@/ikon/utils/actions/account"
 import { getCurrentUserId } from "@/ikon/utils/actions/auth"
 import { config } from "googleapis/build/src/apis/config"
+import ModalLoader from "@/components/ModalLoader"
 
 interface FileSystemConfigFormProps {
     isFormModalOpen: boolean;
@@ -46,6 +46,7 @@ export default function FileSystemConfigForm({ isFormModalOpen, onClose, savedDa
     });
     const [errors, setErrors] = useState<ErrorState>({});
     const [loading, setLoading] = useState(false);
+    const [fetchingSystemInfo, setFetchingSystemInfo] = useState(false);
     const [configId, setConfigId] = useState<string>("");
     const [sysInfo, setSysInfo] = useState<any>(null);
 
@@ -58,6 +59,18 @@ export default function FileSystemConfigForm({ isFormModalOpen, onClose, savedDa
         loadProbes();
     }, []);
 
+    // Update form data when sysInfo changes
+    useEffect(() => {
+        if (sysInfo) {
+            setFormData(prev => ({
+                ...prev,
+                ip_address: sysInfo.ip_address || prev.ip_address,
+                hostname: sysInfo.host_name || prev.hostname,
+                probe_machine_os_type: sysInfo.os_name || prev.probe_machine_os_type,
+            }));
+        }
+    }, [sysInfo]);
+
     // Validate form
     const validateForm = (): boolean => {
         const newErrors: ErrorState = {};
@@ -65,7 +78,6 @@ export default function FileSystemConfigForm({ isFormModalOpen, onClose, savedDa
         const checkIpValidOrNot = (ip: string): boolean => {
             return ip.split(".").every(eachPart => eachPart !== "");
         };
-
 
         if (!formData.config_name) {
             newErrors.config_name = "Configuration Name cannot be blank. Please provide a valid Configuration Name";
@@ -95,15 +107,6 @@ export default function FileSystemConfigForm({ isFormModalOpen, onClose, savedDa
         } else if (formData.hostname.trim().length < 3) {
             newErrors.hostname = "Host Name must be at least 3 characters long. Please provide a valid Host Name";
         }
-        // else if (!formData.hostname.startsWith("http://") && !formData.hostname.startsWith("https://")) {
-        //     newErrors.hostname = "Host Name must start with 'http://' or 'https://'. Please provide a valid Host Name";
-        // } else {
-        //     try {
-        //         new URL(formData.hostname);
-        //     } catch (e) {
-        //         newErrors.hostname = "Please provide a valid Host Name.";
-        //     }
-        // }
 
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
@@ -133,7 +136,6 @@ export default function FileSystemConfigForm({ isFormModalOpen, onClose, savedDa
     const handleIpInputChange = (inputName: string, ip: string, inputIndex: number | undefined) => {
         setErrors({});
         const fieldName = inputName.split("-")[0];
-
         setFormData((prev) => ({ ...prev, [fieldName]: ip }));
     };
 
@@ -150,6 +152,7 @@ export default function FileSystemConfigForm({ isFormModalOpen, onClose, savedDa
         console.log(configIdPrefix + String(configDataWithTodayPrefix.length + 1).padStart(3, "0"));
         return configIdPrefix + String(configDataWithTodayPrefix.length + 1).padStart(3, "0");
     }
+
     useEffect(() => {
         const fetchConfigId = async () => {
             const id = await getConfigId();
@@ -157,12 +160,12 @@ export default function FileSystemConfigForm({ isFormModalOpen, onClose, savedDa
         };
         fetchConfigId();
     }, []);
-    console.log("configDataWithTodayPrefix", configId);
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
         setLoading(true);
         const today = new Date();
+
         if (!validateForm()) {
             setLoading(false);
             return;
@@ -197,7 +200,6 @@ export default function FileSystemConfigForm({ isFormModalOpen, onClose, savedDa
             setLoading(false);
         } catch (error) {
             console.error("Failed to start the process:", error);
-            // throw error;
             toast.push("Error in creating File System Configuration", "error");
             setLoading(false);
         }
@@ -205,7 +207,6 @@ export default function FileSystemConfigForm({ isFormModalOpen, onClose, savedDa
 
     const handleConfigUpdate = async (event: React.FormEvent) => {
         event.preventDefault();
-
         setLoading(true);
 
         if (!validateUpdateForm()) {
@@ -223,6 +224,7 @@ export default function FileSystemConfigForm({ isFormModalOpen, onClose, savedDa
         const invokableTaskId = fileSystemConfigInstance[0].taskId;
         const dataToBeUpdated = fileSystemConfigInstance[0].data;
         dataToBeUpdated.config_name = formData.config_name;
+
         try {
             await invokeAction({
                 taskId: invokableTaskId,
@@ -255,28 +257,63 @@ export default function FileSystemConfigForm({ isFormModalOpen, onClose, savedDa
     };
 
     const fetchSysInfo = async () => {
-        let configData: any = await getMyInstancesV2({ processName: "Fetch ip os and hostname", processVariableFilters: { config_id: configId }, projections: ["Data"] });
-        console.log("configData inside fetch", configData);
-
-        if (configData && configData.sysInfo) {
-            let taskId = configData[0].taskId;
-            delete configData.sysInfo
-            console.log("after deletion", configData)
-            invokeAction({ taskId: taskId, transitionName: "fetch again", data: configData, processInstanceIdentifierField: "config_data" })
-        }
-        else {
-            let processId = await mapProcessName({ processName: "Fetch ip os and hostname" });
-            startProcessV2({ processId: processId, data: { config_id: configId, probe_id: formData.probe_id }, processIdentifierFields: "config_id" });
+        if (!formData.probe_id) {
+            toast.push("Please select a probe first", "error");
+            return;
         }
 
-        while (true) {
-            let configDataAgain: any = await getMyInstancesV2({ processName: "Fetch ip os and hostname", processVariableFilters: { config_id: configId }, projections: ["Data"] });
-            console.log("configDataAgain", configDataAgain);
-            setSysInfo(configDataAgain[0].data.sysInfo);
-            if (configDataAgain && configDataAgain[0].data.sysInfo)
-                break;
-        }
+        setFetchingSystemInfo(true);
 
+        try {
+            let configData = await getMyInstancesV2({
+                processName: "Fetch ip os and hostname",
+                processVariableFilters: { config_id: configId },
+                projections: ["Data"]
+            });
+
+            let taskId: string;
+
+            if (configData && configData.length > 0) {
+                taskId = configData[0].taskId;
+            } else {
+                let processId = await mapProcessName({ processName: "Fetch ip os and hostname" });
+                await startProcessV2({
+                    processId: processId,
+                    data: { config_id: configId, probe_id: formData.probe_id },
+                    processIdentifierFields: "config_id"
+                });
+            }
+
+            // Poll for results with a timeout
+            let attempts = 0;
+            const maxAttempts = 30; // 30 seconds timeout
+
+            while (attempts < maxAttempts) {
+                let configDataAgain = await getMyInstancesV2({
+                    processName: "Fetch ip os and hostname",
+                    processVariableFilters: { config_id: configId },
+                    projections: ["Data"]
+                });
+
+                if (configDataAgain && configDataAgain.length > 0 && configDataAgain[0].data.sysInfo) {
+                    setSysInfo(configDataAgain[0].data.sysInfo);
+                    toast.push("System information fetched successfully", "success");
+                    break;
+                }
+
+                attempts++;
+                await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second between polls
+            }
+
+            if (attempts >= maxAttempts) {
+                toast.push("Timeout: Failed to fetch system information", "error");
+            }
+        } catch (error) {
+            console.error("Failed to fetch system info:", error);
+            toast.push("Error fetching system information", "error");
+        } finally {
+            setFetchingSystemInfo(false);
+        }
     };
 
     if (!allProbesArray.length || loading) {
@@ -303,10 +340,6 @@ export default function FileSystemConfigForm({ isFormModalOpen, onClose, savedDa
                         <div className="max-h-[80vh] overflow-y-auto py-4 px-6 space-y-8">
                             {/* Section 1: Basic Information */}
                             <div className="space-y-4">
-                                {/* <h3 className="text-lg text-gray-600 dark:text-slate-300 border-b border-slate-200 dark:border-slate-700 pb-2">
-                                    Basic Information
-                                </h3> */}
-
                                 <div className="flex-1 space-y-2">
                                     <Label htmlFor="config_name" className="text-sm font-medium text-widget-mainHeader">
                                         Configuration Name <span className="text-red-500">*</span>
@@ -333,7 +366,6 @@ export default function FileSystemConfigForm({ isFormModalOpen, onClose, savedDa
                                         )}
                                     </div>
                                 </div>
-
 
                                 <div className="flex-1 space-y-2">
                                     <Label htmlFor="probe_id" className="text-sm font-medium text-widget-mainHeader">
@@ -373,111 +405,120 @@ export default function FileSystemConfigForm({ isFormModalOpen, onClose, savedDa
 
                             {/* Section 2: Probe Machine Configuration */}
                             <div className="space-y-4">
-                                {/* <h3 className="text-lg text-gray-600 dark:text-slate-300 border-b border-slate-200 dark:border-slate-700 pb-2">
-                                    Probe Machine Configuration
-                                </h3> */}
-
                                 <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-2">
                                     <h3 className="text-lg text-gray-600 dark:text-slate-300">
                                         Probe Machine Configuration
                                     </h3>
-                                    <Button type="button" variant="outline" onClick={fetchSysInfo} className="border-slate-600 text-slate-300 hover:text-white bg-transparent">
-                                        Fetch System Info
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        onClick={fetchSysInfo}
+                                        disabled={fetchingSystemInfo || !formData.probe_id}
+                                        className="border-slate-600 text-slate-300 hover:text-white bg-transparent"
+                                    >
+                                        {fetchingSystemInfo ? "Fetching..." : "Fetch System Info"}
                                     </Button>
                                 </div>
-                                <div>
-                                    <div className="flex gap-4">
-                                        <div className="flex-1 space-y-2">
-                                            <Label htmlFor="ip_address" className="text-sm font-medium text-widget-mainHeader">
-                                                IP Address <span className="text-red-500">*</span>
-                                            </Label>
+                                {fetchingSystemInfo ? (<ModalLoader />) :
+                                    <div>
+                                        <div className="flex gap-4">
+                                            <div className="flex-1 space-y-2">
+                                                <Label htmlFor="ip_address" className="text-sm font-medium text-widget-mainHeader">
+                                                    IP Address <span className="text-red-500">*</span>
+                                                </Label>
 
-                                            <IpInput
-                                                name="ip_address"
-                                                id="ip_address"
-                                                error={!!errors.ip_address}
-                                                value={sysInfo?.ip_address ? sysInfo.ip_address : formData.ip_address}
-                                                onChangeFunction={handleIpInputChange}
-                                                disabled={savedDataToBePopulated ? true : false}
-                                            />
+                                                <IpInput
+                                                    name="ip_address"
+                                                    id="ip_address"
+                                                    error={!!errors.ip_address}
+                                                    value={formData.ip_address}
+                                                    onChangeFunction={handleIpInputChange}
+                                                    disabled={savedDataToBePopulated ? true : false}
+                                                />
 
-                                            {errors.ip_address && (
-                                                <p className="text-xs text-red-500">
-                                                    {errors.ip_address}
-                                                </p>
-                                            )}
-                                        </div>
+                                                {errors.ip_address && (
+                                                    <p className="text-xs text-red-500">
+                                                        {errors.ip_address}
+                                                    </p>
+                                                )}
+                                            </div>
 
-                                        <div className="flex-1 space-y-2">
-                                            <Label htmlFor="hostname" className="text-sm font-medium text-widget-mainHeader">
-                                                Host Name <span className="text-red-500">*</span>
-                                            </Label>
+                                            <div className="flex-1 space-y-2">
+                                                <Label htmlFor="hostname" className="text-sm font-medium text-widget-mainHeader">
+                                                    Host Name <span className="text-red-500">*</span>
+                                                </Label>
 
-                                            <Input
-                                                id="hostname"
-                                                name="hostname"
-                                                value={sysInfo?.host_name ? sysInfo.host_name : formData.hostname}
-                                                disabled={savedDataToBePopulated ? true : false}
-                                                className={
-                                                    errors.hostname
-                                                        ? "w-full border border-red-500 rounded-md"
-                                                        : "w-full"
-                                                }
-                                                onChange={handleInputChange}
-                                                placeholder="e.g., KERLPTP-10"
-                                            />
-
-                                            {errors.hostname && (
-                                                <p className="text-xs text-red-500">
-                                                    {errors.hostname}
-                                                </p>
-                                            )}
-                                        </div>
-
-                                        <div className="flex-1 space-y-2">
-                                            <Label htmlFor="probe_machine_os_type" className="text-sm font-medium text-widget-mainHeader">
-                                                Operating System <span className="text-red-500">*</span>
-                                            </Label>
-
-                                            <div className="space-y-2">
                                                 <Input
-                                                    id="probe_machine_os_type"
-                                                    name="probe_machine_os_type"
-                                                    value={sysInfo?.os_name ? sysInfo.os_name : formData.probe_machine_os_type}
+                                                    id="hostname"
+                                                    name="hostname"
+                                                    value={formData.hostname}
                                                     disabled={savedDataToBePopulated ? true : false}
                                                     className={
-                                                        errors.probe_machine_os_type
+                                                        errors.hostname
                                                             ? "w-full border border-red-500 rounded-md"
                                                             : "w-full"
                                                     }
                                                     onChange={handleInputChange}
+                                                    placeholder="e.g., KERLPTP-10"
                                                 />
 
-                                                {errors.probe_machine_os_type ? (
+                                                {errors.hostname && (
                                                     <p className="text-xs text-red-500">
-                                                        {errors.probe_machine_os_type}
+                                                        {errors.hostname}
                                                     </p>
-                                                ) : undefined}
+                                                )}
+                                            </div>
+
+                                            <div className="flex-1 space-y-2">
+                                                <Label htmlFor="probe_machine_os_type" className="text-sm font-medium text-widget-mainHeader">
+                                                    Operating System <span className="text-red-500">*</span>
+                                                </Label>
+
+                                                <div className="space-y-2">
+                                                    <Input
+                                                        id="probe_machine_os_type"
+                                                        name="probe_machine_os_type"
+                                                        value={formData.probe_machine_os_type}
+                                                        disabled={savedDataToBePopulated ? true : false}
+                                                        className={
+                                                            errors.probe_machine_os_type
+                                                                ? "w-full border border-red-500 rounded-md"
+                                                                : "w-full"
+                                                        }
+                                                        onChange={handleInputChange}
+                                                    />
+
+                                                    {errors.probe_machine_os_type ? (
+                                                        <p className="text-xs text-red-500">
+                                                            {errors.probe_machine_os_type}
+                                                        </p>
+                                                    ) : undefined}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                }
+
                             </div>
                         </div>
 
                         {/* Form Actions */}
                         <div className="flex justify-end gap-3 py-4 px-6 border-t border-slate-200 dark:border-slate-700">
-                            <Button type="button" variant="outline" onClick={onClose} className="border-slate-600 text-slate-300 hover:text-white bg-transparent">
+                            <Button type="button" variant="outline" onClick={handleClose} className="border-slate-600 text-slate-300 hover:text-white bg-transparent">
                                 Cancel
                             </Button>
-                            <Button className="bg-blue-600 hover:bg-blue-700 text-white"
-                                onClick={savedDataToBePopulated ? handleConfigUpdate : handleSubmit}>
-                                {`${savedDataToBePopulated ? "Update" : "Save"} Configuration`}
+                            <Button
+                                type="button"
+                                className="bg-blue-600 hover:bg-blue-700 text-white"
+                                disabled={loading}
+                                onClick={savedDataToBePopulated ? handleConfigUpdate : handleSubmit}
+                            >
+                                {loading ? "Saving..." : `${savedDataToBePopulated ? "Update" : "Save"} Configuration`}
                             </Button>
                         </div>
                     </form>
                 </TooltipProvider>
             </DialogPanel>
-        </Dialog >
+        </Dialog>
     )
 }
