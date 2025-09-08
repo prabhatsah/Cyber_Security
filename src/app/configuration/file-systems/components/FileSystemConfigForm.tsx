@@ -250,16 +250,19 @@ export default function FileSystemConfigForm({ isFormModalOpen, onClose, savedDa
             hostname: savedDataToBePopulated?.hostname ?? "",
         });
         setErrors({});
-
+        setSysInfo(null);
         onClose();
     };
 
     const fetchSysInfo = async () => {
-        let configData = await getMyInstancesV2({ processName: "Fetch ip os and hostname", processVariableFilters: { config_id: configId }, projections: ["Data"] });
-        console.log("configData", configData);
+        let configData: any = await getMyInstancesV2({ processName: "Fetch ip os and hostname", processVariableFilters: { config_id: configId }, projections: ["Data"] });
+        console.log("configData inside fetch", configData);
 
-        if (configData && configData.length > 0) {
+        if (configData && configData.sysInfo) {
             let taskId = configData[0].taskId;
+            delete configData.sysInfo
+            console.log("after deletion", configData)
+            invokeAction({ taskId: taskId, transitionName: "fetch again", data: configData, processInstanceIdentifierField: "config_data" })
         }
         else {
             let processId = await mapProcessName({ processName: "Fetch ip os and hostname" });
@@ -267,10 +270,10 @@ export default function FileSystemConfigForm({ isFormModalOpen, onClose, savedDa
         }
 
         while (true) {
-            let configDataAgain = await getMyInstancesV2({ processName: "Fetch ip os and hostname", processVariableFilters: { config_id: configId }, projections: ["Data"] });
+            let configDataAgain: any = await getMyInstancesV2({ processName: "Fetch ip os and hostname", processVariableFilters: { config_id: configId }, projections: ["Data"] });
             console.log("configDataAgain", configDataAgain);
             setSysInfo(configDataAgain[0].data.sysInfo);
-            if (configDataAgain && configDataAgain.length > 0 && configDataAgain[0].data.sysInfo)
+            if (configDataAgain && configDataAgain[0].data.sysInfo)
                 break;
         }
 
