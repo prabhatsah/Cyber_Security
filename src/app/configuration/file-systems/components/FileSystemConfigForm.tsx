@@ -261,58 +261,27 @@ export default function FileSystemConfigForm({ isFormModalOpen, onClose, savedDa
             toast.push("Please select a probe first", "error");
             return;
         }
-
         setFetchingSystemInfo(true);
 
-        try {
-            let configData = await getMyInstancesV2({
-                processName: "Fetch ip os and hostname",
-                processVariableFilters: { config_id: configId },
-                projections: ["Data"]
-            });
+        let configData: any = await getMyInstancesV2({ processName: "Fetch ip os and hostname", processVariableFilters: { config_id: configId }, projections: ["Data"] });
+        console.log("configData inside fetch", configData);
 
-            let taskId: string;
-
-            if (configData && configData.length > 0) {
-                taskId = configData[0].taskId;
-            } else {
-                let processId = await mapProcessName({ processName: "Fetch ip os and hostname" });
-                await startProcessV2({
-                    processId: processId,
-                    data: { config_id: configId, probe_id: formData.probe_id },
-                    processIdentifierFields: "config_id"
-                });
-            }
-
-            // Poll for results with a timeout
-            let attempts = 0;
-            const maxAttempts = 30; // 30 seconds timeout
-
-            while (attempts < maxAttempts) {
-                let configDataAgain = await getMyInstancesV2({
-                    processName: "Fetch ip os and hostname",
-                    processVariableFilters: { config_id: configId },
-                    projections: ["Data"]
-                });
-
-                if (configDataAgain && configDataAgain.length > 0 && configDataAgain[0].data.sysInfo) {
-                    setSysInfo(configDataAgain[0].data.sysInfo);
-                    toast.push("System information fetched successfully", "success");
-                    break;
-                }
-
-                attempts++;
-                await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second between polls
-            }
-
-            if (attempts >= maxAttempts) {
-                toast.push("Timeout: Failed to fetch system information", "error");
-            }
-        } catch (error) {
-            console.error("Failed to fetch system info:", error);
-            toast.push("Error fetching system information", "error");
-        } finally {
-            setFetchingSystemInfo(false);
+        if (configData && configData.sysInfo) {
+            let taskId = configData[0].taskId;
+            delete configData.sysInfo
+            console.log("after deletion", configData)
+            invokeAction({ taskId: taskId, transitionName: "fetch again", data: configData, processInstanceIdentifierField: "config_data" })
+        }
+        else {
+            let processId = await mapProcessName({ processName: "Fetch ip os and hostname" });
+            startProcessV2({ processId: processId, data: { config_id: configId, probe_id: formData.probe_id }, processIdentifierFields: "config_id" });
+        }
+        while (true) {
+            let configDataAgain: any = await getMyInstancesV2({ processName: "Fetch ip os and hostname", processVariableFilters: { config_id: configId }, projections: ["Data"] });
+            console.log("configDataAgain", configDataAgain);
+            setSysInfo(configDataAgain[0].data.sysInfo);
+            if (configDataAgain && configDataAgain[0].data.sysInfo)
+                break;
         }
     };
 
@@ -433,7 +402,7 @@ export default function FileSystemConfigForm({ isFormModalOpen, onClose, savedDa
                                                     error={!!errors.ip_address}
                                                     value={formData.ip_address}
                                                     onChangeFunction={handleIpInputChange}
-                                                    disabled={savedDataToBePopulated ? true : false}
+                                                    disabled={true}
                                                 />
 
                                                 {errors.ip_address && (
@@ -452,7 +421,7 @@ export default function FileSystemConfigForm({ isFormModalOpen, onClose, savedDa
                                                     id="hostname"
                                                     name="hostname"
                                                     value={formData.hostname}
-                                                    disabled={savedDataToBePopulated ? true : false}
+                                                    disabled={true}
                                                     className={
                                                         errors.hostname
                                                             ? "w-full border border-red-500 rounded-md"
@@ -479,7 +448,7 @@ export default function FileSystemConfigForm({ isFormModalOpen, onClose, savedDa
                                                         id="probe_machine_os_type"
                                                         name="probe_machine_os_type"
                                                         value={formData.probe_machine_os_type}
-                                                        disabled={savedDataToBePopulated ? true : false}
+                                                        disabled={true}
                                                         className={
                                                             errors.probe_machine_os_type
                                                                 ? "w-full border border-red-500 rounded-md"
