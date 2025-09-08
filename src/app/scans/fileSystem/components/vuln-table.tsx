@@ -92,9 +92,9 @@ export function VulnTable({ items }: { items: Vuln[] }) {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {filtered.map((v) => (
+                        {filtered.map((v, index) => (
                             <TableRow
-                                key={`${v.VulnerabilityID}-${v.PkgName}`}
+                                key={`${v.VulnerabilityID}-${v.PkgName}-${index}`}
                                 className="cursor-pointer "
                                 onClick={() => onRowClick(v)}
                             >

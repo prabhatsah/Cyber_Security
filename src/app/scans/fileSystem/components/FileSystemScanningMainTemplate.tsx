@@ -16,6 +16,7 @@ import PastScans, { PastScanData } from "@/components/PastScans";
 import { getCurrentUserId } from "@/ikon/utils/actions/auth";
 import { getCurrentSoftwareId } from "@/ikon/utils/actions/software";
 import { getUserDashboardPlatformUtilData } from "@/ikon/utils/actions/users";
+import { format } from "date-fns";
 
 interface ErrorState {
     [key: string]: string | Array<string>;
@@ -28,7 +29,7 @@ export default function FileSystemScanningMainTemplate({ fileSystemConfigDetails
     const [selectedProbeId, setSelectedProbeId] = useState<string>("");
     const [filePath, setFilePath] = useState<string>("");
     const [errors, setErrors] = useState<ErrorState>({});
-    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
     const [scannedData, setScannedData] = useState<any>(null);
     const [pastScans, setPastScans] = useState<PastScanData[]>([]);
 
@@ -49,22 +50,71 @@ export default function FileSystemScanningMainTemplate({ fileSystemConfigDetails
                 projections: ["Data"],
             });
 
+            var fileSystemScanDataArray: FileSystemFullInstanceData[] = [];
             let pastFileSystemScanDataArray: PastScanData[] = [];
             if (fileSystemScanInstances.length) {
-                const fileSystemScanDataArray = fileSystemScanInstances.map(eachInstance => eachInstance.data);
-                // pastFileSystemScanDataArray = fileSystemScanDataArray.map(eachFileSystemScanData => {
-                //     return {
-                //         href: eachFileSystemScanData.scan_path,
-                //         key: eachFileSystemScanData.file_system_id,
-                //         noOfIssue: 
-                //     }
-                // })
+                fileSystemScanDataArray = fileSystemScanInstances.map(eachInstance => eachInstance.data);
+                pastFileSystemScanDataArray = fileSystemScanDataArray.map(eachFileSystemScanData => {
+                    const results = eachFileSystemScanData?.scan_data?.Results
+                        ? Object.values(eachFileSystemScanData.scan_data.Results)
+                        : [];
+
+                    const noOfCriticalHighIssues = results.reduce((total, eachResult) => {
+                        if (eachResult.Vulnerabilities) {
+                            const vulnerabilities = Object.values(eachResult.Vulnerabilities);
+                            const count = vulnerabilities.filter(vuln =>
+                                vuln.Severity === 'CRITICAL' || vuln.Severity === 'HIGH'
+                            ).length;
+                            return total + count;
+                        }
+                        return total;
+                    }, 0);
+
+                    const totalIssues = results.reduce((total, eachResult) => {
+                        if (eachResult.Vulnerabilities) {
+                            const count = Object.values(eachResult.Vulnerabilities).length;
+                            return total + count;
+                        }
+                        return total;
+                    }, 0);
+
+                    const status = noOfCriticalHighIssues <= (totalIssues / 4) ? "success" : noOfCriticalHighIssues <= (totalIssues / 2) ? "warning" : "critical";
+                    return {
+                        href: eachFileSystemScanData.scan_path,
+                        key: eachFileSystemScanData.file_system_id,
+                        noOfIssue: noOfCriticalHighIssues,
+                        scanOn: format(new Date(), "dd-MMM-yyyy hh:mm:ss"),
+                        status: status,
+                        title: "File System Scan",
+                        titleHeading: eachFileSystemScanData.scan_path,
+                        totalIssue: totalIssues
+                    }
+                })
             }
 
+            setPastScans(pastFileSystemScanDataArray);
+            setIsLoading(false);
         };
 
         getPastScans();
     }, [scannedData]);
+
+    const handleOpenPastScan = async (file_system_id: string) => {
+        setIsLoading(true);
+
+        const pastScan = (await getMyInstancesV2<FileSystemFullInstanceData>({
+            processName: "File System Scan",
+            predefinedFilters: { taskName: "File System" },
+            processVariableFilters: { file_system_id: file_system_id },
+            projections: ["Data.scan_data"],
+        }))[0].data;
+
+        if (pastScan) {
+            setScannedData(pastScan.scan_data);
+        }
+
+        setIsLoading(false);
+    }
 
     const validateSearch = (): boolean => {
         const newErrors: ErrorState = {};
@@ -154,7 +204,7 @@ export default function FileSystemScanningMainTemplate({ fileSystemConfigDetails
                     href: "/scans/fileSystem",
                 }}
             />
-            <div className="">
+            <div className="pb-10">
                 <h2 className="font-bold text-pageheader">File System Scanning</h2>
 
 
@@ -164,6 +214,7 @@ export default function FileSystemScanningMainTemplate({ fileSystemConfigDetails
                             id="probeId"
                             name="probeId"
                             value={selectedProbeId}
+                            disabled={isLoading}
                             className={
                                 errors.probeId
                                     ? "w-full border border-red-500 rounded-md"
@@ -193,7 +244,7 @@ export default function FileSystemScanningMainTemplate({ fileSystemConfigDetails
                             id="filePath"
                             name="filePath"
                             value={filePath}
-                            disabled={!selectedProbeId ? true : false}
+                            disabled={!selectedProbeId || isLoading ? true : false}
                             className={
                                 errors.filePath
                                     ? "w-full border border-red-500"
@@ -265,12 +316,10 @@ export default function FileSystemScanningMainTemplate({ fileSystemConfigDetails
                     .
                 </div>
 
-                {/* <div>
-                    <PastScans pastScans={pastScansForWidget} onOpenPastScan={handleOpenPastScan} />
-                </div> */}
-            </div>
+                {scannedData && <ScanDashboard scanResult={scannedData} />}
 
-            {scannedData && <ScanDashboard scanResult={scannedData} />}
+                <PastScans pastScans={pastScans} loading={isLoading} onOpenPastScan={handleOpenPastScan} />
+            </div>
         </>
     );
 }
