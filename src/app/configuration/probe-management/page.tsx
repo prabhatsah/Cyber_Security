@@ -82,28 +82,8 @@ export default async function probeMainPage() {
                 }}
             />
             <div className="flex-1 flex flex-col relative">
-                <Tabs defaultValue="list" className="">
-                    <TabsList className="">
-                        <TabsTrigger value="list" className="flex items-center gap-2">
-                            <Settings className="w-4 h-4" /> Probe List
-                        </TabsTrigger>
-                        <TabsTrigger value="configs" className="flex items-center gap-2">
-                            <List className="w-4 h-4" /> Probe Configs
-                        </TabsTrigger>
-                    </TabsList>
-                    <TabsContent value="configs" className="p-4">
-                        {/* Replace with your real component */}
-                        <p className="text-gray-700 dark:text-gray-300">
-                            Here you can configure probes.
-                        </p>
-                    </TabsContent>
-                    <TabsContent value="list" className="p-4">
-                        <ProbeTable probes={ProbeData}></ProbeTable>
-                        <p className="text-gray-700 dark:text-gray-300">
-                            Here is the list of probes.
-                        </p>
-                    </TabsContent>
-                </Tabs>
+                <h1 className="mb-2">Probe List</h1>
+                <ProbeTable probes={ProbeData}></ProbeTable>
             </div>
         </>
     );

@@ -40,7 +40,12 @@ export default function ProbeTable({ probes }: { probes: any[] }) {
                 <TableBody>
                     {probes.map((probe) => (
                         <TableRow key={probe.PROBE_ID}>
-                            <TableCell>{probe.PROBE_ID}</TableCell>
+                            <TableCell
+                                onClick={() => navigator.clipboard.writeText(probe.PROBE_ID)}
+                                className="text-blue-500 cursor-pointer"
+                            >
+                                {probe.PROBE_ID}
+                            </TableCell>
                             <TableCell>{probe.PROBE_NAME}</TableCell>
                             <TableCell>{probe.USER_NAME}</TableCell>
                             <TableCell>{probe.ALIVE ? (
