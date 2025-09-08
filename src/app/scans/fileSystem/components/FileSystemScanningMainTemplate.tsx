@@ -65,11 +65,11 @@ export default function FileSystemScanningMainTemplate({ fileSystemConfigDetails
             let scan_path = filePath;
 
             let processId = await mapProcessName({ processName: "File System Scan" });
-            console.log("SUCCESS", processId, scan_path);
+            console.log("SUCCESS", processId, scan_path, selectedProbeId);
 
             await startProcessV2({
                 processId: processId,
-                data: { user_id: user_id, user_login: user_login, file_system_id: file_system_id, scan_path: scan_path },
+                data: { user_id: user_id, probe_id: selectedProbeId, user_login: user_login, file_system_id: file_system_id, scan_path: scan_path },
                 processIdentifierFields: "file_system_id,user_id,user_login"
             })
 
