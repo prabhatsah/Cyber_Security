@@ -253,6 +253,7 @@ export default function FileSystemConfigForm({ isFormModalOpen, onClose, savedDa
         });
         setErrors({});
         setSysInfo(null);
+        setFetchingSystemInfo(false);
         onClose();
     };
 
@@ -279,9 +280,12 @@ export default function FileSystemConfigForm({ isFormModalOpen, onClose, savedDa
         while (true) {
             let configDataAgain: any = await getMyInstancesV2({ processName: "Fetch ip os and hostname", processVariableFilters: { config_id: configId }, projections: ["Data"] });
             console.log("configDataAgain", configDataAgain);
-            setSysInfo(configDataAgain[0].data.sysInfo);
-            if (configDataAgain && configDataAgain[0].data.sysInfo)
+            if (configDataAgain && configDataAgain[0].data.sysInfo) {
+                setSysInfo(configDataAgain[0].data.sysInfo);
+                setFetchingSystemInfo(false);
                 break;
+            }
+
         }
     };
 
