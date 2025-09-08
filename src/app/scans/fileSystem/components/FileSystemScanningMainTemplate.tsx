@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { RenderAppBreadcrumb } from "@/components/app-breadcrumb";
 import ScanDashboard from "./ScanDashboard";
@@ -12,20 +12,110 @@ import { GiElectric } from "react-icons/gi";
 import { getLoggedInUserProfile } from "@/ikon/utils/api/loginService";
 import { getMyInstancesV2, mapProcessName, startProcessV2 } from "@/ikon/utils/api/processRuntimeService";
 import { toast } from "@/lib/toast";
-import PastScans from "@/components/PastScans";
+import PastScans, { PastScanData } from "@/components/PastScans";
+import { getCurrentUserId } from "@/ikon/utils/actions/auth";
+import { getCurrentSoftwareId } from "@/ikon/utils/actions/software";
+import { getUserDashboardPlatformUtilData } from "@/ikon/utils/actions/users";
+import { format } from "date-fns";
 
 interface ErrorState {
     [key: string]: string | Array<string>;
 }
 
-export default function FileSystemScanningMainTemplate({ fileSystemConfigDetails }: { fileSystemConfigDetails: FileSystemConfigData[] }) {
+export default function FileSystemScanningMainTemplate({ fileSystemConfigDetails, fileSystemScanDetails }: {
+    fileSystemConfigDetails: FileSystemConfigData[];
+    fileSystemScanDetails: FileSystemFullInstanceData[];
+}) {
     const [selectedProbeId, setSelectedProbeId] = useState<string>("");
     const [filePath, setFilePath] = useState<string>("");
     const [errors, setErrors] = useState<ErrorState>({});
-    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [isBtnLoading, setIsBtnLoading] = useState<boolean>(false);
     const [scannedData, setScannedData] = useState<any>(null);
+    const [pastScans, setPastScans] = useState<PastScanData[]>([]);
 
     console.log("scannedData", scannedData);
+
+
+    useEffect(() => {
+        const getPastScans = async () => {
+            const presentUserId = await getCurrentUserId();
+            const softwareId = await getCurrentSoftwareId();
+            const pentestAdminGroupDetails = await getUserDashboardPlatformUtilData({ softwareId, isGroupNameWiseUserDetailsMap: true, groupNames: ["Pentest Admin"] });
+            const pentestAdminUsers = Object.keys(pentestAdminGroupDetails["Pentest Admin"].users);
+
+            const fileSystemScanInstances = await getMyInstancesV2<FileSystemFullInstanceData>({
+                processName: "File System Scan",
+                predefinedFilters: { taskName: "File System" },
+                processVariableFilters: pentestAdminUsers.includes(presentUserId) ? null : { created_by: presentUserId },
+                projections: ["Data"],
+            });
+
+            var fileSystemScanDataArray: FileSystemFullInstanceData[] = [];
+            let pastFileSystemScanDataArray: PastScanData[] = [];
+            if (fileSystemScanInstances.length) {
+                fileSystemScanDataArray = fileSystemScanInstances.map(eachInstance => eachInstance.data);
+                pastFileSystemScanDataArray = fileSystemScanDataArray.map(eachFileSystemScanData => {
+                    const results = eachFileSystemScanData?.scan_data?.Results
+                        ? Object.values(eachFileSystemScanData.scan_data.Results)
+                        : [];
+
+                    const noOfCriticalHighIssues = results.reduce((total, eachResult) => {
+                        if (eachResult.Vulnerabilities) {
+                            const vulnerabilities = Object.values(eachResult.Vulnerabilities);
+                            const count = vulnerabilities.filter(vuln =>
+                                vuln.Severity === 'CRITICAL' || vuln.Severity === 'HIGH'
+                            ).length;
+                            return total + count;
+                        }
+                        return total;
+                    }, 0);
+
+                    const totalIssues = results.reduce((total, eachResult) => {
+                        if (eachResult.Vulnerabilities) {
+                            const count = Object.values(eachResult.Vulnerabilities).length;
+                            return total + count;
+                        }
+                        return total;
+                    }, 0);
+
+                    const status = noOfCriticalHighIssues <= (totalIssues / 4) ? "success" : noOfCriticalHighIssues <= (totalIssues / 2) ? "warning" : "critical";
+                    return {
+                        href: eachFileSystemScanData.scan_path,
+                        key: eachFileSystemScanData.file_system_id,
+                        noOfIssue: noOfCriticalHighIssues,
+                        scanOn: eachFileSystemScanData?.scan_data?.CreatedAt ? format(eachFileSystemScanData.scan_data.CreatedAt, "dd-MMM-yyyy hh:mm:ss") : "N/A",
+                        status: status,
+                        title: "File System Scan",
+                        titleHeading: eachFileSystemScanData.scan_path,
+                        totalIssue: totalIssues
+                    }
+                })
+            }
+
+            setPastScans(pastFileSystemScanDataArray);
+            setIsLoading(false);
+        };
+
+        getPastScans();
+    }, [scannedData]);
+
+    const handleOpenPastScan = async (file_system_id: string) => {
+        setIsLoading(true);
+
+        const pastScan = (await getMyInstancesV2<FileSystemFullInstanceData>({
+            processName: "File System Scan",
+            predefinedFilters: { taskName: "File System" },
+            processVariableFilters: { file_system_id: file_system_id },
+            projections: ["Data.scan_data"],
+        }))[0].data;
+
+        if (pastScan) {
+            setScannedData(pastScan.scan_data);
+        }
+
+        setIsLoading(false);
+    }
 
     const validateSearch = (): boolean => {
         const newErrors: ErrorState = {};
@@ -50,10 +140,10 @@ export default function FileSystemScanningMainTemplate({ fileSystemConfigDetails
 
     const handleSearch = async (): Promise<void> => {
         setErrors({});
-        setIsLoading(true);
+        setIsBtnLoading(true);
 
         if (!validateSearch()) {
-            setIsLoading(false);
+            setIsBtnLoading(false);
             return;
         }
 
@@ -82,7 +172,7 @@ export default function FileSystemScanningMainTemplate({ fileSystemConfigDetails
                 if (result && result[0].data.scan_data) {
                     console.log("result[0].data.scan_data", result[0].data);
                     setScannedData(result[0].data.scan_data);
-                    setIsLoading(false);
+                    setIsBtnLoading(false);
                     setErrors({});
                     toast.push("File System Scanned Successfully", "success");
                     break;
@@ -90,7 +180,7 @@ export default function FileSystemScanningMainTemplate({ fileSystemConfigDetails
             }
         }
         catch (err) {
-            setIsLoading(false);
+            setIsBtnLoading(false);
             if (err instanceof Error) {
                 toast.push(err.message, "error");
             } else {
@@ -115,7 +205,7 @@ export default function FileSystemScanningMainTemplate({ fileSystemConfigDetails
                     href: "/scans/fileSystem",
                 }}
             />
-            <div className="">
+            <div className="pb-10">
                 <h2 className="font-bold text-pageheader">File System Scanning</h2>
 
 
@@ -125,6 +215,7 @@ export default function FileSystemScanningMainTemplate({ fileSystemConfigDetails
                             id="probeId"
                             name="probeId"
                             value={selectedProbeId}
+                            disabled={isLoading || isBtnLoading}
                             className={
                                 errors.probeId
                                     ? "w-full border border-red-500 rounded-md"
@@ -154,7 +245,7 @@ export default function FileSystemScanningMainTemplate({ fileSystemConfigDetails
                             id="filePath"
                             name="filePath"
                             value={filePath}
-                            disabled={!selectedProbeId ? true : false}
+                            disabled={!selectedProbeId || isLoading || isBtnLoading}
                             className={
                                 errors.filePath
                                     ? "w-full border border-red-500"
@@ -176,16 +267,16 @@ export default function FileSystemScanningMainTemplate({ fileSystemConfigDetails
                     <div className="py-4">
                         <button
                             onClick={handleSearch}
-                            disabled={isLoading || !selectedProbeId}
+                            disabled={!selectedProbeId || isBtnLoading}
                             className={`flex items-center gap-1 px-3 py-1.5 bg-primary text-white rounded-lg
-                                ${isLoading || !selectedProbeId ? "opacity-50 cursor-not-allowed" : ""}`}
+                                ${!selectedProbeId || isBtnLoading ? "opacity-50 cursor-not-allowed" : ""}`}
                         >
-                            {isLoading ? (
+                            {isBtnLoading ? (
                                 <span className="animate-spin"><LuRefreshCw /></span>
                             ) : (
                                 <GiElectric size={20} style={{ transform: 'rotate(15deg)' }} />
                             )}
-                            {isLoading ? "Scanning..." : "Scan"}
+                            {isBtnLoading ? "Scanning..." : "Scan"}
                         </button>
                     </div>
                 </div>
@@ -226,12 +317,10 @@ export default function FileSystemScanningMainTemplate({ fileSystemConfigDetails
                     .
                 </div>
 
-                {/* <div>
-                    <PastScans pastScans={pastScansForWidget} onOpenPastScan={handleOpenPastScan} />
-                </div> */}
-            </div>
+                {scannedData && <ScanDashboard scanResult={scannedData} />}
 
-            {scannedData && <ScanDashboard scanResult={scannedData} />}
+                <PastScans pastScans={pastScans} loading={isLoading || isBtnLoading} onOpenPastScan={handleOpenPastScan} />
+            </div>
         </>
     );
 }

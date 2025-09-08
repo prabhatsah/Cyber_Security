@@ -4,15 +4,13 @@ import { getCurrentUserId } from "@/ikon/utils/actions/auth";
 import { getCurrentSoftwareId } from "@/ikon/utils/actions/software";
 import { getUserDashboardPlatformUtilData } from "@/ikon/utils/actions/users";
 import { getMyInstancesV2 } from "@/ikon/utils/api/processRuntimeService";
-import { FileSystemConfigData } from "@/app/globalType";
+import { FileSystemConfigData, FileSystemFullInstanceData } from "@/app/globalType";
 
 const fetchPresentUserConfigDetails = async () => {
     const presentUserId = await getCurrentUserId();
     const softwareId = await getCurrentSoftwareId();
     const pentestAdminGroupDetails = await getUserDashboardPlatformUtilData({ softwareId, isGroupNameWiseUserDetailsMap: true, groupNames: ["Pentest Admin"] });
     const pentestAdminUsers = Object.keys(pentestAdminGroupDetails["Pentest Admin"].users);
-
-    console.log("Pentest Admin Users: ", pentestAdminUsers);
 
     const configInstances = await getMyInstancesV2<FileSystemConfigData>({
         processName: "File System Configuration",
@@ -29,9 +27,33 @@ const fetchPresentUserConfigDetails = async () => {
     return configDataArray;
 }
 
+const fetchPresentUserFileSystemScanDetails = async () => {
+    const presentUserId = await getCurrentUserId();
+    const softwareId = await getCurrentSoftwareId();
+    const pentestAdminGroupDetails = await getUserDashboardPlatformUtilData({ softwareId, isGroupNameWiseUserDetailsMap: true, groupNames: ["Pentest Admin"] });
+    const pentestAdminUsers = Object.keys(pentestAdminGroupDetails["Pentest Admin"].users);
+
+    const fileSystemScanInstances = await getMyInstancesV2<FileSystemFullInstanceData>({
+        processName: "File System Scan",
+        predefinedFilters: { taskName: "File System" },
+        processVariableFilters: pentestAdminUsers.includes(presentUserId) ? null : { created_by: presentUserId },
+        projections: ["Data"],
+    });
+
+    let fileSystemScanDataArray: FileSystemFullInstanceData[] = [];
+    if (fileSystemScanInstances.length) {
+        fileSystemScanDataArray = fileSystemScanInstances.map(eachInstance => eachInstance.data);
+    }
+
+    return fileSystemScanDataArray;
+}
+
 export default async function FileSystemScanningDashboard() {
     const presentUserConfigDetails: FileSystemConfigData[] = await fetchPresentUserConfigDetails();
     console.log("Fetched Config Details: ", presentUserConfigDetails);
+
+    const presentUserFileSystemScanDetails: FileSystemFullInstanceData[] = await fetchPresentUserFileSystemScanDetails();
+    console.log("Fetched File System Scan Details: ", presentUserFileSystemScanDetails);
 
     return (
         <>
@@ -50,7 +72,10 @@ export default async function FileSystemScanningDashboard() {
                 }}
             />
 
-            <FileSystemScanningMainTemplate fileSystemConfigDetails={presentUserConfigDetails} />
+            <FileSystemScanningMainTemplate
+                fileSystemConfigDetails={presentUserConfigDetails}
+                fileSystemScanDetails={presentUserFileSystemScanDetails}
+            />
         </>
     );
 }

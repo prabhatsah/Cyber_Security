@@ -2643,17 +2643,17 @@ scrollbar-thumb:hover {
   animation-delay: 0.4s;
 }
 
-.tab-loader {
+.loader-without-backdrop {
   transform: rotateZ(45deg);
   perspective: 1000px;
   border-radius: 50%;
-  width: 20px;
-  height: 20px;
+  width: 50px;
+  height: 50px;
   color: #fff;
 }
 
-.tab-loader:before,
-.tab-loader:after {
+.loader-without-backdrop:before,
+.loader-without-backdrop:after {
   content: "";
   display: block;
   position: absolute;
@@ -2666,7 +2666,7 @@ scrollbar-thumb:hover {
   animation: 1s futuristic-loader-spin linear infinite;
 }
 
-.tab-loader:after {
+.loader-without-backdrop:after {
   color: #4f46e5;
   transform: rotateY(70deg);
   animation-delay: 0.4s;

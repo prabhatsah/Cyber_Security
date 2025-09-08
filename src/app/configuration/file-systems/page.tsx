@@ -31,26 +31,11 @@ const fetchPresentUserConfigDetails = async () => {
     return configDataArray;
 }
 
-const fetchProbeList = async () => {
-    const probeManagementInstance = await getMyInstancesV2({
-        processName: "Probe Management Process",
-        predefinedFilters: { taskName: "View Probe" },
-        projections: ["Data"],
-    });
-
-    const allProbesDetails = await getDataForTaskId<{ "probeDetails": ProbeDetails[] }>({
-        taskId: probeManagementInstance[0].taskId
-    });
-
-    return allProbesDetails ? allProbesDetails.probeDetails : [];
-}
-
 export default async function FileSystemConfig() {
     const presentUserConfigDetails: FileSystemConfigData[] = await fetchPresentUserConfigDetails();
     console.log("Fetched Config Details: ", presentUserConfigDetails);
 
     const userIdNameMap: { value: string; label: string }[] = await createUserMap();
-    const allProbesArray: ProbeDetails[] = await fetchProbeList();
 
     return (
         <>

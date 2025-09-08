@@ -24,6 +24,7 @@ import { getActiveAccountId } from "@/ikon/utils/actions/account"
 import { getCurrentUserId } from "@/ikon/utils/actions/auth"
 import { config } from "googleapis/build/src/apis/config"
 import ModalLoader from "@/components/ModalLoader"
+import { getUserDashboardPlatformUtilData } from "@/ikon/utils/actions/users"
 
 interface FileSystemConfigFormProps {
     isFormModalOpen: boolean;
@@ -52,7 +53,30 @@ export default function FileSystemConfigForm({ isFormModalOpen, onClose, savedDa
 
     useEffect(() => {
         const loadProbes = async () => {
-            const probes = await fetchAllProbes();
+            const presentUserId = await getCurrentUserId();
+            const softwareId = await getCurrentSoftwareId();
+            const pentestAdminGroupDetails = await getUserDashboardPlatformUtilData({
+                softwareId,
+                isGroupNameWiseUserDetailsMap: true,
+                groupNames: ["Pentest Admin"]
+            });
+            const pentestAdminUsers = Object.keys(pentestAdminGroupDetails["Pentest Admin"].users);
+
+            const configInstances = await getMyInstancesV2<FileSystemConfigData>({
+                processName: "File System Configuration",
+                predefinedFilters: { taskName: "View Config Details" },
+                processVariableFilters: pentestAdminUsers.includes(presentUserId) ? null : { created_by: presentUserId },
+                projections: ["Data.probe_id"],
+            });
+
+            let previouslyUsedProbeIdArray: string[] = [];
+            if (configInstances.length) {
+                previouslyUsedProbeIdArray = configInstances.map(eachInstance => eachInstance.data.probe_id);
+            }
+
+            let probes = await fetchAllProbes();
+            probes = probes.filter(eachProbe => !previouslyUsedProbeIdArray.includes(eachProbe.PROBE_ID));
+            console.log("All Filtered Probes: ", probes);
             setAllProbesArray(probes);
         };
 
@@ -253,6 +277,7 @@ export default function FileSystemConfigForm({ isFormModalOpen, onClose, savedDa
         });
         setErrors({});
         setSysInfo(null);
+        setFetchingSystemInfo(false);
         onClose();
     };
 
@@ -279,9 +304,12 @@ export default function FileSystemConfigForm({ isFormModalOpen, onClose, savedDa
         while (true) {
             let configDataAgain: any = await getMyInstancesV2({ processName: "Fetch ip os and hostname", processVariableFilters: { config_id: configId }, projections: ["Data"] });
             console.log("configDataAgain", configDataAgain);
-            setSysInfo(configDataAgain[0].data.sysInfo);
-            if (configDataAgain && configDataAgain[0].data.sysInfo)
+            if (configDataAgain && configDataAgain[0].data.sysInfo) {
+                setSysInfo(configDataAgain[0].data.sysInfo);
+                setFetchingSystemInfo(false);
                 break;
+            }
+
         }
     };
 
