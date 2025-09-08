@@ -5,8 +5,8 @@ import { Card } from "@tremor/react";
 import { AlertCircle, CheckCircle2, Eye, ArrowRight, User, Calendar, Info } from 'lucide-react';
 import { getProfileData } from '@/ikon/utils/actions/auth';
 import { Badge } from './ui/badge';
-import GlobalLoader from './GlobalLoader';
 import FullPageLoading from './FullPageLoading';
+import LoaderWithoutBackdrop from './LoaderWithoutBackdrop';
 
 // const data = [
 //     {
@@ -113,7 +113,7 @@ export default function PastScans({ pastScans, loading, onOpenPastScan }: {
         <div className="flex flex-1 flex-col">
             <h2 className=" font-bold text-widget-title text-widgetHeader mt-4">Scan History</h2>
             {
-                loading ? <div><FullPageLoading /></div> :
+                loading ? <LoaderWithoutBackdrop /> :
                     pastScans.length ? <dl className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 mt-4">
                         {
                             pastScans.map((item, index) => {

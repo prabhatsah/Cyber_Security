@@ -30,6 +30,7 @@ export default function FileSystemScanningMainTemplate({ fileSystemConfigDetails
     const [filePath, setFilePath] = useState<string>("");
     const [errors, setErrors] = useState<ErrorState>({});
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [isBtnLoading, setIsBtnLoading] = useState<boolean>(false);
     const [scannedData, setScannedData] = useState<any>(null);
     const [pastScans, setPastScans] = useState<PastScanData[]>([]);
 
@@ -83,7 +84,7 @@ export default function FileSystemScanningMainTemplate({ fileSystemConfigDetails
                         href: eachFileSystemScanData.scan_path,
                         key: eachFileSystemScanData.file_system_id,
                         noOfIssue: noOfCriticalHighIssues,
-                        scanOn: format(new Date(), "dd-MMM-yyyy hh:mm:ss"),
+                        scanOn: eachFileSystemScanData?.scan_data?.CreatedAt ? format(eachFileSystemScanData.scan_data.CreatedAt, "dd-MMM-yyyy hh:mm:ss") : "N/A",
                         status: status,
                         title: "File System Scan",
                         titleHeading: eachFileSystemScanData.scan_path,
@@ -139,10 +140,10 @@ export default function FileSystemScanningMainTemplate({ fileSystemConfigDetails
 
     const handleSearch = async (): Promise<void> => {
         setErrors({});
-        setIsLoading(true);
+        setIsBtnLoading(true);
 
         if (!validateSearch()) {
-            setIsLoading(false);
+            setIsBtnLoading(false);
             return;
         }
 
@@ -171,7 +172,7 @@ export default function FileSystemScanningMainTemplate({ fileSystemConfigDetails
                 if (result && result[0].data.scan_data) {
                     console.log("result[0].data.scan_data", result[0].data);
                     setScannedData(result[0].data.scan_data);
-                    setIsLoading(false);
+                    setIsBtnLoading(false);
                     setErrors({});
                     toast.push("File System Scanned Successfully", "success");
                     break;
@@ -179,7 +180,7 @@ export default function FileSystemScanningMainTemplate({ fileSystemConfigDetails
             }
         }
         catch (err) {
-            setIsLoading(false);
+            setIsBtnLoading(false);
             if (err instanceof Error) {
                 toast.push(err.message, "error");
             } else {
@@ -214,7 +215,7 @@ export default function FileSystemScanningMainTemplate({ fileSystemConfigDetails
                             id="probeId"
                             name="probeId"
                             value={selectedProbeId}
-                            disabled={isLoading}
+                            disabled={isLoading || isBtnLoading}
                             className={
                                 errors.probeId
                                     ? "w-full border border-red-500 rounded-md"
@@ -244,7 +245,7 @@ export default function FileSystemScanningMainTemplate({ fileSystemConfigDetails
                             id="filePath"
                             name="filePath"
                             value={filePath}
-                            disabled={!selectedProbeId || isLoading ? true : false}
+                            disabled={!selectedProbeId || isLoading || isBtnLoading}
                             className={
                                 errors.filePath
                                     ? "w-full border border-red-500"
@@ -266,16 +267,16 @@ export default function FileSystemScanningMainTemplate({ fileSystemConfigDetails
                     <div className="py-4">
                         <button
                             onClick={handleSearch}
-                            disabled={isLoading || !selectedProbeId}
+                            disabled={!selectedProbeId || isBtnLoading}
                             className={`flex items-center gap-1 px-3 py-1.5 bg-primary text-white rounded-lg
-                                ${isLoading || !selectedProbeId ? "opacity-50 cursor-not-allowed" : ""}`}
+                                ${!selectedProbeId || isBtnLoading ? "opacity-50 cursor-not-allowed" : ""}`}
                         >
-                            {isLoading ? (
+                            {isBtnLoading ? (
                                 <span className="animate-spin"><LuRefreshCw /></span>
                             ) : (
                                 <GiElectric size={20} style={{ transform: 'rotate(15deg)' }} />
                             )}
-                            {isLoading ? "Scanning..." : "Scan"}
+                            {isBtnLoading ? "Scanning..." : "Scan"}
                         </button>
                     </div>
                 </div>
@@ -318,7 +319,7 @@ export default function FileSystemScanningMainTemplate({ fileSystemConfigDetails
 
                 {scannedData && <ScanDashboard scanResult={scannedData} />}
 
-                <PastScans pastScans={pastScans} loading={isLoading} onOpenPastScan={handleOpenPastScan} />
+                <PastScans pastScans={pastScans} loading={isLoading || isBtnLoading} onOpenPastScan={handleOpenPastScan} />
             </div>
         </>
     );
