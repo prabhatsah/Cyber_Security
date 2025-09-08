@@ -68,7 +68,7 @@ const statusConfig = {
     },
 };
 
-interface PastScans {
+export interface PastScanData {
     key: string;
     titleHeading: string;
     title: string;
@@ -83,8 +83,8 @@ function cx(...classes: (string | boolean | undefined | null)[]) {
     return classes.filter(Boolean).join(' ');
 }
 
-export default function Example({ pastScans, loading, onOpenPastScan }: {
-    pastScans: PastScans[];
+export default function PastScans({ pastScans, loading, onOpenPastScan }: {
+    pastScans: PastScanData[];
     loading: boolean;
     onOpenPastScan: (key: string) => void;
 }) {

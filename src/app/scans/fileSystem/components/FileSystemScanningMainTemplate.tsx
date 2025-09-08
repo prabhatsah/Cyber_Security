@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { RenderAppBreadcrumb } from "@/components/app-breadcrumb";
 import ScanDashboard from "./ScanDashboard";
@@ -12,20 +12,59 @@ import { GiElectric } from "react-icons/gi";
 import { getLoggedInUserProfile } from "@/ikon/utils/api/loginService";
 import { getMyInstancesV2, mapProcessName, startProcessV2 } from "@/ikon/utils/api/processRuntimeService";
 import { toast } from "@/lib/toast";
-import PastScans from "@/components/PastScans";
+import PastScans, { PastScanData } from "@/components/PastScans";
+import { getCurrentUserId } from "@/ikon/utils/actions/auth";
+import { getCurrentSoftwareId } from "@/ikon/utils/actions/software";
+import { getUserDashboardPlatformUtilData } from "@/ikon/utils/actions/users";
 
 interface ErrorState {
     [key: string]: string | Array<string>;
 }
 
-export default function FileSystemScanningMainTemplate({ fileSystemConfigDetails }: { fileSystemConfigDetails: FileSystemConfigData[] }) {
+export default function FileSystemScanningMainTemplate({ fileSystemConfigDetails, fileSystemScanDetails }: {
+    fileSystemConfigDetails: FileSystemConfigData[];
+    fileSystemScanDetails: FileSystemFullInstanceData[];
+}) {
     const [selectedProbeId, setSelectedProbeId] = useState<string>("");
     const [filePath, setFilePath] = useState<string>("");
     const [errors, setErrors] = useState<ErrorState>({});
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [scannedData, setScannedData] = useState<any>(null);
+    const [pastScans, setPastScans] = useState<PastScanData[]>([]);
 
     console.log("scannedData", scannedData);
+
+
+    useEffect(() => {
+        const getPastScans = async () => {
+            const presentUserId = await getCurrentUserId();
+            const softwareId = await getCurrentSoftwareId();
+            const pentestAdminGroupDetails = await getUserDashboardPlatformUtilData({ softwareId, isGroupNameWiseUserDetailsMap: true, groupNames: ["Pentest Admin"] });
+            const pentestAdminUsers = Object.keys(pentestAdminGroupDetails["Pentest Admin"].users);
+
+            const fileSystemScanInstances = await getMyInstancesV2<FileSystemFullInstanceData>({
+                processName: "File System Scan",
+                predefinedFilters: { taskName: "File System" },
+                processVariableFilters: pentestAdminUsers.includes(presentUserId) ? null : { created_by: presentUserId },
+                projections: ["Data"],
+            });
+
+            let pastFileSystemScanDataArray: PastScanData[] = [];
+            if (fileSystemScanInstances.length) {
+                const fileSystemScanDataArray = fileSystemScanInstances.map(eachInstance => eachInstance.data);
+                // pastFileSystemScanDataArray = fileSystemScanDataArray.map(eachFileSystemScanData => {
+                //     return {
+                //         href: eachFileSystemScanData.scan_path,
+                //         key: eachFileSystemScanData.file_system_id,
+                //         noOfIssue: 
+                //     }
+                // })
+            }
+
+        };
+
+        getPastScans();
+    }, [scannedData]);
 
     const validateSearch = (): boolean => {
         const newErrors: ErrorState = {};
