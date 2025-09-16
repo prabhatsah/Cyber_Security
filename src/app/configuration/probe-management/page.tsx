@@ -1,11 +1,12 @@
 import { RenderAppBreadcrumb } from "@/components/app-breadcrumb";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Settings, List } from "lucide-react";
+import { Settings, List, PlusIcon, FilterIcon } from "lucide-react";
 import { getActiveAccountId } from "@/ikon/utils/actions/account";
 import { getCurrentSoftwareId } from "@/ikon/utils/actions/software";
 import { getDataForTaskId, getMyInstancesV2 } from "@/ikon/utils/api/processRuntimeService";
 import ProbeTable from "./components/probeList";
 import moment from "moment";
+import { Button } from "@/components/Button";
 
 type ProbeData = {
     probeDetails: any[]
@@ -82,7 +83,18 @@ export default async function probeMainPage() {
                 }}
             />
             <div className="flex-1 flex flex-col relative">
-                <h1 className="mb-2">Probe List</h1>
+
+                <div className="flex items-center justify-between px-4">
+                    <h1 className="mb-2">Probe List</h1>
+                    <div className="flex gap-2">
+                        <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+                            <PlusIcon className="w-4 h-4 " />
+                        </Button>
+                        <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+                            <FilterIcon className="w-4 h-4 " />
+                        </Button>
+                    </div>
+                </div>
                 <ProbeTable probes={ProbeData}></ProbeTable>
             </div>
         </>
