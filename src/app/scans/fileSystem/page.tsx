@@ -4,7 +4,7 @@ import { getCurrentUserId } from "@/ikon/utils/actions/auth";
 import { getCurrentSoftwareId } from "@/ikon/utils/actions/software";
 import { getUserDashboardPlatformUtilData } from "@/ikon/utils/actions/users";
 import { getMyInstancesV2 } from "@/ikon/utils/api/processRuntimeService";
-import { FileSystemConfigData, FileSystemFullInstanceData } from "@/app/globalType";
+import { FileSystemConfigData, FileSystemFullInstanceData } from "@/app/FileSystemType";
 
 const fetchPresentUserConfigDetails = async () => {
     const presentUserId = await getCurrentUserId();
@@ -52,8 +52,8 @@ export default async function FileSystemScanningDashboard() {
     const presentUserConfigDetails: FileSystemConfigData[] = await fetchPresentUserConfigDetails();
     console.log("Fetched Config Details: ", presentUserConfigDetails);
 
-    const presentUserFileSystemScanDetails: FileSystemFullInstanceData[] = await fetchPresentUserFileSystemScanDetails();
-    console.log("Fetched File System Scan Details: ", presentUserFileSystemScanDetails);
+    // const presentUserFileSystemScanDetails: FileSystemFullInstanceData[] = await fetchPresentUserFileSystemScanDetails();
+    // console.log("Fetched File System Scan Details: ", presentUserFileSystemScanDetails);
 
     return (
         <>
@@ -72,10 +72,7 @@ export default async function FileSystemScanningDashboard() {
                 }}
             />
 
-            <FileSystemScanningMainTemplate
-                fileSystemConfigDetails={presentUserConfigDetails}
-                fileSystemScanDetails={presentUserFileSystemScanDetails}
-            />
+            <FileSystemScanningMainTemplate fileSystemConfigDetails={presentUserConfigDetails} />
         </>
     );
 }

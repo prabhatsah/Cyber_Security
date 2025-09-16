@@ -6,7 +6,7 @@ import { RenderAppBreadcrumb } from "@/components/app-breadcrumb";
 import ScanDashboard from "./ScanDashboard";
 import { Select, SelectItem } from "@tremor/react"
 import { Input } from "@/components/Input"
-import { FileSystemConfigData, FileSystemFullInstanceData } from "@/app/globalType";
+import { FileSystemConfigData, FileSystemFullInstanceData } from "@/app/FileSystemType";
 import { LuRefreshCw } from "react-icons/lu";
 import { GiElectric } from "react-icons/gi";
 import { getLoggedInUserProfile } from "@/ikon/utils/api/loginService";
@@ -22,10 +22,7 @@ interface ErrorState {
     [key: string]: string | Array<string>;
 }
 
-export default function FileSystemScanningMainTemplate({ fileSystemConfigDetails, fileSystemScanDetails }: {
-    fileSystemConfigDetails: FileSystemConfigData[];
-    fileSystemScanDetails: FileSystemFullInstanceData[];
-}) {
+export default function FileSystemScanningMainTemplate({ fileSystemConfigDetails }: { fileSystemConfigDetails: FileSystemConfigData[]; }) {
     const [selectedProbeId, setSelectedProbeId] = useState<string>("");
     const [filePath, setFilePath] = useState<string>("");
     const [errors, setErrors] = useState<ErrorState>({});
@@ -79,7 +76,8 @@ export default function FileSystemScanningMainTemplate({ fileSystemConfigDetails
                         return total;
                     }, 0);
 
-                    const status = noOfCriticalHighIssues <= (totalIssues / 4) ? "success" : noOfCriticalHighIssues <= (totalIssues / 2) ? "warning" : "critical";
+                    const status = totalIssues === 0 ? "unclear" : noOfCriticalHighIssues <= (totalIssues / 4) ? "success" :
+                        noOfCriticalHighIssues <= (totalIssues / 2) ? "warning" : "critical";
                     return {
                         href: eachFileSystemScanData.scan_path,
                         key: eachFileSystemScanData.file_system_id,
@@ -88,7 +86,8 @@ export default function FileSystemScanningMainTemplate({ fileSystemConfigDetails
                         status: status,
                         title: "File System Scan",
                         titleHeading: eachFileSystemScanData.scan_path,
-                        totalIssue: totalIssues
+                        totalIssue: totalIssues,
+                        userId: eachFileSystemScanData.user_id,
                     }
                 })
             }
@@ -319,7 +318,7 @@ export default function FileSystemScanningMainTemplate({ fileSystemConfigDetails
 
                 {scannedData && <ScanDashboard scanResult={scannedData} />}
 
-                <PastScans pastScans={pastScans} loading={isLoading || isBtnLoading} onOpenPastScan={handleOpenPastScan} />
+                <PastScans pastScans={pastScans} loading={pastScans.length === 0 && (isLoading || isBtnLoading)} onOpenPastScan={handleOpenPastScan} />
             </div>
         </>
     );

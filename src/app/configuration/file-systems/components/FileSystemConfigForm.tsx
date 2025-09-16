@@ -1,30 +1,22 @@
 "use client"
 
 import type React from "react"
-import { ChangeEvent, useEffect, useMemo, useState } from "react"
+import { ChangeEvent, useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/Input"
 import { Label } from "@/components/ui/label"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Plus, Trash2, Info, X } from "lucide-react"
+import { X } from "lucide-react"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { Dialog, DialogPanel, Select, SelectItem, Textarea } from "@tremor/react"
 import IpInput from "@/components/IpInput"
-import CidrInput from "@/components/CidrInput"
-import { FileSystemConfigData, ProbeDetails } from "@/app/globalType"
-import { fetchAllProbes } from "./FetchAllProbes"
+import { FileSystemConfigData } from "@/app/FileSystemType"
 import GlobalLoader from "@/components/GlobalLoader"
 import { getMyInstancesV2, invokeAction, mapProcessName, startProcessV2 } from "@/ikon/utils/api/processRuntimeService"
 import { getLoggedInUserProfile } from "@/ikon/utils/api/loginService"
-import { UUID } from "crypto"
 import { toast } from "@/lib/toast"
-import { getCurrentSoftwareId } from "@/ikon/utils/actions/software"
-import { getActiveAccountId } from "@/ikon/utils/actions/account"
-import { getCurrentUserId } from "@/ikon/utils/actions/auth"
-import { config } from "googleapis/build/src/apis/config"
 import ModalLoader from "@/components/ModalLoader"
-import { getUserDashboardPlatformUtilData } from "@/ikon/utils/actions/users"
+import { ProbeDetails } from "@/app/globalType"
+import { fetchAllProbes } from "@/app/utils/FetchAllProbes"
 
 interface FileSystemConfigFormProps {
     isFormModalOpen: boolean;
@@ -53,19 +45,9 @@ export default function FileSystemConfigForm({ isFormModalOpen, onClose, savedDa
 
     useEffect(() => {
         const loadProbes = async () => {
-            const presentUserId = await getCurrentUserId();
-            const softwareId = await getCurrentSoftwareId();
-            const pentestAdminGroupDetails = await getUserDashboardPlatformUtilData({
-                softwareId,
-                isGroupNameWiseUserDetailsMap: true,
-                groupNames: ["Pentest Admin"]
-            });
-            const pentestAdminUsers = Object.keys(pentestAdminGroupDetails["Pentest Admin"].users);
-
             const configInstances = await getMyInstancesV2<FileSystemConfigData>({
                 processName: "File System Configuration",
                 predefinedFilters: { taskName: "View Config Details" },
-                processVariableFilters: pentestAdminUsers.includes(presentUserId) ? null : { created_by: presentUserId },
                 projections: ["Data.probe_id"],
             });
 
@@ -75,13 +57,13 @@ export default function FileSystemConfigForm({ isFormModalOpen, onClose, savedDa
             }
 
             let probes = await fetchAllProbes();
-            probes = probes.filter(eachProbe => !previouslyUsedProbeIdArray.includes(eachProbe.PROBE_ID));
+            probes = probes.filter(eachProbe => !previouslyUsedProbeIdArray.includes(eachProbe.PROBE_ID) || (savedDataToBePopulated?.probe_id === eachProbe.PROBE_ID));
             console.log("All Filtered Probes: ", probes);
             setAllProbesArray(probes);
         };
 
         loadProbes();
-    }, []);
+    }, [isFormModalOpen]);
 
     // Update form data when sysInfo changes
     useEffect(() => {
@@ -410,8 +392,9 @@ export default function FileSystemConfigForm({ isFormModalOpen, onClose, savedDa
                                         type="button"
                                         variant="outline"
                                         onClick={fetchSysInfo}
-                                        disabled={fetchingSystemInfo || !formData.probe_id}
-                                        className="border-slate-600 text-slate-300 hover:text-white bg-transparent"
+                                        disabled={fetchingSystemInfo || !formData.probe_id || savedDataToBePopulated != undefined}
+                                        className={`border-slate-600 text-slate-300 hover:text-white bg-transparent 
+                                            ${(fetchingSystemInfo || !formData.probe_id || savedDataToBePopulated != undefined) ? "cursor-not-allowed" : "cursor-pointer"}`}
                                     >
                                         {fetchingSystemInfo ? "Fetching..." : "Fetch System Info"}
                                     </Button>
