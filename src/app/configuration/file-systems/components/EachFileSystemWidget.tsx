@@ -7,7 +7,7 @@ import { format } from "date-fns"
 import { Edit, MoreHorizontal, Trash2 } from "lucide-react"
 import { useState } from "react"
 import FileSystemConfigForm from "./FileSystemConfigForm"
-import { FileSystemConfigData } from "@/app/globalType"
+import { FileSystemConfigData } from "@/app/FileSystemType"
 import { deleteProcessInstance, getMyInstancesV2 } from "@/ikon/utils/api/processRuntimeService";
 import { toast } from "@/lib/toast";
 import GlobalLoader from "@/components/GlobalLoader";
@@ -85,7 +85,9 @@ export default function EachFileSystemWidget({ fileSystemConfigDetails, userIdNa
                                         .join("")
                                         .slice(0, 2)}
                                 </div>
-                                <CardTitle title={fileSystemConfigDetails.config_name} className="text-white text-base truncate">{checkTitleStr(fileSystemConfigDetails.config_name)}</CardTitle>
+                                <CardTitle title={fileSystemConfigDetails.config_name} className="text-white text-base truncate">
+                                    {checkTitleStr(fileSystemConfigDetails.config_name)}
+                                </CardTitle>
                             </div>
                         </div>
                         <DropdownMenu>
@@ -111,13 +113,17 @@ export default function EachFileSystemWidget({ fileSystemConfigDetails, userIdNa
                 </CardHeader>
                 <CardContent className="space-y-3">
                     <div className="grid grid-cols-3 gap-2 text-sm">
-                        <div className="col-span-2">
+                        {/* <div className="col-span-2">
                             <p className="text-slate-400">Probe Id</p>
-                            <p className="text-white font-medium truncate overflow-hidden whitespace-nowrap">{fileSystemConfigDetails.probe_id}</p>
-                        </div>
-                        <div>
+                            <p title={fileSystemConfigDetails.probe_id} className="text-white font-medium truncate overflow-hidden whitespace-nowrap">
+                                {fileSystemConfigDetails.probe_id}
+                            </p>
+                        </div> */}
+                        <div className="col-span-3">
                             <p className="text-slate-400">Probe Name</p>
-                            <p className="text-white font-medium truncate overflow-hidden whitespace-nowrap">{fileSystemConfigDetails.probe_name}</p>
+                            <p title={fileSystemConfigDetails.probe_name} className="text-white font-medium truncate overflow-hidden whitespace-nowrap">
+                                {fileSystemConfigDetails.probe_name}
+                            </p>
                         </div>
                     </div>
 

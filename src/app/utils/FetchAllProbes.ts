@@ -1,8 +1,8 @@
-import { ProbeDetails } from "@/app/globalType";
 import {
   getDataForTaskId,
   getMyInstancesV2,
 } from "@/ikon/utils/api/processRuntimeService";
+import { ProbeDetails } from "../globalType";
 
 export async function fetchAllProbes() {
   const probeManagementInstance = await getMyInstancesV2({

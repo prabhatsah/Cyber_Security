@@ -3,7 +3,7 @@ import NetworkPentestWidget from "./components/NetworkPentestWidget";
 import { getLoggedInUserProfile } from "@/ikon/utils/api/loginService";
 import { fetchData } from "@/utils/api";
 import NoSavedPentestTemplate from "./components/NoSavedPentestTemplate";
-import { NetworkPenTestWithoutScanModified } from "./components/type";
+import { NetworkPenTestWithoutScanModified } from "../../NetworkPentestType";
 // import AddPentestBtnWithFormModal from "./components/AddPentestBtnWithFormModal";
 
 
@@ -14,7 +14,7 @@ async function fetchLoggedInUserPentestData() {
     console.log(userId);
 
 
-    const fetchedData = await fetchData('pentest_data', 'last_scan_on', [{table: "user_membership" ,  column: 'type', value: 'network' }], null,
+    const fetchedData = await fetchData('pentest_data', 'last_scan_on', [{ table: "user_membership", column: 'type', value: 'network' }], null,
         "pentest_data.pentestid, pentest_data.data->'basicDetails' as basicdetails, pentest_data.last_scan_on");
 
     return fetchedData;

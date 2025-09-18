@@ -1,6 +1,6 @@
 import { RenderAppBreadcrumb } from "@/components/app-breadcrumb";
 import { getDataForTaskId, getMyInstancesV2 } from "@/ikon/utils/api/processRuntimeService";
-import { FileSystemConfigData, ProbeDetails } from "@/app/globalType";
+import { FileSystemConfigData } from "@/app/FileSystemType";
 import AddFileSystemBtnWithFormModal from "./components/AddFileSystemBtnWithFormModal";
 import EachFileSystemWidget from "./components/EachFileSystemWidget";
 import { createUserMap } from "../../utils/UserDetailsUtils";

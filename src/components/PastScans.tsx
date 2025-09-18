@@ -7,6 +7,7 @@ import { getProfileData } from '@/ikon/utils/actions/auth';
 import { Badge } from './ui/badge';
 import FullPageLoading from './FullPageLoading';
 import LoaderWithoutBackdrop from './LoaderWithoutBackdrop';
+import { createUserMap } from '@/app/utils/UserDetailsUtils';
 
 // const data = [
 //     {
@@ -77,6 +78,7 @@ export interface PastScanData {
     status: string; // assuming these possible statuses
     scanOn: string; // if you want, you can make it Date later
     href: string;
+    userId?: string;
 };
 
 function cx(...classes: (string | boolean | undefined | null)[]) {
@@ -89,8 +91,18 @@ export default function PastScans({ pastScans, loading, onOpenPastScan }: {
     onOpenPastScan: (key: string) => void;
 }) {
 
+    const [userIdNameMap, setUserIdNameMap] = useState<Array<{ value: string; label: string }>>([]);
     const [profileData, setProfileData] = useState<any>();
-    const [openedScan, setOpenedScan] = useState<string>("")
+    const [openedScan, setOpenedScan] = useState<string>("");
+
+    useEffect(() => {
+        const fetchUserIdNameMap = async () => {
+            const userIdNameMap: { value: string; label: string }[] = await createUserMap();
+            setUserIdNameMap(userIdNameMap);
+        }
+
+        fetchUserIdNameMap();
+    }, []);
 
     useEffect(() => {
         const fetchUserProfileData = async () => {
@@ -161,7 +173,9 @@ export default function PastScans({ pastScans, loading, onOpenPastScan }: {
                                             <div className="flex items-center justify-between text-sm text-widget-secondaryDesc">
                                                 <div className="flex items-center space-x-2">
                                                     <User className="h-4 w-4" />
-                                                    <span>{profileData.USER_NAME}</span>
+                                                    <span>
+                                                        {item.userId ? userIdNameMap.find((user) => user.value === item.userId)?.label : profileData.USER_NAME}
+                                                    </span>
                                                 </div>
                                                 <div className="flex items-center space-x-2">
                                                     <Calendar className="h-4 w-4" />
