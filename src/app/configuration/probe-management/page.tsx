@@ -8,7 +8,6 @@ import ProbeTable from "./components/probeList";
 import moment from "moment";
 import { Button } from "@/components/Button";
 
-import { Button } from "@/components/Button";
 type ProbeData = {
     probeDetails: any[]
 }
