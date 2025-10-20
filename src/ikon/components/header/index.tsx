@@ -4,7 +4,7 @@ import AppBreadcrumb from '../app-breadcrumb'
 import TopMenuUser from '@/ikon/components/top-menu-user'
 import { Bot, LayoutGrid } from 'lucide-react'
 import { IconButtonWithTooltip } from '../buttons'
-import { SidebarTrigger } from '@/shadcn/ui/sidebar'
+import { SidebarTrigger } from '@/components/ui/sidebar'
 function Header() {
     return (
         <header className="sticky top-0 flex shrink-0 items-center gap-2 border-b bg-secondary text-secondary-foreground px-2 lg:px-4 py-2">

@@ -1,6 +1,6 @@
 import { BadgeCheck, CreditCard, LogOut } from 'lucide-react'
 import Link from 'next/link'
-import { DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from '@/shadcn/ui/dropdown-menu';
+import { DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import MenuUser from '@/ikon/components/menu-user';
 import { signOut } from '@/ikon/utils/actions/auth';
 

@@ -3,13 +3,13 @@ import React, { createRef, useEffect, useState } from "react";
 
 import { Copy } from "lucide-react";
 
-import { Button } from "@/shadcn/ui/ui/button";
+
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/shadcn/ui/ui/dialog";
+} from "@/components/ui/dialog";
 import CropperImg from "./components/cropperImg";
 import ImageForm from "./components/imageUploadForm";
 import NewImageForm from "./components/newImageUploadForm";

@@ -1,7 +1,7 @@
-import { cn } from '@/shadcn/lib/utils'
-import { Button } from '@/shadcn/ui/button'
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/shadcn/ui/command'
-import { Popover, PopoverContent, PopoverTrigger } from '@/shadcn/ui/popover'
+import { cn } from '@/components/lib/utils'
+import { Button } from '@/components/ui/button'
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Check, ChevronsUpDown } from 'lucide-react'
 import { useState } from 'react'
 import { countries } from 'countries-list'
@@ -56,7 +56,7 @@ function PhoneInput({ className, ...props }: any) {
                                             setCountryCode(code)
                                             setOpen(false)
                                         }}
-                                        //className={(value == phone.toString()) ? "bg-accent" : ""}
+                                    //className={(value == phone.toString()) ? "bg-accent" : ""}
                                     >
                                         <Flag code={code} /> {country.name} +{phone}
 

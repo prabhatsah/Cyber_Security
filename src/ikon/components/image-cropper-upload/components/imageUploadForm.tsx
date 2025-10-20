@@ -14,9 +14,9 @@ import {
   RotateCcw,
   Upload,
 } from "lucide-react";
-import { Label } from "@/shadcn/ui/ui/label";
-import { Input } from "@/shadcn/ui/ui/input";
-import { Button } from "@/shadcn/ui/ui/button";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import CropperImg from "./cropperImg";
 // import CropperImg from "../"
 

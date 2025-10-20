@@ -3,8 +3,8 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from "@/shadcn/ui/dropdown-menu";
-import { SidebarMenuButton } from "@/shadcn/ui/sidebar";
+} from "@/components/ui/dropdown-menu";
+import { SidebarMenuButton } from "@/components/ui/sidebar";
 import { ChevronsUpDown } from "lucide-react";
 import UserDropdownMenu from "@/ikon/components/user-dropdown-menu";
 

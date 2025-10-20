@@ -7,18 +7,19 @@ import {
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "@/shadcn/ui/tabs";
+} from "@/components/ui/tabs";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/shadcn/ui/dropdown-menu";
+} from "@/components/ui/dropdown-menu";
 import { Ellipsis } from "lucide-react";
 import { TextButton } from "@/ikon/components/buttons";
-import { Card } from "@/shadcn/ui/card";
+import { Card } from "@/components/ui/card";
 import { useEffect, useState } from "react";
-import { useIsMobile } from "@/shadcn/hooks/use-mobile";
+import { useIsMobile } from "@/hooks/use-mobile";
+
 
 export default function Tabs({
   children,
@@ -120,7 +121,7 @@ export default function Tabs({
           value={activeTab}
           className={`mt-3 flex-grow overflow-auto h-full w-full ${tabContentClass}`}
         >
-            <Card className="h-full w-full p-3">{children}</Card>
+          <Card className="h-full w-full p-3">{children}</Card>
         </TabsContent>
       ) : (
         tabArray.map((tab) => (
@@ -129,8 +130,8 @@ export default function Tabs({
             key={tab.tabId}
             className={`mt-3 flex-grow overflow-auto h-full w-full ${tabContentClass}`}
           >
-            
-              <Card className="h-full w-full p-3">{tab?.tabContent}</Card>
+
+            <Card className="h-full w-full p-3">{tab?.tabContent}</Card>
           </TabsContent>
         ))
       )}

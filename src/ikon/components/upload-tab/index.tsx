@@ -1,10 +1,10 @@
 "use client";
 import { useState, useEffect } from "react";
 import { UploadIcon, X, FileWarning, Send } from "lucide-react";
-import { Button } from "@/shadcn/ui/button";
-import { Input } from "@/shadcn/ui/input";
-import { Label } from "@/shadcn/ui/label";
-import { Progress } from "@/shadcn/ui/progress";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+
 import { useForm } from "react-hook-form";
 import axios from "axios";
 
@@ -16,8 +16,9 @@ import {
   FormControl,
   FormMessage,
   FormDescription,
-} from "@/shadcn/ui/form";
+} from "@/components/ui/form";
 import NoDataComponent from "../no-data";
+import { ProgressBar } from "@tremor/react";
 
 interface Entry {
   text: string;
@@ -150,7 +151,7 @@ export default function UploadTab() {
                       <X className="w-4 h-4" />
                     </button>
                   </div>
-                  <Progress value={file.progress} />
+                  <ProgressBar value={file.progress} />
                   <p className="text-xs text-gray-500">
                     {file.progress}% uploaded
                   </p>

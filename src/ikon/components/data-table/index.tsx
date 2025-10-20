@@ -23,7 +23,7 @@ import {
 } from "@tanstack/react-table";
 import { ArrowDown, ArrowDownToLine, ArrowUp, ArrowUpToLine, ChevronDown, ChevronLast, ChevronRight, ChevronUp, X } from "lucide-react";
 
-import { Button } from "@/shadcn/ui/button";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -32,11 +32,11 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/shadcn/ui/table";
+} from "@/components/ui/table";
 import DataTableToolbar from "./datatable-toolbar";
 import { getDataTableColumnTitle } from "./function";
 import { DataTableProps, DragDropHeaderProp, DTColumnsProps } from "./type";
-import { Checkbox } from "@/shadcn/ui/checkbox";
+import { Checkbox } from "@/components/ui/checkbox";
 import { DataTablePagination } from "./datatable-pagination";
 import ActionMenu from "../action-menu";
 import { cx } from "class-variance-authority";

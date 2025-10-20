@@ -1,7 +1,7 @@
 import React, { useRef } from 'react'
 import { IconButtonWithTooltip } from '../buttons'
 import { Upload } from 'lucide-react'
-import { Input } from '@/shadcn/ui/input'
+import { Input } from '@/components/ui/input'
 
 function FileInput({ tooltipContent, fileNamePlaceholder, fileName, onFileNameChange, ...props }: any) {
     const inputRef = useRef<HTMLInputElement>(null);

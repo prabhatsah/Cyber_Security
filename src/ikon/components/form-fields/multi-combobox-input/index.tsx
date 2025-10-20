@@ -5,12 +5,12 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/shadcn/ui/form";
+} from "@/components/ui/form";
 import React, { useState } from "react";
 import { ComboboxItemProps, FormComboboxInputProps } from "../types";
-import { Popover, PopoverContent, PopoverTrigger } from "@/shadcn/ui/popover";
-import { Button } from "@/shadcn/ui/button";
-import { cn } from "@/shadcn/lib/utils";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/components/lib/utils";
 import { Check, ChevronsUpDown } from "lucide-react";
 import {
   Command,
@@ -19,7 +19,7 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/shadcn/ui/command";
+} from "@/components/ui/command";
 
 export default function FormMultiComboboxInput({
   formControl,

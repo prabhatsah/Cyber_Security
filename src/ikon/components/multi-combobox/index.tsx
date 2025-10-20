@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { Popover, PopoverContent, PopoverTrigger } from '@/shadcn/ui/popover'
-import { Button } from '@/shadcn/ui/button'
-import { cn } from '@/shadcn/lib/utils'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Button } from '@/components/ui/button'
+import { cn } from '@/components/lib/utils'
 import { Check, ChevronsUpDown } from 'lucide-react'
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/shadcn/ui/command'
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
 
 export default function MultiCombobox({ placeholder, items, onValueChange }) {
   const [selectedItems, setSelectedItems] = useState<string[]>([])

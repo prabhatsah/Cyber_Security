@@ -1,8 +1,8 @@
 'use client'
 import { WidgetsFunctionProps } from "./type";
 import Icon from "../icon";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/shadcn/ui/tooltip";
-import { Button } from "@/shadcn/ui/button";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Button } from "@/components/ui/button";
 
 
 

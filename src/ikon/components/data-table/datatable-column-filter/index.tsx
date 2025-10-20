@@ -6,9 +6,9 @@ import {
   CommandItem,
   CommandList,
   CommandSeparator,
-} from "@/shadcn/ui/command";
-import { Popover, PopoverContent, PopoverTrigger } from "@/shadcn/ui/popover";
-import { cn } from "@/shadcn/lib/utils";
+} from "@/components/ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/components/lib/utils";
 import { Check, Columns, PlusCircle, Settings2 } from "lucide-react";
 import { DataTableViewOptionsProps } from "../type";
 import { getDataTableColumnTitle } from "../function";

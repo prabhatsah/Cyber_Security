@@ -1,8 +1,8 @@
 "use client"
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/shadcn/ui/avatar";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/shadcn/ui/dropdown-menu";
-import { SidebarMenuButton, useSidebar } from "@/shadcn/ui/sidebar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { SidebarMenuButton, useSidebar } from "@/components/ui/sidebar";
 import { getAccount, setActiveAccountId } from "@/ikon/utils/actions/account";
 import { AccountTreeProps } from "@/ikon/utils/actions/account/type";
 import { ChevronsUpDown } from "lucide-react"

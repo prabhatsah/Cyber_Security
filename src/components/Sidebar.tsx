@@ -30,9 +30,7 @@ const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "Vulnerability Scans", href: "/scans", icon: Scan },
   { name: "Penetration Tests", href: "/pen-test", icon: BugPlay },
-  { name: "Reports", href: "/reports", icon: FileText },
-  { name: "Audit Log", href: "/audit", icon: Activity },
-  { name: "Settings", href: "/settings", icon: Settings },
+  { name: "Device List", href: "/deviceList", icon: BugPlay },
   {
     name: "Configuration",
     icon: PackageCheck,
