@@ -1,5 +1,5 @@
 "use client"
-import { Button } from "@/shadcn/ui/button";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,7 +13,7 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-} from "@/shadcn/ui/dropdown-menu";
+} from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
 import { ActionMenuProps, ExtraActionParams } from "./type";
 import { IconButtonWithTooltip } from "../buttons";

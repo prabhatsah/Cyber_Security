@@ -1,4 +1,4 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/shadcn/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getProfileData } from "@/ikon/utils/actions/auth";
 import { getSrcFromBase64String } from "@/ikon/utils/actions/common/utils";
 

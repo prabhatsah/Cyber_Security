@@ -8,12 +8,12 @@ import {
   SidebarMenuButton,
   SidebarMenuSub,
   SidebarMenuSubItem,
-} from "@/shadcn/ui/sidebar";
+} from "@/components/ui/sidebar";
 import {
   Collapsible,
   CollapsibleTrigger,
   CollapsibleContent,
-} from '@/shadcn/ui/collapsible';
+} from '@/components/ui/collapsible';
 import { redirect } from 'next/navigation';
 import { useEffect, useState } from "react";
 import { ChevronRight } from "lucide-react";
@@ -109,7 +109,7 @@ export default function DocumentSidebar(documentData: any) {
                       <SidebarMenuButton key={subIdx} className="flex items-center text-sm whitespace-nowrap overflow-hidden"
                         onClick={() => {
                           redirect(subItem.href);
-                        }} 
+                        }}
                       >
                         <subItem.iconClass className="h-4 w-4 mr-2" />
                         <span className="truncate">{subItem.title}</span>

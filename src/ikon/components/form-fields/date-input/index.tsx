@@ -1,12 +1,12 @@
-import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/shadcn/ui/form'
+import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import React from 'react'
 import { FormDateInputProps } from '../types'
-import { Popover, PopoverContent, PopoverTrigger } from '@/shadcn/ui/popover'
-import { Button } from '@/shadcn/ui/button'
-import { cn } from '@/shadcn/lib/utils'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Button } from '@/components/ui/button'
+import { cn } from '@/components/lib/utils'
 import { format } from 'date-fns'
 import { CalendarIcon } from 'lucide-react'
-import { Calendar } from '@/shadcn/ui/calendar'
+import { Calendar } from '@/components/ui/calendar'
 
 export default function FormDateInput({ formControl, name, label, placeholder, dateFormat, calendarDateDisabled, formDescription }: FormDateInputProps) {
   return (

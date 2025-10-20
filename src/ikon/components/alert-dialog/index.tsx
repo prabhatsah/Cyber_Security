@@ -7,7 +7,7 @@ import {
     AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
-} from "@/shadcn/ui/alert-dialog";
+} from "@/components/ui/alert-dialog";
 
 interface CustomAlertDialogProps {
     title: string;

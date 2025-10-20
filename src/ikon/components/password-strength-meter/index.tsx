@@ -1,4 +1,5 @@
-import { Progress } from "@/shadcn/ui/progress";
+
+import { ProgressBar } from "@tremor/react";
 import React, { useState } from "react";
 import zxcvbn from "zxcvbn";
 
@@ -26,24 +27,24 @@ const PasswordStrengthMeter = ({ value }: { value: string }) => {
   const funcProgressColor = () => {
     switch (testResult.score) {
       case 0:
-        return "#828282";
+        return "gray";
       case 1:
-        return "#EA1111";
+        return "red";
       case 2:
-        return "#FFAD00";
+        return "amber";
       case 3:
-        return "#9bc158";
+        return "lime";
       case 4:
-        return "#00b500";
+        return "green";
       default:
-        return "";
+        return "gray";
     }
   };
 
 
   return (
     <>
-      <Progress value={num} indicatorColor={funcProgressColor()} />
+      <ProgressBar value={num} color={funcProgressColor()} />
     </>
   );
 };

@@ -7,9 +7,9 @@ import {
   CommandItem,
   CommandList,
   CommandSeparator,
-} from "@/shadcn/ui/command";
-import { Popover, PopoverContent, PopoverTrigger } from "@/shadcn/ui/popover";
-import { cn } from "@/shadcn/lib/utils";
+} from "@/components/ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/components/lib/utils";
 import { DataTableFilterProps } from "../type";
 import { useState } from "react";
 import { Tooltip } from "../../tooltip";

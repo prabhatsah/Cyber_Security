@@ -11,7 +11,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/shadcn/ui/select";
+} from "@/components/ui/select";
 import { DataTablePaginationProps } from "../type";
 import { IconButtonWithTooltip } from "../../buttons";
 

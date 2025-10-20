@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { BreadcrumbProvider } from "@/ikon/components/app-breadcrumb/BreadcrumbProvider";
-import { SidebarInset, SidebarProvider } from "@/shadcn/ui/sidebar";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import MainSideBar from "@/ikon/components/main-sidebar";
 import Header from "@/ikon/components/header";
 import Footer from "@/ikon/components/footer";

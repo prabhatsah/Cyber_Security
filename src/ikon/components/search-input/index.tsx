@@ -1,4 +1,4 @@
-import { Input } from '@/shadcn/ui/input'
+import { Input } from '@/components/ui/input'
 import { cx } from 'class-variance-authority'
 import { Search } from 'lucide-react'
 function SearchInput({ className, ...props }: any) {

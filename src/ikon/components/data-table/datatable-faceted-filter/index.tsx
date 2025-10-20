@@ -1,8 +1,8 @@
 import * as React from "react";
 import { Check, Cross, Plus, X } from "lucide-react";
 
-import { cn } from "@/shadcn/lib/utils";
-import { Badge } from "@/shadcn/ui/badge";
+import { cn } from "@/components/lib/utils";
+import { Badge } from "@/components/ui/badge";
 import {
   Command,
   CommandEmpty,
@@ -11,9 +11,9 @@ import {
   CommandItem,
   CommandList,
   CommandSeparator,
-} from "@/shadcn/ui/command";
-import { Popover, PopoverContent, PopoverTrigger } from "@/shadcn/ui/popover";
-import { Separator } from "@/shadcn/ui/separator";
+} from "@/components/ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Separator } from "@/components/ui/separator";
 import { DataTableFacetedFilterProps } from "../type";
 import { getDataTableColumnTitle } from "../function";
 import { IconTextButtonWithTooltip } from "../../buttons";
@@ -37,7 +37,7 @@ export default function DataTableFacetedFilter<TData, TValue>({
           tooltipContent={getDataTableColumnTitle(column)}
         >
           {selectedValues?.size > 0 ?
-            <X  />
+            <X />
             :
             <Plus />
           }

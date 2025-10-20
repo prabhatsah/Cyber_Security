@@ -1,7 +1,7 @@
 import { Views } from "react-big-calendar";
 import { Fragment, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { ToggleGroup, ToggleGroupItem } from "@/shadcn/ui/toggle-group";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { BigCalenderToolbarProps } from "../type";
 
 // Custom toolbar component

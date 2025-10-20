@@ -13,9 +13,9 @@ import {
   Square,
   Upload,
 } from "lucide-react";
-import { Label } from "@/shadcn/ui/ui/label";
-import { Input } from "@/shadcn/ui/ui/input";
-import { Button } from "@/shadcn/ui/ui/button";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import NewCropperImg from "./newCropper";
 import Image from "next/image";
 
@@ -132,13 +132,12 @@ const NewImageForm: React.FC<ImageFormProps> = ({
     return imgSource ? (
       <div
         className={`
-            ${
-              state === "first"
-                ? "relative w-3/5 h-[200px] bg-slate-400"
-                : state === "second"
-                ? "relative w-1/2 h-[220px] bg-slate-400"
-                : "relative w-1/3 h-[120px] bg-slate-400"
-            }`}
+            ${state === "first"
+            ? "relative w-3/5 h-[200px] bg-slate-400"
+            : state === "second"
+              ? "relative w-1/2 h-[220px] bg-slate-400"
+              : "relative w-1/3 h-[120px] bg-slate-400"
+          }`}
       >
         <Image
           src={imgSource || ""}
@@ -150,13 +149,12 @@ const NewImageForm: React.FC<ImageFormProps> = ({
     ) : (
       <div
         className={`
-            ${
-              state === "first"
-                ? "relative w-3/5 h-[200px] bg-slate-400"
-                : state === "second"
-                ? "relative w-1/2 h-[220px] bg-slate-400"
-                : "relative w-1/3 h-[120px] bg-slate-400"
-            }`}
+            ${state === "first"
+            ? "relative w-3/5 h-[200px] bg-slate-400"
+            : state === "second"
+              ? "relative w-1/2 h-[220px] bg-slate-400"
+              : "relative w-1/3 h-[120px] bg-slate-400"
+          }`}
       ></div>
     );
   };
