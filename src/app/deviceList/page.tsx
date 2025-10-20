@@ -178,7 +178,7 @@ async function fetchDeviceData() {
       }
     });
 
-    //console.log('Device data: ', deviceData);
+    console.log('Device data: ', deviceData);
 
     return deviceData;
   }

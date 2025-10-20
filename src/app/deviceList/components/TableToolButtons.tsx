@@ -12,7 +12,7 @@ type TableToolButtonProps = {
 export const TableToolButton_Add: FC<TableToolButtonProps> = ({ onclick, classes }) => {
     return (
         <>
-            <TextButtonWithTooltip variant='outline' onClick={onclick} className={`bg-blue-600  h-8 ${classes}`} tooltipContent='Add Device'>
+            <TextButtonWithTooltip variant='outline' onClick={onclick} className={`dark:bg-blue-600  h-8 ${classes}`} tooltipContent='Add Device'>
                 <Plus />
             </TextButtonWithTooltip>
         </>
@@ -22,7 +22,7 @@ export const TableToolButton_Add: FC<TableToolButtonProps> = ({ onclick, classes
 export const TableToolButton_Upload: FC<TableToolButtonProps> = ({ onclick, classes }) => {
     return (
         <>
-            <TextButtonWithTooltip variant='outline' onClick={onclick} className={`bg-blue-600 h-8 ${classes}`} tooltipContent='Upload Devices'>
+            <TextButtonWithTooltip variant='outline' onClick={onclick} className={`dark:bg-blue-600 h-8 ${classes}`} tooltipContent='Upload Devices'>
                 <Upload />
             </TextButtonWithTooltip>
         </>
@@ -32,7 +32,7 @@ export const TableToolButton_Upload: FC<TableToolButtonProps> = ({ onclick, clas
 export const TableToolButton_Import: FC<TableToolButtonProps> = ({ onclick, classes }) => {
     return (
         <>
-            <TextButtonWithTooltip variant='outline' onClick={onclick} className={`bg-blue-600 h-8 ${classes}`} tooltipContent='Import Devices'>
+            <TextButtonWithTooltip variant='outline' onClick={onclick} className={`dark:bg-blue-600 h-8 ${classes}`} tooltipContent='Import Devices'>
                 <Import />
             </TextButtonWithTooltip>
         </>
