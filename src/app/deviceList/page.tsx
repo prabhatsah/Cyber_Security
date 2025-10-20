@@ -130,13 +130,13 @@ function getColumns(showDeviceInfo: (deviceId: string) => void, modaltype: (type
         <span>{getFormattedDate(row.original.data.discoverDateAndTime)}</span>
       ),
     },
-    {
-      accessorKey: "data.dryRunAccessable",
-      header: 'Test device',
-      cell: ({ row }) => (
-        <span>{row.original.data.dryRunAccessable}</span>
-      ),
-    },
+    // {
+    //   accessorKey: "data.dryRunAccessable",
+    //   header: 'Test device',
+    //   cell: ({ row }) => (
+    //     <span>{row.original.data.dryRunAccessable}</span>
+    //   ),
+    // },
     {
       accessorKey: "data.deviceId",
       header: 'Action',
@@ -178,7 +178,7 @@ async function fetchDeviceData() {
       }
     });
 
-    //console.log('Device data: ', deviceData);
+    console.log('Device data: ', deviceData);
 
     return deviceData;
   }
