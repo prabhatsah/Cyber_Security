@@ -39,6 +39,7 @@ type fileType = {
 const donwloadTemplateFile = async function (close: () => void) {
     try {
         const fileDetails = await getMyInstancesV2<UploadedFileType>({
+            softwareId: "c0a98196-ba65-4b85-95ee-8a75838d755d",
             processName: 'File Upload For CCC',
             predefinedFilters: {
                 taskName: "CCC Uploaded File"
@@ -76,6 +77,7 @@ const donwloadTemplateFile = async function (close: () => void) {
 const uploadTemplateFile = async function (file: File) {
     try {
         const fileDetails = await getMyInstancesV2<UploadedFileType[]>({
+            softwareId: "c0a98196-ba65-4b85-95ee-8a75838d755d",
             processName: 'File Upload For CCC',
             predefinedFilters: {
                 taskName: "CCC File Upload"
