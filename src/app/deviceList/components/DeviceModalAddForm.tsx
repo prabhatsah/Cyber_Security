@@ -5,7 +5,7 @@ import {
 } from "react";
 
 import { DeviceModalAddFormProps, ProfileDataType } from "../types";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
 import { TextButtonWithTooltip } from "@/ikon/components/buttons";
 
@@ -148,6 +148,7 @@ const credentialTypeWiseData: credentialDetailsType = {};
 
 const getCredentialData = async function (processName: string) {
   const credentialData = await getMyInstancesV2<CredentialType>({
+    softwareId: "1f419953-5958-4abd-a8e9-4f725bde9539",
     processName: processName,
     predefinedFilters: {
       taskName: "View credential",

@@ -171,6 +171,7 @@ function getColumns(showDeviceInfo: (deviceId: string) => void, modaltype: (type
 async function fetchDeviceData() {
   try {
     const deviceData = await getMyInstancesV2<DeviceListDataType>({
+      softwareId: "1f419953-5958-4abd-a8e9-4f725bde9539",
       processName: "Configuration Item",
       predefinedFilters: {
         taskName: "Update CI Acivity"
@@ -377,6 +378,7 @@ export default function DeviceList() {
     try {
 
       const data = await getMyInstancesV2<DeviceListDataType>({
+        softwareId: "1f419953-5958-4abd-a8e9-4f725bde9539",
         processName: 'Configuration Item',
         predefinedFilters: {
           taskName: 'Delete Activity'
